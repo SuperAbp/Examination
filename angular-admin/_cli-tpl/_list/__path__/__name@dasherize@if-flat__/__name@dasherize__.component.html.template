@@ -1,0 +1,22 @@
+<page-header [action]="phActionTpl">
+  <ng-template #phActionTpl>
+    <button (click)="add()" nz-button nzType="primary" *abpPermission="'*.*.Create'">
+      {{ '*::New<%= classify(name) %>' | abpLocalization }}
+    </button>
+  </ng-template>
+</page-header>
+<nz-card>
+  <sf mode="search" [schema]="searchSchema" (formSubmit)="search($event)" (formReset)="reset()"></sf>
+  <st
+    #st
+    [data]="<%= camelize(name) %>s"
+    [columns]="columns"
+    [loading]="loading"
+    [page]="page"
+    [total]="total"
+    (change)="change($event)"
+    [header]="'*::DataStart' | abpLocalization"
+    [footer]="'*::DataEnd' | abpLocalization"
+    responsiveHideHeaderFooter
+  ></st>
+</nz-card>

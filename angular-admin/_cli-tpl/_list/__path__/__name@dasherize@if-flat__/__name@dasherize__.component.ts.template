@@ -1,0 +1,131 @@
+import { ConfigStateService, LocalizationService, PermissionService } from '@abp/ng.core';
+import { Component, OnInit, ViewChild<% if(!!viewEncapsulation) { %>, ViewEncapsulation<% }%><% if(changeDetection !== 'Default') { %>, ChangeDetectionStrategy<% }%> } from '@angular/core';
+import { STChange, STColumn, STComponent, STPage } from '@delon/abc/st';
+import { SFSchema } from '@delon/form';
+import { ModalHelper } from '@delon/theme';
+import { <%= classify(module) %><%= classify(name) %>EditComponent } from './edit/edit.component';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { tap } from 'rxjs/operators';
+
+@Component({
+  selector: '<%= selector %>',
+  templateUrl: './<%= dasherize(name) %>.component.html',<% if(!inlineStyle) { %><% } else { %>
+  styleUrls: ['./<%= dasherize(name) %>.component.<%= style %>']<% } %><% if(!!viewEncapsulation) { %>,
+  encapsulation: ViewEncapsulation.<%= viewEncapsulation %><% } if (changeDetection !== 'Default') { %>,
+  changeDetection: ChangeDetectionStrategy.<%= changeDetection %><% } %>
+})
+export class <%= componentName %> implements OnInit {
+  <%= camelize(name) %>s: <%= classify(name) %>ListDto[];
+  total: number;
+  loading = false;
+  params: Get<%= classify(name) %>sInput;
+  page: STPage = {
+    show: true,
+    showSize: true,
+    front: false,
+    pageSizes: [10, 20, 30, 40, 50],
+  };
+  searchSchema: SFSchema = {
+    properties: {
+      // TODO:搜索参数
+    }
+  };
+  @ViewChild('st', { static: false }) st: STComponent;
+  columns: STColumn[] = [
+    { title: this.localizationService.instant('*::Name'), index: 'name' },
+    {
+      title: this.localizationService.instant('*::Actions'),
+      buttons: [
+        {
+          icon: 'edit',
+          type: 'modal',
+          tooltip: this.localizationService.instant('*::Edit'),
+          iif: () => {
+            return this.permissionService.getGrantedPolicy('*.*.Update');
+          },
+          modal: {
+            component: <%= classify(module) %><%= classify(name) %>EditComponent,
+            params: (record: any) => ({
+              <%= camelize(name) %>Id: record.id,
+            }),
+          },
+          click: 'reload',
+        },
+        {
+          icon: 'delete',
+          type: 'del',
+          tooltip: this.localizationService.instant('*::Delete'),
+          pop: {
+            title: this.localizationService.instant('*::AreYouSure'),
+            okType: 'danger',
+            icon: 'star',
+          },
+          iif: () => {
+            return this.permissionService.getGrantedPolicy('*.*.Delete');
+          },
+          click: (record, _modal, component) => {
+            this.<%= camelize(name) %>Service.delete(record.id).subscribe((response) => {
+              this.messageService.success(this.localizationService.instant('*::SuccessDeleted', record.name));
+              // tslint:disable-next-line: no-non-null-assertion
+              component!.removeRow(record);
+            });
+          },
+        },
+      ]
+    }
+  ];
+
+  constructor(
+    private modal: ModalHelper,
+    private localizationService: LocalizationService,
+    private messageService: NzMessageService,
+    private permissionService: PermissionService,
+    private <%= camelize(name) %>Service: <%= classify(name) %>Service
+  ) { }
+
+  ngOnInit() { 
+    this.params = this.resetParameters();
+    this.getList();
+  }
+  getList() {
+    this.loading = true;
+    this.<%= camelize(name) %>Service
+      .getList(this.params)
+      .pipe(tap(() => (this.loading = false)))
+      .subscribe((response) => ((this.<%= camelize(name) %>s = response.items), (this.total = response.totalCount)));
+  }
+  resetParameters():Get<%= classify(name) %>sInput {
+    return {
+      skipCount: 0,
+      maxResultCount: 10,
+      sorting: 'Id Desc',
+    };
+  }
+  change(e: STChange) {
+    if (e.type === 'pi' || e.type === 'ps') {
+      this.params.skipCount = (e.pi - 1) * e.ps;
+      this.params.maxResultCount = e.ps;
+      this.getList();
+    } else if (e.type === 'sort') {
+      this.params.sorting = `${e.sort?.column?.index as string} ${e.sort.value === 'ascend' ? 'asc' : 'desc'}`;
+      this.getList();
+    }
+  }
+  reset() {
+    this.params = this.resetParameters();
+    this.st.load(1);
+  }
+  search(e) {
+    //if (e.name) {
+    //  this.params.name = e.name;
+    //} else {
+    //  delete this.params.name;
+    //}
+    this.st.load(1);
+  }
+  add() {
+    this.modal.createStatic(<%= classify(module) %><%= classify(name) %>EditComponent, { <%= camelize(name) %>Id: '' })
+      .subscribe(() => this.st.reload());
+  }
+
+}

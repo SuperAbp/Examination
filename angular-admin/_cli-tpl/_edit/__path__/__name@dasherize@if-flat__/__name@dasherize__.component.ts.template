@@ -1,0 +1,121 @@
+import { LocalizationService } from '@abp/ng.core';
+import { Component, OnInit, <% if(modal) { %> Input, <% } %> ViewChild<% if(!!viewEncapsulation) { %>, ViewEncapsulation<% }%><% if(changeDetection !== 'Default') { %>, ChangeDetectionStrategy<% }%> } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { finalize, tap } from 'rxjs/operators';<% if(modal) { %>
+import { NzModalRef } from 'ng-zorro-antd/modal';<% } else { %>
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';<% } %>
+
+@Component({
+  selector: '<%= selector %>',
+  templateUrl: './<%= dasherize(name) %>.component.html',<% if(!inlineStyle) { %><% } else { %>
+    styleUrls: ['./<%= dasherize(name) %>.component.<%= style %>']<% } %><% if(!!viewEncapsulation) { %>,
+  encapsulation: ViewEncapsulation.<%= viewEncapsulation %><% } if (changeDetection !== 'Default') { %>,
+  changeDetection: ChangeDetectionStrategy.<%= changeDetection %><% } %>
+})
+export class <%= componentName %> implements OnInit {  <% if(modal) { %>
+  @Input()  <% } %>
+  <%= camelize(target) %>Id: number;
+  <%= camelize(target) %>: Get<%= classify(target) %>ForEditorOutput;
+
+  loading = false;
+  isConfirmLoading = false;
+
+  form: FormGroup = null;
+
+  constructor(
+    private fb: FormBuilder,<% if(modal) { %>
+    private modal: NzModalRef,<% } else { %>    
+    private route: ActivatedRoute,
+    private location: Location,<% } %>
+    private messageService: NzMessageService,
+    private localizationService: LocalizationService,
+    private <%= camelize(target) %>Service: <%= classify(target) %>Service
+  ) {}
+
+  ngOnInit(): void {
+    <% if(!modal) { %>this.<%= camelize(target) %>Id = +this.route.snapshot.paramMap.get('id');<% } %>
+    this.loading = true;<% if(modal) { %>
+    if (this.<%= camelize(target) %>Id) {<% } else { %>
+    if (this.<%= camelize(target) %>Id > 0) {<% } %> 
+      this.<%= camelize(target) %>Service.getEditor(this.<%= camelize(target) %>Id).pipe(
+        tap((response) => {
+          this.<%= camelize(target) %> = response;
+          this.buildForm();
+          this.loading = false;
+        }),
+      )
+      .subscribe();
+    } else {
+      this.<%= camelize(target) %> = {} as Get<%= classify(target) %>ForEditorOutput;
+      this.buildForm();
+      this.loading = false;
+    }
+  }
+
+  buildForm() {
+    // TODO:完善列定义
+    this.form = this.fb.group({
+      name: [this.<%= camelize(target) %>.name || '', [Validators.required]],
+    });
+  }
+
+  save() {
+    if (!this.form.valid || this.isConfirmLoading) {
+      for (const key of Object.keys(this.form.controls)) {
+        this.form.controls[key].markAsDirty();
+        this.form.controls[key].updateValueAndValidity();
+      }
+      return;
+    }
+    this.isConfirmLoading = true;
+
+    if (this.<%= camelize(target) %>Id) {
+      this.<%= camelize(target) %>Service
+        .update(
+          this.<%= camelize(target) %>Id,
+          {
+            ...this.<%= camelize(target) %>,
+            ...this.form.value,
+          },
+        )
+        .pipe(
+          tap((response) => {
+            this.messageService.success(this.localizationService.instant('*::SaveSucceed'));<% if(modal) { %>
+            this.modal.close(true);<% } else { %>
+            this.location.back();<% } %>
+          }),
+         finalize(() => (this.isConfirmLoading = false)),
+        )
+        .subscribe();
+    } else {
+      this.<%= camelize(target) %>Service
+        .create(
+          {
+            ...this.form.value,
+          },
+        )
+        .pipe(
+          tap((response) => {
+            this.messageService.success(this.localizationService.instant('*::SaveSucceed'));<% if(modal) { %>
+            this.modal.close(true);<% } else { %>
+            this.location.back();<% } %>
+          }),
+         finalize(() => (this.isConfirmLoading = false)),
+        )
+        .subscribe();
+    }
+  }
+  
+<% if(modal) { %>
+  close() {
+    this.modal.destroy();
+  }
+<% } else { %>
+  back(e: MouseEvent) {
+    e.preventDefault();
+    this.location.back();
+  }
+<% } %>
+}

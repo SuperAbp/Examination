@@ -1,0 +1,42 @@
+import { Component, <% if(modal) { %> Input, <% } %>OnInit<% if(!!viewEncapsulation) { %>, ViewEncapsulation<% }%><% if(changeDetection !== 'Default') { %>, ChangeDetectionStrategy<% }%> } from '@angular/core';<% if(!modal) { %>
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';<% } %><% if(modal) { %>
+import { NzModalRef } from 'ng-zorro-antd/modal';<% } %>
+import { NzMessageService } from 'ng-zorro-antd/message';
+
+@Component({
+  selector: '<%= selector %>',<% if(inlineTemplate) { %>
+  template: ``,<% } else { %>
+  templateUrl: './<%= dasherize(name) %>.component.html',<% } if(!inlineStyle) { %><% } else { %>
+  styleUrls: ['./<%= dasherize(name) %>.component.<%= style %>']<% } %><% if(!!viewEncapsulation) { %>,
+  encapsulation: ViewEncapsulation.<%= viewEncapsulation %><% } if (changeDetection !== 'Default') { %>,
+  changeDetection: ChangeDetectionStrategy.<%= changeDetection %><% } %>
+})
+export class <%= componentName %> implements OnInit {
+  <% if(modal) { %>@Input()<% } %>
+  <%= camelize(target) %>Id: number;
+  <%= camelize(target) %>: <%= classify(target) %>DetailDto;
+
+  constructor(<% if(modal) { %>
+    private modal: NzModalRef,<% } else { %>
+    private location: Location,
+    private route: ActivatedRoute,<% } %>
+    public messageService: NzMessageService,
+    private <%= camelize(target) %>Service: <%= classify(target) %>Service
+  ) { }
+
+  ngOnInit(): void {
+    <% if(!modal) { %>this.<%= camelize(target) %>Id = +this.route.snapshot.paramMap.get('id');<% } %>
+
+    this.<%= camelize(target) %>Service.get(this.<%= camelize(target) %>Id)
+      .subscribe(result => this.<%= camelize(target) %> = result);
+  }<% if(modal) { %>
+  close() {
+    this.modal.destroy();
+  }<% } else { %>
+  back(e: MouseEvent) {
+    e.preventDefault();
+    this.location.back();
+  }
+  <% } %>
+}
