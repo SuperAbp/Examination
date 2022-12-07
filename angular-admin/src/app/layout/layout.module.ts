@@ -24,24 +24,19 @@ import { HeaderFullScreenComponent } from './basic/widgets/fullscreen.component'
 import { HeaderSearchComponent } from './basic/widgets/search.component';
 import { HeaderUserComponent } from './basic/widgets/user.component';
 import { LayoutBlankComponent } from './blank/blank.component';
+import { CoreModule as AbpCoreModule } from '@abp/ng.core';
 
 const COMPONENTS = [LayoutBasicComponent, LayoutBlankComponent];
 
-const HEADERCOMPONENTS = [
-  HeaderSearchComponent,
-  HeaderFullScreenComponent,
-  HeaderClearStorageComponent,
-  HeaderUserComponent,
-];
+const HEADERCOMPONENTS = [HeaderSearchComponent, HeaderFullScreenComponent, HeaderClearStorageComponent, HeaderUserComponent];
 
 // passport
 import { LayoutPassportComponent } from './passport/passport.component';
-const PASSPORT = [
-  LayoutPassportComponent
-];
+const PASSPORT = [LayoutPassportComponent];
 
 @NgModule({
   imports: [
+    AbpCoreModule,
     CommonModule,
     FormsModule,
     RouterModule,
@@ -58,9 +53,9 @@ const PASSPORT = [
     NzSpinModule,
     NzBadgeModule,
     NzAvatarModule,
-    NzIconModule,
+    NzIconModule
   ],
   declarations: [...COMPONENTS, ...HEADERCOMPONENTS, ...PASSPORT],
-  exports: [...COMPONENTS, ...PASSPORT],
+  exports: [...COMPONENTS, ...PASSPORT]
 })
-export class LayoutModule { }
+export class LayoutModule {}

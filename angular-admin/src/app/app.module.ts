@@ -1,7 +1,7 @@
 /* eslint-disable import/order */
 /* eslint-disable import/no-duplicates */
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, Injector, LOCALE_ID, NgModule, Type } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, Injector, LOCALE_ID, NgModule, Type } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NzMessageModule } from 'ng-zorro-antd/message';
@@ -77,19 +77,19 @@ import { LayoutModule } from './layout/layout.module';
 import { RoutesModule } from './routes/routes.module';
 import { SharedModule } from './shared/shared.module';
 import { STWidgetModule } from './shared/st-widget/st-widget.module';
-
+import { NgAbpErrorHandler } from './core/error.handler';
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    AbpCoreModule.forRoot({
-      environment,
-      registerLocaleFn: registerLocale()
-    }),
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
     GlobalConfigModule.forRoot(),
     CoreModule,
+    AbpCoreModule.forRoot({
+      environment,
+      registerLocaleFn: registerLocale()
+    }),
     SharedModule,
     LayoutModule,
     RoutesModule,
@@ -99,7 +99,8 @@ import { STWidgetModule } from './shared/st-widget/st-widget.module';
     ...FORM_MODULES,
     ...GLOBAL_THIRD_MODULES
   ],
-  providers: [...LANG_PROVIDES, ...INTERCEPTOR_PROVIDES, ...APPINIT_PROVIDES],
+  exports: [AbpCoreModule],
+  providers: [...LANG_PROVIDES, ...INTERCEPTOR_PROVIDES, ...APPINIT_PROVIDES, { provide: ErrorHandler, useClass: NgAbpErrorHandler }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

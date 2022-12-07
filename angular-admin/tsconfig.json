@@ -29,6 +29,9 @@
       "@core": [
         "src/app/core/index"
       ],
+      "@proxy/*": [
+        "src/app/proxy/*"
+      ],
       "@env/*": [
         "src/environments/*"
       ]
