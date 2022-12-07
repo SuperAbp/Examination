@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>SuperAbp.Exam.Admin</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Account.HttpApi" Version="6.0.0" />
+    <PackageReference Include="Volo.Abp.Identity.HttpApi" Version="6.0.0" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.HttpApi" Version="6.0.0" />
+    <PackageReference Include="Volo.Abp.TenantManagement.HttpApi" Version="6.0.0" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.HttpApi" Version="6.0.0" />
+    <PackageReference Include="Volo.Abp.SettingManagement.HttpApi" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SuperAbp.Exam.Admin.Application.Contracts\SuperAbp.Exam.Admin.Application.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
