@@ -14,20 +14,36 @@ public class Program
     {
         Log.Logger = new LoggerConfiguration()
 #if DEBUG
-            .MinimumLevel.Debug()
+                .MinimumLevel.Debug()
 #else
-            .MinimumLevel.Information()
+                .MinimumLevel.Information()
 #endif
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-            .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .WriteTo.Async(c => c.File("Logs/logs.txt"))
-            .WriteTo.Async(c => c.Console())
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                 .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+                 .Enrich.FromLogContext()
+#if DEBUG
+                .WriteTo.Logger(lg => lg
+                    // 过滤级别
+                    .Filter.ByIncludingOnly(p => p.Level.Equals(LogEventLevel.Debug))
+                    // 按日期/大小分割文件
+                    .WriteTo.Async(a => a.File("Logs/debug.log", LogEventLevel.Debug
+                        , rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)))
+                .WriteTo.Console()
+#endif
+                .WriteTo.Logger(lg => lg
+                    .Filter.ByIncludingOnly(p => p.Level.Equals(LogEventLevel.Information))
+                    .WriteTo.Async(a => a.File("Logs/info.log", LogEventLevel.Information
+                        , rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)))
+                    .WriteTo.Console()
+                 .WriteTo.Logger(lg => lg
+                     .Filter.ByIncludingOnly(p => p.Level.Equals(LogEventLevel.Error))
+                     .WriteTo.Async(a => a.File("Logs/error.log", LogEventLevel.Error
+                         , rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)))
             .CreateLogger();
 
         try
         {
-            Log.Information("Starting SuperAbp.Exam.HttpApi.Host.");
+            Log.Information("Starting SuperAbp.Exam.Admin.HttpApi.Host.");
             var builder = WebApplication.CreateBuilder(args);
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()

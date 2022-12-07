@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.Questions;
+using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
@@ -12,6 +15,7 @@ using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -40,6 +44,7 @@ public class ExamDbContext :
 
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
+
     public DbSet<IdentityRole> Roles { get; set; }
     public DbSet<IdentityClaimType> ClaimTypes { get; set; }
     public DbSet<OrganizationUnit> OrganizationUnits { get; set; }
@@ -48,14 +53,18 @@ public class ExamDbContext :
 
     // Tenant Management
     public DbSet<Tenant> Tenants { get; set; }
+
     public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
-    #endregion
+    #endregion Entities from the modules
+
+    public DbSet<Question> Questions { get; set; }
+    public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
+    public DbSet<QuestionRepo> QuestionRepos { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
     {
-
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -73,13 +82,35 @@ public class ExamDbContext :
         builder.ConfigureFeatureManagement();
         builder.ConfigureTenantManagement();
 
-        /* Configure your own tables/entities inside here */
+        builder.Entity<Question>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "Questions", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.ConfigureAuditedAggregateRoot();
 
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(ExamConsts.DbTablePrefix + "YourEntities", ExamConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
+            b.Property(p => p.QuestionType).IsRequired();
+            b.Property(p => p.Content).IsRequired().HasMaxLength(QuestionConsts.MaxContentLength);
+            b.Property(p => p.Analysis).HasMaxLength(QuestionConsts.MaxAnalysisLength);
+        });
+
+        builder.Entity<QuestionAnswer>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "QuestionAnswers", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.ConfigureAuditedAggregateRoot();
+
+            b.Property(p => p.Content).IsRequired().HasMaxLength(QuestionAnswerConsts.MaxContentLength);
+            b.Property(p => p.Analysis).HasMaxLength(QuestionAnswerConsts.MaxAnalysisLength);
+        });
+
+        builder.Entity<QuestionRepo>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "QuestionRepositories", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.ConfigureAuditedAggregateRoot();
+
+            b.Property(p => p.Title).IsRequired().HasMaxLength(QuestionRepoConsts.MaxTitleLength);
+            b.Property(p => p.Remark).HasMaxLength(QuestionRepoConsts.MaxRemarkLength);
+        });
     }
 }

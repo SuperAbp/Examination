@@ -65,7 +65,6 @@ public class ExamHttpApiHostModule : AbpModule
         ConfigureAuthentication(context);
         ConfigureBundles();
         ConfigureUrls(configuration);
-        ConfigureConventionalControllers();
         ConfigureLocalization();
         ConfigureVirtualFileSystem(context);
         ConfigureCors(context, configuration);
@@ -148,6 +147,18 @@ public class ExamHttpApiHostModule : AbpModule
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Exam API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
+
+                #region 注释
+
+                var httpApiName = "SuperAbp.Exam.Admin.HttpApi.xml";
+                var applicationContractsName = "SuperAbp.Exam.Admin.Application.Contracts.xml";
+                string baseDirectory = AppContext.BaseDirectory;
+                var httpApiPath = Path.Combine(baseDirectory, httpApiName);
+                var applicationContractsPath = Path.Combine(baseDirectory, applicationContractsName);
+                options.IncludeXmlComments(httpApiPath, true);
+                options.IncludeXmlComments(applicationContractsPath, true);
+
+                #endregion 注释
             });
     }
 

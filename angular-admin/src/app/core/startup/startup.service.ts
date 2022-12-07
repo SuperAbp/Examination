@@ -30,31 +30,28 @@ export class StartupService {
     iconSrv.addIcon(...ICONS_AUTO, ...ICONS);
   }
 
-  
-    private viaHttp(): Observable<void> {
-      return this.httpClient.get('assets/tmp/app-data.json').pipe(
-        catchError((res: NzSafeAny) => {
-          console.warn(`StartupService.load: Network request failed`, res);
-          setTimeout(() => this.router.navigateByUrl(`/exception/500`));
-          return of({});
-        }),
-        map((res: NzSafeAny) => {
-          // Application information: including site name, description, year
-          this.settingService.setApp(res.app);
-          // User information: including name, avatar, email address
-          this.settingService.setUser(res.user);
-          // ACL: Set the permissions to full, https://ng-alain.com/acl/getting-started
-          this.aclService.setFull(true);
-          // Menu data, https://ng-alain.com/theme/menu
-          this.menuService.add(res.menu);
-          // Can be set page suffix title, https://ng-alain.com/theme/title
-          this.titleService.suffix = res.app.name;
-        })
-      );
-    }
-  
+  private viaHttp(): Observable<void> {
+    return this.httpClient.get('assets/tmp/app-data.json').pipe(
+      catchError((res: NzSafeAny) => {
+        console.warn(`StartupService.load: Network request failed`, res);
+        setTimeout(() => this.router.navigateByUrl(`/exception/500`));
+        return of({});
+      }),
+      map((res: NzSafeAny) => {
+        // Application information: including site name, description, year
+        this.settingService.setApp(res.app);
+        // User information: including name, avatar, email address
+        this.settingService.setUser(res.user);
+        // ACL: Set the permissions to full, https://ng-alain.com/acl/getting-started
+        this.aclService.setFull(true);
+        // Menu data, https://ng-alain.com/theme/menu
+        this.menuService.add(res.menu);
+        // Can be set page suffix title, https://ng-alain.com/theme/title
+        this.titleService.suffix = res.app.name;
+      })
+    );
+  }
 
-  
   private viaMock(): Observable<void> {
     // const tokenData = this.tokenService.get();
     // if (!tokenData.token) {
@@ -88,6 +85,17 @@ export class StartupService {
             text: 'Dashboard',
             link: '/dashboard',
             icon: { type: 'icon', value: 'appstore' }
+          }
+        ]
+      },
+      {
+        text: '题库管理',
+        icon: { type: 'icon', value: 'appstore' },
+        children: [
+          {
+            text: '试题管理',
+            icon: { type: 'icon', value: 'appstore' },
+            link: '/question'
           }
         ]
       }
