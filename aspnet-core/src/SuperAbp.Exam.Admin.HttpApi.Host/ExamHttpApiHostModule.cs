@@ -119,10 +119,10 @@ public class ExamHttpApiHostModule : AbpModule
                         $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Domain"));
                 options.FileSets.ReplaceEmbeddedByPhysical<ExamApplicationContractsModule>(
                     Path.Combine(hostingEnvironment.ContentRootPath,
-                        $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Application.Contracts"));
+                        $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Admin.Application.Contracts"));
                 options.FileSets.ReplaceEmbeddedByPhysical<ExamApplicationModule>(
                     Path.Combine(hostingEnvironment.ContentRootPath,
-                        $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Application"));
+                        $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Admin.Application"));
             });
         }
     }
