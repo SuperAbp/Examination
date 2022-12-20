@@ -24,14 +24,22 @@ import { HeaderFullScreenComponent } from './basic/widgets/fullscreen.component'
 import { HeaderSearchComponent } from './basic/widgets/search.component';
 import { HeaderUserComponent } from './basic/widgets/user.component';
 import { LayoutBlankComponent } from './blank/blank.component';
+import { HeaderI18nComponent } from './basic/widgets/i18n.component';
 import { CoreModule as AbpCoreModule } from '@abp/ng.core';
 
 const COMPONENTS = [LayoutBasicComponent, LayoutBlankComponent];
 
-const HEADERCOMPONENTS = [HeaderSearchComponent, HeaderFullScreenComponent, HeaderClearStorageComponent, HeaderUserComponent];
+const HEADERCOMPONENTS = [
+  HeaderSearchComponent,
+  HeaderFullScreenComponent,
+  HeaderClearStorageComponent,
+  HeaderUserComponent,
+  HeaderI18nComponent
+];
 
 // passport
 import { LayoutPassportComponent } from './passport/passport.component';
+import { AlainThemeModule } from '@delon/theme';
 const PASSPORT = [LayoutPassportComponent];
 
 @NgModule({
@@ -40,6 +48,7 @@ const PASSPORT = [LayoutPassportComponent];
     CommonModule,
     FormsModule,
     RouterModule,
+    AlainThemeModule.forChild(),
     ThemeBtnModule,
     SettingDrawerModule,
     LayoutDefaultModule,

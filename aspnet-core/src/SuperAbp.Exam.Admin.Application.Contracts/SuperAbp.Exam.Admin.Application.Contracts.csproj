@@ -7,6 +7,10 @@
     <RootNamespace>SuperAbp.Exam.Admin</RootNamespace>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SuperAbp.MenuManagement.Application.Contracts" Version="1.0.0" />
+  </ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\SuperAbp.Exam.Application.Contracts.Shared\SuperAbp.Exam.Application.Contracts.Shared.csproj" />
 	</ItemGroup>

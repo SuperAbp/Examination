@@ -1,5 +1,6 @@
 ﻿using Localization.Resources.AbpUi;
 using SuperAbp.Exam.Localization;
+using SuperAbp.MenuManagement;
 using Volo.Abp.Account;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
@@ -18,7 +19,8 @@ namespace SuperAbp.Exam.Admin;
     typeof(AbpPermissionManagementHttpApiModule),
     typeof(AbpTenantManagementHttpApiModule),
     typeof(AbpFeatureManagementHttpApiModule),
-    typeof(AbpSettingManagementHttpApiModule)
+    typeof(AbpSettingManagementHttpApiModule),
+    typeof(SuperAbpMenuManagementHttpApiModule)
     )]
 public class ExamHttpApiModule : AbpModule
 {

@@ -2012,6 +2012,27 @@
   resolved "http://121.196.122.107:8881/@socket.io%2fcomponent-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
+"@super-abp/ng.identity@^0.0.2":
+  version "0.0.2"
+  resolved "http://121.196.122.107:8881/@super-abp%2fng.identity/-/ng.identity-0.0.2.tgz#4608f163e88c205672f484f2b85a88af108d16e2"
+  integrity sha512-F6Vj9KEuvGpduOFa3wkpPvhZdQwiwlKAKfaijAQ13KxZB1LhhWMWw1i1S63RVkuvVgd53usYCArsb8OV6pC1OQ==
+  dependencies:
+    tslib "^2.3.0"
+
+"@super-abp/ng.menu-management@^0.0.1":
+  version "0.0.1"
+  resolved "http://121.196.122.107:8881/@super-abp%2fng.menu-management/-/ng.menu-management-0.0.1.tgz#0b07e3b96c9e3d74d37bc7c04a87c04d193ca335"
+  integrity sha512-yct15SC3ELTNYNl1PyUFQ0qA5B2dOdXmyKRCqAtlI5TBUoqgxjg+6cr8sKkYSvi6ZYc9B4ZiLFC0V0rXo6l5Wg==
+  dependencies:
+    tslib "^2.3.0"
+
+"@super-abp/ng.permission-management@^0.0.1":
+  version "0.0.1"
+  resolved "http://121.196.122.107:8881/@super-abp%2fng.permission-management/-/ng.permission-management-0.0.1.tgz#d56109c2302203a26324f7749a07299cd37be1ce"
+  integrity sha512-26Wu6S+ce2j8wKM2ATyDUivfrPCkr9RE9g1clcBzN49adZh75LxT+ChSMDsREQ8sFRRaLXSNJyJ9TzHmNeuG7A==
+  dependencies:
+    tslib "^2.3.0"
+
 "@szmarczak/http-timer@^4.0.5":
   version "4.0.6"
   resolved "https://registry.npmmirror.com/@szmarczak/http-timer/-/http-timer-4.0.6.tgz#b4a914bb62e7c272d4e5989fe4440f812ab1d807"

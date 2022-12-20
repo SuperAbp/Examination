@@ -85,17 +85,34 @@ export class StartupService {
             text: 'Dashboard',
             link: '/dashboard',
             icon: { type: 'icon', value: 'appstore' }
-          }
-        ]
-      },
-      {
-        text: '题库管理',
-        icon: { type: 'icon', value: 'appstore' },
-        children: [
+          },
           {
-            text: '试题管理',
+            text: '权限管理',
+            icon: { type: 'icon', value: 'verified' },
+            children: [
+              {
+                text: '用户管理',
+                link: '/identity/user'
+              },
+              {
+                text: '角色管理',
+                link: '/identity/role'
+              },
+              {
+                text: '菜单管理',
+                link: '/menu-management/menu'
+              }
+            ]
+          },
+          {
+            text: '考试管理',
             icon: { type: 'icon', value: 'appstore' },
-            link: '/question'
+            children: [
+              {
+                text: '题库管理',
+                link: '/question-management/question'
+              }
+            ]
           }
         ]
       }

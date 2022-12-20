@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 // #region default language
 // Reference: https://ng-alain.com/docs/i18n
 import { default as ngLang } from '@angular/common/locales/zh';
-import { DELON_LOCALE, zh_CN as delonLang } from '@delon/theme';
+import { ALAIN_I18N_TOKEN, DELON_LOCALE, zh_CN as delonLang } from '@delon/theme';
 import { zhCN as dateLang } from 'date-fns/locale';
 import { NZ_DATE_LOCALE, NZ_I18N, zh_CN as zorroLang } from 'ng-zorro-antd/i18n';
 const LANG = {
@@ -30,6 +30,12 @@ const LANG_PROVIDES = [
   { provide: NZ_DATE_LOCALE, useValue: LANG.date },
   { provide: DELON_LOCALE, useValue: LANG.delon }
 ];
+// #endregion
+
+// #region i18n services
+
+const I18NSERVICE_PROVIDES = [{ provide: ALAIN_I18N_TOKEN, useClass: I18NService, multi: false }];
+
 // #endregion
 
 // #region JSON Schema form (using @delon/form)
@@ -78,6 +84,7 @@ import { RoutesModule } from './routes/routes.module';
 import { SharedModule } from './shared/shared.module';
 import { STWidgetModule } from './shared/st-widget/st-widget.module';
 import { NgAbpErrorHandler } from './core/error.handler';
+import { I18NService } from './core/i18n/i18n.service';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -100,7 +107,13 @@ import { NgAbpErrorHandler } from './core/error.handler';
     ...GLOBAL_THIRD_MODULES
   ],
   exports: [AbpCoreModule],
-  providers: [...LANG_PROVIDES, ...INTERCEPTOR_PROVIDES, ...APPINIT_PROVIDES, { provide: ErrorHandler, useClass: NgAbpErrorHandler }],
+  providers: [
+    ...LANG_PROVIDES,
+    ...INTERCEPTOR_PROVIDES,
+    ...I18NSERVICE_PROVIDES,
+    ...APPINIT_PROVIDES,
+    { provide: ErrorHandler, useClass: NgAbpErrorHandler }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

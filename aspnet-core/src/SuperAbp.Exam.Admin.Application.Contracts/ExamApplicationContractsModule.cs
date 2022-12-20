@@ -1,4 +1,5 @@
-﻿using Volo.Abp.Account;
+﻿using SuperAbp.MenuManagement;
+using Volo.Abp.Account;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
@@ -9,7 +10,9 @@ using Volo.Abp.TenantManagement;
 
 namespace SuperAbp.Exam.Admin;
 
-[DependsOn(typeof(ExamApplicationContractsSharedModule))]
+[DependsOn(
+    typeof(ExamApplicationContractsSharedModule),
+    typeof(SuperAbpMenuManagementApplicationContractsModule))]
 public class ExamApplicationContractsModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)

@@ -12,6 +12,8 @@ using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using SuperAbp.MenuManagement;
+using SuperAbp.MenuManagement.EntityFrameworkCore;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -25,7 +27,8 @@ namespace SuperAbp.Exam.EntityFrameworkCore;
     typeof(AbpBackgroundJobsEntityFrameworkCoreModule),
     typeof(AbpAuditLoggingEntityFrameworkCoreModule),
     typeof(AbpTenantManagementEntityFrameworkCoreModule),
-    typeof(AbpFeatureManagementEntityFrameworkCoreModule)
+    typeof(AbpFeatureManagementEntityFrameworkCoreModule),
+    typeof(SuperAbpMenuManagementEntityFrameworkCoreModule)
     )]
 public class ExamEntityFrameworkCoreModule : AbpModule
 {

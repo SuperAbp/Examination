@@ -24,7 +24,7 @@ const alainConfig: AlainConfig = {
   },
   auth: {
     login_url: '/passport/login',
-    ignores: [/\/connect/, /.well-known\/openid-configuration/, /.well-known\/jwks/]
+    ignores: [/\/connect/, /.well-known\/openid-configuration/, /.well-known\/jwks/, /application-configuration/]
   },
   acl: {
     guard_url: 'exception/403'

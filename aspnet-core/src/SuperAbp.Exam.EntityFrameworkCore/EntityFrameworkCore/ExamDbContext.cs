@@ -16,6 +16,7 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
+using SuperAbp.MenuManagement.EntityFrameworkCore;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -81,6 +82,7 @@ public class ExamDbContext :
         builder.ConfigureOpenIddict();
         builder.ConfigureFeatureManagement();
         builder.ConfigureTenantManagement();
+        builder.ConfigureMenuManagement();
 
         builder.Entity<Question>(b =>
         {

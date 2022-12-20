@@ -25,7 +25,19 @@ const routes: Routes = [
       { path: 'exception', loadChildren: () => import('./exception/exception.module').then(m => m.ExceptionModule) },
       // 业务子模块
       // { path: 'widgets', loadChildren: () => import('./widgets/widgets.module').then(m => m.WidgetsModule) },
-     { path: 'question-management', loadChildren: () => import('./question-management/question-management.module').then((m) => m.QuestionManagementModule) }]
+      {
+        path: 'identity',
+        loadChildren: () => import('@super-abp/ng.identity').then(m => m.IdentityModule)
+      },
+      {
+        path: 'menu-management',
+        loadChildren: () => import('@super-abp/ng.menu-management').then(m => m.MenuManagementModule)
+      },
+      {
+        path: 'question-management',
+        loadChildren: () => import('./question-management/question-management.module').then(m => m.QuestionManagementModule)
+      }
+    ]
   },
   // 空白布局
   // {
@@ -45,19 +57,18 @@ const routes: Routes = [
   },
   // 单页不包裹Layout
   { path: 'passport/callback/:type', component: CallbackComponent },
-  { path: '**', redirectTo: 'exception/404' },
+  { path: '**', redirectTo: 'exception/404' }
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(
-      routes, {
-        useHash: environment.useHash,
-        // NOTICE: If you use `reuse-tab` component and turn on keepingScroll you can set to `disabled`
-        // Pls refer to https://ng-alain.com/components/reuse-tab
-        scrollPositionRestoration: 'top',
-      }
-    )],
-  exports: [RouterModule],
+    RouterModule.forRoot(routes, {
+      useHash: environment.useHash,
+      // NOTICE: If you use `reuse-tab` component and turn on keepingScroll you can set to `disabled`
+      // Pls refer to https://ng-alain.com/components/reuse-tab
+      scrollPositionRestoration: 'top'
+    })
+  ],
+  exports: [RouterModule]
 })
-export class RouteRoutingModule { }
+export class RouteRoutingModule {}
