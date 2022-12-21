@@ -16,7 +16,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
     /// <summary>
     /// 题库管理
     /// </summary>
-    [Authorize(ExamPermissions.QuestionRepos.Default)]
+    [Authorize(ExamPermissions.QuestionRepositories.Default)]
     public class QuestionRepoAppService : ExamAppService, IQuestionRepoAppService
     {
         private readonly IQuestionRepoRepository _questionRepoRepository;
@@ -85,7 +85,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [Authorize(ExamPermissions.QuestionRepos.Create)]
+        [Authorize(ExamPermissions.QuestionRepositories.Create)]
         public virtual async Task<QuestionRepoListDto> CreateAsync(QuestionRepoCreateDto input)
         {
             var entity = ObjectMapper.Map<QuestionRepoCreateDto, QuestionRepo>(input);
@@ -99,7 +99,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
         /// <param name="id">主键</param>
         /// <param name="input"></param>
         /// <returns></returns>
-        [Authorize(ExamPermissions.QuestionRepos.Update)]
+        [Authorize(ExamPermissions.QuestionRepositories.Update)]
         public virtual async Task<QuestionRepoListDto> UpdateAsync(Guid id, QuestionRepoUpdateDto input)
         {
             QuestionRepo entity = await _questionRepoRepository.GetAsync(id);
@@ -113,7 +113,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns></returns>
-        [Authorize(ExamPermissions.QuestionRepos.Delete)]
+        [Authorize(ExamPermissions.QuestionRepositories.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
             await _questionRepoRepository.DeleteAsync(s => s.Id == id);

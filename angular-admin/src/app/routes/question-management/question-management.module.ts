@@ -3,8 +3,15 @@ import { SharedModule } from '@shared';
 import { QuestionManagementRoutingModule } from './question-management-routing.module';
 import { QuestionManagementQuestionComponent } from './question/question.component';
 import { QuestionManagementQuestionEditComponent } from './question/edit/edit.component';
+import { QuestionManagementRepositoryComponent } from './repository/repository.component';
+import { QuestionManagementRepositoryEditComponent } from './repository/edit/edit.component';
 
-const COMPONENTS: Type<void>[] = [QuestionManagementQuestionComponent, QuestionManagementQuestionEditComponent];
+const COMPONENTS: Type<void>[] = [
+  QuestionManagementQuestionComponent,
+  QuestionManagementQuestionEditComponent,
+  QuestionManagementRepositoryComponent,
+  QuestionManagementRepositoryEditComponent
+];
 
 @NgModule({
   imports: [SharedModule, QuestionManagementRoutingModule],

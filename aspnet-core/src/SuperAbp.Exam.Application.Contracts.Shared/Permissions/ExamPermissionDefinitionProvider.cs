@@ -8,9 +8,10 @@ public class ExamPermissionDefinitionProvider : PermissionDefinitionProvider
 {
     public override void Define(IPermissionDefinitionContext context)
     {
-        var myGroup = context.AddGroup(ExamPermissions.GroupName);
+        var myGroup = context.AddGroup(ExamPermissions.GroupName, L("Permission:ExamManagement"));
 
         var questions = myGroup.AddPermission(ExamPermissions.Questions.Default, L("Permission:Questions"));
+        questions.AddChild(ExamPermissions.Questions.Management, L("Permission:Management"));
         questions.AddChild(ExamPermissions.Questions.Create, L("Permission:Create"));
         questions.AddChild(ExamPermissions.Questions.Update, L("Permission:Edit"));
         questions.AddChild(ExamPermissions.Questions.Delete, L("Permission:Delete"));
@@ -20,10 +21,11 @@ public class ExamPermissionDefinitionProvider : PermissionDefinitionProvider
         questionAnswers.AddChild(ExamPermissions.QuestionAnswers.Update, L("Permission:Edit"));
         questionAnswers.AddChild(ExamPermissions.QuestionAnswers.Delete, L("Permission:Delete"));
 
-        var questionRepos = myGroup.AddPermission(ExamPermissions.QuestionRepos.Default, L("Permission:QuestionRepos"));
-        questionRepos.AddChild(ExamPermissions.QuestionRepos.Create, L("Permission:Create"));
-        questionRepos.AddChild(ExamPermissions.QuestionRepos.Update, L("Permission:Edit"));
-        questionRepos.AddChild(ExamPermissions.QuestionRepos.Delete, L("Permission:Delete"));
+        var questionRepos = myGroup.AddPermission(ExamPermissions.QuestionRepositories.Default, L("Permission:QuestionRepositories"));
+        questionRepos.AddChild(ExamPermissions.QuestionRepositories.Management, L("Permission:Management"));
+        questionRepos.AddChild(ExamPermissions.QuestionRepositories.Create, L("Permission:Create"));
+        questionRepos.AddChild(ExamPermissions.QuestionRepositories.Update, L("Permission:Edit"));
+        questionRepos.AddChild(ExamPermissions.QuestionRepositories.Delete, L("Permission:Delete"));
     }
 
     private static LocalizableString L(string name)

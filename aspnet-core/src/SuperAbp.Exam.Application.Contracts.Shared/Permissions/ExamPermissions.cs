@@ -7,6 +7,7 @@ public static class ExamPermissions
     public static class Questions
     {
         public const string Default = GroupName + ".Question";
+        public const string Management = Default + ".Management";
         public const string Create = Default + ".Create";
         public const string Update = Default + ".Update";
         public const string Delete = Default + ".Delete";
@@ -20,9 +21,10 @@ public static class ExamPermissions
         public const string Delete = Default + ".Delete";
     }
 
-    public static class QuestionRepos
+    public static class QuestionRepositories
     {
-        public const string Default = GroupName + ".QuestionRepo";
+        public const string Default = GroupName + ".QuestionRepository";
+        public const string Management = Default + ".Management";
         public const string Create = Default + ".Create";
         public const string Update = Default + ".Update";
         public const string Delete = Default + ".Delete";

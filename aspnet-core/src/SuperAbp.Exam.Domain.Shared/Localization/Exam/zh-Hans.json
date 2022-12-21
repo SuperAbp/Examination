@@ -1,8 +1,21 @@
 {
     "culture": "zh-Hans",
-    "texts": {
-      "Menu:Home": "首页",
-      "Welcome": "欢迎",
-      "LongWelcomeMessage": "欢迎来到该应用程序. 这是一个基于ABP框架的启动项目. 有关更多信息, 请访问 abp.io."
-    }
+  "texts": {
+    "Menu:Home": "首页",
+    "Placeholder": "请输入{0}",
+    "ChoosePlaceholder": "请选择{0}",
+    "Title": "标题",
+    "Remark": "备注",
+    "SaveSuccessfully": "保存成功",
+    "DeletedSuccessfully": "删除成功",
+    "NewRepository": "新题库",
+    "Permission:ExamManagement": "考试管理",
+    "Permission:QuestionRepositories": "题库",
+    "Permission:Questions": "问题",
+    "Permission:QuestionAnswers": "答案",
+    "Permission:Management": "管理",
+    "Permission:Create": "创建",
+    "Permission:Edit": "修改",
+    "Permission:Delete": "删除"
+  }
   }

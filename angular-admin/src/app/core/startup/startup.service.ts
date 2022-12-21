@@ -110,6 +110,10 @@ export class StartupService {
             children: [
               {
                 text: '题库管理',
+                link: '/question-management/repository'
+              },
+              {
+                text: '问题管理',
                 link: '/question-management/question'
               }
             ]

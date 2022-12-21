@@ -8,7 +8,7 @@
         /// <summary>
         /// 分组名称
         /// </summary>
-        public const string GroupName = "QuestionRepos";
+        public const string GroupName = "QuestionRepositories";
 
         /// <summary>
         /// 每页最大条数
