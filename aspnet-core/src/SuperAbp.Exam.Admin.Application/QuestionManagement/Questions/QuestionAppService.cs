@@ -11,6 +11,7 @@ using Volo.Abp.Domain.Repositories;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.Admin.QuestionManagement.Questions;
+using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 {
@@ -21,15 +22,17 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
     public class QuestionAppService : ExamAppService, IQuestionAppService
     {
         private readonly IQuestionRepository _questionRepository;
+        private readonly IQuestionRepoRepository _questionRepoRepository;
 
         /// <summary>
         /// .ctor
         /// </summary>
         /// <param name="questionRepository"></param>
         public QuestionAppService(
-            IQuestionRepository questionRepository)
+            IQuestionRepository questionRepository, IQuestionRepoRepository questionRepoRepository)
         {
             _questionRepository = questionRepository;
+            _questionRepoRepository = questionRepoRepository;
         }
 
         /// <summary>
@@ -41,12 +44,23 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         {
             await NormalizeMaxResultCountAsync(input);
 
-            var queryable = await _questionRepository.GetQueryableAsync();
+            var questionQueryable = await _questionRepository.GetQueryableAsync();
 
-            queryable = queryable
+            questionQueryable = questionQueryable
                 .Where(q => q.QuestionRepositoryId == input.QuestionRepositoryId)
                 .WhereIf(input.QuestionType.HasValue, q => q.QuestionType == input.QuestionType.Value)
                 .WhereIf(!input.Content.IsNullOrWhiteSpace(), q => q.Content.Contains(input.Content));
+
+            var queryable = from q in questionQueryable
+                join r in (await _questionRepoRepository.GetQueryableAsync()) on q.QuestionRepositoryId equals r.Id
+                select new QuestionRepositoryDetail
+                {
+                    Id = q.Id,
+                    QuestionRepository = r.Title,
+                    Analysis = q.Analysis,
+                    Content = q.Content,
+                    QuestionType = q.QuestionType
+                };
 
             long totalCount = await AsyncExecuter.CountAsync(queryable);
 
@@ -54,7 +68,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
                 .OrderBy(input.Sorting ?? QuestionConsts.DefaultSorting)
                 .PageBy(input));
 
-            var dtos = ObjectMapper.Map<List<Question>, List<QuestionListDto>>(entities);
+            var dtos = ObjectMapper.Map<List<QuestionRepositoryDetail>, List<QuestionListDto>>(entities);
 
             return new PagedResultDto<QuestionListDto>(totalCount, dtos);
         }

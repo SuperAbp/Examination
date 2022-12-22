@@ -6,6 +6,7 @@ import { finalize, tap } from 'rxjs/operators';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { QuestionService } from '@proxy/super-abp/exam/admin/controllers';
 import { GetQuestionForEditorOutput } from '@proxy/super-abp/exam/admin/question-management/questions';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-question-management-question-edit',
@@ -23,8 +24,8 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private modal: NzModalRef,
-    private messageService: NzMessageService,
+    private route: ActivatedRoute,
+    private router: Router,
     private localizationService: LocalizationService,
     private questionService: QuestionService
   ) {}
@@ -73,9 +74,8 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
           ...this.form.value
         })
         .pipe(
-          tap(response => {
-            this.messageService.success(this.localizationService.instant('*::SaveSucceed'));
-            this.modal.close(true);
+          tap(() => {
+            this.goback();
           }),
           finalize(() => (this.isConfirmLoading = false))
         )
@@ -86,17 +86,19 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
           ...this.form.value
         })
         .pipe(
-          tap(response => {
-            this.messageService.success(this.localizationService.instant('*::SaveSucceed'));
-            this.modal.close(true);
+          tap(() => {
+            this.goback();
           }),
           finalize(() => (this.isConfirmLoading = false))
         )
         .subscribe();
     }
   }
-
-  close() {
-    this.modal.destroy();
+  back(e: MouseEvent) {
+    e.preventDefault();
+    this.goback();
+  }
+  goback() {
+    this.router.navigateByUrl('/question-management/question');
   }
 }

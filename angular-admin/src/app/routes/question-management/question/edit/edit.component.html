@@ -1,37 +1,29 @@
 
-<div class="modal-header">
-  <div class="modal-title" *ngIf="form && !questionId">{{ '*::NewQuestion' | abpLocalization }}</div>
-  <div class="modal-title" *ngIf="form && questionId">{{ '*::Edit' | abpLocalization }}</div>
-</div>
-<div class="modal-body">
-  <ng-template #loaderRef>
-    <nz-spin class="modal-spin"></nz-spin>
+<page-header *ngIf="questionId && form" [action]="phActionTpl" [title]="'Exam::Edit' | abpLocalization">
+  <ng-template #phActionTpl>
+    <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
   </ng-template>
-  <form *ngIf="form; else loaderRef" nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
-    <!-- <nz-row>
-      <nz-col nzLg="6" nzMd="12" nzSm="24">
-        <nz-form-item>
-          <nz-form-label nzRequired>{{ '*::DisplayName:Name' | abpLocalization }}</nz-form-label>
-          <nz-form-control
-            nzHasFeedback
-            [nzValidatingTip]="'*::Validating' | abpLocalization"
-            [nzErrorTip]="nameErrorTpl"
-          >
-            <input formControlName="name" nz-input [placeholder]="'*::PlaceHolder' | abpLocalization: ('*::DisplayName:Name' | abpLocalization)"/>
-            <ng-template #nameErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">
-                {{ '*::ThisFieldIsRequired.' | abpLocalization }}
-              </ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row> -->
-  </form>
-</div>
-<div class="modal-footer">
-  <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
-    {{ '*::Submit' | abpLocalization }}
-  </button>
-</div>
-
+</page-header>
+<page-header *ngIf="!questionId" [title]="'Exam::NewQuestion' | abpLocalization"></page-header>
+<ng-template #loaderRef>
+  <nz-spin class="modal-spin"></nz-spin>
+</ng-template>
+<form *ngIf="form; else loaderRef" nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
+  <nz-card>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'Exam::DisplayName:Name' | abpLocalization }}</nz-form-label>
+        <nz-form-control
+          nzHasFeedback
+          [nzValidatingTip]="'Exam::Validating' | abpLocalization"
+          [nzErrorTip]="nameErrorTpl"
+        >
+          <input formControlName="content" nz-input [placeholder]="'Exam::PlaceHolder' | abpLocalization: ('Exam::DisplayName:Name' | abpLocalization)"/>
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+</nz-card>
+</form>

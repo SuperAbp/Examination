@@ -1,6 +1,6 @@
-import {  LocalizationService, PermissionService } from '@abp/ng.core';
+import { LocalizationService, PermissionService } from '@abp/ng.core';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { STChange, STColumn, STComponent, STPage } from '@delon/abc/st';
+import { STChange, STColumn, STComponent, STData, STPage } from '@delon/abc/st';
 import { SFSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
 import { QuestionManagementQuestionEditComponent } from './edit/edit.component';
@@ -8,6 +8,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
 import { GetQuestionsInput, QuestionListDto } from '@proxy/super-abp/exam/admin/question-management/questions';
 import { QuestionService } from '@proxy/super-abp/exam/admin/controllers';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-question-management-question',
@@ -31,7 +32,10 @@ export class QuestionManagementQuestionComponent implements OnInit {
   };
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
-    { title: this.localizationService.instant('Exam::Name'), index: 'name' },
+    { title: this.localizationService.instant('Exam::QuestionRepository'), index: 'questionRepository' },
+    { title: this.localizationService.instant('Exam::QuestionType'), index: 'questionType', type: 'badge', badge: {} },
+    { title: this.localizationService.instant('Exam::QuestionContent'), index: 'content' },
+    { title: this.localizationService.instant('Exam::Analysis'), index: 'analysis' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [
@@ -42,13 +46,9 @@ export class QuestionManagementQuestionComponent implements OnInit {
           iif: () => {
             return this.permissionService.getGrantedPolicy('Exam.Question.Update');
           },
-          modal: {
-            component: QuestionManagementQuestionEditComponent,
-            params: (record: any) => ({
-              questionId: record.id
-            })
-          },
-          click: 'reload'
+          click: (record: STData, modal?: any, instance?: STComponent) => {
+            this.router.navigateByUrl(`/question-management/question/${record['id']}`);
+          }
         },
         {
           icon: 'delete',
@@ -75,7 +75,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
   ];
 
   constructor(
-    private modal: ModalHelper,
+    private router: Router,
     private localizationService: LocalizationService,
     private messageService: NzMessageService,
     private permissionService: PermissionService,
@@ -123,6 +123,6 @@ export class QuestionManagementQuestionComponent implements OnInit {
     this.st.load(1);
   }
   add() {
-    this.modal.createStatic(QuestionManagementQuestionEditComponent, { questionId: '' }).subscribe(() => this.st.reload());
+    this.router.navigateByUrl('/question-management/question/create');
   }
 }

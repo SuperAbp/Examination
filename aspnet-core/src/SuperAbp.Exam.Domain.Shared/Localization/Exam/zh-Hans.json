@@ -1,14 +1,25 @@
 {
-    "culture": "zh-Hans",
+  "culture": "zh-Hans",
   "texts": {
     "Menu:Home": "首页",
     "Placeholder": "请输入{0}",
     "ChoosePlaceholder": "请选择{0}",
     "Title": "标题",
     "Remark": "备注",
+    "QuestionRepository": "题库",
+    "QuestionContent": "题干",
+    "Analysis": "解析",
+    "QuestionType": "问题类型",
+    "QuestionType:0": "单选",
+    "QuestionType:1": "多选",
+    "QuestionType:2": "判断",
+    "QuestionType:SingleSelect": "单选",
+    "QuestionType:MultiSelect": "多选",
+    "QuestionType:Judge": "判断",
     "SaveSuccessfully": "保存成功",
     "DeletedSuccessfully": "删除成功",
     "NewRepository": "新题库",
+    "NewQuestion": "新问题",
     "Permission:ExamManagement": "考试管理",
     "Permission:QuestionRepositories": "题库",
     "Permission:Questions": "问题",
@@ -18,4 +29,4 @@
     "Permission:Edit": "修改",
     "Permission:Delete": "删除"
   }
-  }
+}
