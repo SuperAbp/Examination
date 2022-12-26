@@ -14,5 +14,8 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\SuperAbp.Exam.Application.Contracts.Shared\SuperAbp.Exam.Application.Contracts.Shared.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Enums\" />
+	</ItemGroup>
 
 </Project>

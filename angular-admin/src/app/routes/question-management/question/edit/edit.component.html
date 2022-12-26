@@ -1,4 +1,3 @@
-
 <page-header *ngIf="questionId && form" [action]="phActionTpl" [title]="'Exam::Edit' | abpLocalization">
   <ng-template #phActionTpl>
     <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
@@ -10,20 +9,66 @@
 </ng-template>
 <form *ngIf="form; else loaderRef" nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
   <nz-card>
-      <nz-form-item>
-        <nz-form-label nzRequired>{{ 'Exam::DisplayName:Name' | abpLocalization }}</nz-form-label>
-        <nz-form-control
-          nzHasFeedback
-          [nzValidatingTip]="'Exam::Validating' | abpLocalization"
-          [nzErrorTip]="nameErrorTpl"
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'Exam::QuestionRepository' | abpLocalization }}</nz-form-label>
+      <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="questionRepositoryErrorTpl">
+        <nz-select
+          formControlName="questionRepositoryId"
+          nzShowSearch
+          nzAllowClear
+          [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization : ('Exam::QuestionRepository' | abpLocalization)"
         >
-          <input formControlName="content" nz-input [placeholder]="'Exam::PlaceHolder' | abpLocalization: ('Exam::DisplayName:Name' | abpLocalization)"/>
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
-            </ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-</nz-card>
+          <nz-option *ngFor="let question of questionRepositories" [nzValue]="question.id" [nzLabel]="question.title"></nz-option>
+        </nz-select>
+        <ng-template #questionRepositoryErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'Exam::QuestionContent' | abpLocalization }}</nz-form-label>
+      <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="contentErrorTpl">
+        <input
+          formControlName="content"
+          nz-input
+          [placeholder]="'Exam::Placeholder' | abpLocalization : ('Exam::QuestionContent' | abpLocalization)"
+        />
+        <ng-template #contentErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'Exam::Analysis' | abpLocalization }}</nz-form-label>
+      <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="analysisErrorTpl">
+        <input
+          formControlName="analysis"
+          nz-input
+          [placeholder]="'Exam::Placeholder' | abpLocalization : ('Exam::Analysis' | abpLocalization)"
+        />
+        <ng-template #analysisErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'Exam::QuestionType' | abpLocalization }}</nz-form-label>
+      <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="questionTypeErrorTpl">
+        <nz-radio-group formControlName="questionType">
+          <label nz-radio *ngFor="let qt of questionTypes" [nzValue]="qt.value">{{ qt.label }}</label>
+        </nz-radio-group>
+        <ng-template #questionTypeErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
 </form>

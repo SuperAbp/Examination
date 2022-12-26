@@ -1,12 +1,13 @@
 import { LocalizationService } from '@abp/ng.core';
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { finalize, tap } from 'rxjs/operators';
-import { NzModalRef } from 'ng-zorro-antd/modal';
-import { QuestionService } from '@proxy/super-abp/exam/admin/controllers';
-import { GetQuestionForEditorOutput } from '@proxy/super-abp/exam/admin/question-management/questions';
 import { ActivatedRoute, Router } from '@angular/router';
+import { EnumService, QuestionRepoService, QuestionService } from '@proxy/super-abp/exam/admin/controllers';
+import { QuestionRepoListDto } from '@proxy/super-abp/exam/admin/question-management/question-repos';
+import { GetQuestionForEditorOutput } from '@proxy/super-abp/exam/admin/question-management/questions';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { forkJoin, from } from 'rxjs';
+import { finalize, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-question-management-question-edit',
@@ -19,6 +20,8 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
 
   loading = false;
   isConfirmLoading = false;
+  questionTypes: Array<{ label: string; value: number }> = [];
+  questionRepositories: QuestionRepoListDto[];
 
   form: FormGroup = null;
 
@@ -27,7 +30,9 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private localizationService: LocalizationService,
-    private questionService: QuestionService
+    private questionService: QuestionService,
+    private questionRepoService: QuestionRepoService,
+    private enumService: EnumService
   ) {}
 
   ngOnInit(): void {
@@ -51,10 +56,25 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
   }
 
   buildForm() {
-    // TODO:完善列定义
-    this.form = this.fb.group({
-      content: [this.question.content || '', [Validators.required]]
-    });
+    const questionRepositoryRequest$ = from(this.questionRepoService.getList({ skipCount: 0, maxResultCount: 100 }));
+    const questionTypeRequest$ = from(this.enumService.getQuestionType());
+    forkJoin([questionTypeRequest$, questionRepositoryRequest$])
+      .pipe(
+        tap(res => {
+          Object.keys(res[0]).map(key => {
+            this.questionTypes.push({ label: res[0][key], value: +key });
+          });
+          this.questionRepositories = res[1].items;
+
+          this.form = this.fb.group({
+            content: [this.question.content || '', [Validators.required]],
+            analysis: [this.question.analysis || '', [Validators.required]],
+            questionType: [this.question.questionType || this.questionTypes[0].value, [Validators.required]],
+            questionRepositoryId: [this.question.questionRepositoryId || '', [Validators.required]]
+          });
+        })
+      )
+      .subscribe();
   }
 
   save() {
