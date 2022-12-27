@@ -68,7 +68,7 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
 
           this.form = this.fb.group({
             content: [this.question.content || '', [Validators.required]],
-            analysis: [this.question.analysis || '', [Validators.required]],
+            analysis: [this.question.analysis || ''],
             questionType: [this.question.questionType || this.questionTypes[0].value, [Validators.required]],
             questionRepositoryId: [this.question.questionRepositoryId || '', [Validators.required]]
           });

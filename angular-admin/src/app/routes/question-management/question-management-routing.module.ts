@@ -5,6 +5,7 @@ import { JWTGuard } from '@delon/auth';
 import { QuestionManagementQuestionEditComponent } from './question/edit/edit.component';
 import { QuestionManagementQuestionComponent } from './question/question.component';
 import { QuestionManagementRepositoryComponent } from './repository/repository.component';
+import { QuestionManagementAnswerComponent } from './answer/answer.component';
 
 const routes: Routes = [
   {
@@ -39,7 +40,8 @@ const routes: Routes = [
       requiredPolicy: 'Exam.Question.Create'
     }
   }
-];
+,
+  { path: 'answer', component: QuestionManagementAnswerComponent }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

@@ -9,7 +9,7 @@
     "QuestionRepository": "题库",
     "QuestionContent": "题干",
     "Analysis": "解析",
-    "QuestionType": "问题类型",
+    "QuestionType": "题型",
     "QuestionType:0": "单选",
     "QuestionType:1": "多选",
     "QuestionType:2": "判断",

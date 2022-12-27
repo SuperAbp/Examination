@@ -1,0 +1,15 @@
+<st
+  #st
+  [data]="answers"
+  [columns]="columns"
+  [loading]="loading"
+  [page]="page"
+  [header]="'Exam::DataStart' | abpLocalization"
+  [footer]="'Exam::DataEnd' | abpLocalization"
+  responsiveHideHeaderFooter
+>
+  <ng-template st-row="contentTpl" let-item let-index="index">
+    <input *ngIf="item.content" nz-input [ngModel]="item.content" (ngModelChange)="st.setRow(index, { content: $event })" />
+    <ng-container *ngIf="!item.edit">{{ item.content }}</ng-container>
+  </ng-template>
+</st>

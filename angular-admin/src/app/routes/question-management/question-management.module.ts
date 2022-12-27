@@ -5,13 +5,15 @@ import { QuestionManagementQuestionComponent } from './question/question.compone
 import { QuestionManagementQuestionEditComponent } from './question/edit/edit.component';
 import { QuestionManagementRepositoryComponent } from './repository/repository.component';
 import { QuestionManagementRepositoryEditComponent } from './repository/edit/edit.component';
+import { QuestionManagementAnswerComponent } from './answer/answer.component';
 
 const COMPONENTS: Type<void>[] = [
   QuestionManagementQuestionComponent,
   QuestionManagementQuestionEditComponent,
   QuestionManagementRepositoryComponent,
   QuestionManagementRepositoryEditComponent
-];
+,
+  QuestionManagementAnswerComponent];
 
 @NgModule({
   imports: [SharedModule, QuestionManagementRoutingModule],
