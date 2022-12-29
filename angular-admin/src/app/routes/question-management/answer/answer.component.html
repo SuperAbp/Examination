@@ -1,15 +1,21 @@
-<st
-  #st
-  [data]="answers"
-  [columns]="columns"
-  [loading]="loading"
-  [page]="page"
-  [header]="'Exam::DataStart' | abpLocalization"
-  [footer]="'Exam::DataEnd' | abpLocalization"
-  responsiveHideHeaderFooter
->
+<button (click)="add()" nz-button type="button" nzType="primary" *abpPermission="'Exam.QuestionAnswer.Create'">
+  {{ 'Exam::NewQuestionAnswer' | abpLocalization }}
+</button>
+<st #st [data]="answers" [columns]="columns" [loading]="loading" [page]="page"
+  [header]="'Exam::DataStart' | abpLocalization" [footer]="'Exam::DataEnd' | abpLocalization"
+  responsiveHideHeaderFooter>
+  <ng-template st-row="rightTpl" let-item let-index="index">
+    <label nz-checkbox [(ngModel)]="item.right"
+      (ngModelChange)="st.setRow(index, { right: $event })">{{'Exam::Answer'|abpLocalization}}</label>
+  </ng-template>
   <ng-template st-row="contentTpl" let-item let-index="index">
-    <input *ngIf="item.content" nz-input [ngModel]="item.content" (ngModelChange)="st.setRow(index, { content: $event })" />
-    <ng-container *ngIf="!item.edit">{{ item.content }}</ng-container>
+    <textarea rows="2" nz-input [ngModel]="item.content"
+      [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Content' | abpLocalization)"
+      (ngModelChange)="st.setRow(index, { content: $event })"></textarea>
+  </ng-template>
+  <ng-template st-row="analysisTpl" let-item let-index="index">
+    <textarea rows="2" nz-input [ngModel]="item.analysis"
+      [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Analysis' | abpLocalization)"
+      (ngModelChange)="st.setRow(index, { analysis: $event })"></textarea>
   </ng-template>
 </st>

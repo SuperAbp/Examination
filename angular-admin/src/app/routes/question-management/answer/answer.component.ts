@@ -25,19 +25,14 @@ export class QuestionManagementAnswerComponent implements OnInit {
   };
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
-    { title: this.localizationService.instant('Exam::Right'), index: 'right' },
+    { title: this.localizationService.instant('Exam::IsRight'), index: 'right', render: 'rightTpl', width: 80 },
     { title: this.localizationService.instant('Exam::Content'), index: 'content', render: 'contentTpl' },
-    { title: this.localizationService.instant('Exam::Analysis'), index: 'analysis' },
+    { title: this.localizationService.instant('Exam::Analysis'), index: 'analysis', render: 'analysisTpl' },
     {
       title: this.localizationService.instant('Exam::Actions'),
+      width: 80,
+      className: 'text-center',
       buttons: [
-        {
-          icon: 'edit',
-          iif: i => !i.edit && this.permissionService.getGrantedPolicy('Exam.QuestionAnswer.Update'),
-          click: i => this.updateEdit(i, true),
-          type: 'modal',
-          tooltip: this.localizationService.instant('Exam::Edit')
-        },
         {
           icon: 'delete',
           type: 'del',
@@ -72,7 +67,11 @@ export class QuestionManagementAnswerComponent implements OnInit {
 
   ngOnInit() {
     this.params = this.resetParameters();
-    this.getList();
+    if (this.questionId) {
+      this.getList();
+    } else {
+      this.answers = [{ right: false }, { right: false }, { right: false }, { right: false }];
+    }
   }
   getList() {
     this.loading = true;
@@ -97,5 +96,9 @@ export class QuestionManagementAnswerComponent implements OnInit {
 
   private updateEdit(i: STData, edit: boolean): void {
     this.st.setRow(i, { edit }, { refreshSchema: true });
+  }
+
+  public add() {
+    this.answers = [...this.answers, { right: false }];
   }
 }
