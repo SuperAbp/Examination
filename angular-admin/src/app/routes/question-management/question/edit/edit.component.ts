@@ -25,6 +25,10 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
 
   form: FormGroup = null;
 
+  get questionType() {
+    return this.form.get('questionType');
+  }
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -69,8 +73,9 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
           this.form = this.fb.group({
             content: [this.question.content || '', [Validators.required]],
             analysis: [this.question.analysis || ''],
-            questionType: [this.question.questionType || this.questionTypes[0].value, [Validators.required]],
-            questionRepositoryId: [this.question.questionRepositoryId || '', [Validators.required]]
+            questionType: [this.question.questionType || null, [Validators.required]],
+            questionRepositoryId: [this.question.questionRepositoryId || '', [Validators.required]],
+            options: this.fb.array([], [Validators.required])
           });
         })
       )
@@ -78,6 +83,8 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
   }
 
   save() {
+    debugger;
+
     if (!this.form.valid || this.isConfirmLoading) {
       for (const key of Object.keys(this.form.controls)) {
         this.form.controls[key].markAsDirty();
@@ -87,32 +94,32 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
     }
     this.isConfirmLoading = true;
 
-    if (this.questionId) {
-      this.questionService
-        .update(this.questionId, {
-          ...this.question,
-          ...this.form.value
-        })
-        .pipe(
-          tap(() => {
-            this.goback();
-          }),
-          finalize(() => (this.isConfirmLoading = false))
-        )
-        .subscribe();
-    } else {
-      this.questionService
-        .create({
-          ...this.form.value
-        })
-        .pipe(
-          tap(() => {
-            this.goback();
-          }),
-          finalize(() => (this.isConfirmLoading = false))
-        )
-        .subscribe();
-    }
+    // if (this.questionId) {
+    //   this.questionService
+    //     .update(this.questionId, {
+    //       ...this.question,
+    //       ...this.form.value
+    //     })
+    //     .pipe(
+    //       tap(() => {
+    //         this.goback();
+    //       }),
+    //       finalize(() => (this.isConfirmLoading = false))
+    //     )
+    //     .subscribe();
+    // } else {
+    //   this.questionService
+    //     .create({
+    //       ...this.form.value
+    //     })
+    //     .pipe(
+    //       tap(() => {
+    //         this.goback();
+    //       }),
+    //       finalize(() => (this.isConfirmLoading = false))
+    //     )
+    //     .subscribe();
+    // }
   }
   back(e: MouseEvent) {
     e.preventDefault();

@@ -1,21 +1,65 @@
-<button (click)="add()" nz-button type="button" nzType="primary" *abpPermission="'Exam.QuestionAnswer.Create'">
-  {{ 'Exam::NewQuestionAnswer' | abpLocalization }}
-</button>
-<st #st [data]="answers" [columns]="columns" [loading]="loading" [page]="page"
-  [header]="'Exam::DataStart' | abpLocalization" [footer]="'Exam::DataEnd' | abpLocalization"
-  responsiveHideHeaderFooter>
-  <ng-template st-row="rightTpl" let-item let-index="index">
-    <label nz-checkbox [(ngModel)]="item.right"
-      (ngModelChange)="st.setRow(index, { right: $event })">{{'Exam::Answer'|abpLocalization}}</label>
-  </ng-template>
-  <ng-template st-row="contentTpl" let-item let-index="index">
-    <textarea rows="2" nz-input [ngModel]="item.content"
-      [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Content' | abpLocalization)"
-      (ngModelChange)="st.setRow(index, { content: $event })"></textarea>
-  </ng-template>
-  <ng-template st-row="analysisTpl" let-item let-index="index">
-    <textarea rows="2" nz-input [ngModel]="item.analysis"
-      [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Analysis' | abpLocalization)"
-      (ngModelChange)="st.setRow(index, { analysis: $event })"></textarea>
-  </ng-template>
-</st>
+<ng-container *ngIf="questionType != 2">
+  <button (click)="add()" nz-button type="button" nzType="primary" *abpPermission="'Exam.QuestionAnswer.Create'">
+    {{ 'Exam::NewQuestionAnswer' | abpLocalization }}
+  </button>
+</ng-container>
+<ng-container [formGroup]="questionForm">
+  <nz-table #editRowTable nzBordered formArrayName="options" [nzData]="options.value" nzTableLayout="fixed"
+    [nzFrontPagination]="false" [nzShowPagination]="false">
+    <thead>
+      <tr>
+        <th nzWidth="120px">
+          <label>
+            {{ 'Exam::IsAnswer' | abpLocalization }}
+          </label>
+        </th>
+        <th>
+          <label class="required"> {{ 'Exam::Content' | abpLocalization }} </label>
+        </th>
+        <th>
+          <label> {{ 'Exam::Analysis' | abpLocalization }} </label>
+        </th>
+        <th nzWidth="80px">
+          <label> {{ 'Exam::Actions' | abpLocalization }} </label>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let option of options.controls; let i = index" [formGroupName]="i">
+        <td>
+          <!-- <input type="hidden" nz-input formControlName="id" /> -->
+
+          <label nz-checkbox formControlName="right" *ngIf="questionType == 1; else checkboxRight">
+            {{'Exam::Answer' | abpLocalization}}
+          </label>
+          <ng-template #checkboxRight>
+            <label nz-radio formControlName="right">{{'Exam::Answer' | abpLocalization}}</label>
+          </ng-template>
+        </td>
+        <td>
+          <nz-form-item nzRequired>
+            <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization"
+              [nzErrorTip]="'Exam::ThisFieldIsRequired.' | abpLocalization">
+              <textarea rows="2" nz-input formControlName="content"
+                [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Content' | abpLocalization)"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+        <td>
+          <nz-form-item>
+            <nz-form-control>
+              <textarea rows="2" nz-input formControlName="analysis"
+                [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Analysis' | abpLocalization)"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+        <td nzAlign="center">
+          <a nz-popconfirm [nzPopconfirmTitle]="'Exam::AreYouSure' | abpLocalization" (nzOnConfirm)="delete(i)"
+            nz-tooltip [nzTooltipTitle]="'Exam::Delete' | abpLocalization">
+            <i nz-icon nzType="delete" nzTheme="outline"></i>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</ng-container>

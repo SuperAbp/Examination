@@ -16,8 +16,9 @@ public class QuestionRepo : FullAuditedAggregateRoot<Guid>
     {
     }
 
-    public QuestionRepo(Guid id) : base(id)
+    public QuestionRepo(Guid id, string title) : base(id)
     {
+        Title = title;
     }
 
     /// <summary>

@@ -7,6 +7,7 @@
     "Title": "标题",
     "Remark": "备注",
     "IsRight": "是否正确",
+    "IsAnswer": "是否答案",
     "Answer": "答案",
     "Content": "内容",
     "QuestionRepository": "题库",
