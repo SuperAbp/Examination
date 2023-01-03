@@ -47,7 +47,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             var questionQueryable = await _questionRepository.GetQueryableAsync();
 
             questionQueryable = questionQueryable
-                .Where(q => q.QuestionRepositoryId == input.QuestionRepositoryId)
+                .WhereIf(input.QuestionRepositoryIds.Length > 0, q => input.QuestionRepositoryIds.Contains(q.QuestionRepositoryId))
                 .WhereIf(input.QuestionType.HasValue, q => q.QuestionType == input.QuestionType.Value)
                 .WhereIf(!input.Content.IsNullOrWhiteSpace(), q => q.Content.Contains(input.Content));
 
@@ -59,7 +59,8 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
                     QuestionRepository = r.Title,
                     Analysis = q.Analysis,
                     Content = q.Content,
-                    QuestionType = q.QuestionType
+                    QuestionType = q.QuestionType,
+                    CreationTime = q.CreationTime
                 };
 
             long totalCount = await AsyncExecuter.CountAsync(queryable);

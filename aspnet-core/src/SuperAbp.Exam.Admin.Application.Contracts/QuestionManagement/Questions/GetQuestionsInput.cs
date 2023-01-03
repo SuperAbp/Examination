@@ -16,5 +16,5 @@ public class GetQuestionsInput : PagedAndSortedResultRequestDto
 
     public QuestionType? QuestionType { get; set; }
 
-    public Guid QuestionRepositoryId { get; set; }
+    public Guid[] QuestionRepositoryIds { get; set; } = Array.Empty<Guid>();
 }

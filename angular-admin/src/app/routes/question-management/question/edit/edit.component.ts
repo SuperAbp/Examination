@@ -8,14 +8,17 @@ import { GetQuestionForEditorOutput } from '@proxy/super-abp/exam/admin/question
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { forkJoin, from } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
+import { QuestionManagementAnswerComponent } from '../../answer/answer.component';
 
 @Component({
   selector: 'app-question-management-question-edit',
   templateUrl: './edit.component.html'
 })
 export class QuestionManagementQuestionEditComponent implements OnInit {
-  @Input()
   questionId: string;
+  @ViewChild('QuestionAnswer')
+  questionAnswerComponent: QuestionManagementAnswerComponent;
+
   question: GetQuestionForEditorOutput;
 
   loading = false;
@@ -41,22 +44,26 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
-    if (this.questionId) {
-      this.questionService
-        .getEditor(this.questionId)
-        .pipe(
-          tap(response => {
-            this.question = response;
-            this.buildForm();
-            this.loading = false;
-          })
-        )
-        .subscribe();
-    } else {
-      this.question = {} as GetQuestionForEditorOutput;
-      this.buildForm();
-      this.loading = false;
-    }
+    this.route.paramMap.subscribe(params => {
+      let id = params.get('id');
+      this.questionId = id;
+      if (this.questionId) {
+        this.questionService
+          .getEditor(this.questionId)
+          .pipe(
+            tap(response => {
+              this.question = response;
+              this.buildForm();
+              this.loading = false;
+            })
+          )
+          .subscribe();
+      } else {
+        this.question = {} as GetQuestionForEditorOutput;
+        this.buildForm();
+        this.loading = false;
+      }
+    });
   }
 
   buildForm() {
@@ -73,7 +80,7 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
           this.form = this.fb.group({
             content: [this.question.content || '', [Validators.required]],
             analysis: [this.question.analysis || ''],
-            questionType: [this.question.questionType || null, [Validators.required]],
+            questionType: [this.question.questionType >= 0 ? this.question.questionType : null, [Validators.required]],
             questionRepositoryId: [this.question.questionRepositoryId || '', [Validators.required]],
             options: this.fb.array([], [Validators.required])
           });
@@ -83,8 +90,6 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
   }
 
   save() {
-    debugger;
-
     if (!this.form.valid || this.isConfirmLoading) {
       for (const key of Object.keys(this.form.controls)) {
         this.form.controls[key].markAsDirty();
@@ -94,32 +99,47 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
     }
     this.isConfirmLoading = true;
 
-    // if (this.questionId) {
-    //   this.questionService
-    //     .update(this.questionId, {
-    //       ...this.question,
-    //       ...this.form.value
-    //     })
-    //     .pipe(
-    //       tap(() => {
-    //         this.goback();
-    //       }),
-    //       finalize(() => (this.isConfirmLoading = false))
-    //     )
-    //     .subscribe();
-    // } else {
-    //   this.questionService
-    //     .create({
-    //       ...this.form.value
-    //     })
-    //     .pipe(
-    //       tap(() => {
-    //         this.goback();
-    //       }),
-    //       finalize(() => (this.isConfirmLoading = false))
-    //     )
-    //     .subscribe();
-    // }
+    if (this.questionId) {
+      this.questionService
+        .update(this.questionId, {
+          ...this.question,
+          ...this.form.value
+        })
+        .pipe(
+          tap(() => {
+            this.questionAnswerComponent
+              .save(this.questionId)
+              .pipe(
+                tap(() => {
+                  this.goback();
+                }),
+                finalize(() => (this.isConfirmLoading = false))
+              )
+              .subscribe();
+          }),
+          finalize(() => (this.isConfirmLoading = false))
+        )
+        .subscribe();
+    } else {
+      this.questionService
+        .create({
+          ...this.form.value
+        })
+        .pipe(
+          tap(res => {
+            this.questionAnswerComponent
+              .save(res.id)
+              .pipe(
+                tap(() => {
+                  this.goback();
+                }),
+                finalize(() => (this.isConfirmLoading = false))
+              )
+              .subscribe();
+          })
+        )
+        .subscribe();
+    }
   }
   back(e: MouseEvent) {
     e.preventDefault();

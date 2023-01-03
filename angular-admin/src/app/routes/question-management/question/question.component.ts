@@ -33,9 +33,18 @@ export class QuestionManagementQuestionComponent implements OnInit {
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
     { title: this.localizationService.instant('Exam::QuestionRepository'), index: 'questionRepository' },
-    { title: this.localizationService.instant('Exam::QuestionType'), index: 'questionType', type: 'badge', badge: {} },
+    {
+      title: this.localizationService.instant('Exam::QuestionType'),
+      index: 'questionType',
+      type: 'tag',
+      tag: {
+        0: { text: this.localizationService.instant('Exam::QuestionType:0'), color: 'default' },
+        1: { text: this.localizationService.instant('Exam::QuestionType:1'), color: 'processing' },
+        2: { text: this.localizationService.instant('Exam::QuestionType:2'), color: 'success' }
+      }
+    },
     { title: this.localizationService.instant('Exam::QuestionContent'), index: 'content' },
-    { title: this.localizationService.instant('Exam::Analysis'), index: 'analysis' },
+    { title: this.localizationService.instant('Exam::CreationTime'), index: 'creationTime' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [
@@ -47,7 +56,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
             return this.permissionService.getGrantedPolicy('Exam.Question.Update');
           },
           click: (record: STData, modal?: any, instance?: STComponent) => {
-            this.router.navigateByUrl(`/question-management/question/${record['id']}`);
+            this.router.navigateByUrl(`/question-management/question/${record['id']}/edit`);
           }
         },
         {

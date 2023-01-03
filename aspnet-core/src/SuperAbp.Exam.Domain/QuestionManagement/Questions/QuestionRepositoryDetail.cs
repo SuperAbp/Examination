@@ -26,5 +26,7 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
         /// 解析
         /// </summary>
         public string Analysis { get; set; }
+
+        public DateTime CreationTime { get; set; }
     }
 }

@@ -23,6 +23,7 @@ using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
+using Volo.Abp.Json;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
@@ -61,8 +62,9 @@ public class ExamHttpApiHostModule : AbpModule
     {
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
-
+        
         ConfigureAuthentication(context);
+        ConfigureJson();
         ConfigureBundles();
         ConfigureUrls(configuration);
         ConfigureLocalization();
@@ -71,9 +73,17 @@ public class ExamHttpApiHostModule : AbpModule
         ConfigureSwaggerServices(context, configuration);
     }
 
+
     private void ConfigureAuthentication(ServiceConfigurationContext context)
     {
         context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
+    }
+    private void ConfigureJson()
+    {
+        Configure<AbpJsonOptions>(options =>
+        {
+            options.DefaultDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+        });
     }
 
     private void ConfigureBundles()

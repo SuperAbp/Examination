@@ -3,7 +3,7 @@
     {{ 'Exam::NewQuestionAnswer' | abpLocalization }}
   </button>
 </ng-container>
-<ng-container [formGroup]="questionForm">
+<ng-container [formGroup]="questionForm" *ngIf="options.length > 0">
   <nz-table #editRowTable nzBordered formArrayName="options" [nzData]="options.value" nzTableLayout="fixed"
     [nzFrontPagination]="false" [nzShowPagination]="false">
     <thead>
@@ -27,13 +27,14 @@
     <tbody>
       <tr *ngFor="let option of options.controls; let i = index" [formGroupName]="i">
         <td>
-          <!-- <input type="hidden" nz-input formControlName="id" /> -->
-
           <label nz-checkbox formControlName="right" *ngIf="questionType == 1; else checkboxRight">
             {{'Exam::Answer' | abpLocalization}}
           </label>
           <ng-template #checkboxRight>
-            <label nz-radio formControlName="right">{{'Exam::Answer' | abpLocalization}}</label>
+            <input type="radio" name="right" formControlName="right" [value]="'Exam::Answer' |abpLocalization" />
+            <!-- <label nz-radio formControlName="right" (ngModelChange)="changeRadio(i, option.value)">
+              {{'Exam::Answer' |abpLocalization}}
+            </label> -->
           </ng-template>
         </td>
         <td>

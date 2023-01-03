@@ -25,7 +25,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'question/:id',
+    path: 'question/:id/edit',
     component: QuestionManagementQuestionEditComponent,
     canActivate: [JWTGuard, PermissionGuard],
     data: {
@@ -39,9 +39,9 @@ const routes: Routes = [
     data: {
       requiredPolicy: 'Exam.Question.Create'
     }
-  }
-,
-  { path: 'answer', component: QuestionManagementAnswerComponent }];
+  },
+  { path: 'answer', component: QuestionManagementAnswerComponent }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

@@ -12,6 +12,7 @@ import {
 } from '@proxy/super-abp/exam/admin/question-management/question-answers';
 import { QuestionType } from '@proxy/super-abp/exam/question-management/questions';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { forkJoin, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Component({
@@ -35,6 +36,7 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
   };
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[];
+  answerEditorItems: QuestionAnswerCreateDto[];
 
   constructor(
     private modal: ModalHelper,
@@ -53,11 +55,13 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    debugger;
     this.params = this.resetParameters();
     this.loaded();
   }
 
   loaded() {
+    this.answerEditorItems = [];
     if (this.questionId) {
       this.getList();
     } else {
@@ -67,7 +71,7 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
         len = 4;
       }
       for (let index = 0; index < len; index++) {
-        this.add();
+        this.add({ right: false });
       }
     }
   }
@@ -80,6 +84,7 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
   }
 
   add(item: QuestionAnswerCreateDto = {} as QuestionAnswerCreateDto) {
+    this.answerEditorItems.push(item);
     let fg = this.createAttribute(item);
     this.options.push(fg);
   }
@@ -104,20 +109,29 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
     };
   }
 
-  checkbox(index, value: boolean): void {
-    this.st.setRow(index, { right: value });
+  changeRadio(index: number, item) {
+    this.options.controls.forEach((c, i) => {
+      if (i != index && c['controls']['right'].value) {
+        c['controls']['right'].setValue(false);
+      }
+    });
+    if (!item.right) {
+      item.right = true;
+    }
   }
 
-  radio(index): void {
-    // for (let i = 0; i < this.answers.length; i++) {
-    //   const answer = this.answers[i];
-    //   if (i === index) {
-    //     answer.right = true;
-    //   } else {
-    //     answer.right = false;
-    //   }
-    // }
-    // this.answers = [...this.answers];
-    this.st.setRow(index, { right: true });
+  save(questionId) {
+    var services: Array<Observable<any>> = [];
+    this.options.controls.forEach(answer => {
+      var value = answer.value;
+      if (value.id) {
+        services.push(this.answerService.update(value.id, value));
+      } else {
+        value.questionId = questionId;
+        delete value.id;
+        services.push(this.answerService.create(value));
+      }
+    });
+    return forkJoin(services);
   }
 }

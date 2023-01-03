@@ -9,6 +9,7 @@
     "IsRight": "是否正确",
     "IsAnswer": "是否答案",
     "Answer": "答案",
+    "CreationTime": "创建时间",
     "Content": "内容",
     "QuestionRepository": "题库",
     "QuestionContent": "题干",

@@ -25,4 +25,9 @@ public class QuestionListDto : EntityDto<Guid>
     /// 解析
     /// </summary>
     public string Analysis { get; set; }
+
+    /// <summary>
+    /// 创建时间
+    /// </summary>
+    public DateTime CreationTime { get; set; }
 }
