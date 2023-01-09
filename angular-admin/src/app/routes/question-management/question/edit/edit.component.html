@@ -13,12 +13,19 @@
       <nz-col nzLg="12" nzXs="24">
         <nz-form-item>
           <nz-form-label nzRequired>{{ 'Exam::QuestionType' | abpLocalization }}</nz-form-label>
-          <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization"
-            [nzErrorTip]="questionTypeErrorTpl">
-            <nz-select formControlName="questionType" nzShowSearch nzAllowClear
-              [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization : ('Exam::QuestionType' | abpLocalization)">
-              <nz-option *ngFor="let questionType of questionTypes" [nzValue]="questionType.value"
-                [nzLabel]="questionType.label"></nz-option>
+          <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="questionTypeErrorTpl">
+            <nz-select
+              formControlName="questionType"
+              nzShowSearch
+              nzAllowClear
+              [nzDisabled]="questionId"
+              [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization : ('Exam::QuestionType' | abpLocalization)"
+            >
+              <nz-option
+                *ngFor="let questionType of questionTypes"
+                [nzValue]="questionType.value"
+                [nzLabel]="questionType.label"
+              ></nz-option>
             </nz-select>
             <ng-template #questionTypeErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">
@@ -31,12 +38,18 @@
       <nz-col nzLg="12" nzXs="24">
         <nz-form-item>
           <nz-form-label nzRequired>{{ 'Exam::QuestionRepository' | abpLocalization }}</nz-form-label>
-          <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization"
-            [nzErrorTip]="questionRepositoryErrorTpl">
-            <nz-select formControlName="questionRepositoryId" nzShowSearch nzAllowClear
-              [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization : ('Exam::QuestionRepository' | abpLocalization)">
-              <nz-option *ngFor="let questionRepository of questionRepositories" [nzValue]="questionRepository.id"
-                [nzLabel]="questionRepository.title"></nz-option>
+          <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="questionRepositoryErrorTpl">
+            <nz-select
+              formControlName="questionRepositoryId"
+              nzShowSearch
+              nzAllowClear
+              [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization : ('Exam::QuestionRepository' | abpLocalization)"
+            >
+              <nz-option
+                *ngFor="let questionRepository of questionRepositories"
+                [nzValue]="questionRepository.id"
+                [nzLabel]="questionRepository.title"
+              ></nz-option>
             </nz-select>
             <ng-template #questionRepositoryErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">
@@ -50,10 +63,13 @@
 
     <nz-form-item>
       <nz-form-label nzRequired>{{ 'Exam::QuestionContent' | abpLocalization }}</nz-form-label>
-      <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization"
-        [nzErrorTip]="contentErrorTpl">
-        <textarea formControlName="content" nz-input rows="4"
-          [placeholder]="'Exam::Placeholder' | abpLocalization : ('Exam::QuestionContent' | abpLocalization)"></textarea>
+      <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="contentErrorTpl">
+        <textarea
+          formControlName="content"
+          nz-input
+          rows="4"
+          [placeholder]="'Exam::Placeholder' | abpLocalization : ('Exam::QuestionContent' | abpLocalization)"
+        ></textarea>
         <ng-template #contentErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
             {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
@@ -64,15 +80,22 @@
     <nz-form-item>
       <nz-form-label>{{ 'Exam::Analysis' | abpLocalization }}</nz-form-label>
       <nz-form-control>
-        <textarea formControlName="analysis" nz-input rows="4"
-          [placeholder]="'Exam::Placeholder' | abpLocalization : ('Exam::Analysis' | abpLocalization)"></textarea>
+        <textarea
+          formControlName="analysis"
+          nz-input
+          rows="4"
+          [placeholder]="'Exam::Placeholder' | abpLocalization : ('Exam::Analysis' | abpLocalization)"
+        ></textarea>
       </nz-form-control>
     </nz-form-item>
-    <app-question-management-answer #QuestionAnswer *ngIf="questionType.value != null"
-      [questionType]="questionType.value" [questionId]="questionId"
-      [questionForm]="this.form"></app-question-management-answer>
-    <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading"
-      (click)="save()">
+    <app-question-management-answer
+      #QuestionAnswer
+      *ngIf="questionType.value != null"
+      [questionType]="questionType.value"
+      [questionId]="questionId"
+      [questionForm]="this.form"
+    ></app-question-management-answer>
+    <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading">
       {{ 'Exam::Submit' | abpLocalization }}
     </button>
     <!-- <button nz-button nzType="primary" *ngIf="form" [nzLoading]="isConfirmLoading" (click)="save()">

@@ -1,8 +1,6 @@
-import { ConfigStateService, COOKIE_LANGUAGE_KEY, LocalizationService, PermissionService } from '@abp/ng.core';
-import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { STChange, STColumn, STComponent, STData, STPage } from '@delon/abc/st';
-import { SFSchema } from '@delon/form';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { STColumn, STComponent, STPage } from '@delon/abc/st';
 import { ModalHelper } from '@delon/theme';
 import { QuestionAnswerService } from '@proxy/super-abp/exam/admin/controllers';
 import {
@@ -11,13 +9,31 @@ import {
   QuestionAnswerListDto
 } from '@proxy/super-abp/exam/admin/question-management/question-answers';
 import { QuestionType } from '@proxy/super-abp/exam/question-management/questions';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { forkJoin, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { finalize, tap } from 'rxjs/operators';
 
+interface QuestionAnswerTemp extends QuestionAnswerCreateDto {
+  id?: string;
+}
 @Component({
   selector: 'app-question-management-answer',
-  templateUrl: './answer.component.html'
+  templateUrl: './answer.component.html',
+  styles: [
+    `
+      nz-input-number {
+        width: 100%;
+      }
+      .required:before {
+        display: inline-block;
+        margin-right: 4px;
+        color: #ff4d4f;
+        font-size: 14px;
+        font-family: SimSun, sans-serif;
+        line-height: 1;
+        content: '*';
+      }
+    `
+  ]
 })
 export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
   @Input()
@@ -28,6 +44,7 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
   questionForm: FormGroup;
 
   answers: QuestionAnswerListDto[];
+  removeIds: string[] = [];
   loading = false;
   params: GetQuestionAnswersInput;
   page: STPage = {
@@ -38,14 +55,7 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
   columns: STColumn[];
   answerEditorItems: QuestionAnswerCreateDto[];
 
-  constructor(
-    private modal: ModalHelper,
-    private fb: FormBuilder,
-    private localizationService: LocalizationService,
-    private messageService: NzMessageService,
-    private permissionService: PermissionService,
-    private answerService: QuestionAnswerService
-  ) {}
+  constructor(private modal: ModalHelper, private fb: FormBuilder, private answerService: QuestionAnswerService) {}
 
   get options() {
     return this.questionForm.get('options') as FormArray;
@@ -55,13 +65,15 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    debugger;
-    this.params = this.resetParameters();
     this.loaded();
   }
 
   loaded() {
-    this.answerEditorItems = [];
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
+    this.params = this.resetParameters();
     if (this.questionId) {
       this.getList();
     } else {
@@ -71,32 +83,50 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
         len = 4;
       }
       for (let index = 0; index < len; index++) {
-        this.add({ right: false });
+        this.add({ right: false, sort: 0 });
       }
+      this.loading = false;
     }
   }
   getList() {
-    this.loading = true;
     this.answerService
       .getList(this.params)
-      .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => (this.answers = response.items));
+      .pipe(
+        tap(res => {
+          res.items.forEach(item => {
+            this.add({
+              id: item.id,
+              sort: item.sort,
+              right: item.right,
+              content: item.content,
+              analysis: item.analysis,
+              questionId: this.questionId
+            });
+          });
+        }),
+        finalize(() => (this.loading = false))
+      )
+      .subscribe();
   }
 
-  add(item: QuestionAnswerCreateDto = {} as QuestionAnswerCreateDto) {
-    this.answerEditorItems.push(item);
+  add(item: QuestionAnswerTemp = {} as QuestionAnswerTemp) {
     let fg = this.createAttribute(item);
     this.options.push(fg);
   }
-  createAttribute(item: QuestionAnswerCreateDto) {
+  createAttribute(item: QuestionAnswerTemp) {
     return this.fb.group({
+      id: [item.id || null],
       questionId: [item.questionId || this.questionId],
       right: [item.right || false],
       content: [item.content || null, [Validators.required]],
-      analysis: [item.analysis || null]
+      analysis: [item.analysis || null],
+      sort: [item.sort || 0]
     });
   }
-  delete(index: number) {
+  delete(index: number, item: AbstractControl) {
+    if (item.value.id) {
+      this.removeIds.push(item.value.id);
+    }
     this.options.removeAt(index);
   }
 
@@ -104,11 +134,10 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
     return {
       skipCount: 0,
       maxResultCount: 10,
-      sorting: 'Id Desc',
+      sorting: 'CreationTime ASC',
       questionId: this.questionId
     };
   }
-
   changeRadio(index: number, item) {
     this.options.controls.forEach((c, i) => {
       if (i != index && c['controls']['right'].value) {
@@ -132,6 +161,11 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
         services.push(this.answerService.create(value));
       }
     });
+    if (this.removeIds.length > 0) {
+      this.removeIds.forEach(id => {
+        services.push(this.answerService.delete(id));
+      });
+    }
     return forkJoin(services);
   }
 }

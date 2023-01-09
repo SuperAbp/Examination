@@ -1,10 +1,11 @@
 import { LocalizationService } from '@abp/ng.core';
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EnumService, QuestionRepoService, QuestionService } from '@proxy/super-abp/exam/admin/controllers';
 import { QuestionRepoListDto } from '@proxy/super-abp/exam/admin/question-management/question-repos';
 import { GetQuestionForEditorOutput } from '@proxy/super-abp/exam/admin/question-management/questions';
+import { QuestionType } from '@proxy/super-abp/exam/question-management/questions';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { forkJoin, from } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
@@ -28,6 +29,9 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
 
   form: FormGroup = null;
 
+  get options() {
+    return this.form.get('options') as FormArray;
+  }
   get questionType() {
     return this.form.get('questionType');
   }
@@ -36,6 +40,7 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
+    private messageService: NzMessageService,
     private localizationService: LocalizationService,
     private questionService: QuestionService,
     private questionRepoService: QuestionRepoService,
@@ -94,6 +99,18 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
       for (const key of Object.keys(this.form.controls)) {
         this.form.controls[key].markAsDirty();
         this.form.controls[key].updateValueAndValidity();
+      }
+      return;
+    }
+    if (this.options.controls.length < 2) {
+      this.messageService.error(this.localizationService.instant('Exam::Least {0} options.', '2'));
+      return;
+    }
+    if (this.options.controls.filter(i => i.value.right).length === 0) {
+      if (this.questionType.value === QuestionType.MultiSelect) {
+        this.messageService.error(this.localizationService.instant('Exam::Least one answer.'));
+      } else {
+        this.messageService.error(this.localizationService.instant('Exam::Only one answer.'));
       }
       return;
     }

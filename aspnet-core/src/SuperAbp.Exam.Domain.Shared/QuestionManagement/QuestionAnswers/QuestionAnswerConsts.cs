@@ -6,7 +6,7 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 
 public class QuestionAnswerConsts
 {
-    public const string DefaultSorting = "Id DESC";
+    public const string DefaultSorting = "Sort DESC";
 
     public const int MaxContentLength = 2000;
     public const int MaxAnalysisLength = 2000;

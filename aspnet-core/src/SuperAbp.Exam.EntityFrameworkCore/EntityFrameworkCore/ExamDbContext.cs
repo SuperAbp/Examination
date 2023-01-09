@@ -103,6 +103,7 @@ public class ExamDbContext :
 
             b.Property(p => p.Content).IsRequired().HasMaxLength(QuestionAnswerConsts.MaxContentLength);
             b.Property(p => p.Analysis).HasMaxLength(QuestionAnswerConsts.MaxAnalysisLength);
+            b.Property(p => p.Sort).IsRequired().HasDefaultValue(0);
         });
 
         builder.Entity<QuestionRepo>(b =>

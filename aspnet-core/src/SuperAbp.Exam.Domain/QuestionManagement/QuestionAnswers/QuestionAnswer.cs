@@ -35,5 +35,10 @@ public class QuestionAnswer : FullAuditedEntity<Guid>
     /// </summary>
     public string Analysis { get; set; }
 
+    /// <summary>
+    /// 排序
+    /// </summary>
+    public int Sort { get; set; }
+
     public Guid QuestionId { get; set; }
 }
