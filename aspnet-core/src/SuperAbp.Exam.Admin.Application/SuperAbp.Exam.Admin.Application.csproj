@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <Folder Include="Enums\" />
+    <Folder Include="PaperManagement\Papers\" />
   </ItemGroup>
 
 </Project>
