@@ -26,6 +26,16 @@ public class ExamPermissionDefinitionProvider : PermissionDefinitionProvider
         questionRepos.AddChild(ExamPermissions.QuestionRepositories.Create, L("Permission:Create"));
         questionRepos.AddChild(ExamPermissions.QuestionRepositories.Update, L("Permission:Edit"));
         questionRepos.AddChild(ExamPermissions.QuestionRepositories.Delete, L("Permission:Delete"));
+
+        var examings = myGroup.AddPermission(ExamPermissions.Examings.Default, L("Permission:Examings"));
+        examings.AddChild(ExamPermissions.Examings.Create, L("Permission:Create"));
+        examings.AddChild(ExamPermissions.Examings.Update, L("Permission:Edit"));
+        examings.AddChild(ExamPermissions.Examings.Delete, L("Permission:Delete"));
+
+        var examRepos = myGroup.AddPermission(ExamPermissions.ExamRepos.Default, L("Permission:ExamingRepositorys"));
+        examRepos.AddChild(ExamPermissions.ExamRepos.Create, L("Permission:Create"));
+        examRepos.AddChild(ExamPermissions.ExamRepos.Update, L("Permission:Edit"));
+        examRepos.AddChild(ExamPermissions.ExamRepos.Delete, L("Permission:Delete"));
     }
 
     private static LocalizableString L(string name)

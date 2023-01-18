@@ -7,7 +7,7 @@ export interface GetQuestionForEditorOutput extends QuestionCreateOrUpdateDtoBas
 export interface GetQuestionsInput extends PagedAndSortedResultRequestDto {
   content?: string;
   questionType?: QuestionType;
-  questionRepositoryId?: string;
+  questionRepositoryIds: string[];
 }
 
 export interface QuestionCreateDto extends QuestionCreateOrUpdateDtoBase {
@@ -25,6 +25,7 @@ export interface QuestionListDto extends EntityDto<string> {
   questionType: QuestionType;
   content?: string;
   analysis?: string;
+  creationTime?: string;
 }
 
 export interface QuestionUpdateDto extends QuestionCreateOrUpdateDtoBase {

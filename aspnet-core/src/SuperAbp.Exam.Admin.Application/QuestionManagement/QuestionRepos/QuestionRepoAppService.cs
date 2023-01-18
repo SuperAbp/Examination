@@ -10,6 +10,7 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
+using SuperAbp.Exam.QuestionManagement.Questions;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
 {
@@ -19,6 +20,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
     [Authorize(ExamPermissions.QuestionRepositories.Default)]
     public class QuestionRepoAppService : ExamAppService, IQuestionRepoAppService
     {
+        private readonly IQuestionRepository _questionRepository;
         private readonly IQuestionRepoRepository _questionRepoRepository;
 
         /// <summary>
@@ -26,9 +28,10 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
         /// </summary>
         /// <param name="questionRepoRepository"></param>
         public QuestionRepoAppService(
-            IQuestionRepoRepository questionRepoRepository)
+            IQuestionRepoRepository questionRepoRepository, IQuestionRepository questionRepository)
         {
             _questionRepoRepository = questionRepoRepository;
+            _questionRepository = questionRepository;
         }
 
         /// <summary>
@@ -62,9 +65,15 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
             var entities = await AsyncExecuter.ToListAsync(queryable
                 .OrderBy(input.Sorting ?? "Id DESC")
                 .PageBy(input));
-
-            var dtos = ObjectMapper.Map<List<QuestionRepo>, List<QuestionRepoListDto>>(entities);
-
+            var dtos = new List<QuestionRepoListDto>(); //ObjectMapper.Map<List<QuestionRepo>, List<QuestionRepoListDto>>(entities);
+            foreach (var item in entities)
+            {
+                var dto = ObjectMapper.Map<QuestionRepo, QuestionRepoListDto>(item);
+                dto.SingleCount = await _questionRepository.GetCountAsync(item.Id, QuestionType.SingleSelect);
+                dto.JudgeCount = await _questionRepository.GetCountAsync(item.Id, QuestionType.Judge);
+                dto.MultiCount = await _questionRepository.GetCountAsync(item.Id, QuestionType.MultiSelect);
+                dtos.Add(dto);
+            }
             return new PagedResultDto<QuestionRepoListDto>(totalCount, dtos);
         }
 

@@ -29,4 +29,20 @@ public static class ExamPermissions
         public const string Update = Default + ".Update";
         public const string Delete = Default + ".Delete";
     }
+
+    public static class Examings
+    {
+        public const string Default = GroupName + ".Examing";
+        public const string Create = Default + ".Create";
+        public const string Update = Default + ".Update";
+        public const string Delete = Default + ".Delete";
+    }
+
+    public static class ExamRepos
+    {
+        public const string Default = GroupName + ".ExamingRepository";
+        public const string Create = Default + ".Create";
+        public const string Update = Default + ".Update";
+        public const string Delete = Default + ".Delete";
+    }
 }

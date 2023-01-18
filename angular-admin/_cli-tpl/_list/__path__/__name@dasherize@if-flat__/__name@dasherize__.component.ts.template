@@ -65,7 +65,7 @@ export class <%= componentName %> implements OnInit {
           },
           click: (record, _modal, component) => {
             this.<%= camelize(name) %>Service.delete(record.id).subscribe((response) => {
-              this.messageService.success(this.localizationService.instant('*::SuccessDeleted', record.name));
+              this.messageService.success(this.localizationService.instant('*::DeletedSuccessfully', record.name));
               // tslint:disable-next-line: no-non-null-assertion
               component!.removeRow(record);
             });

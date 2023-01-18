@@ -95,11 +95,11 @@
       [questionId]="questionId"
       [questionForm]="this.form"
     ></app-question-management-answer>
-    <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading">
-      {{ 'Exam::Submit' | abpLocalization }}
-    </button>
-    <!-- <button nz-button nzType="primary" *ngIf="form" [nzLoading]="isConfirmLoading" (click)="save()">
-      {{ 'Exam::Submit' | abpLocalization }}
-    </button> -->
   </nz-card>
 </form>
+
+<footer-toolbar>
+  <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading">
+    {{ 'Exam::Submit' | abpLocalization }}
+  </button>
+</footer-toolbar>
