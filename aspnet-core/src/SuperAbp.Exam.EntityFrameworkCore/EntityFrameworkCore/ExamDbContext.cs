@@ -1,6 +1,8 @@
 ﻿using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using Microsoft.EntityFrameworkCore;
+using SuperAbp.Exam.ExamManagement.ExamRepos;
+using SuperAbp.Exam.ExamManagement.Exams;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -62,6 +64,8 @@ public class ExamDbContext :
     public DbSet<Question> Questions { get; set; }
     public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
     public DbSet<QuestionRepo> QuestionRepos { get; set; }
+    public DbSet<Examing> Exams { get; set; }
+    public DbSet<ExamRepo> ExamRepos { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
@@ -114,6 +118,27 @@ public class ExamDbContext :
 
             b.Property(p => p.Title).IsRequired().HasMaxLength(QuestionRepoConsts.MaxTitleLength);
             b.Property(p => p.Remark).HasMaxLength(QuestionRepoConsts.MaxRemarkLength);
+        });
+
+        builder.Entity<Examing>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "Exams", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.ConfigureAuditedAggregateRoot();
+
+            b.Property(p => p.Name).IsRequired().HasMaxLength(ExamingConsts.MaxNameLength);
+            b.Property(p => p.Score).IsRequired();
+            b.Property(p => p.PassingScore).IsRequired();
+            b.Property(p => p.TotalTime).IsRequired();
+        });
+
+        builder.Entity<ExamRepo>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "ExamRepositories", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.ConfigureAuditedAggregateRoot();
+
+            b.HasKey(p => new { p.ExamId, p.QuestionRepositoryId });
         });
     }
 }

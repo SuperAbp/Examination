@@ -21,6 +21,11 @@ namespace SuperAbp.Exam.ExamManagement.Exams
         /// 描述
         /// </summary>
         public string Description { get; set; }
+        
+        /// <summary>
+        /// 总题数
+        /// </summary>
+        public int TotalQuestionCount { get; set; }
 
         /// <summary>
         /// 分数

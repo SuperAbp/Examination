@@ -10,7 +10,7 @@ namespace SuperAbp.Exam.ExamManagement.ExamRepos
     /// <summary>
     /// 考试题库
     /// </summary>
-    public class ExamRepo : Entity<Guid>
+    public class ExamRepo : Entity
     {
         /// <summary>
         /// 考试Id
@@ -21,6 +21,11 @@ namespace SuperAbp.Exam.ExamManagement.ExamRepos
         /// 题库Id
         /// </summary>
         public Guid QuestionRepositoryId { get; set; }
+
+        /// <summary>
+        /// 比例
+        /// </summary>
+        public decimal? Proportion { get; set; }
 
         /// <summary>
         /// 单选数量
@@ -51,5 +56,10 @@ namespace SuperAbp.Exam.ExamManagement.ExamRepos
         /// 判断分数
         /// </summary>
         public decimal? JudgeScore { get; set; }
+
+        public override object[] GetKeys()
+        {
+            return new Object[] { ExamId, QuestionRepositoryId };
+        }
     }
 }
