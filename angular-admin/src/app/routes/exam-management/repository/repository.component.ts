@@ -1,15 +1,21 @@
 import { ConfigStateService, LocalizationService, PermissionService } from '@abp/ng.core';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { STChange, STColumn, STComponent, STPage } from '@delon/abc/st';
 import { SFSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
-import { ExamingRepoService } from '@proxy/super-abp/exam/admin/controllers';
+import { ExamingRepoService, QuestionRepoService } from '@proxy/super-abp/exam/admin/controllers';
 import { ExamingRepoCreateDto, ExamingRepoListDto, GetExamingReposInput } from '@proxy/super-abp/exam/admin/exam-management/exam-repos';
 import { QuestionRepoListDto } from '@proxy/super-abp/exam/admin/question-management/question-repos';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
 
+export interface ExamingRepoCreateTemp extends ExamingRepoCreateDto {
+  questionRepository: string;
+  singleTotalCount: number;
+  multiTotalCount?: number;
+  judgeTotalCount?: number;
+}
 @Component({
   selector: 'app-exam-management-repository',
   templateUrl: './repository.component.html',
@@ -17,6 +23,9 @@ import { tap } from 'rxjs/operators';
     `
       button {
         margin-bottom: 10px;
+      }
+      nz-select {
+        width: 100%;
       }
     `
   ]
@@ -33,16 +42,19 @@ export class ExamManagementRepositoryComponent implements OnInit {
   loading = false;
   modalIsShow = false;
   modalOkLoading = false;
+  currentQuestionRepositoryId;
   repositoryItems: QuestionRepoListDto[];
   params: GetExamingReposInput;
-  removeIds: any[];
+  removeIds: any[] = [];
+  repositoryTemps: ExamingRepoCreateTemp[] = [];
 
   constructor(
     private fb: FormBuilder,
     private localizationService: LocalizationService,
     private messageService: NzMessageService,
     private permissionService: PermissionService,
-    private repositoryService: ExamingRepoService
+    private repositoryService: ExamingRepoService,
+    private questionRepositoryService: QuestionRepoService
   ) {}
 
   get repositories() {
@@ -58,6 +70,14 @@ export class ExamManagementRepositoryComponent implements OnInit {
     }
     this.loading = true;
     this.params = this.resetParameters();
+    this.questionRepositoryService
+      .getList({ skipCount: 0, maxResultCount: 100 })
+      .pipe(
+        tap(res => {
+          this.repositoryItems = res.items;
+        })
+      )
+      .subscribe();
     if (this.examingId) {
       this.getList();
     } else {
@@ -73,31 +93,49 @@ export class ExamManagementRepositoryComponent implements OnInit {
   }
 
   handleOk(): void {
+    let item = this.repositoryItems.find(i => i.id == this.currentQuestionRepositoryId);
+    this.add({
+      questionRepositoryId: item.id,
+      examingId: this.examingId,
+      questionRepository: item.title,
+      singleTotalCount: item.singleCount,
+      multiTotalCount: item.multiCount,
+      judgeTotalCount: item.judgeCount
+    });
+    this.currentQuestionRepositoryId = null;
     this.modalIsShow = false;
   }
 
   handleCancel(): void {
+    this.currentQuestionRepositoryId = null;
     this.modalIsShow = false;
   }
 
-  add(item: ExamingRepoCreateDto = {} as ExamingRepoCreateDto) {
-    let fg = this.createAttribute(item);
+  add(item: ExamingRepoCreateTemp = {} as ExamingRepoCreateTemp) {
+    debugger;
+    if (this.repositoryTemps.findIndex(r => r.questionRepositoryId == item.questionRepositoryId) > -1) {
+      this.messageService.error(this.localizationService.instant('Exam::QuestionRepositoryExists'));
+      return;
+    }
+    let fg = this.createAttribute(item as ExamingRepoCreateDto);
     this.repositories.push(fg);
+    this.repositoryTemps.push(item);
   }
   createAttribute(item: ExamingRepoCreateDto) {
     return this.fb.group({
-      questionRepositoryId: [item.questionRepositoryId || null],
-      singleCount: [item.singleCount || 0],
-      singleScore: [item.singleScore || 0],
-      judgeCount: [item.judgeCount || 0],
-      judgeScore: [item.judgeScore || 0],
-      multiCount: [item.multiCount || 0],
-      multiScore: [item.multiScore || 0]
+      questionRepositoryId: [item.questionRepositoryId || null, [Validators.required]],
+      singleCount: [item.singleCount || 0, [Validators.required]],
+      singleScore: [item.singleScore || 0, [Validators.required]],
+      judgeCount: [item.judgeCount || 0, [Validators.required]],
+      judgeScore: [item.judgeScore || 0, [Validators.required]],
+      multiCount: [item.multiCount || 0, [Validators.required]],
+      multiScore: [item.multiScore || 0, [Validators.required]]
     });
   }
-  delete(index: number, item: AbstractControl) {
-    this.removeIds.push({ examingId: item.value.examingId, questionRepositoryId: item.value.questionRepositoryId });
+  delete(index: number, item: ExamingRepoCreateTemp) {
+    this.removeIds.push({ examingId: item.examingId, questionRepositoryId: item.questionRepositoryId });
     this.repositories.removeAt(index);
+    this.repositoryTemps.splice(index, 1);
   }
 
   resetParameters(): GetExamingReposInput {
