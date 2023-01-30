@@ -22,7 +22,9 @@ export interface QuestionRepoDetailDto extends EntityDto<string> {
 
 export interface QuestionRepoListDto extends EntityDto<string> {
   title?: string;
-  remark?: string;
+  singleCount: number;
+  judgeCount: number;
+  multiCount: number;
 }
 
 export interface QuestionRepoUpdateDto extends QuestionRepoCreateOrUpdateDtoBase {

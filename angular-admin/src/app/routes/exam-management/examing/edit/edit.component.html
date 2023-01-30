@@ -9,7 +9,7 @@
 </ng-template>
 <ng-container *ngIf="form; else loaderRef">
   <nz-card [nzTitle]="'Exam::ExamingRepository' | abpLocalization">
-    <app-exam-management-repository [examingId]="examingId"></app-exam-management-repository>
+    <app-exam-management-repository [examingId]="examingId" [examingForm]="form"></app-exam-management-repository>
   </nz-card>
   <nz-card [nzTitle]="'Exam::ExamingConfig' | abpLocalization">
     <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="horizontal">

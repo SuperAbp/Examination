@@ -1,9 +1,9 @@
-<button nz-button nzType="primary">{{ 'Exam::NewRepository' | abpLocalization }}</button>
+<button nz-button nzType="primary" (click)="modalIsShow = !modalIsShow">{{ 'Exam::NewRepository' | abpLocalization }}</button>
 <ng-container [formGroup]="examingForm" *ngIf="repositories.length > 0">
   <nz-table
     #editRowTable
     nzBordered
-    formArrayName="options"
+    formArrayName="repositories"
     [nzData]="repositories.value"
     nzTableLayout="fixed"
     [nzFrontPagination]="false"
@@ -98,3 +98,16 @@
     </tbody>
   </nz-table>
 </ng-container>
+<nz-modal
+  [(nzVisible)]="modalIsShow"
+  [nzTitle]="'Exam::NewRepository' | abpLocalization"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+  [nzOkLoading]="modalOkLoading"
+>
+  <ng-container *nzModalContent>
+    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person">
+      <nz-option *ngFor="let repository of repositoryItems" [nzValue]="repository.id" [nzLabel]="repository.title"></nz-option>
+    </nz-select>
+  </ng-container>
+</nz-modal>

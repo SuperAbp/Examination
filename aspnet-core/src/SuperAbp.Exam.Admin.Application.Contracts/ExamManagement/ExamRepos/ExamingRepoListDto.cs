@@ -8,8 +8,8 @@ namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
     /// </summary>
     public class ExamingRepoListDto : EntityDto<Guid>
     {
-        public int? RadioCount { get; set; }
-        public decimal? RadioScore { get; set; }
+        public int? SingleCount { get; set; }
+        public decimal? SingleScore { get; set; }
         public int? MultiCount { get; set; }
         public decimal? MultiScore { get; set; }
         public int? JudgeCount { get; set; }

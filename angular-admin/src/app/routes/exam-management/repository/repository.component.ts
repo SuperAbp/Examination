@@ -6,6 +6,7 @@ import { SFSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
 import { ExamingRepoService } from '@proxy/super-abp/exam/admin/controllers';
 import { ExamingRepoCreateDto, ExamingRepoListDto, GetExamingReposInput } from '@proxy/super-abp/exam/admin/exam-management/exam-repos';
+import { QuestionRepoListDto } from '@proxy/super-abp/exam/admin/question-management/question-repos';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
 
@@ -30,6 +31,9 @@ export class ExamManagementRepositoryComponent implements OnInit {
   examRepositories: ExamingRepoListDto[];
   total: number;
   loading = false;
+  modalIsShow = false;
+  modalOkLoading = false;
+  repositoryItems: QuestionRepoListDto[];
   params: GetExamingReposInput;
   removeIds: any[];
 
@@ -66,6 +70,14 @@ export class ExamManagementRepositoryComponent implements OnInit {
       .getList(this.params)
       .pipe(tap(() => (this.loading = false)))
       .subscribe(response => ((this.examRepositories = response.items), (this.total = response.totalCount)));
+  }
+
+  handleOk(): void {
+    this.modalIsShow = false;
+  }
+
+  handleCancel(): void {
+    this.modalIsShow = false;
   }
 
   add(item: ExamingRepoCreateDto = {} as ExamingRepoCreateDto) {
