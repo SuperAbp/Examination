@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions;
@@ -8,4 +9,18 @@ namespace SuperAbp.Exam.QuestionManagement.Questions;
 /// </summary>
 public interface IQuestionRepository : IRepository<Question, Guid>
 {
+    /// <summary>
+    /// 数量
+    /// </summary>
+    /// <param name="questionRepositoryId">题库Id</param>
+    /// <returns></returns>
+    Task<int> GetCountAsync(Guid questionRepositoryId);
+
+    /// <summary>
+    /// 数量
+    /// </summary>
+    /// <param name="questionRepositoryId">题库Id</param>
+    /// <param name="questionType">问题类型</param>
+    /// <returns></returns>
+    Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType);
 }

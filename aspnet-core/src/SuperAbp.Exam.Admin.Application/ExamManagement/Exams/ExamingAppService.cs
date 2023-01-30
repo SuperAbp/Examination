@@ -9,6 +9,7 @@ using Volo.Abp.Linq;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 using SuperAbp.Exam.Permissions;
+using SuperAbp.Exam.ExamManagement.Exams;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 {
@@ -19,6 +20,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
     public class ExamingAppService : ExamAppService, IExamingAppService
     {
         private readonly IExamingRepository _examingRepository;
+
         /// <summary>
         /// .ctor
         /// </summary>
@@ -52,8 +54,8 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 
             var queryable = await _examingRepository.GetQueryableAsync();
 
-             long totalCount = await AsyncExecuter.CountAsync(queryable);
-            
+            long totalCount = await AsyncExecuter.CountAsync(queryable);
+
             var entities = await AsyncExecuter.ToListAsync(queryable
                 .OrderBy(input.Sorting ?? "Id DESC")
                 .PageBy(input));
@@ -74,7 +76,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 
             return ObjectMapper.Map<Examing, GetExamingForEditorOutput>(entity);
         }
-    
+
         /// <summary>
         /// 创建
         /// </summary>

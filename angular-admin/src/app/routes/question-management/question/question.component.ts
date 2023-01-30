@@ -1,13 +1,13 @@
 import { LocalizationService, PermissionService } from '@abp/ng.core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { STChange, STColumn, STComponent, STData, STPage } from '@delon/abc/st';
-import { SFSchema } from '@delon/form';
+import { SFSchema, SFSchemaEnumType, SFSelectWidgetSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
 import { QuestionManagementQuestionEditComponent } from './edit/edit.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { GetQuestionsInput, QuestionListDto } from '@proxy/super-abp/exam/admin/question-management/questions';
-import { QuestionService } from '@proxy/super-abp/exam/admin/controllers';
+import { QuestionRepoService, QuestionService } from '@proxy/super-abp/exam/admin/controllers';
 import { Router } from '@angular/router';
 
 @Component({
@@ -27,7 +27,28 @@ export class QuestionManagementQuestionComponent implements OnInit {
   };
   searchSchema: SFSchema = {
     properties: {
-      // TODO:搜索参数
+      repositoryId: {
+        type: 'string',
+        title: '',
+        ui: {
+          placeholder: this.localizationService.instant(
+            'Shop::ChoosePlaceholder',
+            this.localizationService.instant('Shop::QuestionRepository')
+          ),
+          widget: 'select',
+          allowClear: true,
+          asyncData: () =>
+            this.questionRepositoryService.getList({ skipCount: 0, maxResultCount: 100 }).pipe(
+              map((res: any) => {
+                const temp: SFSchemaEnumType[] = [];
+                res.items.forEach(item => {
+                  temp.push({ label: item.name, value: item.id });
+                });
+                return temp;
+              })
+            )
+        } as SFSelectWidgetSchema
+      }
     }
   };
   @ViewChild('st', { static: false }) st: STComponent;
@@ -50,7 +71,6 @@ export class QuestionManagementQuestionComponent implements OnInit {
       buttons: [
         {
           icon: 'edit',
-          type: 'modal',
           tooltip: this.localizationService.instant('Exam::Edit'),
           iif: () => {
             return this.permissionService.getGrantedPolicy('Exam.Question.Update');
@@ -88,7 +108,8 @@ export class QuestionManagementQuestionComponent implements OnInit {
     private localizationService: LocalizationService,
     private messageService: NzMessageService,
     private permissionService: PermissionService,
-    private questionService: QuestionService
+    private questionService: QuestionService,
+    private questionRepositoryService: QuestionRepoService
   ) {}
 
   ngOnInit() {
@@ -106,7 +127,8 @@ export class QuestionManagementQuestionComponent implements OnInit {
     return {
       skipCount: 0,
       maxResultCount: 10,
-      sorting: 'Id Desc'
+      sorting: 'Id Desc',
+      questionRepositoryIds: []
     };
   }
   change(e: STChange) {

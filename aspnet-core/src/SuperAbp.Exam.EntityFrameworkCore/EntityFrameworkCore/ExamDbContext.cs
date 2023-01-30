@@ -19,6 +19,8 @@ using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.MenuManagement.EntityFrameworkCore;
+using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.ExamRepos;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -63,9 +65,9 @@ public class ExamDbContext :
 
     public DbSet<Question> Questions { get; set; }
     public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
-    public DbSet<QuestionRepo> QuestionRepos { get; set; }
-    public DbSet<Examing> Exams { get; set; }
-    public DbSet<ExamRepo> ExamRepos { get; set; }
+    public DbSet<QuestionRepo> QuestionRepositories { get; set; }
+    public DbSet<Examing> Examings { get; set; }
+    public DbSet<ExamingRepo> ExamingRepositories { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
@@ -122,7 +124,7 @@ public class ExamDbContext :
 
         builder.Entity<Examing>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "Exams", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "Examings", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
 
@@ -130,15 +132,16 @@ public class ExamDbContext :
             b.Property(p => p.Score).IsRequired();
             b.Property(p => p.PassingScore).IsRequired();
             b.Property(p => p.TotalTime).IsRequired();
+            b.Property(p => p.Description).HasMaxLength(ExamingConsts.MaxDescriptionLength);
         });
 
-        builder.Entity<ExamRepo>(b =>
+        builder.Entity<ExamingRepo>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "ExamRepositories", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "ExamingRepositories", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
 
-            b.HasKey(p => new { p.ExamId, p.QuestionRepositoryId });
+            b.HasKey(t => new { t.ExamingId, t.QuestionRepositoryId });
         });
     }
 }

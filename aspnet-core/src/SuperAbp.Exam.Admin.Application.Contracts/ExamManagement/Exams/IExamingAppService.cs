@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 
@@ -7,7 +8,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
     /// <summary>
     /// 考试管理
     /// </summary>
-    public interface IExamingAppService: IApplicationService
+    public interface IExamingAppService : IApplicationService
     {
         /// <summary>
         /// 详情

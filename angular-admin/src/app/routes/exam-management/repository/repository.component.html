@@ -1,0 +1,100 @@
+<button nz-button nzType="primary">{{ 'Exam::NewRepository' | abpLocalization }}</button>
+<ng-container [formGroup]="examingForm" *ngIf="repositories.length > 0">
+  <nz-table
+    #editRowTable
+    nzBordered
+    formArrayName="options"
+    [nzData]="repositories.value"
+    nzTableLayout="fixed"
+    [nzFrontPagination]="false"
+    [nzShowPagination]="false"
+  >
+    <thead>
+      <tr>
+        <th>
+          <label> {{ 'Exam::QuestionRepository' | abpLocalization }} </label>
+        </th>
+        <th>
+          <label> {{ 'Exam::SingleCount' | abpLocalization }} </label>
+        </th>
+        <th>
+          <label> {{ 'Exam::SingleScore' | abpLocalization }} </label>
+        </th>
+        <th>
+          <label> {{ 'Exam::JudgeCount' | abpLocalization }} </label>
+        </th>
+        <th>
+          <label> {{ 'Exam::JudgeScore' | abpLocalization }} </label>
+        </th>
+        <th>
+          <label> {{ 'Exam::MultiCount' | abpLocalization }} </label>
+        </th>
+        <th>
+          <label> {{ 'Exam::MultiScore' | abpLocalization }} </label>
+        </th>
+        <th nzWidth="80px">
+          <label> {{ 'Exam::Actions' | abpLocalization }} </label>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let option of repositories.controls; let i = index" [formGroupName]="i">
+        <td> </td>
+        <td>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-number formControlName="singleCount" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+        <td>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-number formControlName="singleScore" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+        <td>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-number formControlName="judgeCount" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+        <td>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-number formControlName="judgeScore" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+        <td>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-number formControlName="multiCount" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+        <td>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-number formControlName="multiScore" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+
+        <td nzAlign="center">
+          <a
+            nz-popconfirm
+            [nzPopconfirmTitle]="'Exam::AreYouSure' | abpLocalization"
+            (nzOnConfirm)="delete(i, option)"
+            nz-tooltip
+            [nzTooltipTitle]="'Exam::Delete' | abpLocalization"
+          >
+            <i nz-icon nzType="delete" nzTheme="outline"></i>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</ng-container>

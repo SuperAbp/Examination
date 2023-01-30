@@ -1,4 +1,6 @@
-﻿namespace SuperAbp.Exam.Admin.ExamManagement.Exams
+﻿using System;
+
+namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 {
     public class ExamingCreateOrUpdateDtoBase
     {
@@ -7,7 +9,7 @@
         public decimal Score { get; set; }
         public decimal PassingScore { get; set; }
         public int TotalTime { get; set; }
-        public System.Nullable<System.DateTime> StartTime { get; set; }
-        public System.Nullable<System.DateTime> EndTime { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
     }
 }

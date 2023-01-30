@@ -1,4 +1,5 @@
-﻿using Volo.Abp.Domain.Repositories;
+﻿using System;
+using Volo.Abp.Domain.Repositories;
 
 namespace SuperAbp.Exam.ExamManagement.Exams
 {

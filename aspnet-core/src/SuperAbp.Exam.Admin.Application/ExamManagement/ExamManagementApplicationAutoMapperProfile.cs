@@ -1,5 +1,8 @@
-﻿using SuperAbp.Exam.Admin.ExamManagement.Exams;
+﻿using SuperAbp.Exam.Admin.ExamManagement.ExamRepos;
+using SuperAbp.Exam.Admin.ExamManagement.Exams;
 using AutoMapper;
+using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.ExamRepos;
 
 namespace SuperAbp.Exam.ExamManagement
 {
@@ -13,14 +16,24 @@ namespace SuperAbp.Exam.ExamManagement
         /// </summary>
         public ExamManagementApplicationAutoMapperProfile()
         {
-
-             #region 考试
+            #region 考试
             CreateMap<Examing, GetExamingForEditorOutput>();
             CreateMap<Examing, ExamingListDto>();
             CreateMap<Examing, ExamingDetailDto>();
             CreateMap<ExamingCreateDto, Examing>();
             CreateMap<ExamingUpdateDto, Examing>();
-            #endregion
+
+            #endregion 考试
+
+            #region 考试题库
+
+            CreateMap<ExamingRepo, GetExamingRepoForEditorOutput>();
+            CreateMap<ExamingRepo, ExamingRepoListDto>();
+            CreateMap<ExamingRepo, ExamingRepoDetailDto>();
+            CreateMap<ExamingRepoCreateDto, ExamingRepo>();
+            CreateMap<ExamingRepoUpdateDto, ExamingRepo>();
+
+            #endregion 考试题库
         }
     }
 }

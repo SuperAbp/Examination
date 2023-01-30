@@ -20,6 +20,9 @@ interface QuestionAnswerTemp extends QuestionAnswerCreateDto {
   templateUrl: './answer.component.html',
   styles: [
     `
+      button {
+        margin-bottom: 10px;
+      }
       nz-input-number {
         width: 100%;
       }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 
 namespace SuperAbp.Exam.ExamManagement.ExamRepos
@@ -10,12 +11,12 @@ namespace SuperAbp.Exam.ExamManagement.ExamRepos
     /// <summary>
     /// 考试题库
     /// </summary>
-    public class ExamRepo : Entity
+    public class ExamingRepo : Entity, IHasCreationTime
     {
         /// <summary>
         /// 考试Id
         /// </summary>
-        public Guid ExamId { get; set; }
+        public Guid ExamingId { get; set; }
 
         /// <summary>
         /// 题库Id
@@ -30,12 +31,12 @@ namespace SuperAbp.Exam.ExamManagement.ExamRepos
         /// <summary>
         /// 单选数量
         /// </summary>
-        public int? RadioCount { get; set; }
+        public int? SingleCount { get; set; }
 
         /// <summary>
         /// 单选分数
         /// </summary>
-        public decimal? RadioScore { get; set; }
+        public decimal? SingleScore { get; set; }
 
         /// <summary>
         /// 多选数量
@@ -57,9 +58,11 @@ namespace SuperAbp.Exam.ExamManagement.ExamRepos
         /// </summary>
         public decimal? JudgeScore { get; set; }
 
+        public DateTime CreationTime { get; set; }
+
         public override object[] GetKeys()
         {
-            return new Object[] { ExamId, QuestionRepositoryId };
+            return new object[] { ExamingId, QuestionRepositoryId };
         }
     }
 }

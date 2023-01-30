@@ -2,6 +2,9 @@
 using Volo.Abp.EntityFrameworkCore;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
+using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.Questions;
 
@@ -19,5 +22,19 @@ public class QuestionRepository : EfCoreRepository<ExamDbContext, Question, Guid
     {
     }
 
-    // TODO:编写仓储代码
+    public async Task<int> GetCountAsync(Guid questionRepositoryId)
+    {
+        var dbset = await GetDbSetAsync();
+        return await dbset
+            .Where(r => r.QuestionRepositoryId == questionRepositoryId)
+            .CountAsync();
+    }
+
+    public async Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType)
+    {
+        var dbset = await GetDbSetAsync();
+        return await dbset
+            .Where(r => r.QuestionRepositoryId == questionRepositoryId && r.QuestionType == questionType)
+            .CountAsync();
+    }
 }

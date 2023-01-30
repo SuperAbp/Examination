@@ -24,13 +24,17 @@ namespace SuperAbp.Exam.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.ExamRepos.ExamRepo", b =>
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.ExamRepos.ExamingRepo", b =>
                 {
-                    b.Property<Guid>("ExamId")
+                    b.Property<Guid>("ExamingId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("QuestionRepositoryId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
 
                     b.Property<int?>("JudgeCount")
                         .HasColumnType("int");
@@ -50,9 +54,9 @@ namespace SuperAbp.Exam.Migrations
                     b.Property<decimal?>("RadioScore")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("ExamId", "QuestionRepositoryId");
+                    b.HasKey("ExamingId", "QuestionRepositoryId");
 
-                    b.ToTable("AppExamRepositories", (string)null);
+                    b.ToTable("AppExamingRepositories", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.ExamManagement.Exams.Examing", b =>
@@ -83,7 +87,8 @@ namespace SuperAbp.Exam.Migrations
                         .HasColumnName("DeletionTime");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime2");
@@ -108,8 +113,8 @@ namespace SuperAbp.Exam.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("PassingScore")
                         .HasColumnType("decimal(18,2)");
@@ -125,7 +130,7 @@ namespace SuperAbp.Exam.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppExams", (string)null);
+                    b.ToTable("AppExamings", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.QuestionAnswers.QuestionAnswer", b =>

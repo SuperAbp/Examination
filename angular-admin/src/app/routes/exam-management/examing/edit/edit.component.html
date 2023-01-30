@@ -1,0 +1,82 @@
+<page-header *ngIf="examingId && form" [action]="phActionTpl" [title]="'Exam::Edit' | abpLocalization">
+  <ng-template #phActionTpl>
+    <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
+  </ng-template>
+</page-header>
+<page-header *ngIf="!examingId" [title]="'Exam::NewExaming' | abpLocalization"></page-header>
+<ng-template #loaderRef>
+  <nz-spin class="modal-spin"></nz-spin>
+</ng-template>
+<ng-container *ngIf="form; else loaderRef">
+  <nz-card [nzTitle]="'Exam::ExamingRepository' | abpLocalization">
+    <app-exam-management-repository [examingId]="examingId"></app-exam-management-repository>
+  </nz-card>
+  <nz-card [nzTitle]="'Exam::ExamingConfig' | abpLocalization">
+    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="horizontal">
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'Exam::Name' | abpLocalization }}</nz-form-label>
+        <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="nameErrorTpl">
+          <input formControlName="name" nz-input [placeholder]="'Exam::Placeholder' | abpLocalization : ('Exam::Name' | abpLocalization)" />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'Exam::Description' | abpLocalization }}</nz-form-label>
+        <nz-form-control>
+          <textarea
+            rows="4"
+            nz-input
+            formControlName="description"
+            [placeholder]="'Exam::Placeholder' | abpLocalization : ('Exam::Description' | abpLocalization)"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'Exam::Score' | abpLocalization }}</nz-form-label>
+        <nz-form-control>
+          <nz-input-number nzDisabled formControlName="score" [nzMin]="1"></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'Exam::PassingScore' | abpLocalization }}</nz-form-label>
+        <nz-form-control>
+          <nz-input-number formControlName="passingScore" [nzMin]="1"></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'Exam::TotalTimeWithMinute' | abpLocalization }}</nz-form-label>
+        <nz-form-control>
+          <nz-input-number formControlName="totalTime" [nzMin]="1"></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'Exam::ExamingTime' | abpLocalization }}</nz-form-label>
+        <nz-form-control>
+          <label nz-checkbox formControlName="isLimitedTime" (ngModelChange)="changeExamingTimeStatus($event)"></label>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *ngIf="showExamingTime">
+        <nz-form-label>{{ 'Exam::ExamingTime' | abpLocalization }}</nz-form-label>
+        <nz-form-control>
+          <nz-range-picker
+            nzFormat="yyyy-MM-dd HH:mm:ss"
+            [nzDisabledDate]="disabledDate"
+            [nzShowTime]="true"
+            formControlName="examingTimes"
+            (ngModelChange)="examingTimeChange($event)"
+          ></nz-range-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-card>
+</ng-container>
+
+<footer-toolbar>
+  <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
+    {{ 'Exam::Submit' | abpLocalization }}
+  </button>
+</footer-toolbar>
