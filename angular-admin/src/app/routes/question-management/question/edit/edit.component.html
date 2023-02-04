@@ -7,7 +7,7 @@
 <ng-template #loaderRef>
   <nz-spin class="modal-spin"></nz-spin>
 </ng-template>
-<form *ngIf="form; else loaderRef" nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="horizontal">
+<form *ngIf="form; else loaderRef" nz-form [formGroup]="form" nzLayout="horizontal">
   <nz-card>
     <nz-row nzGutter="16">
       <nz-col nzLg="12" nzXs="24">
@@ -99,7 +99,7 @@
 </form>
 
 <footer-toolbar>
-  <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading">
+  <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
     {{ 'Exam::Submit' | abpLocalization }}
   </button>
 </footer-toolbar>
