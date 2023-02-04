@@ -9,7 +9,11 @@
 </ng-template>
 <ng-container *ngIf="form; else loaderRef">
   <nz-card [nzTitle]="'Exam::ExamingRepository' | abpLocalization">
-    <app-exam-management-repository [examingId]="examingId" [examingForm]="form"></app-exam-management-repository>
+    <app-exam-management-repository
+      [examingId]="examingId"
+      [examingForm]="form"
+      (totalScoreChange)="changeTotalScore($event)"
+    ></app-exam-management-repository>
   </nz-card>
   <nz-card [nzTitle]="'Exam::ExamingConfig' | abpLocalization">
     <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="horizontal">
@@ -38,13 +42,13 @@
       <nz-form-item>
         <nz-form-label>{{ 'Exam::Score' | abpLocalization }}</nz-form-label>
         <nz-form-control>
-          <nz-input-number nzDisabled formControlName="score" [nzMin]="1"></nz-input-number>
+          <nz-input-number nzDisabled formControlName="score"></nz-input-number>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>{{ 'Exam::PassingScore' | abpLocalization }}</nz-form-label>
         <nz-form-control>
-          <nz-input-number formControlName="passingScore" [nzMin]="1"></nz-input-number>
+          <nz-input-number formControlName="passingScore" [nzMin]="1" [nzMax]="score.value"></nz-input-number>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>

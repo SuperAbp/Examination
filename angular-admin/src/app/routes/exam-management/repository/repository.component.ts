@@ -1,5 +1,5 @@
 import { ConfigStateService, LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { STChange, STColumn, STComponent, STPage } from '@delon/abc/st';
 import { SFSchema } from '@delon/form';
@@ -8,6 +8,7 @@ import { ExamingRepoService, QuestionRepoService } from '@proxy/super-abp/exam/a
 import { ExamingRepoCreateDto, ExamingRepoListDto, GetExamingReposInput } from '@proxy/super-abp/exam/admin/exam-management/exam-repos';
 import { QuestionRepoListDto } from '@proxy/super-abp/exam/admin/question-management/question-repos';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { forkJoin, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 export interface ExamingRepoCreateTemp extends ExamingRepoCreateDto {
@@ -36,6 +37,8 @@ export class ExamManagementRepositoryComponent implements OnInit {
 
   @Input()
   examingForm: FormGroup;
+  @Output()
+  totalScoreChange = new EventEmitter();
 
   examRepositories: ExamingRepoListDto[];
   total: number;
@@ -45,7 +48,7 @@ export class ExamManagementRepositoryComponent implements OnInit {
   currentQuestionRepositoryId;
   repositoryItems: QuestionRepoListDto[];
   params: GetExamingReposInput;
-  removeIds: any[] = [];
+  removeRepositoryIds: any[] = [];
   repositoryTemps: ExamingRepoCreateTemp[] = [];
 
   constructor(
@@ -54,7 +57,8 @@ export class ExamManagementRepositoryComponent implements OnInit {
     private messageService: NzMessageService,
     private permissionService: PermissionService,
     private repositoryService: ExamingRepoService,
-    private questionRepositoryService: QuestionRepoService
+    private questionRepositoryService: QuestionRepoService,
+    private readonly examingRepositoryService: ExamingRepoService
   ) {}
 
   get repositories() {
@@ -112,7 +116,6 @@ export class ExamManagementRepositoryComponent implements OnInit {
   }
 
   add(item: ExamingRepoCreateTemp = {} as ExamingRepoCreateTemp) {
-    debugger;
     if (this.repositoryTemps.findIndex(r => r.questionRepositoryId == item.questionRepositoryId) > -1) {
       this.messageService.error(this.localizationService.instant('Exam::QuestionRepositoryExists'));
       return;
@@ -133,13 +136,45 @@ export class ExamManagementRepositoryComponent implements OnInit {
     });
   }
   delete(index: number, item: ExamingRepoCreateTemp) {
-    this.removeIds.push({ examingId: item.examingId, questionRepositoryId: item.questionRepositoryId });
+    this.removeRepositoryIds.push({ examingId: item.examingId, questionRepositoryId: item.questionRepositoryId });
     this.repositories.removeAt(index);
     this.repositoryTemps.splice(index, 1);
   }
 
+  save(examingId) {
+    var services: Array<Observable<any>> = [];
+    this.repositories.controls.forEach(repository => {
+      var value = repository.value;
+      services.push(
+        this.examingRepositoryService.createOrUpdate({
+          examingId: this.examingId,
+          ...value
+        })
+      );
+    });
+    if (this.removeRepositoryIds.length > 0) {
+      this.removeRepositoryIds.forEach(id => {
+        services.push(this.examingRepositoryService.delete(examingId, id));
+      });
+    }
+    return forkJoin(services);
+  }
+  changeScore(e) {
+    if (e) {
+      let totalScore = 0;
+      this.repositories.controls.forEach(c => {
+        totalScore +=
+          c.get('singleCount').value * c.get('singleScore').value +
+          c.get('judgeCount').value * c.get('judgeScore').value +
+          c.get('multiCount').value * c.get('multiScore').value;
+      });
+      this.totalScoreChange.emit(totalScore);
+    }
+  }
+
   resetParameters(): GetExamingReposInput {
     return {
+      examingId: this.examingId,
       skipCount: 0,
       maxResultCount: 10,
       sorting: 'CreationTime DESC'

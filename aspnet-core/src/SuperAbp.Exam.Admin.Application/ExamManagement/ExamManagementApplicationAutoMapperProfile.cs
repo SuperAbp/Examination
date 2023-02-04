@@ -17,6 +17,7 @@ namespace SuperAbp.Exam.ExamManagement
         public ExamManagementApplicationAutoMapperProfile()
         {
             #region 考试
+
             CreateMap<Examing, GetExamingForEditorOutput>();
             CreateMap<Examing, ExamingListDto>();
             CreateMap<Examing, ExamingDetailDto>();
@@ -30,6 +31,7 @@ namespace SuperAbp.Exam.ExamManagement
             CreateMap<ExamingRepo, GetExamingRepoForEditorOutput>();
             CreateMap<ExamingRepo, ExamingRepoListDto>();
             CreateMap<ExamingRepo, ExamingRepoDetailDto>();
+            CreateMap<ExamingRepoCreateOrUpdateDtoBase, ExamingRepo>();
             CreateMap<ExamingRepoCreateDto, ExamingRepo>();
             CreateMap<ExamingRepoUpdateDto, ExamingRepo>();
 

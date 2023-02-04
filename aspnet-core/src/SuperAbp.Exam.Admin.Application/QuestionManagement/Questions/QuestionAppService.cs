@@ -52,16 +52,16 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
                 .WhereIf(!input.Content.IsNullOrWhiteSpace(), q => q.Content.Contains(input.Content));
 
             var queryable = from q in questionQueryable
-                join r in (await _questionRepoRepository.GetQueryableAsync()) on q.QuestionRepositoryId equals r.Id
-                select new QuestionRepositoryDetail
-                {
-                    Id = q.Id,
-                    QuestionRepository = r.Title,
-                    Analysis = q.Analysis,
-                    Content = q.Content,
-                    QuestionType = q.QuestionType,
-                    CreationTime = q.CreationTime
-                };
+                            join r in (await _questionRepoRepository.GetQueryableAsync()) on q.QuestionRepositoryId equals r.Id
+                            select new QuestionRepositoryDetail
+                            {
+                                Id = q.Id,
+                                QuestionRepository = r.Title,
+                                Analysis = q.Analysis,
+                                Content = q.Content,
+                                QuestionType = q.QuestionType,
+                                CreationTime = q.CreationTime
+                            };
 
             long totalCount = await AsyncExecuter.CountAsync(queryable);
 

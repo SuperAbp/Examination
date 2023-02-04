@@ -6,7 +6,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
     /// <summary>
     /// 列表
     /// </summary>
-    public class ExamingRepoListDto : EntityDto<Guid>
+    public class ExamingRepoListDto : EntityDto
     {
         public int? SingleCount { get; set; }
         public decimal? SingleScore { get; set; }

@@ -9,7 +9,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.ExamRepos
     /// <summary>
     /// 考试题库
     /// </summary>
-    public class ExamingRepoRepository : EfCoreRepository<ExamDbContext, ExamingRepo>, IExamingRepoRepository
+    public class ExamingRepoRepository : EfCoreRepository<ExamDbContext, ExamingRepo, Guid>, IExamingRepoRepository
     {
         /// <summary>
         /// .ctor
@@ -23,6 +23,12 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.ExamRepos
         public Task<ExamingRepo> GetAsync(Guid examingId, Guid questionRepositoryId)
         {
             return GetAsync(er => er.ExamingId == examingId
+                && er.QuestionRepositoryId == questionRepositoryId);
+        }
+
+        public Task<ExamingRepo> FindAsync(Guid examingId, Guid questionRepositoryId)
+        {
+            return FindAsync(er => er.ExamingId == examingId
                 && er.QuestionRepositoryId == questionRepositoryId);
         }
 

@@ -20,10 +20,9 @@ namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
         /// <summary>
         /// 获取修改
         /// </summary>
-        /// <param name="examingId">考试Id</param>
-        /// <param name="questionRepositoryId">题库Id</param>
+        /// <param name="id">Id</param>
         /// <returns></returns>
-        Task<GetExamingRepoForEditorOutput> GetEditorAsync(Guid examingId, Guid questionRepositoryId);
+        Task<GetExamingRepoForEditorOutput> GetEditorAsync(Guid id);
 
         /// <summary>
         /// 创建
@@ -33,20 +32,18 @@ namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
         Task<ExamingRepoListDto> CreateAsync(ExamingRepoCreateDto input);
 
         /// <summary>
-        /// 更新
+        /// 编辑
         /// </summary>
-        /// <param name="examingId">考试Id</param>
-        /// <param name="questionRepositoryId">题库Id</param>
+        /// <param name="id"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<ExamingRepoListDto> UpdateAsync(Guid examingId, Guid questionRepositoryId, ExamingRepoUpdateDto input);
+        Task<ExamingRepoListDto> UpdateAsync(Guid id, ExamingRepoUpdateDto input);
 
         /// <summary>
         /// 删除
         /// </summary>
-        /// <param name="examingId">考试Id</param>
-        /// <param name="questionRepositoryId">题库Id</param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        Task DeleteAsync(Guid examingId, Guid questionRepositoryId);
+        Task DeleteAsync(Guid id);
     }
 }

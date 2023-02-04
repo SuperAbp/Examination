@@ -1,13 +1,13 @@
 import { LocalizationService, PermissionService } from '@abp/ng.core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { STChange, STColumn, STComponent, STData, STPage } from '@delon/abc/st';
-import { SFSchema, SFSchemaEnumType, SFSelectWidgetSchema } from '@delon/form';
+import { SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFStringWidgetSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
 import { QuestionManagementQuestionEditComponent } from './edit/edit.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { map, tap } from 'rxjs/operators';
 import { GetQuestionsInput, QuestionListDto } from '@proxy/super-abp/exam/admin/question-management/questions';
-import { QuestionRepoService, QuestionService } from '@proxy/super-abp/exam/admin/controllers';
+import { EnumService, QuestionRepoService, QuestionService } from '@proxy/super-abp/exam/admin/controllers';
 import { Router } from '@angular/router';
 
 @Component({
@@ -27,22 +27,50 @@ export class QuestionManagementQuestionComponent implements OnInit {
   };
   searchSchema: SFSchema = {
     properties: {
+      content: {
+        type: 'string',
+        title: '',
+        ui: {
+          placeholder: this.localizationService.instant('Exam::Placeholder', this.localizationService.instant('Exam::Title'))
+        } as SFStringWidgetSchema
+      },
+      questionType: {
+        type: 'string',
+        title: '',
+        ui: {
+          placeholder: this.localizationService.instant('Exam::ChoosePlaceholder', this.localizationService.instant('Exam::QuestionType')),
+          widget: 'select',
+          width: 250,
+          allowClear: true,
+          asyncData: () =>
+            this.enumService.getQuestionType().pipe(
+              map((res: Record<number, string>) => {
+                const temp: SFSchemaEnumType[] = [];
+                Object.keys(res).forEach(key => {
+                  temp.push({ label: res[key], value: key });
+                });
+                return temp;
+              })
+            )
+        } as SFSelectWidgetSchema
+      },
       repositoryId: {
         type: 'string',
         title: '',
         ui: {
           placeholder: this.localizationService.instant(
-            'Shop::ChoosePlaceholder',
-            this.localizationService.instant('Shop::QuestionRepository')
+            'Exam::ChoosePlaceholder',
+            this.localizationService.instant('Exam::QuestionRepository')
           ),
           widget: 'select',
+          width: 250,
           allowClear: true,
           asyncData: () =>
             this.questionRepositoryService.getList({ skipCount: 0, maxResultCount: 100 }).pipe(
               map((res: any) => {
                 const temp: SFSchemaEnumType[] = [];
                 res.items.forEach(item => {
-                  temp.push({ label: item.name, value: item.id });
+                  temp.push({ label: item.title, value: item.id });
                 });
                 return temp;
               })
@@ -65,7 +93,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
       }
     },
     { title: this.localizationService.instant('Exam::QuestionContent'), index: 'content' },
-    { title: this.localizationService.instant('Exam::CreationTime'), index: 'creationTime' },
+    { title: this.localizationService.instant('Exam::CreationTime'), index: 'creationTime', type: 'date' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [
@@ -108,6 +136,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
     private localizationService: LocalizationService,
     private messageService: NzMessageService,
     private permissionService: PermissionService,
+    private enumService: EnumService,
     private questionService: QuestionService,
     private questionRepositoryService: QuestionRepoService
   ) {}
@@ -146,11 +175,21 @@ export class QuestionManagementQuestionComponent implements OnInit {
     this.st.load(1);
   }
   search(e) {
-    //if (e.name) {
-    //  this.params.name = e.name;
-    //} else {
-    //  delete this.params.name;
-    //}
+    if (e.repositoryId) {
+      this.params.questionRepositoryIds = [e.repositoryId];
+    } else {
+      delete this.params.questionRepositoryIds;
+    }
+    if (e.content) {
+      this.params.content = e.content;
+    } else {
+      delete this.params.content;
+    }
+    if (e.questionType) {
+      this.params.questionType = e.questionType;
+    } else {
+      delete this.params.questionType;
+    }
     this.st.load(1);
   }
   add() {

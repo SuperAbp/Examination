@@ -99,7 +99,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         [Authorize(ExamPermissions.Examings.Update)]
         public virtual async Task<ExamingListDto> UpdateAsync(Guid id, ExamingUpdateDto input)
         {
-            Examing entity = await _examingRepository.GetAsync(id);
+            var entity = await _examingRepository.GetAsync(id);
             entity = ObjectMapper.Map(input, entity);
             entity = await _examingRepository.UpdateAsync(entity);
             return ObjectMapper.Map<Examing, ExamingListDto>(entity);
@@ -115,8 +115,6 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         {
             await _examingRepository.DeleteAsync(s => s.Id == id);
         }
-
-        
 
         /// <summary>
         /// 规范最大记录数

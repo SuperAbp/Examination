@@ -19,6 +19,7 @@ using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.MenuManagement.EntityFrameworkCore;
+
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.ExamRepos;
 
@@ -140,8 +141,6 @@ public class ExamDbContext :
             b.ToTable(ExamConsts.DbTablePrefix + "ExamingRepositories", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
-
-            b.HasKey(t => new { t.ExamingId, t.QuestionRepositoryId });
         });
     }
 }

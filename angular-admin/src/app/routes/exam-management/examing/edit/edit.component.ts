@@ -5,10 +5,11 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize, tap } from 'rxjs/operators';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { GetExamingForEditorOutput } from '@proxy/super-abp/exam/admin/exam-management/exams';
-import { ExamingService } from '@proxy/super-abp/exam/admin/controllers';
+import { ExamingRepoService, ExamingService } from '@proxy/super-abp/exam/admin/controllers';
 import { ActivatedRoute, Router } from '@angular/router';
 import { dateTimePickerUtil } from '@delon/util';
 import { DisabledTimeFn, DisabledTimePartial } from 'ng-zorro-antd/date-picker';
+import { ExamManagementRepositoryComponent } from '../../repository/repository.component';
 
 @Component({
   selector: 'app-exam-management-examing-edit',
@@ -22,9 +23,11 @@ import { DisabledTimeFn, DisabledTimePartial } from 'ng-zorro-antd/date-picker';
   ]
 })
 export class ExamManagementExamingEditComponent implements OnInit {
-  @Input()
   examingId: string;
   examing: GetExamingForEditorOutput;
+
+  @ViewChild('QuestionAnswer')
+  examRepositoryComponent: ExamManagementRepositoryComponent;
 
   loading = false;
   isConfirmLoading = false;
@@ -33,10 +36,12 @@ export class ExamManagementExamingEditComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private route: ActivatedRoute,
     private router: Router,
     private messageService: NzMessageService,
     private localizationService: LocalizationService,
-    private examingService: ExamingService
+    private examingService: ExamingService,
+    private examingRepositoryService: ExamingRepoService
   ) {}
 
   get isLimitedTime() {
@@ -51,6 +56,9 @@ export class ExamManagementExamingEditComponent implements OnInit {
   get endTime() {
     return this.form.get('endTime');
   }
+  get score() {
+    return this.form.get('score');
+  }
   range(start: number, end: number): number[] {
     const result: number[] = [];
     for (let i = start; i < end; i++) {
@@ -62,22 +70,26 @@ export class ExamManagementExamingEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
-    if (this.examingId) {
-      this.examingService
-        .getEditor(this.examingId)
-        .pipe(
-          tap(response => {
-            this.examing = response;
-            this.buildForm();
-            this.loading = false;
-          })
-        )
-        .subscribe();
-    } else {
-      this.examing = {} as GetExamingForEditorOutput;
-      this.buildForm();
-      this.loading = false;
-    }
+    this.route.paramMap.subscribe(params => {
+      let id = params.get('id');
+      this.examingId = id;
+      if (this.examingId) {
+        this.examingService
+          .getEditor(this.examingId)
+          .pipe(
+            tap(response => {
+              this.examing = response;
+              this.buildForm();
+              this.loading = false;
+            })
+          )
+          .subscribe();
+      } else {
+        this.examing = {} as GetExamingForEditorOutput;
+        this.buildForm();
+        this.loading = false;
+      }
+    });
   }
 
   buildForm() {
@@ -109,6 +121,12 @@ export class ExamManagementExamingEditComponent implements OnInit {
     }
     this.isConfirmLoading = true;
 
+    this.form.removeControl('repositories');
+    if (!this.isLimitedTime.value) {
+      this.form.removeControl('examingTimes');
+      this.form.removeControl('startTime');
+      this.form.removeControl('endTime');
+    }
     if (this.examingId) {
       this.examingService
         .update(this.examingId, {
@@ -116,9 +134,16 @@ export class ExamManagementExamingEditComponent implements OnInit {
           ...this.form.value
         })
         .pipe(
-          tap(response => {
-            this.messageService.success(this.localizationService.instant('Exam::SaveSuccessfully'));
-            this.goback();
+          tap(res => {
+            this.examRepositoryComponent
+              .save(res.id)
+              .pipe(
+                tap(() => {
+                  this.goback();
+                }),
+                finalize(() => (this.isConfirmLoading = false))
+              )
+              .subscribe();
           }),
           finalize(() => (this.isConfirmLoading = false))
         )
@@ -129,9 +154,16 @@ export class ExamManagementExamingEditComponent implements OnInit {
           ...this.form.value
         })
         .pipe(
-          tap(response => {
-            this.messageService.success(this.localizationService.instant('*::SaveSucceed'));
-            this.goback();
+          tap(res => {
+            this.examRepositoryComponent
+              .save(res.id)
+              .pipe(
+                tap(() => {
+                  this.goback();
+                }),
+                finalize(() => (this.isConfirmLoading = false))
+              )
+              .subscribe();
           }),
           finalize(() => (this.isConfirmLoading = false))
         )
@@ -146,6 +178,10 @@ export class ExamManagementExamingEditComponent implements OnInit {
   changeExamingTimeStatus(e) {
     this.showExamingTime = e;
   }
+  changeTotalScore(e) {
+    this.score.setValue(e);
+  }
+
   back(e: MouseEvent) {
     e.preventDefault();
     this.goback();

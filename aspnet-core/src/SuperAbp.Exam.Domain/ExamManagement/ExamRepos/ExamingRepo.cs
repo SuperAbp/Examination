@@ -11,7 +11,7 @@ namespace SuperAbp.Exam.ExamManagement.ExamRepos
     /// <summary>
     /// 考试题库
     /// </summary>
-    public class ExamingRepo : Entity, IHasCreationTime
+    public class ExamingRepo : Entity<Guid>, IHasCreationTime
     {
         /// <summary>
         /// 考试Id
@@ -59,10 +59,5 @@ namespace SuperAbp.Exam.ExamManagement.ExamRepos
         public decimal? JudgeScore { get; set; }
 
         public DateTime CreationTime { get; set; }
-
-        public override object[] GetKeys()
-        {
-            return new object[] { ExamingId, QuestionRepositoryId };
-        }
     }
 }

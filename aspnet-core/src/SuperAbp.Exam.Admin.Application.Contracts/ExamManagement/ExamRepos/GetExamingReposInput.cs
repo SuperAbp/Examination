@@ -1,4 +1,5 @@
-﻿using Volo.Abp.Application.Dtos;
+﻿using System;
+using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
 {
@@ -7,5 +8,9 @@ namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
     /// </summary>
     public class GetExamingReposInput : PagedAndSortedResultRequestDto
     {
+        /// <summary>
+        /// 考试Id
+        /// </summary>
+        public Guid ExamingId { get; set; }
     }
 }

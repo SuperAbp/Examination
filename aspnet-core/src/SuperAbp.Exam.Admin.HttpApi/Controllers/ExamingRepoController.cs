@@ -34,13 +34,12 @@ namespace SuperAbp.Exam.Admin.Controllers
         /// <summary>
         /// 获取修改
         /// </summary>
-        /// <param name="examingId">考试Id</param>
-        /// <param name="questionRepositoryId">题库Id</param>
+        /// <param name="id">Id</param>
         /// <returns></returns>
-        [HttpGet("{examingId}/repository/{questionRepositoryId}/editor")]
-        public virtual async Task<GetExamingRepoForEditorOutput> GetEditorAsync(Guid examingId, Guid questionRepositoryId)
+        [HttpGet("{id}")]
+        public virtual async Task<GetExamingRepoForEditorOutput> GetEditorAsync(Guid id)
         {
-            return await _examRepoAppService.GetEditorAsync(examingId, questionRepositoryId);
+            return await _examRepoAppService.GetEditorAsync(id);
         }
 
         /// <summary>
@@ -49,34 +48,32 @@ namespace SuperAbp.Exam.Admin.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost]
-        public virtual async Task<ExamingRepoListDto> CreateAsync(ExamingRepoCreateDto input)
+        public Task<ExamingRepoListDto> CreateAsync(ExamingRepoCreateDto input)
         {
-            return await _examRepoAppService.CreateAsync(input);
+            throw new NotImplementedException();
         }
 
         /// <summary>
         /// 编辑
         /// </summary>
-        /// <param name="examingId">考试Id</param>
-        /// <param name="questionRepositoryId">题库Id</param>
+        /// <param name="id"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPut("{examingId}/repository/{questionRepositoryId}")]
-        public virtual async Task<ExamingRepoListDto> UpdateAsync(Guid examingId, Guid questionRepositoryId, ExamingRepoUpdateDto input)
+        [HttpPatch("{id}")]
+        public Task<ExamingRepoListDto> UpdateAsync(Guid id, ExamingRepoUpdateDto input)
         {
-            return await _examRepoAppService.UpdateAsync(examingId, questionRepositoryId, input);
+            return _examRepoAppService.UpdateAsync(id, input);
         }
 
         /// <summary>
         /// 删除
         /// </summary>
-        /// <param name="examingId">考试Id</param>
-        /// <param name="questionRepositoryId">题库Id</param>
+        /// <param name="id">Id</param>
         /// <returns></returns>
-        [HttpDelete("{examingId}/repository/{questionRepositoryId}")]
-        public virtual async Task DeleteAsync(Guid examingId, Guid questionRepositoryId)
+        [HttpDelete("{id}")]
+        public virtual async Task DeleteAsync(Guid id)
         {
-            await _examRepoAppService.DeleteAsync(examingId, questionRepositoryId);
+            await _examRepoAppService.DeleteAsync(id);
         }
     }
 }

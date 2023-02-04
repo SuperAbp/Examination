@@ -51,7 +51,12 @@
         <td>
           <nz-form-item>
             <nz-form-control>
-              <nz-input-number formControlName="singleScore" [nzMin]="0" [nzStep]="1"></nz-input-number>
+              <nz-input-number
+                formControlName="singleScore"
+                [nzMin]="0"
+                [nzStep]="1"
+                (ngModelChange)="changeScore($event)"
+              ></nz-input-number>
             </nz-form-control>
           </nz-form-item>
         </td>

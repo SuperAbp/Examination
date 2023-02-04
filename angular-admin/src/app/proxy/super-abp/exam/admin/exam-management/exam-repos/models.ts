@@ -26,4 +26,6 @@ export interface ExamingRepoUpdateDto extends ExamingRepoCreateOrUpdateDtoBase {
 
 export interface GetExamingRepoForEditorOutput extends ExamingRepoCreateOrUpdateDtoBase {}
 
-export interface GetExamingReposInput extends PagedAndSortedResultRequestDto {}
+export interface GetExamingReposInput extends PagedAndSortedResultRequestDto {
+  examingId: string;
+}

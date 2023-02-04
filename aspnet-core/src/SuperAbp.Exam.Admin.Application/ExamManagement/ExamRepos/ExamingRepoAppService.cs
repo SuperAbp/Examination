@@ -10,6 +10,8 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.ExamManagement.ExamRepos;
+using SuperAbp.Exam.Admin.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.Exams;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
 {
@@ -42,6 +44,8 @@ namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
 
             var queryable = await _examRepoRepository.GetQueryableAsync();
 
+            queryable = queryable.Where(e => e.ExamingId == input.ExamingId);
+
             long totalCount = await AsyncExecuter.CountAsync(queryable);
 
             var entities = await AsyncExecuter.ToListAsync(queryable
@@ -58,9 +62,9 @@ namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns></returns>
-        public virtual async Task<GetExamingRepoForEditorOutput> GetEditorAsync(Guid examingId, Guid questionRepositoryId)
+        public virtual async Task<GetExamingRepoForEditorOutput> GetEditorAsync(Guid id)
         {
-            ExamingRepo entity = await _examRepoRepository.GetAsync(examingId, questionRepositoryId);
+            ExamingRepo entity = await _examRepoRepository.GetAsync(id);
 
             return ObjectMapper.Map<ExamingRepo, GetExamingRepoForEditorOutput>(entity);
         }
@@ -73,21 +77,21 @@ namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
         [Authorize(ExamPermissions.ExamRepos.Create)]
         public virtual async Task<ExamingRepoListDto> CreateAsync(ExamingRepoCreateDto input)
         {
-            var entity = ObjectMapper.Map<ExamingRepoCreateDto, ExamingRepo>(input);
-            entity = await _examRepoRepository.InsertAsync(entity, true);
-            return ObjectMapper.Map<ExamingRepo, ExamingRepoListDto>(entity);
+            ExamingRepo repository = ObjectMapper.Map<ExamingRepoCreateDto, ExamingRepo>(input); ;
+            repository = await _examRepoRepository.InsertAsync(repository, true);
+            return ObjectMapper.Map<ExamingRepo, ExamingRepoListDto>(repository);
         }
 
         /// <summary>
-        /// 编辑
+        /// 修改
         /// </summary>
-        /// <param name="id">主键</param>
+        /// <param name="id"></param>
         /// <param name="input"></param>
         /// <returns></returns>
         [Authorize(ExamPermissions.ExamRepos.Update)]
-        public virtual async Task<ExamingRepoListDto> UpdateAsync(Guid examingId, Guid questionRepositoryId, ExamingRepoUpdateDto input)
+        public virtual async Task<ExamingRepoListDto> UpdateAsync(Guid id, ExamingRepoUpdateDto input)
         {
-            ExamingRepo entity = await _examRepoRepository.GetAsync(examingId, questionRepositoryId);
+            var entity = await _examRepoRepository.GetAsync(id);
             entity = ObjectMapper.Map(input, entity);
             entity = await _examRepoRepository.UpdateAsync(entity);
             return ObjectMapper.Map<ExamingRepo, ExamingRepoListDto>(entity);
@@ -99,9 +103,9 @@ namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
         /// <param name="id">主键</param>
         /// <returns></returns>
         [Authorize(ExamPermissions.ExamRepos.Delete)]
-        public virtual async Task DeleteAsync(Guid examingId, Guid questionRepositoryId)
+        public virtual async Task DeleteAsync(Guid id)
         {
-            await _examRepoRepository.DeleteAsync(examingId, questionRepositoryId);
+            await _examRepoRepository.DeleteAsync(id);
         }
 
         /// <summary>
