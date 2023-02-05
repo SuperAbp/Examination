@@ -12,6 +12,10 @@ using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.ExamManagement.ExamRepos;
 using SuperAbp.Exam.Admin.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.QuestionManagement.QuestionRepos;
+using SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos;
+using SuperAbp.Exam.QuestionManagement.Questions;
+using Volo.Abp.ObjectMapping;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
 {
@@ -22,15 +26,17 @@ namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
     public class ExamingRepoAppService : ExamAppService, IExamingRepoAppService
     {
         private readonly IExamingRepoRepository _examRepoRepository;
+        private  readonly  IQuestionRepoRepository _questionRepoRepository;
 
         /// <summary>
         /// .ctor
         /// </summary>
         /// <param name="examRepoRepository"></param>
         public ExamingRepoAppService(
-            IExamingRepoRepository examRepoRepository)
+            IExamingRepoRepository examRepoRepository, IQuestionRepoRepository questionRepoRepository)
         {
             _examRepoRepository = examRepoRepository;
+            _questionRepoRepository = questionRepoRepository;
         }
 
         /// <summary>
@@ -42,17 +48,34 @@ namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
         {
             await NormalizeMaxResultCountAsync(input);
 
-            var queryable = await _examRepoRepository.GetQueryableAsync();
+            var examRepoQueryable = await _examRepoRepository.GetQueryableAsync();
 
-            queryable = queryable.Where(e => e.ExamingId == input.ExamingId);
+            examRepoQueryable = examRepoQueryable.Where(e => e.ExamingId == input.ExamingId);
+
+            var queryable = 
+                from er in examRepoQueryable
+                join qr in (await _questionRepoRepository.GetQueryableAsync()) on er.QuestionRepositoryId equals qr.Id
+                select new ExamingRepositoryDetail
+                {
+                    Id = er.Id,
+                    QuestionRepository = qr.Title,
+                    QuestionRepositoryId = er.QuestionRepositoryId,
+                    SingleCount = er.SingleCount,
+                    SingleScore = er.SingleScore,
+                    MultiCount = er.MultiCount,
+                    MultiScore = er.MultiScore,
+                    JudgeCount = er.JudgeCount,
+                    JudgeScore = er.JudgeScore,
+                    CreationTime = er.CreationTime
+                };
 
             long totalCount = await AsyncExecuter.CountAsync(queryable);
 
             var entities = await AsyncExecuter.ToListAsync(queryable
                 .OrderBy(input.Sorting ?? ExamingRepoConsts.DefaultSorting)
                 .PageBy(input));
-
-            var dtos = ObjectMapper.Map<List<ExamingRepo>, List<ExamingRepoListDto>>(entities);
+            
+            var dtos = ObjectMapper.Map<List<ExamingRepositoryDetail>, List<ExamingRepoListDto>>(entities);
 
             return new PagedResultDto<ExamingRepoListDto>(totalCount, dtos);
         }

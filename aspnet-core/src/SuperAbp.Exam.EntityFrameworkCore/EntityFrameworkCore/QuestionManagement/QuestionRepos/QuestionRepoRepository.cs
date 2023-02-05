@@ -2,6 +2,9 @@
 using Volo.Abp.EntityFrameworkCore;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionRepos
 {
@@ -18,7 +21,12 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionRepos
             : base(dbContextProvider)
         {
         }
-
-        // TODO:编写仓储代码
+        public async Task<string> FindTitleAsync(Guid id)
+        {
+            return await (await GetDbSetAsync())
+                .Where(r => r.Id == id)
+                .Select(r => r.Title)
+                .FirstOrDefaultAsync();
+        }
     }
 }

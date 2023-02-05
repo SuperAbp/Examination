@@ -30,6 +30,7 @@ namespace SuperAbp.Exam.ExamManagement
 
             CreateMap<ExamingRepo, GetExamingRepoForEditorOutput>();
             CreateMap<ExamingRepo, ExamingRepoListDto>();
+            CreateMap<ExamingRepositoryDetail, ExamingRepoListDto>();
             CreateMap<ExamingRepo, ExamingRepoDetailDto>();
             CreateMap<ExamingRepoCreateOrUpdateDtoBase, ExamingRepo>();
             CreateMap<ExamingRepoCreateDto, ExamingRepo>();

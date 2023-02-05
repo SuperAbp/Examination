@@ -2,6 +2,8 @@
 using Volo.Abp.EntityFrameworkCore;
 using SuperAbp.Exam.ExamManagement.Exams;
 using System;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.Exams
 {
@@ -18,7 +20,10 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.Exams
             : base(dbContextProvider)
         {
         }
-
-        // TODO:编写仓储代码
+        
+        public async Task<bool> ExistsByNameAsync(string name)
+        {
+            return await (await GetQueryableAsync()).AnyAsync(e => e.Name == name);
+        }
     }
 }

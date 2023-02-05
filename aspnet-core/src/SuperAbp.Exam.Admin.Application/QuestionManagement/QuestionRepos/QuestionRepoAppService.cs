@@ -46,6 +46,15 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
             return ObjectMapper.Map<QuestionRepo, QuestionRepoDetailDto>(entity);
         }
 
+        public virtual async Task<QuestionRepoCountDto> GetQuestionCountAsync(Guid id)
+        {
+            var dto = new QuestionRepoCountDto();
+            dto.SingleCount = await _questionRepository.GetCountAsync(id, QuestionType.SingleSelect);
+            dto.JudgeCount = await _questionRepository.GetCountAsync(id, QuestionType.Judge);
+            dto.MultiCount = await _questionRepository.GetCountAsync(id, QuestionType.MultiSelect);
+            return dto;
+        }
+
         /// <summary>
         /// 列表
         /// </summary>

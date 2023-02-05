@@ -14,5 +14,6 @@ namespace SuperAbp.Exam.ExamManagement.ExamRepos
         Task<ExamingRepo> FindAsync(Guid examingId, Guid questionRepositoryId);
 
         Task DeleteAsync(Guid examingId, Guid questionRepositoryId);
+        Task DeleteByExamingIdAsync(Guid examingId);
     }
 }

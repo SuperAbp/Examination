@@ -48,9 +48,9 @@ namespace SuperAbp.Exam.Admin.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost]
-        public Task<ExamingRepoListDto> CreateAsync(ExamingRepoCreateDto input)
+        public async Task<ExamingRepoListDto> CreateAsync(ExamingRepoCreateDto input)
         {
-            throw new NotImplementedException();
+            return await _examRepoAppService.CreateAsync(input);
         }
 
         /// <summary>
@@ -60,9 +60,9 @@ namespace SuperAbp.Exam.Admin.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPatch("{id}")]
-        public Task<ExamingRepoListDto> UpdateAsync(Guid id, ExamingRepoUpdateDto input)
+        public async Task<ExamingRepoListDto> UpdateAsync(Guid id, ExamingRepoUpdateDto input)
         {
-            return _examRepoAppService.UpdateAsync(id, input);
+            return await _examRepoAppService.UpdateAsync(id, input);
         }
 
         /// <summary>

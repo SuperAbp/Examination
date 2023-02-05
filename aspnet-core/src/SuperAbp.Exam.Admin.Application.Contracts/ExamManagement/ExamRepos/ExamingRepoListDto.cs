@@ -6,8 +6,15 @@ namespace SuperAbp.Exam.Admin.ExamManagement.ExamRepos
     /// <summary>
     /// 列表
     /// </summary>
-    public class ExamingRepoListDto : EntityDto
+    public class ExamingRepoListDto : EntityDto<Guid>
     {
+        public string QuestionRepository { get; set; }
+
+        /// <summary>
+        /// 题库Id
+        /// </summary>
+        public Guid QuestionRepositoryId { get; set; }
+
         public int? SingleCount { get; set; }
         public decimal? SingleScore { get; set; }
         public int? MultiCount { get; set; }

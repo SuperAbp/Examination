@@ -9,6 +9,7 @@
     "IsRight": "是否正确",
     "IsAnswer": "是否答案",
     "QuestionRepositoryExists": "题库已存在",
+    "ExamingExists": "考试已存在",
     "Answer": "答案",
     "CreationTime": "创建时间",
     "Content": "内容",

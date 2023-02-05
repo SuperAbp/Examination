@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using SuperAbp.Exam.ExamManagement.ExamRepos;
 using Volo.Abp;
 using Volo.Abp.Linq;
 using Volo.Abp.Application.Dtos;
@@ -20,15 +21,18 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
     public class ExamingAppService : ExamAppService, IExamingAppService
     {
         private readonly IExamingRepository _examingRepository;
+        private  readonly  IExamingRepoRepository _examingRepoRepository;
 
         /// <summary>
         /// .ctor
         /// </summary>
         /// <param name="examingRepository"></param>
+        /// <param name="examingRepoRepository"></param>
         public ExamingAppService(
-            IExamingRepository examingRepository)
+            IExamingRepository examingRepository, IExamingRepoRepository examingRepoRepository)
         {
             _examingRepository = examingRepository;
+            _examingRepoRepository = examingRepoRepository;
         }
 
         /// <summary>
@@ -85,6 +89,10 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         [Authorize(ExamPermissions.Examings.Create)]
         public virtual async Task<ExamingListDto> CreateAsync(ExamingCreateDto input)
         {
+            if (await _examingRepository.ExistsByNameAsync(input.Name.Trim()))
+            {
+                throw new UserFriendlyException(L["ExamingExists"]);
+            }
             var entity = ObjectMapper.Map<ExamingCreateDto, Examing>(input);
             entity = await _examingRepository.InsertAsync(entity, true);
             return ObjectMapper.Map<Examing, ExamingListDto>(entity);
@@ -113,6 +121,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         [Authorize(ExamPermissions.Examings.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
+            await _examingRepoRepository.DeleteByExamingIdAsync(id);
             await _examingRepository.DeleteAsync(s => s.Id == id);
         }
 

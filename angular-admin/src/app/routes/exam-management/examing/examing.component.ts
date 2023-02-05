@@ -68,7 +68,7 @@ export class ExamManagementExamingComponent implements OnInit {
           },
           click: (record, _modal, component) => {
             this.examingService.delete(record.id).subscribe(response => {
-              this.messageService.success(this.localizationService.instant('Exam::SuccessDeleted', record.name));
+              this.messageService.success(this.localizationService.instant('Exam::DeletedSuccessfully', record.name));
               // tslint:disable-next-line: no-non-null-assertion
               component!.removeRow(record);
             });

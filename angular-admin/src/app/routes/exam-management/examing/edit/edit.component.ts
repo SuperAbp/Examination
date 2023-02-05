@@ -26,12 +26,12 @@ export class ExamManagementExamingEditComponent implements OnInit {
   examingId: string;
   examing: GetExamingForEditorOutput;
 
-  @ViewChild('QuestionAnswer')
+  @ViewChild('ExamRepository')
   examRepositoryComponent: ExamManagementRepositoryComponent;
 
   loading = false;
   isConfirmLoading = false;
-  showExamingTime: false;
+  showExamingTime: boolean;
   form: FormGroup = null;
 
   constructor(
@@ -106,6 +106,7 @@ export class ExamManagementExamingEditComponent implements OnInit {
       repositories: this.fb.array([])
     });
     if (this.examing.startTime && this.examing.endTime) {
+      this.showExamingTime = true;
       this.isLimitedTime.setValue(true);
       this.examingTimes.setValue([this.examing.startTime, this.examing.endTime]);
     }
@@ -121,22 +122,28 @@ export class ExamManagementExamingEditComponent implements OnInit {
     }
     this.isConfirmLoading = true;
 
-    this.form.removeControl('repositories');
+    var dynamicPara = {};
     if (!this.isLimitedTime.value) {
       this.form.removeControl('examingTimes');
       this.form.removeControl('startTime');
       this.form.removeControl('endTime');
+      this.examing.startTime = null;
+      this.examing.endTime = null;
+    } else {
+      dynamicPara['startTime'] = dateTimePickerUtil.format(this.startTime.value, 'yyyy-MM-dd HH:mm:ss');
+      dynamicPara['endTime'] = dateTimePickerUtil.format(this.endTime.value, 'yyyy-MM-dd HH:mm:ss');
     }
     if (this.examingId) {
       this.examingService
         .update(this.examingId, {
           ...this.examing,
-          ...this.form.value
+          ...this.form.value,
+          ...dynamicPara
         })
         .pipe(
           tap(res => {
             this.examRepositoryComponent
-              .save(res.id)
+              .save(this.examingId)
               .pipe(
                 tap(() => {
                   this.goback();
@@ -151,7 +158,8 @@ export class ExamManagementExamingEditComponent implements OnInit {
     } else {
       this.examingService
         .create({
-          ...this.form.value
+          ...this.form.value,
+          ...dynamicPara
         })
         .pipe(
           tap(res => {

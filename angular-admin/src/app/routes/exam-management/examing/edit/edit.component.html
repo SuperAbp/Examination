@@ -10,6 +10,7 @@
 <ng-container *ngIf="form; else loaderRef">
   <nz-card [nzTitle]="'Exam::ExamingRepository' | abpLocalization">
     <app-exam-management-repository
+      #ExamRepository
       [examingId]="examingId"
       [examingForm]="form"
       (totalScoreChange)="changeTotalScore($event)"

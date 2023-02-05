@@ -12,6 +12,7 @@ import { forkJoin, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 export interface ExamingRepoCreateTemp extends ExamingRepoCreateDto {
+  id?: string;
   questionRepository: string;
   singleTotalCount: number;
   multiTotalCount?: number;
@@ -93,7 +94,32 @@ export class ExamManagementRepositoryComponent implements OnInit {
     this.repositoryService
       .getList(this.params)
       .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => ((this.examRepositories = response.items), (this.total = response.totalCount)));
+      .subscribe(response => {
+        response.items.forEach(repo => {
+          this.questionRepositoryService
+            .getQuestionCount(repo.questionRepositoryId)
+            .pipe(
+              tap(res => {
+                this.add({
+                  id: repo.id,
+                  examingId: this.examingId,
+                  questionRepository: repo.questionRepository,
+                  questionRepositoryId: repo.questionRepositoryId,
+                  singleTotalCount: res.singleCount,
+                  singleCount: repo.singleCount,
+                  singleScore: repo.singleScore,
+                  multiTotalCount: res.multiCount,
+                  multiCount: repo.multiCount,
+                  multiScore: repo.multiScore,
+                  judgeTotalCount: res.judgeCount,
+                  judgeCount: repo.judgeCount,
+                  judgeScore: repo.judgeScore
+                } as ExamingRepoCreateTemp);
+              })
+            )
+            .subscribe();
+        });
+      });
   }
 
   handleOk(): void {
@@ -120,12 +146,13 @@ export class ExamManagementRepositoryComponent implements OnInit {
       this.messageService.error(this.localizationService.instant('Exam::QuestionRepositoryExists'));
       return;
     }
-    let fg = this.createAttribute(item as ExamingRepoCreateDto);
+    let fg = this.createAttribute(item);
     this.repositories.push(fg);
     this.repositoryTemps.push(item);
   }
-  createAttribute(item: ExamingRepoCreateDto) {
+  createAttribute(item: ExamingRepoCreateTemp) {
     return this.fb.group({
+      id: [item.id || null],
       questionRepositoryId: [item.questionRepositoryId || null, [Validators.required]],
       singleCount: [item.singleCount || 0, [Validators.required]],
       singleScore: [item.singleScore || 0, [Validators.required]],
@@ -136,7 +163,9 @@ export class ExamManagementRepositoryComponent implements OnInit {
     });
   }
   delete(index: number, item: ExamingRepoCreateTemp) {
-    this.removeRepositoryIds.push({ examingId: item.examingId, questionRepositoryId: item.questionRepositoryId });
+    if (item.id) {
+      this.removeRepositoryIds.push(item.id);
+    }
     this.repositories.removeAt(index);
     this.repositoryTemps.splice(index, 1);
   }
@@ -145,16 +174,25 @@ export class ExamManagementRepositoryComponent implements OnInit {
     var services: Array<Observable<any>> = [];
     this.repositories.controls.forEach(repository => {
       var value = repository.value;
-      services.push(
-        this.examingRepositoryService.createOrUpdate({
-          examingId: this.examingId,
-          ...value
-        })
-      );
+      if (value.id) {
+        services.push(
+          this.examingRepositoryService.update(value.id, {
+            examingId: examingId,
+            ...value
+          })
+        );
+      } else {
+        services.push(
+          this.examingRepositoryService.create({
+            examingId: examingId,
+            ...value
+          })
+        );
+      }
     });
     if (this.removeRepositoryIds.length > 0) {
       this.removeRepositoryIds.forEach(id => {
-        services.push(this.examingRepositoryService.delete(examingId, id));
+        services.push(this.examingRepositoryService.delete(id));
       });
     }
     return forkJoin(services);

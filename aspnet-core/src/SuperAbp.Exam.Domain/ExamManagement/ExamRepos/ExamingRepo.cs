@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 
@@ -11,7 +12,7 @@ namespace SuperAbp.Exam.ExamManagement.ExamRepos
     /// <summary>
     /// 考试题库
     /// </summary>
-    public class ExamingRepo : Entity<Guid>, IHasCreationTime
+    public class ExamingRepo : Entity<Guid>, IHasCreationTime,ISoftDelete
     {
         /// <summary>
         /// 考试Id
@@ -59,5 +60,6 @@ namespace SuperAbp.Exam.ExamManagement.ExamRepos
         public decimal? JudgeScore { get; set; }
 
         public DateTime CreationTime { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

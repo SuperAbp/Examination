@@ -3,6 +3,7 @@ using Volo.Abp.EntityFrameworkCore;
 using SuperAbp.Exam.ExamManagement.ExamRepos;
 using System;
 using System.Threading.Tasks;
+using SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.Questions;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.ExamRepos
 {
@@ -35,6 +36,11 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.ExamRepos
         public Task DeleteAsync(Guid examingId, Guid questionRepositoryId)
         {
             return DeleteAsync(er => er.ExamingId == examingId && er.QuestionRepositoryId == questionRepositoryId);
+        }
+
+        public Task DeleteByExamingIdAsync(Guid examingId)
+        {
+            return DeleteAsync(er => er.ExamingId == examingId);
         }
     }
 }
