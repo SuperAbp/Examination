@@ -6,13 +6,13 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
     /// <summary>
     /// 列表
     /// </summary>
-    public class ExamingDetailDto : EntityDto<Guid>
+    public class ExamingDetailDto: EntityDto<System.Guid>
     {
         public string Name { get; set; }
         public decimal Score { get; set; }
         public decimal PassingScore { get; set; }
         public int TotalTime { get; set; }
-        public DateTime? StartTime { get; set; }
-        public DateTime? EndTime { get; set; }
+        public System.Nullable<System.DateTime> StartTime { get; set; }
+        public System.Nullable<System.DateTime> EndTime { get; set; }
     }
 }

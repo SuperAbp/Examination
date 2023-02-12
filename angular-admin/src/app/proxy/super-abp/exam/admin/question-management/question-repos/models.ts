@@ -1,12 +1,20 @@
 import type { EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
-export interface GetQuestionRepoForEditorOutput extends QuestionRepoCreateOrUpdateDtoBase {}
+export interface GetQuestionRepoForEditorOutput extends QuestionRepoCreateOrUpdateDtoBase {
+}
 
 export interface GetQuestionReposInput extends PagedAndSortedResultRequestDto {
   title?: string;
 }
 
-export interface QuestionRepoCreateDto extends QuestionRepoCreateOrUpdateDtoBase {}
+export interface QuestionRepoCountDto {
+  singleCount: number;
+  multiCount: number;
+  judgeCount: number;
+}
+
+export interface QuestionRepoCreateDto extends QuestionRepoCreateOrUpdateDtoBase {
+}
 
 export interface QuestionRepoCreateOrUpdateDtoBase {
   title?: string;
@@ -18,12 +26,6 @@ export interface QuestionRepoDetailDto extends EntityDto<string> {
   remark?: string;
 }
 
-export interface QuestionRepoCountDto extends EntityDto<string> {
-  singleCount: number;
-  judgeCount: number;
-  multiCount: number;
-}
-
 export interface QuestionRepoListDto extends EntityDto<string> {
   title?: string;
   singleCount: number;
@@ -31,4 +33,5 @@ export interface QuestionRepoListDto extends EntityDto<string> {
   multiCount: number;
 }
 
-export interface QuestionRepoUpdateDto extends QuestionRepoCreateOrUpdateDtoBase {}
+export interface QuestionRepoUpdateDto extends QuestionRepoCreateOrUpdateDtoBase {
+}

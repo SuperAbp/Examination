@@ -24,53 +24,6 @@ namespace SuperAbp.Exam.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.ExamRepos.ExamingRepo", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreationTime");
-
-                    b.Property<Guid>("ExamingId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted");
-
-                    b.Property<int?>("JudgeCount")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("JudgeScore")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("MultiCount")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("MultiScore")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Proportion")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("QuestionRepositoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("SingleCount")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("SingleScore")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AppExamingRepositories", (string)null);
-                });
-
             modelBuilder.Entity("SuperAbp.Exam.ExamManagement.Exams.Examing", b =>
                 {
                     b.Property<Guid>("Id")
@@ -128,6 +81,9 @@ namespace SuperAbp.Exam.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<Guid>("PaperId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal>("PassingScore")
                         .HasColumnType("decimal(18,2)");
 
@@ -137,15 +93,126 @@ namespace SuperAbp.Exam.Migrations
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("TotalQuestionCount")
-                        .HasColumnType("int");
-
                     b.Property<int>("TotalTime")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppExamings", (string)null);
+                    b.HasIndex("PaperId");
+
+                    b.ToTable("AppExaming", (string)null);
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperRepos.PaperRepo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid>("ExamingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<int?>("JudgeCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("JudgeScore")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("MultiCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("MultiScore")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Proportion")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("QuestionRepositoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("SingleCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("SingleScore")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppPaperRepositories", (string)null);
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.Papers.Paper", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletionTime");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ExtraProperties")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<decimal>("Score")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TotalQuestionCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppPapers", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.QuestionAnswers.QuestionAnswer", b =>

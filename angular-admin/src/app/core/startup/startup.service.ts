@@ -117,8 +117,8 @@ export class StartupService {
                 link: '/question-management/question'
               },
               {
-                text: '考试管理',
-                link: '/exam-management/examing'
+                text: '试卷管理',
+                link: '/paper-management/paper'
               }
             ]
           }

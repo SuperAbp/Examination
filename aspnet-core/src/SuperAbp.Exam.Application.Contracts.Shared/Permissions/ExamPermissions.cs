@@ -30,19 +30,27 @@ public static class ExamPermissions
         public const string Delete = Default + ".Delete";
     }
 
-    public static class Examings
+    public static class Papers
     {
-        public const string Default = GroupName + ".Examing";
+        public const string Default = GroupName + ".Papers";
         public const string Create = Default + ".Create";
         public const string Update = Default + ".Update";
         public const string Delete = Default + ".Delete";
     }
 
-    public static class ExamRepos
+    public static class PaperRepos
     {
-        public const string Default = GroupName + ".ExamingRepository";
+        public const string Default = GroupName + ".PaperRepository";
         public const string Create = Default + ".Create";
         public const string Update = Default + ".Update";
         public const string Delete = Default + ".Delete";
     }
+
+public static class Examings
+{
+public const string Default = GroupName + ".Examing";
+public const string Create = Default + ".Create";
+public const string Update = Default + ".Update";
+public const string Delete = Default + ".Delete";
+}
 }

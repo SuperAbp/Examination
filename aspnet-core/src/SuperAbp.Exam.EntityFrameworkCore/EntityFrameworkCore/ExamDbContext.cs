@@ -1,7 +1,6 @@
 ﻿using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using Microsoft.EntityFrameworkCore;
-using SuperAbp.Exam.ExamManagement.ExamRepos;
 using SuperAbp.Exam.ExamManagement.Exams;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -19,9 +18,9 @@ using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.MenuManagement.EntityFrameworkCore;
-
-using SuperAbp.Exam.ExamManagement.Exams;
-using SuperAbp.Exam.ExamManagement.ExamRepos;
+using SuperAbp.Exam.PaperManagement.PaperRepos;
+using SuperAbp.Exam.PaperManagement.Papers;
+using ExamingConsts = SuperAbp.Exam.PaperManagement.Papers.ExamingConsts;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -67,8 +66,10 @@ public class ExamDbContext :
     public DbSet<Question> Questions { get; set; }
     public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
     public DbSet<QuestionRepo> QuestionRepositories { get; set; }
-    public DbSet<Examing> Examings { get; set; }
-    public DbSet<ExamingRepo> ExamingRepositories { get; set; }
+    public DbSet<Paper> Papers { get; set; }
+    public DbSet<PaperRepo> ExamingRepositories { get; set; }
+
+    public DbSet<Examing> Exams { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
@@ -123,24 +124,33 @@ public class ExamDbContext :
             b.Property(p => p.Remark).HasMaxLength(QuestionRepoConsts.MaxRemarkLength);
         });
 
-        builder.Entity<Examing>(b =>
+        builder.Entity<Paper>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "Examings", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "Papers", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
 
             b.Property(p => p.Name).IsRequired().HasMaxLength(ExamingConsts.MaxNameLength);
-            b.Property(p => p.Score).IsRequired();
-            b.Property(p => p.PassingScore).IsRequired();
-            b.Property(p => p.TotalTime).IsRequired();
             b.Property(p => p.Description).HasMaxLength(ExamingConsts.MaxDescriptionLength);
         });
 
-        builder.Entity<ExamingRepo>(b =>
+        builder.Entity<PaperRepo>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "ExamingRepositories", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "PaperRepositories", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+        });
+
+        builder.Entity<Examing>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "Examing", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
+
+            b.Property(p => p.Name).IsRequired().HasMaxLength(ExamingConsts.MaxNameLength);
+            b.Property(p => p.Description).HasMaxLength(ExamingConsts.MaxDescriptionLength);
+
+            b.HasIndex(p => p.PaperId);
         });
+
     }
 }

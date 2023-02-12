@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.Application.Dtos;
 
 using SuperAbp.Exam.Admin.ExamManagement.Exams;
-using System;
 
 namespace SuperAbp.Exam.Admin.Controllers
 {
@@ -26,7 +25,7 @@ namespace SuperAbp.Exam.Admin.Controllers
         /// <param name="id">主键</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public virtual async Task<ExamingDetailDto> GetAsync(Guid id)
+        public virtual async Task<ExamingDetailDto> GetAsync(System.Guid id)
         {
             return await _examingAppService.GetAsync(id);
         }
@@ -48,7 +47,7 @@ namespace SuperAbp.Exam.Admin.Controllers
         /// <param name="id">主键</param>
         /// <returns></returns>
         [HttpGet("{id}/editor")]
-        public virtual async Task<GetExamingForEditorOutput> GetEditorAsync(Guid id)
+        public virtual async Task<GetExamingForEditorOutput> GetEditorAsync(System.Guid id)
         {
             return await _examingAppService.GetEditorAsync(id);
         }
@@ -71,7 +70,7 @@ namespace SuperAbp.Exam.Admin.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public virtual async Task<ExamingListDto> UpdateAsync(Guid id, ExamingUpdateDto input)
+        public virtual async Task<ExamingListDto> UpdateAsync(System.Guid id, ExamingUpdateDto input)
         {
             return await _examingAppService.UpdateAsync(id, input);
         }
@@ -82,7 +81,7 @@ namespace SuperAbp.Exam.Admin.Controllers
         /// <param name="id">主键</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public virtual async Task DeleteAsync(Guid id)
+        public virtual async Task DeleteAsync(System.Guid id)
         {
             await _examingAppService.DeleteAsync(id);
         }
