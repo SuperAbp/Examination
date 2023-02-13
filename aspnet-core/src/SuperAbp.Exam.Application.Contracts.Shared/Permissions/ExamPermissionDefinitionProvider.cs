@@ -37,11 +37,10 @@ public class ExamPermissionDefinitionProvider : PermissionDefinitionProvider
         paperRepositories.AddChild(ExamPermissions.PaperRepos.Update, L("Permission:Edit"));
         paperRepositories.AddChild(ExamPermissions.PaperRepos.Delete, L("Permission:Delete"));
 
-var examings = myGroup.AddPermission(ExamPermissions.Examings.Default, L("Permission:Examings"));
-examings.AddChild(ExamPermissions.Examings.Create, L("Permission:Create"));
-examings.AddChild(ExamPermissions.Examings.Update, L("Permission:Edit"));
-examings.AddChild(ExamPermissions.Examings.Delete, L("Permission:Delete"));
-
+        var examings = myGroup.AddPermission(ExamPermissions.Examings.Default, L("Permission:Examings"));
+        examings.AddChild(ExamPermissions.Examings.Create, L("Permission:Create"));
+        examings.AddChild(ExamPermissions.Examings.Update, L("Permission:Edit"));
+        examings.AddChild(ExamPermissions.Examings.Delete, L("Permission:Delete"));
     }
 
     private static LocalizableString L(string name)

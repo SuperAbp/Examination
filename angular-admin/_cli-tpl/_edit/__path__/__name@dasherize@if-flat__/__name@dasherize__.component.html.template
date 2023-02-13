@@ -11,13 +11,13 @@
     <!-- <nz-row>
       <nz-col nzLg="6" nzMd="12" nzSm="24">
         <nz-form-item>
-          <nz-form-label nzRequired>{{ '*::DisplayName:Name' | abpLocalization }}</nz-form-label>
+          <nz-form-label nzRequired>{{ '*::Name' | abpLocalization }}</nz-form-label>
           <nz-form-control
             nzHasFeedback
             [nzValidatingTip]="'*::Validating' | abpLocalization"
             [nzErrorTip]="nameErrorTpl"
           >
-            <input formControlName="name" nz-input [placeholder]="'*::PlaceHolder' | abpLocalization: ('*::DisplayName:Name' | abpLocalization)"/>
+            <input formControlName="name" nz-input [placeholder]="'*::Placeholder' | abpLocalization: ('*::Name' | abpLocalization)"/>
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">
                 {{ '*::ThisFieldIsRequired.' | abpLocalization }}

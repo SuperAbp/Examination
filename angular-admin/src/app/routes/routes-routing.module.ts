@@ -41,7 +41,7 @@ const routes: Routes = [
         path: 'paper-management',
         loadChildren: () => import('./paper-management/paper-management.module').then(m => m.PaperManagementModule)
       }
-    ]
+    ,  { path: 'examing-management', loadChildren: () => import('./examing-management/examing-management.module').then((m) => m.ExamingManagementModule) }]
   },
   // 空白布局
   // {

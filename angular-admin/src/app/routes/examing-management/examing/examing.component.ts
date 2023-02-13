@@ -1,24 +1,23 @@
 import { ConfigStateService, LocalizationService, PermissionService } from '@abp/ng.core';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { STChange, STColumn, STComponent, STData, STPage } from '@delon/abc/st';
-import { SFSchema, SFStringWidgetSchema } from '@delon/form';
+import { STChange, STColumn, STComponent, STPage } from '@delon/abc/st';
+import { SFSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
-import { PaperManagementPaperEditComponent } from './edit/edit.component';
+import { ExamingManagementExamingEditComponent } from './edit/edit.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { GetPapersInput, PaperListDto } from '@proxy/super-abp/exam/admin/paper-management/papers';
-import { PaperService } from '@proxy/super-abp/exam/admin/controllers';
+import { ExamingService } from '@proxy/super-abp/exam/admin/controllers';
+import { ExamingListDto, GetExamingsInput } from '@proxy/super-abp/exam/admin/exam-management/exams';
 
 @Component({
-  selector: 'app-exam-management-examing',
-  templateUrl: './paper.component.html'
+  selector: 'app-examing-management-examing',
+  templateUrl: './examing.component.html'
 })
-export class PaperManagementPaperComponent implements OnInit {
-  papers: PaperListDto[];
+export class ExamingManagementExamingComponent implements OnInit {
+  examings: ExamingListDto[];
   total: number;
   loading = false;
-  params: GetPapersInput;
+  params: GetExamingsInput;
   page: STPage = {
     show: true,
     showSize: true,
@@ -27,32 +26,33 @@ export class PaperManagementPaperComponent implements OnInit {
   };
   searchSchema: SFSchema = {
     properties: {
-      name: {
-        type: 'string',
-        title: '',
-        ui: {
-          width: 250,
-          placeholder: this.localizationService.instant('Exam::Placeholder', this.localizationService.instant('Exam::Name'))
-        } as SFStringWidgetSchema
-      }
+      // TODO:搜索参数
     }
   };
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
     { title: this.localizationService.instant('Exam::Name'), index: 'name' },
+    { title: this.localizationService.instant('Exam::Score'), index: 'score', render: 'score' },
+    { title: this.localizationService.instant('Exam::TotalTime'), index: 'totalTime' },
+    { title: this.localizationService.instant('Exam::StartTime'), index: 'startTime' },
+    { title: this.localizationService.instant('Exam::EndTime'), index: 'endTime' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [
         {
           icon: 'edit',
-          type: 'link',
+          type: 'modal',
           tooltip: this.localizationService.instant('Exam::Edit'),
           iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.Paper.Update');
+            return this.permissionService.getGrantedPolicy('Exam.Examing.Update');
           },
-          click: (record: STData, modal?: any, instance?: STComponent) => {
-            this.router.navigateByUrl(`/paper-management/paper/${record['id']}/edit`);
-          }
+          modal: {
+            component: ExamingManagementExamingEditComponent,
+            params: (record: any) => ({
+              examingId: record.id
+            })
+          },
+          click: 'reload'
         },
         {
           icon: 'delete',
@@ -64,10 +64,10 @@ export class PaperManagementPaperComponent implements OnInit {
             icon: 'star'
           },
           iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.Paper.Delete');
+            return this.permissionService.getGrantedPolicy('Exam.Examing.Delete');
           },
           click: (record, _modal, component) => {
-            this.paperService.delete(record.id).subscribe(response => {
+            this.examingService.delete(record.id).subscribe(response => {
               this.messageService.success(this.localizationService.instant('Exam::DeletedSuccessfully', record.name));
               // tslint:disable-next-line: no-non-null-assertion
               component!.removeRow(record);
@@ -79,11 +79,11 @@ export class PaperManagementPaperComponent implements OnInit {
   ];
 
   constructor(
-    private router: Router,
+    private modal: ModalHelper,
     private localizationService: LocalizationService,
     private messageService: NzMessageService,
     private permissionService: PermissionService,
-    private paperService: PaperService
+    private examingService: ExamingService
   ) {}
 
   ngOnInit() {
@@ -92,12 +92,12 @@ export class PaperManagementPaperComponent implements OnInit {
   }
   getList() {
     this.loading = true;
-    this.paperService
+    this.examingService
       .getList(this.params)
       .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => ((this.papers = response.items), (this.total = response.totalCount)));
+      .subscribe(response => ((this.examings = response.items), (this.total = response.totalCount)));
   }
-  resetParameters(): GetPapersInput {
+  resetParameters(): GetExamingsInput {
     return {
       skipCount: 0,
       maxResultCount: 10,
@@ -119,14 +119,14 @@ export class PaperManagementPaperComponent implements OnInit {
     this.st.load(1);
   }
   search(e) {
-    // if (e.name) {
-    //   this.params.name = e.name;
-    // } else {
-    //   delete this.params.name;
-    // }
+    //if (e.name) {
+    //  this.params.name = e.name;
+    //} else {
+    //  delete this.params.name;
+    //}
     this.st.load(1);
   }
   add() {
-    this.router.navigateByUrl(`/paper-management/paper/create`);
+    this.modal.createStatic(ExamingManagementExamingEditComponent, { examingId: '' }).subscribe(() => this.st.reload());
   }
 }
