@@ -20,7 +20,7 @@ using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.MenuManagement.EntityFrameworkCore;
 using SuperAbp.Exam.PaperManagement.PaperRepos;
 using SuperAbp.Exam.PaperManagement.Papers;
-using ExamingConsts = SuperAbp.Exam.PaperManagement.Papers.ExamingConsts;
+using PaperConsts = SuperAbp.Exam.PaperManagement.Papers.PaperConsts;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -130,8 +130,8 @@ public class ExamDbContext :
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
 
-            b.Property(p => p.Name).IsRequired().HasMaxLength(ExamingConsts.MaxNameLength);
-            b.Property(p => p.Description).HasMaxLength(ExamingConsts.MaxDescriptionLength);
+            b.Property(p => p.Name).IsRequired().HasMaxLength(PaperConsts.MaxNameLength);
+            b.Property(p => p.Description).HasMaxLength(PaperConsts.MaxDescriptionLength);
         });
 
         builder.Entity<PaperRepo>(b =>
@@ -146,8 +146,8 @@ public class ExamDbContext :
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
 
-            b.Property(p => p.Name).IsRequired().HasMaxLength(ExamingConsts.MaxNameLength);
-            b.Property(p => p.Description).HasMaxLength(ExamingConsts.MaxDescriptionLength);
+            b.Property(p => p.Name).IsRequired().HasMaxLength(PaperConsts.MaxNameLength);
+            b.Property(p => p.Description).HasMaxLength(PaperConsts.MaxDescriptionLength);
 
             b.HasIndex(p => p.PaperId);
         });

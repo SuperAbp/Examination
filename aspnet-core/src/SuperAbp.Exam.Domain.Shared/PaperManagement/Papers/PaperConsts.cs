@@ -1,6 +1,6 @@
 ﻿namespace SuperAbp.Exam.PaperManagement.Papers
 {
-    public class ExamingConsts
+    public class PaperConsts
     {
         public const string DefaultSorting = "Id DESC";
 

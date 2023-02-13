@@ -1,6 +1,6 @@
 ﻿namespace SuperAbp.Exam.PaperManagement.PaperRepos
 {
-    public class ExamingRepoConsts
+    public class PaperRepoConsts
     {
         public const string DefaultSorting = "CreationTime DESC";
     }

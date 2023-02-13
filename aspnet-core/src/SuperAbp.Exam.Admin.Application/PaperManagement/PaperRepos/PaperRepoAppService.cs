@@ -64,7 +64,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
             long totalCount = await AsyncExecuter.CountAsync(queryable);
 
             var entities = await AsyncExecuter.ToListAsync(queryable
-                .OrderBy(input.Sorting ?? ExamingRepoConsts.DefaultSorting)
+                .OrderBy(input.Sorting ?? PaperRepoConsts.DefaultSorting)
                 .PageBy(input));
             
             var dtos = ObjectMapper.Map<List<PaperRepositoryDetail>, List<PaperRepoListDto>>(entities);

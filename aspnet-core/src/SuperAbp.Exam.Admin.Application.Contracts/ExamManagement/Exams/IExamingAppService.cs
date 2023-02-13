@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 
@@ -7,14 +8,14 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
     /// <summary>
     /// 考试管理
     /// </summary>
-    public interface IExamingAppService: IApplicationService
+    public interface IExamingAppService : IApplicationService
     {
         /// <summary>
         /// 详情
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns></returns>
-        Task<ExamingDetailDto> GetAsync(System.Guid id);
+        Task<ExamingDetailDto> GetAsync(Guid id);
 
         /// <summary>
         /// 列表
@@ -28,7 +29,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns></returns>
-        Task<GetExamingForEditorOutput> GetEditorAsync(System.Guid id);
+        Task<GetExamingForEditorOutput> GetEditorAsync(Guid id);
 
         /// <summary>
         /// 创建
@@ -43,13 +44,13 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         /// <param name="id">主键</param>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<ExamingListDto> UpdateAsync(System.Guid id, ExamingUpdateDto input);
+        Task<ExamingListDto> UpdateAsync(Guid id, ExamingUpdateDto input);
 
         /// <summary>
         /// 删除
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns></returns>
-        Task DeleteAsync(System.Guid id);
+        Task DeleteAsync(Guid id);
     }
 }

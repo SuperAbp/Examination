@@ -5,7 +5,11 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
     /// <summary>
     /// 查询条件
     /// </summary>
-    public class GetExamingsInput: PagedAndSortedResultRequestDto
+    public class GetExamingsInput : PagedAndSortedResultRequestDto
     {
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string Name { get; set; }
     }
 }

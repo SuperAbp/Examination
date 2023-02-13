@@ -47,5 +47,4 @@ public class Examing : FullAuditedAggregateRoot<Guid>
     /// 结束时间
     /// </summary>
     public DateTime? EndTime { get; set; }
-
 }

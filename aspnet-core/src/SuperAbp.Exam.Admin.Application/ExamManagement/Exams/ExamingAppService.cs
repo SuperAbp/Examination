@@ -20,6 +20,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
     public class ExamingAppService : ExamAppService, IExamingAppService
     {
         private readonly IExamingRepository _examingRepository;
+
         /// <summary>
         /// .ctor
         /// </summary>
@@ -35,7 +36,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns></returns>
-        public virtual async Task<ExamingDetailDto> GetAsync(System.Guid id)
+        public virtual async Task<ExamingDetailDto> GetAsync(Guid id)
         {
             Examing entity = await _examingRepository.GetAsync(id);
 
@@ -53,10 +54,12 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 
             var queryable = await _examingRepository.GetQueryableAsync();
 
-             long totalCount = await AsyncExecuter.CountAsync(queryable);
-            
+            queryable = queryable.WhereIf(!input.Name.IsNullOrWhiteSpace(), e => e.Name.Contains(input.Name));
+
+            long totalCount = await AsyncExecuter.CountAsync(queryable);
+
             var entities = await AsyncExecuter.ToListAsync(queryable
-                .OrderBy(input.Sorting ?? "Id DESC")
+                .OrderBy(input.Sorting ?? ExamingConsts.DefaultSorting)
                 .PageBy(input));
 
             var dtos = ObjectMapper.Map<List<Examing>, List<ExamingListDto>>(entities);
@@ -69,13 +72,13 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns></returns>
-        public virtual async Task<GetExamingForEditorOutput> GetEditorAsync(System.Guid id)
+        public virtual async Task<GetExamingForEditorOutput> GetEditorAsync(Guid id)
         {
             Examing entity = await _examingRepository.GetAsync(id);
 
             return ObjectMapper.Map<Examing, GetExamingForEditorOutput>(entity);
         }
-    
+
         /// <summary>
         /// 创建
         /// </summary>
@@ -96,7 +99,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         /// <param name="input"></param>
         /// <returns></returns>
         [Authorize(ExamPermissions.Examings.Update)]
-        public virtual async Task<ExamingListDto> UpdateAsync(System.Guid id, ExamingUpdateDto input)
+        public virtual async Task<ExamingListDto> UpdateAsync(Guid id, ExamingUpdateDto input)
         {
             Examing entity = await _examingRepository.GetAsync(id);
             entity = ObjectMapper.Map(input, entity);
@@ -110,12 +113,10 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         /// <param name="id">主键</param>
         /// <returns></returns>
         [Authorize(ExamPermissions.Examings.Delete)]
-        public virtual async Task DeleteAsync(System.Guid id)
+        public virtual async Task DeleteAsync(Guid id)
         {
             await _examingRepository.DeleteAsync(s => s.Id == id);
         }
-
-        
 
         /// <summary>
         /// 规范最大记录数
