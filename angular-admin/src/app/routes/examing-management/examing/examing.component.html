@@ -1,7 +1,7 @@
 <page-header [action]="phActionTpl">
   <ng-template #phActionTpl>
-    <button (click)="add()" nz-button nzType="primary" *abpPermission="'Exam..Create'">
-      {{ '*::NewExaming' | abpLocalization }}
+    <button (click)="add()" nz-button nzType="primary" *abpPermission="'Exam.Examing.Create'">
+      {{ 'Exam::NewExaming' | abpLocalization }}
     </button>
   </ng-template>
 </page-header>
@@ -20,7 +20,7 @@
     responsiveHideHeaderFooter
   >
     <ng-template st-row="score" let-item>
-      <span>{{ item.score }}（{{ item.passingScore }}）</span>
+      <span>{{ item.score }}（{{ 'Exam::PassingScore' | abpLocalization }}：{{ item.passingScore }}）</span>
     </ng-template>
   </st>
 </nz-card>

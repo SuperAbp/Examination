@@ -33,7 +33,13 @@ export class ExamingManagementExamingComponent implements OnInit {
   columns: STColumn[] = [
     { title: this.localizationService.instant('Exam::Name'), index: 'name' },
     { title: this.localizationService.instant('Exam::Score'), index: 'score', render: 'score' },
-    { title: this.localizationService.instant('Exam::TotalTime'), index: 'totalTime' },
+    {
+      title: {
+        text: this.localizationService.instant('Exam::TotalTime'),
+        optional: `（${this.localizationService.instant('Exam::Unit')}：${this.localizationService.instant('Exam::Minute')}）`
+      },
+      index: 'totalTime'
+    },
     { title: this.localizationService.instant('Exam::StartTime'), index: 'startTime' },
     { title: this.localizationService.instant('Exam::EndTime'), index: 'endTime' },
     {

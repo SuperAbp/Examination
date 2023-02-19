@@ -8,7 +8,7 @@
   </ng-template>
   <form *ngIf="form; else loaderRef" nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
     <nz-form-item>
-      <nz-form-label>{{ 'Exam::Score' | abpLocalization }}</nz-form-label>
+      <nz-form-label>{{ 'Exam::Paper' | abpLocalization }}</nz-form-label>
       <nz-form-control>
         <nz-select
           nzShowSearch
@@ -16,10 +16,10 @@
           [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization : ('Exam::Paper' | abpLocalization)"
           formControlName="paperId"
           [nzShowArrow]="false"
-           (nzOnSearch)="searchPaper($event)"
+          (nzOnSearch)="searchPaper($event)"
+          (ngModelChange)="choosePaper($event)"
         >
           <nz-option *ngFor="let p of papers" [nzLabel]="p.name" [nzValue]="p.id"></nz-option>
-          
         </nz-select>
       </nz-form-control>
     </nz-form-item>
@@ -85,6 +85,6 @@
 </div>
 <div class="modal-footer">
   <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
-    {{ '*::Submit' | abpLocalization }}
+    {{ 'Exam::Submit' | abpLocalization }}
   </button>
 </div>

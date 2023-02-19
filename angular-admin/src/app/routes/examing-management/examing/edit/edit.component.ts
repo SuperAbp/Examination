@@ -95,13 +95,15 @@ export class ExamingManagementExamingEditComponent implements OnInit {
             passingScore: [this.examing.passingScore || 0],
             totalTime: [this.examing.totalTime || 0],
             paperId: [this.examing.paperId || ''],
-            startTime: [this.examing.startTime || new Date()],
-            endTime: [this.examing.endTime || new Date()],
+            startTime: [new Date()],
+            endTime: [new Date()],
             isLimitedTime: [false],
             examingTimes: [[]]
           });
           if (this.examing.startTime && this.examing.endTime) {
             this.showExamingTime = true;
+            this.startTime.setValue(new Date(this.examing.startTime));
+            this.endTime.setValue(new Date(this.examing.endTime));
             this.isLimitedTime.setValue(true);
             this.examingTimes.setValue([this.examing.startTime, this.examing.endTime]);
           }
@@ -123,6 +125,10 @@ export class ExamingManagementExamingEditComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+  choosePaper(e) {
+    let paper = this.papers.filter(p => p.id == e)[0];
+    this.score.setValue(paper['score']);
   }
 
   examingTimeChange(e) {

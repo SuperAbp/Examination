@@ -97,19 +97,10 @@ export class PaperManagementPaperEditComponent implements OnInit {
       name: [this.examing.name || '', [Validators.required]],
       description: [this.examing.description || ''],
       score: [this.examing.score || 0],
-      // passingScore: [this.examing.passingScore || 0],
-      // totalTime: [this.examing.totalTime || 0],
       isLimitedTime: [false],
       examingTimes: [[]],
-      // startTime: [this.examing.startTime || new Date()],
-      // endTime: [this.examing.endTime || new Date()],
       repositories: this.fb.array([])
     });
-    // if (this.examing.startTime && this.examing.endTime) {
-    //   this.showExamingTime = true;
-    //   this.isLimitedTime.setValue(true);
-    //   this.examingTimes.setValue([this.examing.startTime, this.examing.endTime]);
-    // }
   }
 
   save() {
@@ -123,16 +114,6 @@ export class PaperManagementPaperEditComponent implements OnInit {
     this.isConfirmLoading = true;
 
     var dynamicPara = {};
-    // if (!this.isLimitedTime.value) {
-    //   this.form.removeControl('examingTimes');
-    //   this.form.removeControl('startTime');
-    //   this.form.removeControl('endTime');
-    //   this.examing.startTime = null;
-    //   this.examing.endTime = null;
-    // } else {
-    //   dynamicPara['startTime'] = dateTimePickerUtil.format(this.startTime.value, 'yyyy-MM-dd HH:mm:ss');
-    //   dynamicPara['endTime'] = dateTimePickerUtil.format(this.endTime.value, 'yyyy-MM-dd HH:mm:ss');
-    // }
     if (this.examingId) {
       this.paperService
         .update(this.examingId, {

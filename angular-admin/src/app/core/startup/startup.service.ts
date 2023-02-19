@@ -119,6 +119,10 @@ export class StartupService {
               {
                 text: '试卷管理',
                 link: '/paper-management/paper'
+              },
+              {
+                text: '考试管理',
+                link: '/examing-management/examing'
               }
             ]
           }

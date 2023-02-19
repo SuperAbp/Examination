@@ -12,7 +12,7 @@ const routes: Routes = [
     component: PaperManagementPaperEditComponent,
     canActivate: [JWTGuard, PermissionGuard],
     data: {
-      requiredPolicy: 'Exam.Papers.Update'
+      requiredPolicy: 'Exam.Paper.Update'
     }
   },
   {
@@ -20,7 +20,7 @@ const routes: Routes = [
     component: PaperManagementPaperEditComponent,
     canActivate: [JWTGuard, PermissionGuard],
     data: {
-      requiredPolicy: 'Exam.Papers.Create'
+      requiredPolicy: 'Exam.Paper.Create'
     }
   }
 ];
