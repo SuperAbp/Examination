@@ -7,11 +7,6 @@
     <RootNamespace>SuperAbp.Exam</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Permissions\**" />
-    <EmbeddedResource Remove="Permissions\**" />
-    <None Remove="Permissions\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SuperAbp.Exam.Application.Contracts.Shared\SuperAbp.Exam.Application.Contracts.Shared.csproj" />

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using SuperAbp.Exam.Data;
 using Serilog;
 using Volo.Abp;
+using Volo.Abp.Data;
 
 namespace SuperAbp.Exam.DbMigrator;
 
@@ -24,9 +25,10 @@ public class DbMigratorHostedService : IHostedService
     {
         using (var application = await AbpApplicationFactory.CreateAsync<ExamDbMigratorModule>(options =>
         {
-           options.Services.ReplaceConfiguration(_configuration);
-           options.UseAutofac();
-           options.Services.AddLogging(c => c.AddSerilog());
+            options.Services.ReplaceConfiguration(_configuration);
+            options.UseAutofac();
+            options.Services.AddLogging(c => c.AddSerilog());
+            options.AddDataMigrationEnvironment();
         }))
         {
             await application.InitializeAsync();
