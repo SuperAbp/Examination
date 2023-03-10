@@ -14,6 +14,8 @@ using Lsw.Abp.SettingManagement.Blazor.WebAssembly.AntDesignUI;
 using Lsw.Abp.IdentityManagement.Blazor.WebAssembly.AntDesignUI;
 using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Routing;
 using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Themes.AntDesignTheme;
+using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme;
+using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Settings;
 
 namespace SuperAbp.Exam.Blazor;
 
@@ -37,6 +39,10 @@ public class ExamBlazorModule : AbpModule
         ConfigureUI(builder);
         ConfigureMenu(context);
         ConfigureAutoMapper(context);
+        Configure<AbpAntDesignThemeOptions>(options =>
+        {
+            options.Menu.Placement = MenuPlacement.Top;
+        });
     }
 
     private void ConfigureRouter(ServiceConfigurationContext context)
