@@ -1,32 +1,28 @@
 ﻿using System;
 using System.Net.Http;
-using Blazorise.Bootstrap5;
-using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SuperAbp.Exam.Blazor.Menus;
 using OpenIddict.Abstractions;
-using Volo.Abp.AspNetCore.Components.WebAssembly.LeptonXLiteTheme;
-using Volo.Abp.AspNetCore.Components.Web.LeptonXLiteTheme.Themes.LeptonXLite;
-using Volo.Abp.AspNetCore.Components.Web.Theming.Routing;
 using Volo.Abp.Autofac.WebAssembly;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation;
-using Volo.Abp.Identity.Blazor.WebAssembly;
-using Volo.Abp.SettingManagement.Blazor.WebAssembly;
-using Volo.Abp.TenantManagement.Blazor.WebAssembly;
+using Lsw.Abp.TenantManagement.Blazor.WebAssembly.AntDesignUI;
+using Lsw.Abp.SettingManagement.Blazor.WebAssembly.AntDesignUI;
+using Lsw.Abp.IdentityManagement.Blazor.WebAssembly.AntDesignUI;
+using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Routing;
+using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Themes.AntDesignTheme;
 
 namespace SuperAbp.Exam.Blazor;
 
 [DependsOn(
     typeof(AbpAutofacWebAssemblyModule),
     typeof(ExamHttpApiClientModule),
-    typeof(AbpAspNetCoreComponentsWebAssemblyLeptonXLiteThemeModule),
-    typeof(AbpIdentityBlazorWebAssemblyModule),
-    typeof(AbpTenantManagementBlazorWebAssemblyModule),
-    typeof(AbpSettingManagementBlazorWebAssemblyModule)
+    typeof(AbpIdentityBlazorWebAssemblyAntDesignModule),
+    typeof(AbpTenantManagementBlazorWebAssemblyAntDesignModule),
+    typeof(AbpSettingManagementBlazorWebAssemblyAntDesignModule)
 )]
 public class ExamBlazorModule : AbpModule
 {
@@ -37,7 +33,6 @@ public class ExamBlazorModule : AbpModule
 
         ConfigureAuthentication(builder);
         ConfigureHttpClient(context, environment);
-        ConfigureBlazorise(context);
         ConfigureRouter(context);
         ConfigureUI(builder);
         ConfigureMenu(context);
@@ -60,13 +55,6 @@ public class ExamBlazorModule : AbpModule
         });
     }
 
-    private void ConfigureBlazorise(ServiceConfigurationContext context)
-    {
-        context.Services
-            .AddBootstrap5Providers()
-            .AddFontAwesomeIcons();
-    }
-
     private static void ConfigureAuthentication(WebAssemblyHostBuilder builder)
     {
         builder.Services.AddOidcAuthentication(options =>
@@ -85,7 +73,6 @@ public class ExamBlazorModule : AbpModule
     private static void ConfigureUI(WebAssemblyHostBuilder builder)
     {
         builder.RootComponents.Add<App>("#ApplicationContainer");
-
     }
 
     private static void ConfigureHttpClient(ServiceConfigurationContext context, IWebAssemblyHostEnvironment environment)
