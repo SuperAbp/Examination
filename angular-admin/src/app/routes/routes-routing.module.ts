@@ -27,7 +27,7 @@ const routes: Routes = [
       // { path: 'widgets', loadChildren: () => import('./widgets/widgets.module').then(m => m.WidgetsModule) },
       {
         path: 'identity',
-        loadChildren: () => import('@super-abp/ng.identity').then(m => m.IdentityModule)
+        loadChildren: () => import('@super-abp/ng.identity').then(m => m.IdentityModule.forLazy())
       },
       {
         path: 'menu-management',
@@ -40,8 +40,12 @@ const routes: Routes = [
       {
         path: 'paper-management',
         loadChildren: () => import('./paper-management/paper-management.module').then(m => m.PaperManagementModule)
+      },
+      {
+        path: 'examing-management',
+        loadChildren: () => import('./examing-management/examing-management.module').then(m => m.ExamingManagementModule)
       }
-    ,  { path: 'examing-management', loadChildren: () => import('./examing-management/examing-management.module').then((m) => m.ExamingManagementModule) }]
+    ]
   },
   // 空白布局
   // {

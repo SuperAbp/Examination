@@ -18,7 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\SuperAbp.Exam.EntityFrameworkCore\SuperAbp.Exam.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\SuperAbp.Exam.TestBase\SuperAbp.Exam.TestBase.csproj" />
-    <PackageReference Include="Volo.Abp.EntityFrameworkCore.Sqlite" Version="7.0.2" />
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore.Sqlite" Version="7.1.0" />
   </ItemGroup>
 
   <ItemGroup>

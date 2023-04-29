@@ -85,6 +85,7 @@ import { SharedModule } from './shared/shared.module';
 import { STWidgetModule } from './shared/st-widget/st-widget.module';
 import { NgAbpErrorHandler } from './core/error.handler';
 import { I18NService } from './core/i18n/i18n.service';
+import { AbpOAuthModule } from '@abp/ng.oauth';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -97,6 +98,7 @@ import { I18NService } from './core/i18n/i18n.service';
       environment,
       registerLocaleFn: registerLocale()
     }),
+    AbpOAuthModule.forRoot(),
     SharedModule,
     LayoutModule,
     RoutesModule,

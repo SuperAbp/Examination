@@ -1,5 +1,6 @@
 import { LocalizationParam, LocalizationService } from '@abp/ng.core';
 import {
+  HttpContext,
   HttpErrorResponse,
   HttpEvent,
   HttpHandler,
@@ -10,7 +11,7 @@ import {
 } from '@angular/common/http';
 import { Inject, Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { _HttpClient } from '@delon/theme';
 import { CookieService } from '@delon/util';
 import { environment } from '@env/environment';
@@ -252,17 +253,18 @@ export class DefaultInterceptor implements HttpInterceptor {
     const tokenService = this.injector.get(DA_SERVICE_TOKEN) as ITokenService;
     // 统一加上服务端前缀
     let url = req.url;
+    let context = new HttpContext();
     if (
       (tokenService.get().token === '' || tokenService.get().token === undefined) &&
       (url.indexOf('application-configuration') > 0 || url.indexOf('app/data') > 0)
     ) {
+      context = context.set(ALLOW_ANONYMOUS, true);
       url = `${url}?_allow_anonymous=true`;
     }
     if (!url.startsWith('https://') && !url.startsWith('http://')) {
-      url = environment.apis.default.url + url;
     }
 
-    const newReq = req.clone({ url });
+    const newReq = req.clone({ url, context: context });
     return next.handle(newReq).pipe(
       mergeMap((event: any) => {
         // 允许统一对请求错误处理
