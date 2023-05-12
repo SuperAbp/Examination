@@ -9,8 +9,8 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
     public class GetPaperReposInput : PagedAndSortedResultRequestDto
     {
         /// <summary>
-        /// 考试Id
+        /// 试卷Id
         /// </summary>
-        public Guid ExamingId { get; set; }
+        public Guid PaperId { get; set; }
     }
 }

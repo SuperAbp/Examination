@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AntDesign;
-using Lsw.Abp.IdentityManagement.Blazor.AntDesignUI;
-using Lsw.Abp.SettingManagement.Blazor.AntDesignUI;
-using Lsw.Abp.TenantManagement.Blazor.AntDesignUI;
 using Microsoft.Extensions.Configuration;
 using SuperAbp.Exam.Localization;
-using SuperAbp.Exam.MultiTenancy;
+using SuperAbp.Exam.Permissions;
 using Volo.Abp.Account.Localization;
 using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.UI.Navigation;
@@ -34,7 +31,7 @@ public class ExamMenuContributor : IMenuContributor
         }
     }
 
-    private Task ConfigureMainMenuAsync(MenuConfigurationContext context)
+    private async Task ConfigureMainMenuAsync(MenuConfigurationContext context)
     {
         var l = context.GetLocalizer<ExamResource>();
 
@@ -47,22 +44,15 @@ public class ExamMenuContributor : IMenuContributor
                 icon: IconType.Outline.Home
             )
         );
-
-        var administration = context.Menu.GetAdministration();
-
-        if (MultiTenancyConsts.IsEnabled)
+        if (await context.IsGrantedAsync(ExamPermissions.Examings.Default))
         {
-            administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);
+            context.Menu.Items.Add(new ApplicationMenuItem(
+                ExamMenus.Exam,
+                l["Menu:MyExam"],
+                "/Examing",
+                icon: IconType.Outline.Home
+            ));
         }
-        else
-        {
-            administration.TryRemoveMenuItem(TenantManagementMenuNames.GroupName);
-        }
-
-        administration.SetSubItemOrder(IdentityMenuNames.GroupName, 2);
-        administration.SetSubItemOrder(SettingManagementMenus.GroupName, 3);
-
-        return Task.CompletedTask;
     }
 
     private Task ConfigureUserMenuAsync(MenuConfigurationContext context)

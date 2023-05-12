@@ -1,20 +1,20 @@
-<page-header *ngIf="examingId && form" [action]="phActionTpl" [title]="'Exam::Edit' | abpLocalization">
+<page-header *ngIf="paperId && form" [action]="phActionTpl" [title]="'Exam::Edit' | abpLocalization">
   <ng-template #phActionTpl>
     <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
   </ng-template>
 </page-header>
-<page-header *ngIf="!examingId" [title]="'Exam::NewExaming' | abpLocalization"></page-header>
+<page-header *ngIf="!paperId" [title]="'Exam::NewExaming' | abpLocalization"></page-header>
 <ng-template #loaderRef>
   <nz-spin class="modal-spin"></nz-spin>
 </ng-template>
 <ng-container *ngIf="form; else loaderRef">
   <nz-card [nzTitle]="'Exam::ExamingRepository' | abpLocalization">
-    <app-exam-management-repository
+    <app-paper-management-repository
       #ExamRepository
-      [examingId]="examingId"
+      [paperId]="paperId"
       [examingForm]="form"
       (totalScoreChange)="changeTotalScore($event)"
-    ></app-exam-management-repository>
+    ></app-paper-management-repository>
   </nz-card>
   <nz-card [nzTitle]="'Exam::ExamingConfig' | abpLocalization">
     <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="horizontal">

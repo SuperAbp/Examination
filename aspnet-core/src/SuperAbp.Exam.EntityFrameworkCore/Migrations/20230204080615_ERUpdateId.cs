@@ -39,7 +39,7 @@ namespace SuperAbp.Exam.Migrations
             migrationBuilder.AddPrimaryKey(
                 name: "PK_AppExamingRepositories",
                 table: "AppExamingRepositories",
-                columns: new[] { "ExamingId", "QuestionRepositoryId" });
+                columns: new[] { "PaperId", "QuestionRepositoryId" });
         }
     }
 }

@@ -19,7 +19,7 @@ export interface PaperRepoCreateTemp extends PaperRepoCreateDto {
   judgeTotalCount?: number;
 }
 @Component({
-  selector: 'app-exam-management-repository',
+  selector: 'app-paper-management-repository',
   templateUrl: './repository.component.html',
   styles: [
     `
@@ -34,7 +34,7 @@ export interface PaperRepoCreateTemp extends PaperRepoCreateDto {
 })
 export class PaperManagementRepositoryComponent implements OnInit {
   @Input()
-  examingId: string;
+  paperId: string;
 
   @Input()
   examingForm: FormGroup;
@@ -83,7 +83,7 @@ export class PaperManagementRepositoryComponent implements OnInit {
         })
       )
       .subscribe();
-    if (this.examingId) {
+    if (this.paperId) {
       this.getList();
     } else {
       this.loading = false;
@@ -102,7 +102,7 @@ export class PaperManagementRepositoryComponent implements OnInit {
               tap(res => {
                 this.add({
                   id: repo.id,
-                  examingId: this.examingId,
+                  examingId: this.paperId,
                   questionRepository: repo.questionRepository,
                   questionRepositoryId: repo.questionRepositoryId,
                   singleTotalCount: res.singleCount,
@@ -126,7 +126,7 @@ export class PaperManagementRepositoryComponent implements OnInit {
     let item = this.repositoryItems.find(i => i.id == this.currentQuestionRepositoryId);
     this.add({
       questionRepositoryId: item.id,
-      examingId: this.examingId,
+      examingId: this.paperId,
       questionRepository: item.title,
       singleTotalCount: item.singleCount,
       multiTotalCount: item.multiCount,
@@ -170,21 +170,21 @@ export class PaperManagementRepositoryComponent implements OnInit {
     this.repositoryTemps.splice(index, 1);
   }
 
-  save(examingId) {
+  save(paperId) {
     var services: Array<Observable<any>> = [];
     this.repositories.controls.forEach(repository => {
       var value = repository.value;
       if (value.id) {
         services.push(
           this.paperRepositoryService.update(value.id, {
-            examingId: examingId,
+            paperId: paperId,
             ...value
           })
         );
       } else {
         services.push(
           this.paperRepositoryService.create({
-            examingId: examingId,
+            paperId: paperId,
             ...value
           })
         );
@@ -212,7 +212,7 @@ export class PaperManagementRepositoryComponent implements OnInit {
 
   resetParameters(): GetPaperReposInput {
     return {
-      examingId: this.examingId,
+      examingId: this.paperId,
       skipCount: 0,
       maxResultCount: 10,
       sorting: 'CreationTime DESC'

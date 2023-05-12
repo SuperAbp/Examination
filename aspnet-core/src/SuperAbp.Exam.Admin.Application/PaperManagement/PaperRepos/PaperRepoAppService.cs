@@ -18,7 +18,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
     public class PaperRepoAppService : ExamAppService, IPaperRepoAppService
     {
         private readonly IPaperRepoRepository _examRepoRepository;
-        private  readonly  IQuestionRepoRepository _questionRepoRepository;
+        private readonly IQuestionRepoRepository _questionRepoRepository;
 
         /// <summary>
         /// .ctor
@@ -42,9 +42,9 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
 
             var examRepoQueryable = await _examRepoRepository.GetQueryableAsync();
 
-            examRepoQueryable = examRepoQueryable.Where(e => e.ExamingId == input.ExamingId);
+            examRepoQueryable = examRepoQueryable.Where(e => e.PaperId == input.PaperId);
 
-            var queryable = 
+            var queryable =
                 from er in examRepoQueryable
                 join qr in (await _questionRepoRepository.GetQueryableAsync()) on er.QuestionRepositoryId equals qr.Id
                 select new PaperRepositoryDetail
@@ -66,7 +66,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
             var entities = await AsyncExecuter.ToListAsync(queryable
                 .OrderBy(input.Sorting ?? PaperRepoConsts.DefaultSorting)
                 .PageBy(input));
-            
+
             var dtos = ObjectMapper.Map<List<PaperRepositoryDetail>, List<PaperRepoListDto>>(entities);
 
             return new PagedResultDto<PaperRepoListDto>(totalCount, dtos);

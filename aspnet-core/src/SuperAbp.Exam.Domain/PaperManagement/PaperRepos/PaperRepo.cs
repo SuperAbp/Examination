@@ -8,12 +8,12 @@ namespace SuperAbp.Exam.PaperManagement.PaperRepos
     /// <summary>
     /// 考试题库
     /// </summary>
-    public class PaperRepo : Entity<Guid>, IHasCreationTime,ISoftDelete
+    public class PaperRepo : Entity<Guid>, IHasCreationTime, ISoftDelete
     {
         /// <summary>
         /// 考试Id
         /// </summary>
-        public Guid ExamingId { get; set; }
+        public Guid PaperId { get; set; }
 
         /// <summary>
         /// 题库Id

@@ -2,6 +2,7 @@
   "culture": "zh-Hans",
   "texts": {
     "Menu:Home": "首页",
+    "Menu:MyExam": "我的考试",
     "Placeholder": "请输入{0}",
     "ChoosePlaceholder": "请选择{0}",
     "Title": "标题",
@@ -49,6 +50,7 @@
     "Least {0} options.": "至少{0}个选项。",
     "Only one answer.": "只有一个正确答案。",
     "Least one answer.": "至少有一个正确答案。",
+    "BeganExamination": "开始考试",
     "NewRepository": "新题库",
     "NewQuestion": "新问题",
     "NewQuestionAnswer": "新答案",

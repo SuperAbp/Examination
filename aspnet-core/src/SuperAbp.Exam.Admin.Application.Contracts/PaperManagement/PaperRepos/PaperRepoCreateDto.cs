@@ -8,9 +8,9 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
     public class PaperRepoCreateDto : PaperRepoCreateOrUpdateDtoBase
     {
         /// <summary>
-        /// 考试Id
+        /// 试卷Id
         /// </summary>
-        public Guid ExamingId { get; set; }
+        public Guid PaperId { get; set; }
 
         /// <summary>
         /// 题库Id

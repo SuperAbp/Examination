@@ -23,11 +23,11 @@ import { PaperRepoService, PaperService } from '@proxy/super-abp/exam/admin/cont
   ]
 })
 export class PaperManagementPaperEditComponent implements OnInit {
-  examingId: string;
+  paperId: string;
   examing: GetPaperForEditorOutput;
 
-  @ViewChild('ExamRepository')
-  examRepositoryComponent: PaperManagementRepositoryComponent;
+  @ViewChild('PaperRepository')
+  paperRepositoryComponent: PaperManagementRepositoryComponent;
 
   loading = false;
   isConfirmLoading = false;
@@ -72,10 +72,10 @@ export class PaperManagementPaperEditComponent implements OnInit {
     this.loading = true;
     this.route.paramMap.subscribe(params => {
       let id = params.get('id');
-      this.examingId = id;
-      if (this.examingId) {
+      this.paperId = id;
+      if (this.paperId) {
         this.paperService
-          .getEditor(this.examingId)
+          .getEditor(this.paperId)
           .pipe(
             tap(response => {
               this.examing = response;
@@ -114,17 +114,17 @@ export class PaperManagementPaperEditComponent implements OnInit {
     this.isConfirmLoading = true;
 
     var dynamicPara = {};
-    if (this.examingId) {
+    if (this.paperId) {
       this.paperService
-        .update(this.examingId, {
+        .update(this.paperId, {
           ...this.examing,
           ...this.form.value,
           ...dynamicPara
         })
         .pipe(
           tap(res => {
-            this.examRepositoryComponent
-              .save(this.examingId)
+            this.paperRepositoryComponent
+              .save(this.paperId)
               .pipe(
                 tap(() => {
                   this.goback();
@@ -144,7 +144,7 @@ export class PaperManagementPaperEditComponent implements OnInit {
         })
         .pipe(
           tap(res => {
-            this.examRepositoryComponent
+            this.paperRepositoryComponent
               .save(res.id)
               .pipe(
                 tap(() => {

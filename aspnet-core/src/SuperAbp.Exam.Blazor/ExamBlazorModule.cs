@@ -9,22 +9,19 @@ using Volo.Abp.Autofac.WebAssembly;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation;
-using Lsw.Abp.TenantManagement.Blazor.WebAssembly.AntDesignUI;
-using Lsw.Abp.SettingManagement.Blazor.WebAssembly.AntDesignUI;
-using Lsw.Abp.IdentityManagement.Blazor.WebAssembly.AntDesignUI;
 using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Routing;
 using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Themes.AntDesignTheme;
 using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme;
 using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Settings;
+using Lsw.Abp.AspnetCore.Components.WebAssembly.AntDesignTheme;
 
 namespace SuperAbp.Exam.Blazor;
 
 [DependsOn(
     typeof(AbpAutofacWebAssemblyModule),
     typeof(ExamHttpApiClientModule),
-    typeof(AbpIdentityBlazorWebAssemblyAntDesignModule),
-    typeof(AbpTenantManagementBlazorWebAssemblyAntDesignModule),
-    typeof(AbpSettingManagementBlazorWebAssemblyAntDesignModule)
+    typeof(AbpAutoMapperModule),
+    typeof(AbpAspNetCoreComponentsWebAssemblyAntDesignThemeModule)
 )]
 public class ExamBlazorModule : AbpModule
 {

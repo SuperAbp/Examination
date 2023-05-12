@@ -1,11 +1,12 @@
-﻿using Volo.Abp.Domain.Repositories;
+﻿using System;
+using Volo.Abp.Domain.Repositories;
 
 namespace SuperAbp.Exam.ExamManagement.Exams
 {
     /// <summary>
     /// 考试
     /// </summary>
-    public interface IExamingRepository : IRepository<Examing, System.Guid>
+    public interface IExamingRepository : IRepository<Examing, Guid>
     {
     }
 }

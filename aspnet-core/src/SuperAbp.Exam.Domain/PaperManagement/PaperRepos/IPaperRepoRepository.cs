@@ -9,11 +9,12 @@ namespace SuperAbp.Exam.PaperManagement.PaperRepos
     /// </summary>
     public interface IPaperRepoRepository : IRepository<PaperRepo, Guid>
     {
-        Task<PaperRepo> GetAsync(Guid examingId, Guid questionRepositoryId);
+        Task<PaperRepo> GetAsync(Guid paperId, Guid questionRepositoryId);
 
-        Task<PaperRepo> FindAsync(Guid examingId, Guid questionRepositoryId);
+        Task<PaperRepo> FindAsync(Guid paperId, Guid questionRepositoryId);
 
-        Task DeleteAsync(Guid examingId, Guid questionRepositoryId);
-        Task DeleteByExamingIdAsync(Guid examingId);
+        Task DeleteAsync(Guid paperId, Guid questionRepositoryId);
+
+        Task DeleteByExamingIdAsync(Guid paperId);
     }
 }

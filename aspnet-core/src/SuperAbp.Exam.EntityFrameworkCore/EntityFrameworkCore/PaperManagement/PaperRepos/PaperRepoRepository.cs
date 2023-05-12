@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperAbp.Exam.PaperManagement.PaperRepos;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
@@ -20,25 +21,30 @@ public class PaperRepoRepository : EfCoreRepository<ExamDbContext, PaperRepo, Gu
     {
     }
 
-    public Task<PaperRepo> GetAsync(Guid examingId, Guid questionRepositoryId)
+    public async Task<PaperRepo> GetAsync(Guid paperId, Guid questionRepositoryId)
     {
-        return GetAsync(er => er.ExamingId == examingId
+        return await GetAsync(er => er.PaperId == paperId
                               && er.QuestionRepositoryId == questionRepositoryId);
     }
 
-    public Task<PaperRepo> FindAsync(Guid examingId, Guid questionRepositoryId)
+    public async Task<PaperRepo> FindAsync(Guid paperId, Guid questionRepositoryId)
     {
-        return FindAsync(er => er.ExamingId == examingId
-                               && er.QuestionRepositoryId == questionRepositoryId);
+        return await FindAsync(er => er.PaperId == paperId
+                                     && er.QuestionRepositoryId == questionRepositoryId);
     }
 
-    public Task DeleteAsync(Guid examingId, Guid questionRepositoryId)
+    public async Task<List<PaperRepo>> GetListByPaperIdAsync(Guid paperId)
     {
-        return DeleteAsync(er => er.ExamingId == examingId && er.QuestionRepositoryId == questionRepositoryId);
+        return await GetListAsync(r => r.PaperId == paperId);
     }
 
-    public Task DeleteByExamingIdAsync(Guid examingId)
+    public async Task DeleteAsync(Guid paperId, Guid questionRepositoryId)
     {
-        return DeleteAsync(er => er.ExamingId == examingId);
+        await DeleteAsync(er => er.PaperId == paperId && er.QuestionRepositoryId == questionRepositoryId);
+    }
+
+    public async Task DeleteByExamingIdAsync(Guid paperId)
+    {
+        await DeleteAsync(er => er.PaperId == paperId);
     }
 }
