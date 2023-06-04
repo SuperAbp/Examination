@@ -3,6 +3,7 @@
   "texts": {
     "Menu:Home": "首页",
     "Menu:MyExam": "我的考试",
+    "Menu:QuestionRepository": "题库",
     "Placeholder": "请输入{0}",
     "ChoosePlaceholder": "请选择{0}",
     "Title": "标题",

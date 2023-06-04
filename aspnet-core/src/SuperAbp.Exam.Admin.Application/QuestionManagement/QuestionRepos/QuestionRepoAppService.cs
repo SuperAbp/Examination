@@ -28,7 +28,8 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
         /// </summary>
         /// <param name="questionRepoRepository"></param>
         public QuestionRepoAppService(
-            IQuestionRepoRepository questionRepoRepository, IQuestionRepository questionRepository)
+            IQuestionRepoRepository questionRepoRepository,
+            IQuestionRepository questionRepository)
         {
             _questionRepoRepository = questionRepoRepository;
             _questionRepository = questionRepository;
@@ -62,18 +63,12 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
         /// <returns>结果</returns>
         public virtual async Task<PagedResultDto<QuestionRepoListDto>> GetListAsync(GetQuestionReposInput input)
         {
-            await NormalizeMaxResultCountAsync(input);
+            long totalCount = await _questionRepoRepository.GetCountAsync(input.Title);
 
-            var queryable = await _questionRepoRepository.GetQueryableAsync();
+            var entities = await _questionRepoRepository
+                .GetListAsync(input.Title, input.Sorting ?? QuestionRepoConsts.DefaultSorting, input.SkipCount,
+                    input.MaxResultCount);
 
-            queryable = queryable
-                .WhereIf(!input.Title.IsNullOrWhiteSpace(), r => r.Title.Contains(input.Title));
-
-            long totalCount = await AsyncExecuter.CountAsync(queryable);
-
-            var entities = await AsyncExecuter.ToListAsync(queryable
-                .OrderBy(input.Sorting ?? "Id DESC")
-                .PageBy(input));
             var dtos = new List<QuestionRepoListDto>(); //ObjectMapper.Map<List<QuestionRepo>, List<QuestionRepoListDto>>(entities);
             foreach (var item in entities)
             {

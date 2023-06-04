@@ -2,6 +2,7 @@
 using Volo.Abp.EntityFrameworkCore;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -36,5 +37,10 @@ public class QuestionRepository : EfCoreRepository<ExamDbContext, Question, Guid
         return await dbset
             .Where(r => r.QuestionRepositoryId == questionRepositoryId && r.QuestionType == questionType)
             .CountAsync();
+    }
+
+    public async Task<List<Question>> GetListAsync(Guid questionRepositoryId)
+    {
+        return await GetListAsync(q => q.QuestionRepositoryId == questionRepositoryId);
     }
 }

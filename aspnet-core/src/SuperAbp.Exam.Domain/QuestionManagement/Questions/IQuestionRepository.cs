@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 
@@ -23,4 +24,11 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// <param name="questionType">问题类型</param>
     /// <returns></returns>
     Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType);
+
+    /// <summary>
+    /// 列表
+    /// </summary>
+    /// <param name="questionRepositoryId">题库Id</param>
+    /// <returns></returns>
+    Task<List<Question>> GetListAsync(Guid questionRepositoryId);
 }

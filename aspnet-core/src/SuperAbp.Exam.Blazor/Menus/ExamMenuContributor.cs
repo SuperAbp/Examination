@@ -52,6 +52,12 @@ public class ExamMenuContributor : IMenuContributor
                 "/Examing",
                 icon: IconType.Outline.Home
             ));
+            context.Menu.Items.Add(new ApplicationMenuItem(
+                ExamMenus.QuestionRepository,
+                l["Menu:QuestionRepository"],
+                "/Repository",
+                icon: IconType.Outline.Home
+            ));
         }
     }
 

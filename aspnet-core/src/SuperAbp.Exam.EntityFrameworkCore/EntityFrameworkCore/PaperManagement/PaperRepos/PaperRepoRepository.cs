@@ -33,7 +33,7 @@ public class PaperRepoRepository : EfCoreRepository<ExamDbContext, PaperRepo, Gu
                                      && er.QuestionRepositoryId == questionRepositoryId);
     }
 
-    public async Task<List<PaperRepo>> GetListByPaperIdAsync(Guid paperId)
+    public async Task<List<PaperRepo>> GetListAsync(Guid paperId)
     {
         return await GetListAsync(r => r.PaperId == paperId);
     }

@@ -30,6 +30,8 @@
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.ExamManagement.Exams
 @using SuperAbp.Exam.Localization
+@attribute [Authorize]
+@inject NavigationManager Navigation
 @inject IExamingAppService ExamingAppService
 @inject IStringLocalizer<ExamResource> L
 @code {
@@ -52,6 +54,6 @@
 
     private async Task BeganAsync(Guid id)
     {
-
+        Navigation.NavigateTo("/Examing/Start/"+id);
     }
 }
