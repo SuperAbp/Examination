@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 
 namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers
@@ -8,5 +10,11 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers
     /// </summary>
     public interface IQuestionAnswerRepository : IRepository<QuestionAnswer, Guid>
     {
+        /// <summary>
+        /// 列表
+        /// </summary>
+        /// <param name="questionId">问题Id</param>
+        /// <returns></returns>
+        Task<List<QuestionAnswer>> GetListAsync(Guid questionId);
     }
 }

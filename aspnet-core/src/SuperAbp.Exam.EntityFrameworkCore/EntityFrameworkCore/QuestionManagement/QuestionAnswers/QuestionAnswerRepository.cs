@@ -2,6 +2,8 @@
 using Volo.Abp.EntityFrameworkCore;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionAnswers
 {
@@ -19,6 +21,9 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionAnswers
         {
         }
 
-        // TODO:编写仓储代码
+        public async Task<List<QuestionAnswer>> GetListAsync(Guid questionId)
+        {
+            return await GetListAsync(a => a.QuestionId == questionId);
+        }
     }
 }

@@ -27,7 +27,7 @@
 @using SuperAbp.Exam.Localization
 @inject NavigationManager Navigation
 @inject IStringLocalizer<ExamResource> L
-@inject IQuestionRepoAppService QuestionRepoAppService;
+@inject IQuestionRepoAppService QuestionRepoAppService
 @code {
     IReadOnlyList<QuestionRepoListDto> _repositories;
     int _pageIndex = 1;

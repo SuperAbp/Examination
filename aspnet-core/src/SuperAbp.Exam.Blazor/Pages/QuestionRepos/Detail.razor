@@ -1,7 +1,36 @@
 ﻿@page "/repository/{id:guid}"
+@using SuperAbp.Exam.QuestionManagement.QuestionRepos
 
-safsaf
+@if(_repository is not null)
+{
+<h2>@_repository.Title</h2>
+
+    <span>简介：@_repository.Remark</span>
+
+<Card Bordered="true">
+    <Button OnClick="()=>StartTraining()">顺序练习</Button>
+</Card>
+
+<Card Bordered="true">
+    背题模式
+</Card>
+}
+@inject IQuestionRepoAppService QuestionRepoAppService
+@inject NavigationManager Navigation
 @code {
     [Parameter]
     public Guid Id { get; set; }
+
+    QuestionRepoDetailDto _repository;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _repository = await QuestionRepoAppService.GetAsync(Id);
+    }
+
+    private void StartTraining()
+    {
+        Navigation.NavigateTo($"/repository/{Id}/training");
+    }
+
 }

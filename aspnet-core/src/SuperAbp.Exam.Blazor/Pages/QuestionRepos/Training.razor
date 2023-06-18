@@ -1,0 +1,162 @@
+﻿@page "/repository/{QuestionRepositoryId:guid}/training"
+
+<style>
+    .question-content .title {
+        font-size: 18px;
+    }
+
+    .question-content .title .number {
+        font-weight: bold;
+    }
+    .question-content .chooses {
+        width: 100%;
+        
+    }
+
+    .question-bottom {
+        display: flex;
+        -o-justify-content: space-between;
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
+    }
+
+    .chooses .choose-item {
+        width: 100%;
+        padding: 9px 20px 9px 5px;
+        -ms-border-radius: 4px;
+        border-radius: 4px;
+        border: 1px solid #d9d9d9;
+        margin-bottom: 10px;
+    }
+
+    .chooses .ant-radio {
+        display: none;
+    }
+
+    .ant-radio-wrapper-checked {
+        border: 1px solid #409eff !important;
+    }
+
+    .chooses .choose-item .tag {
+        width: 10px;
+        font-weight: bold;
+        color: #1890ff;
+    }
+
+    .chooses .choose-item .content {
+        color: #000;
+        margin-left: 5px;
+    }
+</style>
+<GridRow Gutter="16">
+    <GridCol Span="4">
+        <Card>
+            <div class="content">
+                <div>
+                    @for (int i = 0; i < _questions.Count; i++)
+                    {
+                        var tempIndex = i;
+                        <Tag Color="default" OnClick="async () =>await ShowQuestion(tempIndex)">@(tempIndex + 1)</Tag>
+                    }
+                </div>
+            </div>
+        </Card>
+    </GridCol>
+    <GridCol Span="20">
+        <Card class="question-content">
+        @if (_question != null)
+        {
+            <h2 class="title">
+                <span class="number">@(_currentIndex + 1)</span>
+                <span>@_question.Content</span>
+            </h2>
+
+            <RadioGroup class="chooses" @bind-Value="radioValue5" Size="large">
+                @for (int i = 0; i < _questionAnswers.Count; i++)
+                {
+                    var tempIndex = i;
+                    <Radio class="choose-item" Value="@(chooseItem[tempIndex])">
+                        <span class="tag">@chooseItem[tempIndex]</span>
+                        <span class="content">@_questionAnswers[tempIndex].Content</span>
+                    </Radio>
+                }
+            </RadioGroup>
+        }
+        <div class="question-bottom">
+            @if (_currentIndex <= 0)
+            {
+                <Button OnClick="Prev" Disabled>上一题</Button>
+            }
+            else
+            {
+                    <Button OnClick="Prev">上一题</Button>
+
+            }
+            @if (_currentIndex >= _questions.Count - 1)
+            {
+                    <Button OnClick="Next" Disabled>下一题</Button>
+            }
+            else
+            {
+                <Button OnClick="Next">下一题</Button>
+            }
+            
+        </div>
+           
+        </Card>
+    </GridCol>
+</GridRow>
+
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
+@using SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers
+@using System.Diagnostics
+@inject IQuestionAppService QuestionAppService
+@inject IQuestionAnswerAppService QuestionAnswerAppService
+@code {
+    [Parameter]
+    public Guid QuestionRepositoryId { get; set; }
+
+    string[] chooseItem = { "A", "B", "C", "D", "E" };
+    IReadOnlyList<QuestionListDto> _questions = Array.Empty<QuestionListDto>();
+    IReadOnlyList<QuestionAnswerListDto> _questionAnswers = Array.Empty<QuestionAnswerListDto>();
+    QuestionDetailDto _question;
+    int _currentIndex = 0;
+
+    int _total = 0;
+    string radioValue5;
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await QuestionAppService.GetListAsync(new GetQuestionsInput() { QuestionRepositoryId = QuestionRepositoryId });
+        _questions = result.Items;
+        _total = (int)result.TotalCount;
+        await ShowQuestion(0);
+    }
+    
+    public async Task Next()
+    {
+        if (_currentIndex >= _questions.Count)
+        {
+            _currentIndex = _questions.Count - 1;
+            return;
+            
+        }
+        await ShowQuestion(_currentIndex + 1);
+    }
+    public async Task Prev()
+    {
+        if (_currentIndex < 0)
+        {
+            _currentIndex = 0;
+            return;
+        }
+        await ShowQuestion(_currentIndex - 1);
+    }
+    public async Task ShowQuestion(int index)
+    {
+        _currentIndex = index;
+        var questionId = _questions[index].Id;
+        _question = await QuestionAppService.GetAsync(questionId);
+        _questionAnswers = (await QuestionAnswerAppService.GetListAsync(questionId)).Items;
+    }
+}
