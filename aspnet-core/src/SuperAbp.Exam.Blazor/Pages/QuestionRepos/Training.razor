@@ -13,11 +13,16 @@
         
     }
 
-    .question-bottom {
+    .bottom {
         display: flex;
         -o-justify-content: space-between;
         -webkit-justify-content: space-between;
         justify-content: space-between;
+    }
+
+    .analysis {
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 
     .chooses .choose-item {
@@ -29,12 +34,17 @@
         margin-bottom: 10px;
     }
 
-    .chooses .ant-radio {
-        display: none;
+    .chooses .choose-item.success {
+            border-color: #52c41a;
     }
 
-    .ant-radio-wrapper-checked {
-        border: 1px solid #409eff !important;
+        .chooses .choose-item.error {
+            border-color: #ff4d4f;
+        }
+        
+
+    .chooses .ant-radio {
+        display: none;
     }
 
     .chooses .choose-item .tag {
@@ -47,6 +57,13 @@
         color: #000;
         margin-left: 5px;
     }
+
+    .ant-tag.current {
+        color: #389e0d;
+        background: #f6ffed;
+        border-color: #b7eb8f;
+    }
+
 </style>
 <GridRow Gutter="16">
     <GridCol Span="4">
@@ -56,7 +73,7 @@
                     @for (int i = 0; i < _questions.Count; i++)
                     {
                         var tempIndex = i;
-                        <Tag Color="default" OnClick="async () =>await ShowQuestion(tempIndex)">@(tempIndex + 1)</Tag>
+                        <Tag Color="default" Class="@(_currentIndex == i?"current":String.Empty)" OnClick="async () =>await ShowQuestion(tempIndex)">@(tempIndex + 1)</Tag>
                     }
                 </div>
             </div>
@@ -70,31 +87,37 @@
                 <span class="number">@(_currentIndex + 1)</span>
                 <span>@_question.Content</span>
             </h2>
-
-            <RadioGroup class="chooses" @bind-Value="radioValue5" Size="large">
+                <RadioGroup class="chooses" @bind-Value="selectedIndex" Size="large" TValue="Int32" OnChange="Validate">
                 @for (int i = 0; i < _questionAnswers.Count; i++)
                 {
                     var tempIndex = i;
-                    <Radio class="choose-item" Value="@(chooseItem[tempIndex])">
-                        <span class="tag">@chooseItem[tempIndex]</span>
-                        <span class="content">@_questionAnswers[tempIndex].Content</span>
+                    <Radio class="@GetBorderColor(tempIndex)" Value="@tempIndex">
+                            <span class="tag">@chooseItem[tempIndex]</span>
+                            <span class="content">@_questionAnswers[tempIndex].Content</span>
                     </Radio>
                 }
             </RadioGroup>
         }
-        <div class="question-bottom">
+        @if (showAnalysis)
+        {
+            <div class="analysis">
+                    <Card Title="题目解析">
+                    @_question.Analysis
+                </Card>
+            </div>
+        }
+        <div class="bottom">
             @if (_currentIndex <= 0)
             {
                 <Button OnClick="Prev" Disabled>上一题</Button>
             }
             else
             {
-                    <Button OnClick="Prev">上一题</Button>
-
+                <Button OnClick="Prev">上一题</Button>
             }
             @if (_currentIndex >= _questions.Count - 1)
             {
-                    <Button OnClick="Next" Disabled>下一题</Button>
+                <Button OnClick="Next" Disabled>下一题</Button>
             }
             else
             {
@@ -109,8 +132,8 @@
 
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
-@using SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers
 @using System.Diagnostics
+@using Castle.Components.DictionaryAdapter
 @inject IQuestionAppService QuestionAppService
 @inject IQuestionAnswerAppService QuestionAnswerAppService
 @code {
@@ -121,10 +144,11 @@
     IReadOnlyList<QuestionListDto> _questions = Array.Empty<QuestionListDto>();
     IReadOnlyList<QuestionAnswerListDto> _questionAnswers = Array.Empty<QuestionAnswerListDto>();
     QuestionDetailDto _question;
+    bool showAnalysis = false;
     int _currentIndex = 0;
 
     int _total = 0;
-    string radioValue5;
+    int selectedIndex;
     protected override async Task OnInitializedAsync()
     {
         var result = await QuestionAppService.GetListAsync(new GetQuestionsInput() { QuestionRepositoryId = QuestionRepositoryId });
@@ -132,14 +156,14 @@
         _total = (int)result.TotalCount;
         await ShowQuestion(0);
     }
-    
+
     public async Task Next()
     {
         if (_currentIndex >= _questions.Count)
         {
             _currentIndex = _questions.Count - 1;
             return;
-            
+
         }
         await ShowQuestion(_currentIndex + 1);
     }
@@ -158,5 +182,32 @@
         var questionId = _questions[index].Id;
         _question = await QuestionAppService.GetAsync(questionId);
         _questionAnswers = (await QuestionAnswerAppService.GetListAsync(questionId)).Items;
+    }
+    
+    public string GetBorderColor(int index)
+    {
+        List<string> classes = new List<string>() { "choose-item" };
+        if (selectedIndex < 0)
+        {
+            return String.Join(" ", classes);
+        }
+        if (!showAnalysis) return String.Join(" ", classes);
+        if (_questionAnswers[index].Right)
+        {
+            classes.Add("success");
+            return String.Join(" ", classes);
+        }
+
+        if (selectedIndex == index)
+        {
+            classes.Add("error");
+            return String.Join(" ", classes);
+        }
+        return String.Join(" ", classes);
+    }
+
+    public void Validate(int id)
+    {
+        showAnalysis = true;
     }
 }

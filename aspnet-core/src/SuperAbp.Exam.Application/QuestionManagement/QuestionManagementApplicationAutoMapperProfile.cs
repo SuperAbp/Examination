@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.Exam.QuestionManagement.Questions;

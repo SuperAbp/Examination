@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.Permissions;
 using Volo.Abp.Application.Dtos;
 
