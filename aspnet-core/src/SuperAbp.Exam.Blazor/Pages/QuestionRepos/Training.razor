@@ -73,7 +73,8 @@
                     @for (int i = 0; i < _questions.Count; i++)
                     {
                         var tempIndex = i;
-                        <Tag Color="default" Class="@(_currentIndex == i?"current":String.Empty)" OnClick="async () =>await ShowQuestion(tempIndex)">@(tempIndex + 1)</Tag>
+                        var color = GetNumberColor(tempIndex);
+                        <Tag Color="@color" OnClick="async () => await ShowQuestion(tempIndex)">@(tempIndex + 1)</Tag>
                     }
                 </div>
             </div>
@@ -87,11 +88,12 @@
                 <span class="number">@(_currentIndex + 1)</span>
                 <span>@_question.Content</span>
             </h2>
-                <RadioGroup class="chooses" @bind-Value="selectedIndex" Size="large" TValue="Int32" OnChange="Validate">
+                <RadioGroup class="chooses" @bind-Value="selectedAnswerId" Size="large" TValue="Guid" OnChange="Validate" Disabled="selectedAnswerId != Guid.Empty">
                 @for (int i = 0; i < _questionAnswers.Count; i++)
                 {
                     var tempIndex = i;
-                    <Radio class="@GetBorderColor(tempIndex)" Value="@tempIndex">
+                    var answer = _questionAnswers[tempIndex];
+                    <Radio class="@GetBorderColor(answer)" Value="@answer.Id">
                             <span class="tag">@chooseItem[tempIndex]</span>
                             <span class="content">@_questionAnswers[tempIndex].Content</span>
                     </Radio>
@@ -143,12 +145,13 @@
     string[] chooseItem = { "A", "B", "C", "D", "E" };
     IReadOnlyList<QuestionListDto> _questions = Array.Empty<QuestionListDto>();
     IReadOnlyList<QuestionAnswerListDto> _questionAnswers = Array.Empty<QuestionAnswerListDto>();
+    List<QuestionAnswerItem> _questionAnswerItems = new();
     QuestionDetailDto _question;
     bool showAnalysis = false;
     int _currentIndex = 0;
 
     int _total = 0;
-    int selectedIndex;
+    Guid selectedAnswerId;
     protected override async Task OnInitializedAsync()
     {
         var result = await QuestionAppService.GetListAsync(new GetQuestionsInput() { QuestionRepositoryId = QuestionRepositoryId });
@@ -179,26 +182,47 @@
     public async Task ShowQuestion(int index)
     {
         _currentIndex = index;
-        var questionId = _questions[index].Id;
-        _question = await QuestionAppService.GetAsync(questionId);
-        _questionAnswers = (await QuestionAnswerAppService.GetListAsync(questionId)).Items;
+        
+        selectedAnswerId = default;
+        showAnalysis = false;
+
+        var id = _questions[index].Id;
+        _question = await QuestionAppService.GetAsync(id);
+        _questionAnswers = (await QuestionAnswerAppService.GetListAsync(id)).Items;
     }
-    
-    public string GetBorderColor(int index)
+
+    public string GetNumberColor(int index)
+    {
+        if (_currentIndex == index)
+        {
+            return "processing";
+        }
+        var tempItem = _questionAnswerItems.SingleOrDefault(item => item.QuestionIndex == index);
+        if (tempItem is null)
+        {
+            return "default";
+        }
+        if (tempItem.Right)
+        {
+            return "success";
+        }
+        return "error";
+    }
+    public string GetBorderColor(QuestionAnswerListDto answer)
     {
         List<string> classes = new List<string>() { "choose-item" };
-        if (selectedIndex < 0)
+        if (selectedAnswerId == Guid.Empty)
         {
             return String.Join(" ", classes);
         }
         if (!showAnalysis) return String.Join(" ", classes);
-        if (_questionAnswers[index].Right)
+        if (answer.Right)
         {
             classes.Add("success");
             return String.Join(" ", classes);
         }
 
-        if (selectedIndex == index)
+        if (selectedAnswerId == answer.Id)
         {
             classes.Add("error");
             return String.Join(" ", classes);
@@ -206,8 +230,23 @@
         return String.Join(" ", classes);
     }
 
-    public void Validate(int id)
+    public void Validate(Guid id)
     {
+        _questionAnswerItems.Add(new QuestionAnswerItem()
+        {
+            QuestionIndex = _currentIndex,
+            QuestionId = _questions[_currentIndex].Id,
+            AnswerId = selectedAnswerId,
+            Right = _questionAnswers.First(a=>a.Id == selectedAnswerId).Right
+        });
         showAnalysis = true;
+    }
+
+    public class QuestionAnswerItem
+    {
+        public int QuestionIndex { get; set; }
+        public Guid QuestionId { get; set; }
+        public Guid AnswerId { get; set; }
+        public bool Right { get; set; }
     }
 }
