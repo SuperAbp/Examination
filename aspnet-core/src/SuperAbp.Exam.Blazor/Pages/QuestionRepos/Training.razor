@@ -85,17 +85,18 @@
         @if (_question != null)
         {
             <h2 class="title">
-                <span class="number">@(_currentIndex + 1)</span>
+                <span class="number">@(_questionIndex + 1)</span>
                 <span>@_question.Content</span>
             </h2>
-                <RadioGroup class="chooses" @bind-Value="selectedAnswerId" Size="large" TValue="Guid" OnChange="Validate" Disabled="selectedAnswerId != Guid.Empty">
+                @selectedAnswerIndex
+                <RadioGroup class="chooses" @bind-Value="selectedAnswerIndex" Size="large" TValue="int" OnChange="Validate" Disabled="selectedAnswerIndex != noneSelect">
                 @for (int i = 0; i < _questionAnswers.Count; i++)
                 {
                     var tempIndex = i;
                     var answer = _questionAnswers[tempIndex];
-                    <Radio class="@GetBorderColor(answer)" Value="@answer.Id">
-                            <span class="tag">@chooseItem[tempIndex]</span>
-                            <span class="content">@_questionAnswers[tempIndex].Content</span>
+                    <Radio class="@GetBorderColor(answer, tempIndex)" Value="@tempIndex">
+                        <span class="tag">@chooseItem[tempIndex]</span>
+                        <span class="content">@answer.Content</span>
                     </Radio>
                 }
             </RadioGroup>
@@ -109,21 +110,21 @@
             </div>
         }
         <div class="bottom">
-            @if (_currentIndex <= 0)
+            @if (_questionIndex <= 0)
             {
-                <Button OnClick="Prev" Disabled>上一题</Button>
+                <Button OnClick="async ()=>await PrevAsync()" Disabled>上一题</Button>
             }
             else
             {
-                <Button OnClick="Prev">上一题</Button>
+                    <Button OnClick="async ()=>await PrevAsync()">上一题</Button>
             }
-            @if (_currentIndex >= _questions.Count - 1)
+            @if (_questionIndex >= _questions.Count - 1)
             {
-                <Button OnClick="Next" Disabled>下一题</Button>
+                    <Button OnClick="async ()=>await NextAsync()" Disabled>下一题</Button>
             }
             else
             {
-                <Button OnClick="Next">下一题</Button>
+                    <Button OnClick="async ()=>await NextAsync()">下一题</Button>
             }
             
         </div>
@@ -148,10 +149,13 @@
     List<QuestionAnswerItem> _questionAnswerItems = new();
     QuestionDetailDto _question;
     bool showAnalysis = false;
-    int _currentIndex = 0;
+    int _questionIndex = 0;
+    //var tempSelectItem = new[] { new { id = Guid.NewGuid(), name = "123" }, new { id = Guid.NewGuid(), name = "456" },};
+    //Guid tempSelect;
 
     int _total = 0;
-    Guid selectedAnswerId;
+    int selectedAnswerIndex = noneSelect;
+        const int noneSelect = -1;
     protected override async Task OnInitializedAsync()
     {
         var result = await QuestionAppService.GetListAsync(new GetQuestionsInput() { QuestionRepositoryId = QuestionRepositoryId });
@@ -160,40 +164,40 @@
         await ShowQuestion(0);
     }
 
-    public async Task Next()
+    public async Task NextAsync()
     {
-        if (_currentIndex >= _questions.Count)
+        if (_questionIndex >= _questions.Count)
         {
-            _currentIndex = _questions.Count - 1;
+            _questionIndex = _questions.Count - 1;
             return;
 
         }
-        await ShowQuestion(_currentIndex + 1);
+        await ShowQuestion(_questionIndex + 1);
     }
-    public async Task Prev()
+    public async Task PrevAsync()
     {
-        if (_currentIndex < 0)
+        if (_questionIndex < 0)
         {
-            _currentIndex = 0;
+            _questionIndex = 0;
             return;
         }
-        await ShowQuestion(_currentIndex - 1);
+        await ShowQuestion(_questionIndex - 1);
     }
     public async Task ShowQuestion(int index)
     {
-        _currentIndex = index;
-        
-        selectedAnswerId = default;
+        _questionIndex = index;
         showAnalysis = false;
 
         var id = _questions[index].Id;
         _question = await QuestionAppService.GetAsync(id);
         _questionAnswers = (await QuestionAnswerAppService.GetListAsync(id)).Items;
+
+        selectedAnswerIndex = noneSelect;
     }
 
     public string GetNumberColor(int index)
     {
-        if (_currentIndex == index)
+        if (_questionIndex == index)
         {
             return "processing";
         }
@@ -208,10 +212,10 @@
         }
         return "error";
     }
-    public string GetBorderColor(QuestionAnswerListDto answer)
+    public string GetBorderColor(QuestionAnswerListDto answer, int index)
     {
         List<string> classes = new List<string>() { "choose-item" };
-        if (selectedAnswerId == Guid.Empty)
+        if (selectedAnswerIndex == noneSelect)
         {
             return String.Join(" ", classes);
         }
@@ -222,7 +226,7 @@
             return String.Join(" ", classes);
         }
 
-        if (selectedAnswerId == answer.Id)
+        if (selectedAnswerIndex == index)
         {
             classes.Add("error");
             return String.Join(" ", classes);
@@ -230,14 +234,14 @@
         return String.Join(" ", classes);
     }
 
-    public void Validate(Guid id)
+    public void Validate(int index)
     {
         _questionAnswerItems.Add(new QuestionAnswerItem()
         {
-            QuestionIndex = _currentIndex,
-            QuestionId = _questions[_currentIndex].Id,
-            AnswerId = selectedAnswerId,
-            Right = _questionAnswers.First(a=>a.Id == selectedAnswerId).Right
+            QuestionIndex = _questionIndex,
+            QuestionId = _questions[_questionIndex].Id,
+            AnswerId = _questionAnswers[index].Id,
+            Right = _questionAnswers[index].Right
         });
         showAnalysis = true;
     }
