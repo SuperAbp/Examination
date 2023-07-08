@@ -70,7 +70,7 @@
         <Card>
             <div class="content">
                 <div>
-                    @for (int i = 0; i < _questions.Count; i++)
+                    @for (int i = 0; i < _total; i++)
                     {
                         var tempIndex = i;
                         var color = GetNumberColor(tempIndex);
@@ -88,8 +88,7 @@
                 <span class="number">@(_questionIndex + 1)</span>
                 <span>@_question.Content</span>
             </h2>
-                @selectedAnswerIndex
-                <RadioGroup class="chooses" @bind-Value="selectedAnswerIndex" Size="large" TValue="int" OnChange="Validate" Disabled="selectedAnswerIndex != noneSelect">
+                <RadioGroup class="chooses" @bind-Value="_selectedAnswerIndex" Size="large" TValue="int" OnChange="Validate" Disabled="_selectedAnswerIndex != noneSelect">
                 @for (int i = 0; i < _questionAnswers.Count; i++)
                 {
                     var tempIndex = i;
@@ -101,7 +100,7 @@
                 }
             </RadioGroup>
         }
-        @if (showAnalysis)
+        @if (_showAnalysis)
         {
             <div class="analysis">
                     <Card Title="题目解析">
@@ -140,22 +139,19 @@
 @inject IQuestionAppService QuestionAppService
 @inject IQuestionAnswerAppService QuestionAnswerAppService
 @code {
+        const int  noneSelect = -1;
     [Parameter]
     public Guid QuestionRepositoryId { get; set; }
 
     string[] chooseItem = { "A", "B", "C", "D", "E" };
     IReadOnlyList<QuestionListDto> _questions = Array.Empty<QuestionListDto>();
     IReadOnlyList<QuestionAnswerListDto> _questionAnswers = Array.Empty<QuestionAnswerListDto>();
-    List<QuestionAnswerItem> _questionAnswerItems = new();
+    List<QuestionAnswerItem> _selectedQuestionAnswers = new();
     QuestionDetailDto _question;
-    bool showAnalysis = false;
+    bool _showAnalysis = false;
     int _questionIndex = 0;
-    //var tempSelectItem = new[] { new { id = Guid.NewGuid(), name = "123" }, new { id = Guid.NewGuid(), name = "456" },};
-    //Guid tempSelect;
-
     int _total = 0;
-    int selectedAnswerIndex = noneSelect;
-        const int noneSelect = -1;
+    int _selectedAnswerIndex = noneSelect;
     protected override async Task OnInitializedAsync()
     {
         var result = await QuestionAppService.GetListAsync(new GetQuestionsInput() { QuestionRepositoryId = QuestionRepositoryId });
@@ -186,13 +182,23 @@
     public async Task ShowQuestion(int index)
     {
         _questionIndex = index;
-        showAnalysis = false;
+        
 
         var id = _questions[index].Id;
         _question = await QuestionAppService.GetAsync(id);
         _questionAnswers = (await QuestionAnswerAppService.GetListAsync(id)).Items;
 
-        selectedAnswerIndex = noneSelect;
+        var selectedAnswer = _selectedQuestionAnswers.Find(a => a.QuestionId == id);
+        if (selectedAnswer is not null)
+        {
+            _selectedAnswerIndex = _questionAnswers.ToList().IndexOf(_questionAnswers.First(a => a.Id == selectedAnswer.AnswerId));
+            _showAnalysis = true;
+        }
+        else
+        {
+            _showAnalysis = false;
+            _selectedAnswerIndex = noneSelect;
+        }
     }
 
     public string GetNumberColor(int index)
@@ -201,7 +207,7 @@
         {
             return "processing";
         }
-        var tempItem = _questionAnswerItems.SingleOrDefault(item => item.QuestionIndex == index);
+        var tempItem = _selectedQuestionAnswers.SingleOrDefault(item => item.QuestionIndex == index);
         if (tempItem is null)
         {
             return "default";
@@ -215,18 +221,18 @@
     public string GetBorderColor(QuestionAnswerListDto answer, int index)
     {
         List<string> classes = new List<string>() { "choose-item" };
-        if (selectedAnswerIndex == noneSelect)
+        if (_selectedAnswerIndex == noneSelect)
         {
             return String.Join(" ", classes);
         }
-        if (!showAnalysis) return String.Join(" ", classes);
+        if (!_showAnalysis) return String.Join(" ", classes);
         if (answer.Right)
         {
             classes.Add("success");
             return String.Join(" ", classes);
         }
 
-        if (selectedAnswerIndex == index)
+        if (_selectedAnswerIndex == index)
         {
             classes.Add("error");
             return String.Join(" ", classes);
@@ -236,14 +242,14 @@
 
     public void Validate(int index)
     {
-        _questionAnswerItems.Add(new QuestionAnswerItem()
+        _selectedQuestionAnswers.Add(new QuestionAnswerItem()
         {
             QuestionIndex = _questionIndex,
             QuestionId = _questions[_questionIndex].Id,
             AnswerId = _questionAnswers[index].Id,
             Right = _questionAnswers[index].Right
         });
-        showAnalysis = true;
+        _showAnalysis = true;
     }
 
     public class QuestionAnswerItem
