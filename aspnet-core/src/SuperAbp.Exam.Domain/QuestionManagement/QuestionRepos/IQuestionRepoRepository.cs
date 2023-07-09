@@ -11,6 +11,8 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionRepos
     /// </summary>
     public interface IQuestionRepoRepository : IRepository<QuestionRepo, Guid>
     {
+        Task<bool> AnyAsync(Guid id);
+
         /// <summary>
         /// 获取标题
         /// </summary>

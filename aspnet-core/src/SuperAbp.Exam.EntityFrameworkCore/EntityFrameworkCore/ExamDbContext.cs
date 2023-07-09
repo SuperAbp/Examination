@@ -20,6 +20,7 @@ using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.MenuManagement.EntityFrameworkCore;
 using SuperAbp.Exam.PaperManagement.PaperRepos;
 using SuperAbp.Exam.PaperManagement.Papers;
+using SuperAbp.Exam.TrainingManagement;
 using PaperConsts = SuperAbp.Exam.PaperManagement.Papers.PaperConsts;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
@@ -70,6 +71,8 @@ public class ExamDbContext :
     public DbSet<PaperRepo> ExamingRepositories { get; set; }
 
     public DbSet<Examing> Exams { get; set; }
+
+    public DbSet<Training> Trains { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
@@ -152,5 +155,10 @@ public class ExamDbContext :
             b.HasIndex(p => p.PaperId);
         });
 
+        builder.Entity<Training>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "Training", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+        });
     }
 }

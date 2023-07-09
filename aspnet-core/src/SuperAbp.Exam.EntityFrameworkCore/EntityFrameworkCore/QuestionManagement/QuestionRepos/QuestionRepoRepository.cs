@@ -25,6 +25,12 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionRepos
         {
         }
 
+        public async Task<bool> AnyAsync(Guid id)
+        {
+            var dbSet = await GetDbSetAsync();
+            return await dbSet.AnyAsync(r => r.Id == id);
+        }
+
         public async Task<string> FindTitleAsync(Guid id)
         {
             return await (await GetDbSetAsync())

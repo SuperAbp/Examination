@@ -20,8 +20,4 @@
     <PackageReference Include="Volo.Abp.SettingManagement.HttpApi" Version="7.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\ExamManagement\" />
-  </ItemGroup>
-
 </Project>

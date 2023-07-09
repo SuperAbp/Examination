@@ -31,4 +31,12 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// <param name="questionRepositoryId">题库Id</param>
     /// <returns></returns>
     Task<List<Question>> GetListAsync(Guid questionRepositoryId);
+
+    /// <summary>
+    /// 是否存在
+    /// </summary>
+    /// <param name="questionRepositoryId"></param>
+    /// <param name="questionId"></param>
+    /// <returns></returns>
+    Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId);
 }

@@ -70,11 +70,11 @@
         <Card>
             <div class="content">
                 <div>
-                    @for (int i = 0; i < _total; i++)
+                    @for (int i = 0; i < _questionIds.Count; i++)
                     {
                         var tempIndex = i;
                         var color = GetNumberColor(tempIndex);
-                        <Tag Color="@color" OnClick="async () => await ShowQuestion(tempIndex)">@(tempIndex + 1)</Tag>
+                        <Tag Color="@color" OnClick="async () => await ShowQuestionAsync(tempIndex)">@(tempIndex + 1)</Tag>
                     }
                 </div>
             </div>
@@ -88,7 +88,7 @@
                 <span class="number">@(_questionIndex + 1)</span>
                 <span>@_question.Content</span>
             </h2>
-                <RadioGroup class="chooses" @bind-Value="_selectedAnswerIndex" Size="large" TValue="int" OnChange="Validate" Disabled="_selectedAnswerIndex != noneSelect">
+                <RadioGroup class="chooses" @bind-Value="_selectedAnswerIndex" Size="large" TValue="int" OnChange="ValidateAsync" Disabled="_selectedAnswerIndex != noneSelect">
                 @for (int i = 0; i < _questionAnswers.Count; i++)
                 {
                     var tempIndex = i;
@@ -111,19 +111,19 @@
         <div class="bottom">
             @if (_questionIndex <= 0)
             {
-                <Button OnClick="async ()=>await PrevAsync()" Disabled>上一题</Button>
+                    <Button OnClick="PrevAsync" Disabled>上一题</Button>
             }
             else
             {
-                    <Button OnClick="async ()=>await PrevAsync()">上一题</Button>
+                    <Button OnClick="PrevAsync">上一题</Button>
             }
-            @if (_questionIndex >= _questions.Count - 1)
+            @if (_questionIndex >= _questionIds.Count - 1)
             {
-                    <Button OnClick="async ()=>await NextAsync()" Disabled>下一题</Button>
+                    <Button OnClick="NextAsync" Disabled>下一题</Button>
             }
             else
             {
-                    <Button OnClick="async ()=>await NextAsync()">下一题</Button>
+                    <Button OnClick="NextAsync">下一题</Button>
             }
             
         </div>
@@ -136,39 +136,45 @@
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using System.Diagnostics
 @using Castle.Components.DictionaryAdapter
+@using SuperAbp.Exam.TrainingManagement
 @inject IQuestionAppService QuestionAppService
 @inject IQuestionAnswerAppService QuestionAnswerAppService
+@inject ITrainingAppService TrainingAppService
 @code {
         const int  noneSelect = -1;
     [Parameter]
     public Guid QuestionRepositoryId { get; set; }
 
     string[] chooseItem = { "A", "B", "C", "D", "E" };
-    IReadOnlyList<QuestionListDto> _questions = Array.Empty<QuestionListDto>();
+    IReadOnlyList<Guid> _questionIds = Array.Empty<Guid>();
     IReadOnlyList<QuestionAnswerListDto> _questionAnswers = Array.Empty<QuestionAnswerListDto>();
+    IReadOnlyList<TrainingListDto> _trains = Array.Empty<TrainingListDto>();
     List<QuestionAnswerItem> _selectedQuestionAnswers = new();
     QuestionDetailDto _question;
     bool _showAnalysis = false;
     int _questionIndex = 0;
-    int _total = 0;
     int _selectedAnswerIndex = noneSelect;
     protected override async Task OnInitializedAsync()
     {
-        var result = await QuestionAppService.GetListAsync(new GetQuestionsInput() { QuestionRepositoryId = QuestionRepositoryId });
-        _questions = result.Items;
-        _total = (int)result.TotalCount;
-        await ShowQuestion(0);
+        var trainResult = await TrainingAppService.GetListAsync(new GetTrainsInput() { QuestionRepositoryId = QuestionRepositoryId });
+        _trains = trainResult.Items;
+        var result = await QuestionAppService.GetIdsAsync(new GetQuestionsInput() { QuestionRepositoryId = QuestionRepositoryId });
+        _questionIds = result.Items;
+
+        var maxIndex = _trains.Max(t => _questionIds.ToList().IndexOf(t.QuestionId));
+        await ShowQuestionAsync(maxIndex);
     }
 
     public async Task NextAsync()
     {
-        if (_questionIndex >= _questions.Count)
+        if (_questionIndex >= _questionIds.Count)
         {
-            _questionIndex = _questions.Count - 1;
+            _questionIndex = _questionIds.Count - 1;
             return;
 
         }
-        await ShowQuestion(_questionIndex + 1);
+
+        await ShowQuestionAsync(_questionIndex + 1);
     }
     public async Task PrevAsync()
     {
@@ -177,14 +183,13 @@
             _questionIndex = 0;
             return;
         }
-        await ShowQuestion(_questionIndex - 1);
+        await ShowQuestionAsync(_questionIndex - 1);
     }
-    public async Task ShowQuestion(int index)
+    public async Task ShowQuestionAsync(int index)
     {
         _questionIndex = index;
-        
 
-        var id = _questions[index].Id;
+        var id = _questionIds[index];
         _question = await QuestionAppService.GetAsync(id);
         _questionAnswers = (await QuestionAnswerAppService.GetListAsync(id)).Items;
 
@@ -207,16 +212,23 @@
         {
             return "processing";
         }
+        var id = _questionIds[index];
+        var training = _trains.SingleOrDefault(t => t.QuestionId == id);
+        if (training is not null)
+        {
+            return GetColor(training.Right);
+        }
         var tempItem = _selectedQuestionAnswers.SingleOrDefault(item => item.QuestionIndex == index);
         if (tempItem is null)
         {
             return "default";
         }
-        if (tempItem.Right)
-        {
-            return "success";
-        }
-        return "error";
+        return GetColor(tempItem.Right);
+    }
+
+    private string GetColor(bool right)
+    {
+        return right ? "success" : "error";
     }
     public string GetBorderColor(QuestionAnswerListDto answer, int index)
     {
@@ -240,14 +252,30 @@
         return String.Join(" ", classes);
     }
 
-    public void Validate(int index)
+    public async Task ValidateAsync(int index)
     {
+        var questionId = _questionIds[_questionIndex];
+        var right = _questionAnswers[index].Right;
+        var training = _trains.SingleOrDefault(t => t.QuestionId == questionId);
+        if (training is null)
+        {
+            await TrainingAppService.CreateAsync(new TrainingCreateDto()
+            {
+                QuestionRepositoryId = QuestionRepositoryId,
+                QuestionId = questionId,
+                    Right = right
+            });
+        }
+        else
+        {
+            await TrainingAppService.SetIsRightAsync(training.Id, right);
+        }
         _selectedQuestionAnswers.Add(new QuestionAnswerItem()
         {
             QuestionIndex = _questionIndex,
-            QuestionId = _questions[_questionIndex].Id,
+            QuestionId = questionId,
             AnswerId = _questionAnswers[index].Id,
-            Right = _questionAnswers[index].Right
+                Right = right
         });
         _showAnalysis = true;
     }

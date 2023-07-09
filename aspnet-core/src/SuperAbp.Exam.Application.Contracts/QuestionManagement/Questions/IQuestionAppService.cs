@@ -18,6 +18,13 @@ public interface IQuestionAppService : IApplicationService
     Task<PagedResultDto<QuestionListDto>> GetListAsync(GetQuestionsInput input);
 
     /// <summary>
+    /// 获取所有Id
+    /// </summary>
+    /// <param name="input">过滤条件</param>
+    /// <returns></returns>
+    Task<ListResultDto<Guid>> GetIdsAsync(GetQuestionsInput input);
+
+    /// <summary>
     /// 详情
     /// </summary>
     /// <param name="id"></param>

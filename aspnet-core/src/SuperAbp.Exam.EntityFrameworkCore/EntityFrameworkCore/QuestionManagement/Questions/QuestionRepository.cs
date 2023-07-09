@@ -43,4 +43,10 @@ public class QuestionRepository : EfCoreRepository<ExamDbContext, Question, Guid
     {
         return await GetListAsync(q => q.QuestionRepositoryId == questionRepositoryId);
     }
+
+    public async Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId)
+    {
+        var dbSet = await GetDbSetAsync();
+        return await dbSet.AnyAsync(q => q.QuestionRepositoryId == questionRepositoryId && q.Id == questionId);
+    }
 }

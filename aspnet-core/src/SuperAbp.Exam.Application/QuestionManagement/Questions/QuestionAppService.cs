@@ -50,6 +50,15 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
             return new PagedResultDto<QuestionListDto>(totalCount, dtos);
         }
 
+        public async Task<ListResultDto<Guid>> GetIdsAsync(GetQuestionsInput input)
+        {
+            var queryable = await _questionRepository.GetQueryableAsync();
+            queryable = queryable
+                .Where(q => q.QuestionRepositoryId == input.QuestionRepositoryId);
+            var ids = await AsyncExecuter.ToListAsync(queryable.Select(q => q.Id));
+            return new ListResultDto<Guid>(ids);
+        }
+
         public virtual async Task<QuestionDetailDto> GetAsync(Guid id)
         {
             var entity = await _questionRepository.GetAsync(id);

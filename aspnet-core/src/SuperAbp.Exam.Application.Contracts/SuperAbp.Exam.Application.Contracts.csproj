@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Folder Include="ExamManagement\Papers\" />
+    <Folder Include="TrainingManagement\" />
   </ItemGroup>
 
 </Project>
