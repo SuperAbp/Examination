@@ -169,6 +169,7 @@ else
     IReadOnlyList<Guid> _questionIds = Array.Empty<Guid>();
     IReadOnlyList<QuestionAnswerListDto> _questionAnswers = Array.Empty<QuestionAnswerListDto>();
     IReadOnlyList<TrainingListDto> _trains = Array.Empty<TrainingListDto>();
+    Dictionary<Guid, Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerListDto>>> _cacheQuestions = new();
     List<QuestionAnswerItem> _selectedQuestionAnswers = new();
     QuestionDetailDto _question;
     bool _showAnalysis = false;
@@ -219,9 +220,8 @@ else
         _questionIndex = index;
 
         var id = _questionIds[index];
-        _question = await QuestionAppService.GetAsync(id);
-        _questionAnswers = (await QuestionAnswerAppService.GetListAsync(id)).Items;
-        
+        await LoadQuestionAsync(id);
+
         if (TrainType is 1)
         {
             _selectedAnswerIndex = _questionAnswers.ToList().IndexOf(_questionAnswers.Single(a => a.Right));
@@ -242,6 +242,21 @@ else
             }
         }
         loadingQuestion = false;
+    }
+
+    private async Task LoadQuestionAsync(Guid id)
+    {
+        if (_cacheQuestions.ContainsKey(id))
+        {
+            _question = _cacheQuestions[id].Item1;
+            _questionAnswers = _cacheQuestions[id].Item2;
+        }
+        else
+        {
+            _question = await QuestionAppService.GetAsync(id);
+            _questionAnswers = (await QuestionAnswerAppService.GetListAsync(id)).Items;
+            _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerListDto>>(_question, _questionAnswers));
+        }
     }
 
     public string GetNumberColor(int index)
