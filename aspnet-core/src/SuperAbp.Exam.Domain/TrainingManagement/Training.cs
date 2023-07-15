@@ -31,5 +31,5 @@ public class Training : AggregateRoot<Guid>, IHasCreationTime
 
     public bool Right { get; set; }
 
-    public DateTime CreationTime { get; }
+    public DateTime CreationTime { get; protected set; }
 }

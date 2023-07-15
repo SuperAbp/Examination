@@ -1,4 +1,4 @@
-﻿@page "/repository/{QuestionRepositoryId:guid}/training"
+﻿@page "/repository/{QuestionRepositoryId:guid}/training/{TrainType:int?}"
 
 <style>
     .question-content .title {
@@ -35,12 +35,12 @@
     }
 
     .chooses .choose-item.success {
-            border-color: #52c41a;
+        border-color: #52c41a;
     }
 
-        .chooses .choose-item.error {
-            border-color: #ff4d4f;
-        }
+    .chooses .choose-item.error {
+        border-color: #ff4d4f;
+    }
         
 
     .chooses .ant-radio {
@@ -65,72 +65,87 @@
     }
 
 </style>
-<GridRow Gutter="16">
-    <GridCol Span="4">
-        <Card>
-            <div class="content">
-                <div>
-                    @for (int i = 0; i < _questionIds.Count; i++)
-                    {
-                        var tempIndex = i;
-                        var color = GetNumberColor(tempIndex);
-                        <Tag Color="@color" OnClick="async () => await ShowQuestionAsync(tempIndex)">@(tempIndex + 1)</Tag>
-                    }
+@if (loading)
+{
+    <div style=" text-align: center;margin: 50px 0;">
+        <Spin />
+    </div>
+}
+else
+{
+    <GridRow Gutter="16">
+        <GridCol Span="4">
+            <Card>
+                <div class="content">
+                    <div>
+                        @for (int i = 0; i < _questionIds.Count; i++)
+                        {
+                            var tempIndex = i;
+                            var color = GetNumberColor(tempIndex);
+                            <Tag Color="@color" OnClick="async () => await ShowQuestionAsync(tempIndex)">@(tempIndex + 1)</Tag>
+                        }
+                    </div>
                 </div>
-            </div>
-        </Card>
-    </GridCol>
-    <GridCol Span="20">
-        <Card class="question-content">
-        @if (_question != null)
-        {
-            <h2 class="title">
-                <span class="number">@(_questionIndex + 1)</span>
-                <span>@_question.Content</span>
-            </h2>
-                <RadioGroup class="chooses" @bind-Value="_selectedAnswerIndex" Size="large" TValue="int" OnChange="ValidateAsync" Disabled="_selectedAnswerIndex != noneSelect">
-                @for (int i = 0; i < _questionAnswers.Count; i++)
+            </Card>
+        </GridCol>
+        <GridCol Span="20">
+            <Card class="question-content">
+                @if (loadingQuestion)
                 {
-                    var tempIndex = i;
-                    var answer = _questionAnswers[tempIndex];
-                    <Radio class="@GetBorderColor(answer, tempIndex)" Value="@tempIndex">
-                        <span class="tag">@chooseItem[tempIndex]</span>
-                        <span class="content">@answer.Content</span>
-                    </Radio>
+                    <Spin />
                 }
-            </RadioGroup>
-        }
-        @if (_showAnalysis)
-        {
-            <div class="analysis">
-                    <Card Title="题目解析">
-                    @_question.Analysis
-                </Card>
-            </div>
-        }
-        <div class="bottom">
-            @if (_questionIndex <= 0)
-            {
-                    <Button OnClick="PrevAsync" Disabled>上一题</Button>
-            }
-            else
-            {
-                    <Button OnClick="PrevAsync">上一题</Button>
-            }
-            @if (_questionIndex >= _questionIds.Count - 1)
-            {
-                    <Button OnClick="NextAsync" Disabled>下一题</Button>
-            }
-            else
-            {
-                    <Button OnClick="NextAsync">下一题</Button>
-            }
-            
-        </div>
-           
-        </Card>
-    </GridCol>
-</GridRow>
+                else
+                {
+                    @if (_question != null)
+                    {
+                        <h2 class="title">
+                            <span class="number">@(_questionIndex + 1)</span>
+                            <span>@_question.Content</span>
+                        </h2>
+                        <RadioGroup class="chooses" @bind-Value="_selectedAnswerIndex" Size="large" TValue="int" OnChange="ValidateAsync" Disabled="_selectedAnswerIndex != noneSelect">
+                            @for (int i = 0; i < _questionAnswers.Count; i++)
+                            {
+                                var tempIndex = i;
+                                var answer = _questionAnswers[tempIndex];
+                                <Radio class="@GetBorderColor(answer, tempIndex)" Value="@tempIndex">
+                                    <span class="tag">@chooseItem[tempIndex]</span>
+                                    <span class="content">@answer.Content</span>
+                                </Radio>
+                            }
+                        </RadioGroup>
+                    }
+                    @if (_showAnalysis)
+                    {
+                        <div class="analysis">
+                            <Card Title="题目解析">
+                                @_question.Analysis
+                            </Card>
+                        </div>
+                    }
+                    <div class="bottom">
+                        @if (_questionIndex <= 0)
+                        {
+                            <Button OnClick="PrevAsync" Disabled>上一题</Button>
+                        }
+                        else
+                        {
+                            <Button OnClick="PrevAsync">上一题</Button>
+                        }
+                        @if (_questionIndex >= _questionIds.Count - 1)
+                        {
+                            <Button OnClick="NextAsync" Disabled>下一题</Button>
+                        }
+                        else
+                        {
+                            <Button OnClick="NextAsync">下一题</Button>
+                        }
+
+                    </div>
+                }
+            </Card>
+        </GridCol>
+    </GridRow>
+}
 
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
@@ -145,6 +160,11 @@
     [Parameter]
     public Guid QuestionRepositoryId { get; set; }
 
+    [Parameter]
+    public int? TrainType { get; set; }
+
+    bool loading = true;
+    bool loadingQuestion = false;
     string[] chooseItem = { "A", "B", "C", "D", "E" };
     IReadOnlyList<Guid> _questionIds = Array.Empty<Guid>();
     IReadOnlyList<QuestionAnswerListDto> _questionAnswers = Array.Empty<QuestionAnswerListDto>();
@@ -156,13 +176,21 @@
     int _selectedAnswerIndex = noneSelect;
     protected override async Task OnInitializedAsync()
     {
-        var trainResult = await TrainingAppService.GetListAsync(new GetTrainsInput() { QuestionRepositoryId = QuestionRepositoryId });
-        _trains = trainResult.Items;
         var result = await QuestionAppService.GetIdsAsync(new GetQuestionsInput() { QuestionRepositoryId = QuestionRepositoryId });
         _questionIds = result.Items;
 
-        var maxIndex = _trains.Max(t => _questionIds.ToList().IndexOf(t.QuestionId));
+        int maxIndex = 0;
+        if (TrainType is null or 0)
+        {
+            var trainResult = await TrainingAppService.GetListAsync(new GetTrainsInput() { QuestionRepositoryId = QuestionRepositoryId });
+            _trains = trainResult.Items;
+
+            maxIndex = _trains.Count > 0 
+                ? _trains.Max(t => _questionIds.ToList().IndexOf(t.QuestionId))
+                : 0;
+        }
         await ShowQuestionAsync(maxIndex);
+        loading = false;
     }
 
     public async Task NextAsync()
@@ -187,23 +215,33 @@
     }
     public async Task ShowQuestionAsync(int index)
     {
+        loadingQuestion = true;
         _questionIndex = index;
 
         var id = _questionIds[index];
         _question = await QuestionAppService.GetAsync(id);
         _questionAnswers = (await QuestionAnswerAppService.GetListAsync(id)).Items;
-
-        var selectedAnswer = _selectedQuestionAnswers.Find(a => a.QuestionId == id);
-        if (selectedAnswer is not null)
+        
+        if (TrainType is 1)
         {
-            _selectedAnswerIndex = _questionAnswers.ToList().IndexOf(_questionAnswers.First(a => a.Id == selectedAnswer.AnswerId));
+            _selectedAnswerIndex = _questionAnswers.ToList().IndexOf(_questionAnswers.Single(a => a.Right));
             _showAnalysis = true;
         }
         else
         {
-            _showAnalysis = false;
-            _selectedAnswerIndex = noneSelect;
+            var selectedAnswer = _selectedQuestionAnswers.Find(a => a.QuestionId == id);
+            if (selectedAnswer is not null)
+            {
+                _selectedAnswerIndex = _questionAnswers.ToList().IndexOf(_questionAnswers.First(a => a.Id == selectedAnswer.AnswerId));
+                _showAnalysis = true;
+            }
+            else
+            {
+                _showAnalysis = false;
+                _selectedAnswerIndex = noneSelect;
+            }
         }
+        loadingQuestion = false;
     }
 
     public string GetNumberColor(int index)
@@ -262,8 +300,8 @@
             await TrainingAppService.CreateAsync(new TrainingCreateDto()
             {
                 QuestionRepositoryId = QuestionRepositoryId,
-                QuestionId = questionId,
-                    Right = right
+                QuestionId = questionId, 
+                Right = right
             });
         }
         else
