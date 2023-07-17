@@ -97,23 +97,21 @@ else
                 }
                 else
                 {
+                    
                     @if (_question != null)
                     {
                         <h2 class="title">
                             <span class="number">@(_questionIndex + 1)</span>
                             <span>@_question.Content</span>
                         </h2>
-                        <RadioGroup class="chooses" @bind-Value="_selectedAnswerIndex" Size="large" TValue="int" OnChange="ValidateAsync" Disabled="_selectedAnswerIndex != noneSelect">
-                            @for (int i = 0; i < _questionAnswers.Count; i++)
-                            {
-                                var tempIndex = i;
-                                var answer = _questionAnswers[tempIndex];
-                                <Radio class="@GetBorderColor(answer, tempIndex)" Value="@tempIndex">
-                                    <span class="tag">@chooseItem[tempIndex]</span>
-                                    <span class="content">@answer.Content</span>
-                                </Radio>
-                            }
-                        </RadioGroup>
+                        <SingleSelect QuestionRepositoryId="QuestionRepositoryId" 
+                                      QuestionId="_question.Id" 
+                                      Answers="_questionAnswers"
+                          SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                      Trains="_trains"
+                                        TrainType = "TrainType"
+                                      ShowAnalysis="_showAnalysis"
+                                      OnSelected="@SelectedAsync"></SingleSelect>
                     }
                     @if (_showAnalysis)
                     {
@@ -150,14 +148,11 @@ else
 
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
-@using System.Diagnostics
-@using Castle.Components.DictionaryAdapter
 @using SuperAbp.Exam.TrainingManagement
 @inject IQuestionAppService QuestionAppService
 @inject IQuestionAnswerAppService QuestionAnswerAppService
 @inject ITrainingAppService TrainingAppService
 @code {
-        const int  noneSelect = -1;
     [Parameter]
     public Guid QuestionRepositoryId { get; set; }
 
@@ -166,7 +161,6 @@ else
 
     bool loading = true;
     bool loadingQuestion = false;
-    string[] chooseItem = { "A", "B", "C", "D", "E" };
     IReadOnlyList<Guid> _questionIds = Array.Empty<Guid>();
     IReadOnlyList<QuestionAnswerListDto> _questionAnswers = Array.Empty<QuestionAnswerListDto>();
     IReadOnlyList<TrainingListDto> _trains = Array.Empty<TrainingListDto>();
@@ -175,7 +169,6 @@ else
     QuestionDetailDto _question;
     bool _showAnalysis = false;
     int _questionIndex = 0;
-    int _selectedAnswerIndex = noneSelect;
     protected override async Task OnInitializedAsync()
     {
         var result = await QuestionAppService.GetIdsAsync(new GetQuestionsInput() { QuestionRepositoryId = QuestionRepositoryId });
@@ -219,29 +212,15 @@ else
     {
         loadingQuestion = true;
         _questionIndex = index;
-
+        _showAnalysis = false;
+        
         var id = _questionIds[index];
         await LoadQuestionAsync(id);
-
-        if (TrainType is 1)
+        if (TrainType is 1 || _selectedQuestionAnswers.Any(a => a.QuestionId == id))
         {
-            _selectedAnswerIndex = _questionAnswers.ToList().IndexOf(_questionAnswers.Single(a => a.Right));
             _showAnalysis = true;
         }
-        else
-        {
-            var selectedAnswer = _selectedQuestionAnswers.Find(a => a.QuestionId == id);
-            if (selectedAnswer is not null)
-            {
-                _selectedAnswerIndex = _questionAnswers.ToList().IndexOf(_questionAnswers.First(a => a.Id == selectedAnswer.AnswerId));
-                _showAnalysis = true;
-            }
-            else
-            {
-                _showAnalysis = false;
-                _selectedAnswerIndex = noneSelect;
-            }
-        }
+    
         loadingQuestion = false;
     }
 
@@ -267,56 +246,33 @@ else
             return "processing";
         }
         var id = _questionIds[index];
+        var selectedQuestionAnswer = _selectedQuestionAnswers.Find(a => a.QuestionId == id);
+        if (selectedQuestionAnswer is not null)
+        {
+            return GetColor(selectedQuestionAnswer.Right);
+        }
         var training = _trains.SingleOrDefault(t => t.QuestionId == id);
-        if (training is not null)
-        {
-            return GetColor(training.Right);
-        }
-        var tempItem = _selectedQuestionAnswers.SingleOrDefault(item => item.QuestionIndex == index);
-        if (tempItem is null)
-        {
-            return "default";
-        }
-        return GetColor(tempItem.Right);
+        return training is not null 
+            ? GetColor(training.Right) 
+            : "default";
     }
 
     private string GetColor(bool right)
     {
         return right ? "success" : "error";
     }
-    public string GetBorderColor(QuestionAnswerListDto answer, int index)
-    {
-        List<string> classes = new List<string>() { "choose-item" };
-        if (_selectedAnswerIndex == noneSelect)
-        {
-            return String.Join(" ", classes);
-        }
-        if (!_showAnalysis) return String.Join(" ", classes);
-        if (answer.Right)
-        {
-            classes.Add("success");
-            return String.Join(" ", classes);
-        }
 
-        if (_selectedAnswerIndex == index)
-        {
-            classes.Add("error");
-            return String.Join(" ", classes);
-        }
-        return String.Join(" ", classes);
-    }
-
-    public async Task ValidateAsync(int index)
+    public async Task SelectedAsync(QuestionAnswerItem item)
     {
-        var questionId = _questionIds[_questionIndex];
-        var right = _questionAnswers[index].Right;
-        var training = _trains.SingleOrDefault(t => t.QuestionId == questionId);
+        _showAnalysis = true;
+        var right = item.Right;
+        var training = _trains.SingleOrDefault(t => t.QuestionId == item.QuestionId);
         if (training is null)
         {
             await TrainingAppService.CreateAsync(new TrainingCreateDto()
             {
                 QuestionRepositoryId = QuestionRepositoryId,
-                QuestionId = questionId, 
+                    QuestionId = item.QuestionId,
                 Right = right
             });
         }
@@ -324,21 +280,13 @@ else
         {
             await TrainingAppService.SetIsRightAsync(training.Id, right);
         }
-        _selectedQuestionAnswers.Add(new QuestionAnswerItem()
-        {
-            QuestionIndex = _questionIndex,
-            QuestionId = questionId,
-            AnswerId = _questionAnswers[index].Id,
-                Right = right
-        });
-        _showAnalysis = true;
+        _selectedQuestionAnswers.Add(item);
     }
 
     public class QuestionAnswerItem
     {
-        public int QuestionIndex { get; set; }
         public Guid QuestionId { get; set; }
-        public Guid AnswerId { get; set; }
+        public string AnswerId { get; set; }
         public bool Right { get; set; }
     }
 }

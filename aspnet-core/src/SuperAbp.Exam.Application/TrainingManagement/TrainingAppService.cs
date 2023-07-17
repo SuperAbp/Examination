@@ -49,6 +49,10 @@ public class TrainingAppService : ExamAppService, ITrainingAppService
             throw new UserFriendlyException("题目不存在");
         }
 
+        if (await _trainingRepository.AnyQuestionAsync(input.QuestionId))
+        {
+            throw new UserFriendlyException("请勿重复答题");
+        }
         var training = new Training(GuidGenerator.Create(), CurrentUser.GetId(), input.QuestionRepositoryId, input.QuestionId, input.Right);
         await _trainingRepository.InsertAsync(training);
         return ObjectMapper.Map<Training, TrainingListDto>(training);

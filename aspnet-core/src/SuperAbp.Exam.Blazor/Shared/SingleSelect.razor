@@ -1,5 +1,87 @@
-﻿<h3>SingleSsadelect</h3>
+﻿@using SuperAbp.Exam.TrainingManagement
+@using SuperAbp.Exam.Blazor.Pages.QuestionRepos
+@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
+@using System.Diagnostics
+<RadioGroup class="chooses" @bind-Value="_selectedAnswerIndex" Size="large" TValue="int" OnChange="ValidateAsync" Disabled="_selectedAnswerIndex != NoneSelect">
+    @for (int i = 0; i < Answers.Count; i++)
+    {
+        var tempIndex = i;
+        var answer = Answers[tempIndex];
+        
+        <Radio class="@GetBorderColor(answer, tempIndex)" Value="@tempIndex">
+            <span class="tag">@Convert.ToChar(97 + tempIndex)</span>
+            <span class="content">@answer.Content</span>
+        </Radio>
+    }
+</RadioGroup>
 
+@using Volo.Abp.Json
+@inject IJsonSerializer JsonSerializer
+@inject ITrainingAppService TrainingAppService
 @code {
+    [Parameter]
+    public Guid QuestionRepositoryId { get; set; }
+    [Parameter]
+    public Guid QuestionId { get; set; }
+    [Parameter]
+    public IReadOnlyList<QuestionAnswerListDto> Answers { get; set; }
+    [Parameter]
+    public IReadOnlyList<TrainingListDto> Trains { get; set; }
+    [Parameter]
+    public List<Train.QuestionAnswerItem> SelectedQuestionAnswers { get; set; }
+    [Parameter]
+    public int? TrainType { get; set; }
+    [Parameter]
+    public bool ShowAnalysis { get; set; }
+    [Parameter]
+    public EventCallback<Train.QuestionAnswerItem> OnSelected { get; set; }
+
+    const int NoneSelect = -1;
+    int _selectedAnswerIndex = NoneSelect;
+    
+    protected override void OnParametersSet()
+    {
+        _selectedAnswerIndex = NoneSelect;
+        if (!ShowAnalysis) return;
+        var selectedAnswer = SelectedQuestionAnswers.Find(a => a.QuestionId == QuestionId);
+        _selectedAnswerIndex = Answers.ToList().IndexOf(selectedAnswer is null 
+            ? Answers.Single(a => a.Right) 
+            : Answers.First(a => a.Id == new Guid(selectedAnswer.AnswerId)));
+    }
+
+    public string GetBorderColor(QuestionAnswerListDto answer, int index)
+    {
+        List<string> classes = new List<string>() { "choose-item" };
+        if (_selectedAnswerIndex == NoneSelect)
+        {
+            return String.Join(" ", classes);
+        }
+
+        if (!ShowAnalysis)
+        {
+            return String.Join(" ", classes);
+        }
+        if (answer.Right)
+        {
+            classes.Add("success");
+            return String.Join(" ", classes);
+        }
+
+        if (_selectedAnswerIndex != index) return String.Join(" ", classes);
+        classes.Add("error");
+        return String.Join(" ", classes);
+    }
+
+    public async Task ValidateAsync(int index)
+    {
+        var right = Answers[index].Right;
+        await OnSelected.InvokeAsync(new Train.QuestionAnswerItem()
+        {
+            QuestionId = QuestionId,
+                AnswerId = Answers[index].Id.ToString(),
+                    Right = right
+        });
+    }
+
 
 }
