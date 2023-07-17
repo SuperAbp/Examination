@@ -10,7 +10,6 @@
     }
     .question-content .chooses {
         width: 100%;
-        
     }
 
     .bottom {
@@ -23,39 +22,6 @@
     .analysis {
         margin-top: 10px;
         margin-bottom: 10px;
-    }
-
-    .chooses .choose-item {
-        width: 100%;
-        padding: 9px 20px 9px 5px;
-        -ms-border-radius: 4px;
-        border-radius: 4px;
-        border: 1px solid #d9d9d9;
-        margin-bottom: 10px;
-    }
-
-    .chooses .choose-item.success {
-        border-color: #52c41a;
-    }
-
-    .chooses .choose-item.error {
-        border-color: #ff4d4f;
-    }
-        
-
-    .chooses .ant-radio {
-        display: none;
-    }
-
-    .chooses .choose-item .tag {
-        width: 10px;
-        font-weight: bold;
-        color: #1890ff;
-    }
-
-    .chooses .choose-item .content {
-        color: #000;
-        margin-left: 5px;
     }
 
     .ant-tag.current {
@@ -73,7 +39,6 @@
 }
 else
 {
-    <SingleSelect/>
     <GridRow Gutter="16">
         <GridCol Span="4">
             <Card>
@@ -104,13 +69,24 @@ else
                             <span class="number">@(_questionIndex + 1)</span>
                             <span>@_question.Content</span>
                         </h2>
-                        <SingleSelect QuestionId="_question.Id" 
-                                      Answers="_questionAnswers"
-                                      SelectedQuestionAnswers="_selectedQuestionAnswers"
-                                      ShowAnalysis="_showAnalysis"
-                                      OnSelected="@SelectedAsync"></SingleSelect>
+                        @if (_question.QuestionType == QuestionType.SingleSelect || _question.QuestionType == QuestionType.Judge)
+                        {
+                            <SingleSelect QuestionId="_question.Id"
+                                          Answers="_questionAnswers"
+                                          SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                          ShowAnalysis="_showAnalysis"
+                                          OnSelected="@SelectedAsync"></SingleSelect>
+                        }
+                        else
+                        {
+                            <MultiSelect QuestionId="_question.Id"
+                          Answers="_questionAnswers"
+                          SelectedQuestionAnswers="_selectedQuestionAnswers"
+                          ShowAnalysis="_showAnalysis"
+                          OnSelected="@SelectedAsync"></MultiSelect>
+                        }
                     }
-                    @if (_showAnalysis)
+                    @if (_showAnalysis && !String.IsNullOrEmpty(_question?.Analysis))
                     {
                         <div class="analysis">
                             <Card Title="题目解析">
@@ -146,6 +122,8 @@ else
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using SuperAbp.Exam.TrainingManagement
+@using SuperAbp.Exam.Blazor.Model
+@using NUglify.Helpers
 @inject IQuestionAppService QuestionAppService
 @inject IQuestionAnswerAppService QuestionAnswerAppService
 @inject ITrainingAppService TrainingAppService
@@ -280,10 +258,4 @@ else
         _selectedQuestionAnswers.Add(item);
     }
 
-    public class QuestionAnswerItem
-    {
-        public Guid QuestionId { get; set; }
-        public string AnswerId { get; set; }
-        public bool Right { get; set; }
-    }
 }

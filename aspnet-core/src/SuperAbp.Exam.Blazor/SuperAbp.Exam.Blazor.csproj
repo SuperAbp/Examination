@@ -26,5 +26,9 @@
     <ProjectReference Include="..\..\src\SuperAbp.Exam.HttpApi.Client\SuperAbp.Exam.HttpApi.Client.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Model\" />
+  </ItemGroup>
+
 
 </Project>

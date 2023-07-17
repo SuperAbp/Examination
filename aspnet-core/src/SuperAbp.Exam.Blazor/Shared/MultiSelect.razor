@@ -1,5 +1,7 @@
-﻿<style>
-    .chooses .choose-item {
+﻿
+
+<style>
+    .chooses .ant-checkbox-wrapper {
         width: 100%;
         padding: 9px 20px 9px 5px;
         -ms-border-radius: 4px;
@@ -8,53 +10,47 @@
         margin-bottom: 10px;
     }
 
-    .chooses .choose-item.success {
-        border-color: #52c41a;
-    }
-
-    .chooses .choose-item.error {
-        border-color: #ff4d4f;
-    }
-
-
-    .chooses .ant-radio {
+    .chooses .ant-checkbox {
         display: none;
     }
 
-        .chooses .ant-radio + * {
-        width: 100%;
+        .chooses .ant-checkbox + span {
+            width: 100%;
         }
-    .chooses .choose-item .tag {
+
+    .chooses .ant-checkbox-wrapper .tag {
         width: 10px;
         font-weight: bold;
         color: #1890ff;
     }
 
-    .chooses .choose-item .content {
+    .chooses .ant-checkbox-wrapper .content {
         color: #000;
         margin-left: 5px;
     }
 
+    .chooses .ant-checkbox-wrapper + .ant-checkbox-wrapper {
+        margin-left: 0px;
+    }
     .chooses .result {
         display: none;
     }
 
-    .chooses .result.show {
-        display: block;
-    }
+        .chooses .result.show {
+            display: block;
+        }
     .chooses .result span {
         vert-align: middle;
         font-size: 1rem;
     }
-
 </style>
-<RadioGroup class="chooses" @bind-Value="_selectedAnswerId" Size="large" TValue="Guid" OnChange="ValidateAsync" Disabled="_selectedAnswerId != new Guid()">
+
+<CheckboxGroup class="chooses" ValueChanged="OnChange">
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
         var answer = Answers[tempIndex];
-
-        <Radio class="choose-item" Value="@answer.Id">
+        <Checkbox>
             <div style="display: flex; -o-justify-content: space-between; -webkit-justify-content: space-between; justify-content: space-between;">
                 <div>
                     <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
@@ -63,24 +59,20 @@
                 @if (answer.Right)
                 {
                     <div class="@GetResultColor(answer)">
-                        <Icon Type="check-circle" Theme="twotone" TwotoneColor="#52c41a" />
+                        <Icon Type="check-circle" Theme="twotone" TwotoneColor="#52c41a"/>
                         @*<span>答案</span>*@
                     </div>
                 }
             </div>
-        </Radio>
+        </Checkbox>
     }
-</RadioGroup>
+</CheckboxGroup>
 
-@using SuperAbp.Exam.TrainingManagement
-@using SuperAbp.Exam.Blazor.Pages.QuestionRepos
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
-@using System.Diagnostics
 @using SuperAbp.Exam.Blazor.Model
 @using Volo.Abp
 @using Volo.Abp.AspNetCore.Components.Notifications
 @inject IUiNotificationService UiNotificationService
-@inject ITrainingAppService TrainingAppService
 @code {
     [Parameter]
     public Guid QuestionId { get; set; }
@@ -92,19 +84,26 @@
     public bool ShowAnalysis { get; set; }
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSelected { get; set; }
-    
-    Guid _selectedAnswerId = new Guid();
-    
+
+    List<Guid> _selectedAnswerIds = new List<Guid>();
     protected override void OnParametersSet()
     {
-        _selectedAnswerId = new Guid();
+        _selectedAnswerIds = new List<Guid>();
         if (!ShowAnalysis) return;
 
         var selectedAnswer = SelectedQuestionAnswers.Find(a => a.QuestionId == QuestionId);
-        var answer = selectedAnswer is null 
-            ? Answers.Single(a => a.Right) 
-            : Answers.First(a => a.Id == new Guid(selectedAnswer.AnswerId));
-        _selectedAnswerId = answer.Id;
+        if (selectedAnswer is null)
+        {
+            _selectedAnswerIds = Answers
+                .Where(a => a.Right)
+                .Select(a => a.Id)
+                .ToList();
+        }
+        else
+        {
+            var answerIds = selectedAnswer.AnswerId.Split(",");
+            _selectedAnswerIds = answerIds.Select(a => new Guid(a)).ToList();
+        }
     }
 
     string GetResultColor(QuestionAnswerListDto answer)
@@ -117,20 +116,20 @@
         return String.Join(" ", classes);
     }
 
-    public async Task ValidateAsync(Guid answerId)
+    void OnChange(string[] checkedValues)
     {
-        var answer = Answers.FirstOrDefault(a => a.Id == answerId);
-        if (answer is null)
-        {
-            await UiNotificationService.Error("请先选择答案");
-            return;
-        }
-        var right = answer.Right;
-        await OnSelected.InvokeAsync(new QuestionAnswerItem()
-        {
-            QuestionId = QuestionId,
-                AnswerId = answerId.ToString(),
-                    Right = right
-        });
+        //var answer = Answers.FirstOrDefault(a => a.Id == answerId);
+        //if (answer is null)
+        //{
+        //    await UiNotificationService.Error("请先选择答案");
+        //    return;
+        //}
+        //var right = answer.Right;
+        //await OnSelected.InvokeAsync(new QuestionAnswerItem()
+        //{
+        //    QuestionId = QuestionId,
+        //    AnswerId = answerId.ToString(),
+        //    Right = right
+        //});
     }
 }
