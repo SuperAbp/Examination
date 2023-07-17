@@ -20,17 +20,11 @@
 @inject ITrainingAppService TrainingAppService
 @code {
     [Parameter]
-    public Guid QuestionRepositoryId { get; set; }
-    [Parameter]
     public Guid QuestionId { get; set; }
     [Parameter]
     public IReadOnlyList<QuestionAnswerListDto> Answers { get; set; }
     [Parameter]
-    public IReadOnlyList<TrainingListDto> Trains { get; set; }
-    [Parameter]
     public List<Train.QuestionAnswerItem> SelectedQuestionAnswers { get; set; }
-    [Parameter]
-    public int? TrainType { get; set; }
     [Parameter]
     public bool ShowAnalysis { get; set; }
     [Parameter]
