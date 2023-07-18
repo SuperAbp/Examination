@@ -1,56 +1,79 @@
 ﻿
 
 <style>
-    .chooses .ant-checkbox-wrapper {
-        width: 100%;
+    .chooses .choose-item {
         padding: 9px 20px 9px 5px;
         -ms-border-radius: 4px;
         border-radius: 4px;
         border: 1px solid #d9d9d9;
         margin-bottom: 10px;
+        display: flex;
+        -o-justify-content: space-between;
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
     }
 
-    .chooses .ant-checkbox {
-        display: none;
-    }
-
-        .chooses .ant-checkbox + span {
-            width: 100%;
-        }
-
-    .chooses .ant-checkbox-wrapper .tag {
+    .chooses .tag {
         width: 10px;
         font-weight: bold;
         color: #1890ff;
     }
+    .chooses .choose-item.primary {
+            border-color: #1890ff;
+        }
 
-    .chooses .ant-checkbox-wrapper .content {
+    .chooses .choose-item .body {
+        padding: 0 8px;
+    }
+
+    .chooses .choose-item .content {
         color: #000;
         margin-left: 5px;
     }
 
-    .chooses .ant-checkbox-wrapper + .ant-checkbox-wrapper {
-        margin-left: 0px;
-    }
-    .chooses .result {
-        display: none;
-    }
-
-        .chooses .result.show {
-            display: block;
+        .chooses .choose-item .result {
+            display: none;
         }
-    .chooses .result span {
-        vert-align: middle;
-        font-size: 1rem;
-    }
+
+            .chooses .choose-item .result.show {
+                display: block;
+            }
+
+            .chooses .choose-item .result span {
+                vert-align: middle;
+                font-size: 1rem;
+            }
 </style>
 
-<CheckboxGroup class="chooses" ValueChanged="OnChange">
+@*TODO:CheckboxGroup的Disabled只有与Options配合时才有效*@
+<div class="chooses">
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
         var answer = Answers[tempIndex];
-        <Checkbox>
+        <div class="@GetBorderColor(answer)">
+            <div class="body">
+                <div>
+                    <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
+                    <span class="content">@answer.Content</span>
+                </div>
+                @if (answer.Right)
+                {
+                    <div class="@GetResultClass(answer)">
+                        <Icon Type="check-circle" Theme="twotone" TwotoneColor="#52c41a" />
+                        @*<span>答案</span>*@
+                    </div>
+                }
+            </div>
+            </div>
+    }
+</div>
+@*<CheckboxGroup class="chooses" ValueChanged="@OnChange">
+    @for (int i = 0; i < Answers.Count; i++)
+    {
+        var tempIndex = i;
+        var answer = Answers[tempIndex];
+        <Checkbox Class="@GetBorderColor(answer)">
             <div style="display: flex; -o-justify-content: space-between; -webkit-justify-content: space-between; justify-content: space-between;">
                 <div>
                     <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
@@ -58,15 +81,15 @@
                 </div>
                 @if (answer.Right)
                 {
-                    <div class="@GetResultColor(answer)">
+                    <div class="@GetResultClass(answer)">
                         <Icon Type="check-circle" Theme="twotone" TwotoneColor="#52c41a"/>
-                        @*<span>答案</span>*@
                     </div>
                 }
             </div>
         </Checkbox>
     }
-</CheckboxGroup>
+</CheckboxGroup>*@
+<Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
 
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using SuperAbp.Exam.Blazor.Model
@@ -85,10 +108,10 @@
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSelected { get; set; }
 
-    List<Guid> _selectedAnswerIds = new List<Guid>();
+    Guid[] _selectedAnswerIds = Array.Empty<Guid>();
     protected override void OnParametersSet()
     {
-        _selectedAnswerIds = new List<Guid>();
+        _selectedAnswerIds = Array.Empty<Guid>();
         if (!ShowAnalysis) return;
 
         var selectedAnswer = SelectedQuestionAnswers.Find(a => a.QuestionId == QuestionId);
@@ -97,16 +120,25 @@
             _selectedAnswerIds = Answers
                 .Where(a => a.Right)
                 .Select(a => a.Id)
-                .ToList();
+                .ToArray();
         }
         else
         {
             var answerIds = selectedAnswer.AnswerId.Split(",");
-            _selectedAnswerIds = answerIds.Select(a => new Guid(a)).ToList();
+            _selectedAnswerIds = answerIds.Select(a => new Guid(a)).ToArray();
         }
     }
 
-    string GetResultColor(QuestionAnswerListDto answer)
+    public string GetBorderColor(QuestionAnswerListDto answer)
+    {
+        List<string> classes = new List<string>() { "choose-item" };
+        if (_selectedAnswerIds.Contains(answer.Id))
+        {
+            classes.Add("primary");
+        }
+        return String.Join(" ", classes);
+    }
+    string GetResultClass(QuestionAnswerListDto answer)
     {
         List<string> classes = new List<string>() { "result" };
         if (ShowAnalysis && answer.Right)
@@ -118,18 +150,26 @@
 
     void OnChange(string[] checkedValues)
     {
-        //var answer = Answers.FirstOrDefault(a => a.Id == answerId);
-        //if (answer is null)
-        //{
-        //    await UiNotificationService.Error("请先选择答案");
-        //    return;
-        //}
-        //var right = answer.Right;
-        //await OnSelected.InvokeAsync(new QuestionAnswerItem()
-        //{
-        //    QuestionId = QuestionId,
-        //    AnswerId = answerId.ToString(),
-        //    Right = right
-        //});
+        _selectedAnswerIds = checkedValues.Select(v => new Guid(v)).ToArray();
+    }
+    async Task ValidateAsync()
+    {
+        if (_selectedAnswerIds.Length <= 0)
+        {
+            await UiNotificationService.Error("请先选择答案");
+            return;
+        }
+        var rightIds = Answers
+            .Where(a => a.Right)
+            .Select(a => a.Id)
+            .ToArray();
+        bool right = _selectedAnswerIds.Length == rightIds.Length
+                     && _selectedAnswerIds.Except(rightIds).ToArray().Length == 0;
+        await OnSelected.InvokeAsync(new QuestionAnswerItem()
+            {
+                QuestionId = QuestionId,
+                AnswerId = String.Join(",", _selectedAnswerIds),
+                Right = right
+            });
     }
 }

@@ -8,13 +8,10 @@
         margin-bottom: 10px;
     }
 
-    .chooses .choose-item.success {
-        border-color: #52c41a;
+    .chooses .choose-item.primary {
+        border-color: #1890ff;
     }
-
-    .chooses .choose-item.error {
-        border-color: #ff4d4f;
-    }
+    
 
 
     .chooses .ant-radio {
@@ -54,7 +51,7 @@
         var tempIndex = i;
         var answer = Answers[tempIndex];
 
-        <Radio class="choose-item" Value="@answer.Id">
+        <Radio class="@GetBorderColor(answer)" Value="@answer.Id">
             <div style="display: flex; -o-justify-content: space-between; -webkit-justify-content: space-between; justify-content: space-between;">
                 <div>
                     <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
@@ -62,7 +59,7 @@
                 </div>
                 @if (answer.Right)
                 {
-                    <div class="@GetResultColor(answer)">
+                    <div class="@GetResultClass(answer)">
                         <Icon Type="check-circle" Theme="twotone" TwotoneColor="#52c41a" />
                         @*<span>答案</span>*@
                     </div>
@@ -106,8 +103,16 @@
             : Answers.First(a => a.Id == new Guid(selectedAnswer.AnswerId));
         _selectedAnswerId = answer.Id;
     }
-
-    string GetResultColor(QuestionAnswerListDto answer)
+    public string GetBorderColor(QuestionAnswerListDto answer)
+    {
+        List<string> classes = new List<string>() { "choose-item" };
+        if (_selectedAnswerId == answer.Id)
+        {
+            classes.Add("primary");
+        }
+        return String.Join(" ", classes);
+    }
+    string GetResultClass(QuestionAnswerListDto answer)
     {
         List<string> classes = new List<string>() { "result" };
         if (ShowAnalysis && answer.Right)
