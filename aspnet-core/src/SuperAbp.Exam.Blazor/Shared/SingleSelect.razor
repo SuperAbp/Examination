@@ -45,7 +45,7 @@
     }
 
 </style>
-<RadioGroup class="chooses" @bind-Value="_selectedAnswerId" Size="large" TValue="Guid" OnChange="ValidateAsync" Disabled="_selectedAnswerId != new Guid()">
+<RadioGroup class="chooses" @bind-Value="_selectedAnswerId" Size="large" TValue="Guid" OnChange="ValidateAsync" Disabled="ShowAnalysis">
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
