@@ -56,64 +56,71 @@ else
         </GridCol>
         <GridCol Span="20">
             <Card class="question-content">
-                @if (loadingQuestion)
-                {
-                    <Spin />
-                }
-                else
-                {
-                    
-                    @if (_question != null)
+                <TitleTemplate>
+                    <span @onclick="GoDetail" style="cursor: pointer">
+                        <Icon Type="arrow-left" Theme="outline"/>返回
+                    </span>
+                    <Divider Type="DirectionVHType.Vertical" />题库训练
+                </TitleTemplate>
+                <Body>
+                    @if (loadingQuestion)
                     {
-                        <h2 class="title">
-                            <span class="number">@(_questionIndex + 1)</span>
-                            <span>@_question.Content</span>
-                        </h2>
-                        @if (_question.QuestionType == QuestionType.SingleSelect || _question.QuestionType == QuestionType.Judge)
-                        {
-                            <SingleSelect QuestionId="_question.Id"
-                                          Answers="_questionAnswers"
-                                          SelectedQuestionAnswers="_selectedQuestionAnswers"
-                                          ShowAnalysis="_showAnalysis"
-                                          OnSelected="@SelectedAsync"></SingleSelect>
-                        }
-                        else
-                        {
-                            <MultiSelect QuestionId="_question.Id"
-                          Answers="_questionAnswers"
-                          SelectedQuestionAnswers="_selectedQuestionAnswers"
-                          ShowAnalysis="_showAnalysis"
-                          OnSelected="@SelectedAsync"></MultiSelect>
-                        }
+                        <Spin/>
                     }
-                    @if (_showAnalysis && !String.IsNullOrEmpty(_question?.Analysis))
+                    else
                     {
-                        <div class="analysis">
-                            <Card Title="题目解析">
-                                @_question.Analysis
-                            </Card>
+                        @if (_question != null)
+                        {
+                            <h2 class="title">
+                                <span class="number">@(_questionIndex + 1)</span>
+                                <span>@_question.Content</span>
+                            </h2>
+                            @if (_question.QuestionType == QuestionType.SingleSelect || _question.QuestionType == QuestionType.Judge)
+                            {
+                                <SingleSelect QuestionId="_question.Id"
+                                              Answers="_questionAnswers"
+                                              SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                              ShowAnalysis="_showAnalysis"
+                                              OnSelected="@SelectedAsync"></SingleSelect>
+                            }
+                            else
+                            {
+                                <MultiSelect QuestionId="_question.Id"
+                                             Answers="_questionAnswers"
+                                             SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                             ShowAnalysis="_showAnalysis"
+                                             OnSelected="@SelectedAsync"></MultiSelect>
+                            }
+                        }
+                        @if (_showAnalysis && !String.IsNullOrEmpty(_question?.Analysis))
+                        {
+                            <div class="analysis">
+                                <Card Title="题目解析">
+                                    @_question.Analysis
+                                </Card>
+                            </div>
+                        }
+                        <div class="bottom">
+                            @if (_questionIndex <= 0)
+                            {
+                                <Button OnClick="PrevAsync" Disabled>上一题</Button>
+                            }
+                            else
+                            {
+                                <Button OnClick="PrevAsync">上一题</Button>
+                            }
+                            @if (_questionIndex >= _questionIds.Count - 1)
+                            {
+                                <Button OnClick="NextAsync" Disabled>下一题</Button>
+                            }
+                            else
+                            {
+                                <Button OnClick="NextAsync">下一题</Button>
+                            }
+
                         </div>
                     }
-                    <div class="bottom">
-                        @if (_questionIndex <= 0)
-                        {
-                            <Button OnClick="PrevAsync" Disabled>上一题</Button>
-                        }
-                        else
-                        {
-                            <Button OnClick="PrevAsync">上一题</Button>
-                        }
-                        @if (_questionIndex >= _questionIds.Count - 1)
-                        {
-                            <Button OnClick="NextAsync" Disabled>下一题</Button>
-                        }
-                        else
-                        {
-                            <Button OnClick="NextAsync">下一题</Button>
-                        }
-
-                    </div>
-                }
+                </Body>
             </Card>
         </GridCol>
     </GridRow>
@@ -124,6 +131,7 @@ else
 @using SuperAbp.Exam.TrainingManagement
 @using SuperAbp.Exam.Blazor.Model
 @using NUglify.Helpers
+@inject NavigationManager Navigation
 @inject IQuestionAppService QuestionAppService
 @inject IQuestionAnswerAppService QuestionAnswerAppService
 @inject ITrainingAppService TrainingAppService
@@ -256,6 +264,11 @@ else
             await TrainingAppService.SetIsRightAsync(training.Id, right);
         }
         _selectedQuestionAnswers.Add(item);
+    }
+
+    private void GoDetail()
+    {
+        Navigation.NavigateTo($"/repository/{QuestionRepositoryId}");
     }
 
 }
