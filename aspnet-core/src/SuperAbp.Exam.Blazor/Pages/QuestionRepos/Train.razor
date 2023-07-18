@@ -41,18 +41,12 @@ else
 {
     <GridRow Gutter="16">
         <GridCol Span="4">
-            <Card>
-                <div class="content">
-                    <div>
-                        @for (int i = 0; i < _questionIds.Count; i++)
-                        {
-                            var tempIndex = i;
-                            var color = GetNumberColor(tempIndex);
-                            <Tag Color="@color" OnClick="async () => await ShowQuestionAsync(tempIndex)">@(tempIndex + 1)</Tag>
-                        }
-                    </div>
-                </div>
-            </Card>
+            <QuestionNumber 
+                CurrentId="_questionIds[_questionIndex]"
+                Ids="_questionIds"
+                        SuccessIds="GetSuccessIds()"
+                        ErrorIds="GetErrorIds()"
+                OnChanged="ShowQuestionAsync"></QuestionNumber>
         </GridCol>
         <GridCol Span="20">
             <Card class="question-content">
@@ -171,6 +165,18 @@ else
         loading = false;
     }
 
+    Guid[] GetSuccessIds()
+    {
+        return _trains.Where(a => a.Right).Select(a => a.Id).Union(
+            _selectedQuestionAnswers.Where(a => a.Right).Select(a => a.QuestionId))
+            .ToArray();
+    }
+    Guid[] GetErrorIds()
+    {
+        return _trains.Where(a => !a.Right).Select(a => a.Id).Union(
+            _selectedQuestionAnswers.Where(a => !a.Right).Select(a => a.QuestionId))
+            .ToArray();
+    }
     public async Task NextAsync()
     {
         if (_questionIndex >= _questionIds.Count)
@@ -191,19 +197,23 @@ else
         }
         await ShowQuestionAsync(_questionIndex - 1);
     }
-    public async Task ShowQuestionAsync(int index)
+
+    async Task ShowQuestionAsync(int index)
     {
+        await ShowQuestionAsync(_questionIds[index]);
+    }
+    public async Task ShowQuestionAsync(Guid id)
+    {
+        _questionIndex = _questionIds.ToList().IndexOf(id);
         loadingQuestion = true;
-        _questionIndex = index;
         _showAnalysis = false;
         
-        var id = _questionIds[index];
         await LoadQuestionAsync(id);
         if (TrainType is 1 || _selectedQuestionAnswers.Any(a => a.QuestionId == id))
         {
             _showAnalysis = true;
         }
-    
+
         loadingQuestion = false;
     }
 
@@ -221,29 +231,7 @@ else
             _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerListDto>>(_question, _questionAnswers));
         }
     }
-
-    public string GetNumberColor(int index)
-    {
-        if (_questionIndex == index)
-        {
-            return "processing";
-        }
-        var id = _questionIds[index];
-        var selectedQuestionAnswer = _selectedQuestionAnswers.Find(a => a.QuestionId == id);
-        if (selectedQuestionAnswer is not null)
-        {
-            return GetColor(selectedQuestionAnswer.Right);
-        }
-        var training = _trains.SingleOrDefault(t => t.QuestionId == id);
-        return training is not null 
-            ? GetColor(training.Right) 
-            : "default";
-    }
-
-    private string GetColor(bool right)
-    {
-        return right ? "success" : "error";
-    }
+    
 
     public async Task SelectedAsync(QuestionAnswerItem item)
     {
