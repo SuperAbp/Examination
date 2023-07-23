@@ -61,4 +61,4 @@ const DIRECTIVES: Array<Type<void>> = [];
     ...DIRECTIVES
   ]
 })
-export class SharedModule { }
+export class SharedModule {}

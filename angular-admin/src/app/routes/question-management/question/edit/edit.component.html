@@ -88,13 +88,18 @@
         ></textarea>
       </nz-form-control>
     </nz-form-item>
-    <app-question-management-answer
+    <!-- <app-question-management-answer
       #QuestionAnswer
       *ngIf="questionType.value != null"
       [questionType]="questionType.value"
       [questionId]="questionId"
       [questionForm]="this.form"
-    ></app-question-management-answer>
+    ></app-question-management-answer> -->
+    <ng-container *ngIf="questionType.value != null" [ngSwitch]="questionType.value">
+      <single-select *ngSwitchCase="0" [questionId]="questionId" [questionForm]="form"></single-select>
+      <multi-select *ngSwitchCase="1" [questionId]="questionId" [questionForm]="form"></multi-select>
+      <judge *ngSwitchCase="2" [questionId]="questionId" [questionForm]="form"></judge>
+    </ng-container>
   </nz-card>
 </form>
 

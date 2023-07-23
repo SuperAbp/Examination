@@ -1,7 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { STColumn, STComponent, STPage } from '@delon/abc/st';
-import { ModalHelper } from '@delon/theme';
 import { QuestionAnswerService } from '@proxy/super-abp/exam/admin/controllers';
 import {
   GetQuestionAnswersInput,
@@ -17,7 +15,7 @@ interface QuestionAnswerTemp extends QuestionAnswerCreateDto {
 }
 @Component({
   selector: 'app-question-management-answer',
-  templateUrl: './answer.component.html',
+  template: '',
   styles: [
     `
       button {
@@ -38,7 +36,7 @@ interface QuestionAnswerTemp extends QuestionAnswerCreateDto {
     `
   ]
 })
-export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
+export class QuestionManagementAnswerComponent {
   @Input()
   questionId: string;
   @Input()
@@ -50,46 +48,11 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
   removeIds: string[] = [];
   loading = false;
   params: GetQuestionAnswersInput;
-  page: STPage = {
-    front: false,
-    show: false
-  };
-  @ViewChild('st', { static: false }) st: STComponent;
-  columns: STColumn[];
-  answerEditorItems: QuestionAnswerCreateDto[];
 
-  constructor(private modal: ModalHelper, private fb: FormBuilder, private answerService: QuestionAnswerService) {}
+  constructor(protected fb: FormBuilder, protected answerService: QuestionAnswerService) {}
 
   get options() {
     return this.questionForm.get('options') as FormArray;
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    this.loaded();
-  }
-
-  ngOnInit() {
-    this.loaded();
-  }
-
-  loaded() {
-    if (this.loading) {
-      return;
-    }
-    this.loading = true;
-    this.params = this.resetParameters();
-    if (this.questionId) {
-      this.getList();
-    } else {
-      this.options.clear();
-      let len = 2;
-      if (this.questionType === QuestionType.SingleSelect || this.questionType == QuestionType.MultiSelect) {
-        len = 4;
-      }
-      for (let index = 0; index < len; index++) {
-        this.add({ right: false, sort: 0 });
-      }
-      this.loading = false;
-    }
   }
   getList() {
     this.answerService
@@ -111,6 +74,12 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
       )
       .subscribe();
   }
+  batchAdd(length) {
+    this.options.clear();
+    for (let index = 0; index < length; index++) {
+      this.add({ right: false, sort: 0 });
+    }
+  }
 
   add(item: QuestionAnswerTemp = {} as QuestionAnswerTemp) {
     let fg = this.createAttribute(item);
@@ -127,29 +96,17 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
     });
   }
   delete(index: number, item: AbstractControl) {
-    if (item.value.id) {
-      this.removeIds.push(item.value.id);
-    }
-    this.options.removeAt(index);
+    this.answerService.delete(item.value.id).subscribe(() => {
+      this.options.removeAt(index);
+    });
   }
 
   resetParameters(): GetQuestionAnswersInput {
     return {
       skipCount: 0,
       maxResultCount: 10,
-      sorting: 'CreationTime ASC',
       questionId: this.questionId
     };
-  }
-  changeRadio(index: number, item) {
-    this.options.controls.forEach((c, i) => {
-      if (i != index && c['controls']['right'].value) {
-        c['controls']['right'].setValue(false);
-      }
-    });
-    if (!item.right) {
-      item.right = true;
-    }
   }
 
   save(questionId) {
@@ -164,11 +121,6 @@ export class QuestionManagementAnswerComponent implements OnInit, OnChanges {
         services.push(this.answerService.create(value));
       }
     });
-    if (this.removeIds.length > 0) {
-      this.removeIds.forEach(id => {
-        services.push(this.answerService.delete(id));
-      });
-    }
     return forkJoin(services);
   }
 }

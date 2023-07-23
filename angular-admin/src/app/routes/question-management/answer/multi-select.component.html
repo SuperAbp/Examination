@@ -1,4 +1,4 @@
-<ng-container *ngIf="questionType != 2">
+<ng-container>
   <button (click)="add()" nz-button type="button" nzType="primary" *abpPermission="'Exam.QuestionAnswer.Create'">
     {{ 'Exam::NewQuestionAnswer' | abpLocalization }}
   </button>
@@ -16,9 +16,7 @@
     <thead>
       <tr>
         <th nzWidth="120px">
-          <label>
-            {{ 'Exam::IsAnswer' | abpLocalization }}
-          </label>
+          <label> {{ 'Exam::IsAnswer' | abpLocalization }} </label>
         </th>
         <th>
           <label class="required"> {{ 'Exam::Content' | abpLocalization }} </label>
@@ -37,14 +35,7 @@
     <tbody>
       <tr *ngFor="let option of options.controls; let i = index" [formGroupName]="i">
         <td>
-          <label nz-checkbox formControlName="right" *ngIf="questionType == 1; else checkboxRight">
-            {{ 'Exam::Answer' | abpLocalization }}
-          </label>
-          <ng-template #checkboxRight>
-            <label nz-radio formControlName="right" (ngModelChange)="changeRadio(i, option.value)">
-              {{ 'Exam::Answer' | abpLocalization }}
-            </label>
-          </ng-template>
+          <label nz-checkbox formControlName="right"> {{ 'Exam::Answer' | abpLocalization }} </label>
         </td>
         <td>
           <nz-form-item nzRequired>

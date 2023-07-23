@@ -11,7 +11,23 @@ namespace SuperAbp.Exam.QuestionManagement.Questions;
 /// </summary>
 public enum QuestionType
 {
+    /// <summary>
+    /// 单选
+    /// </summary>
     SingleSelect,
+
+    /// <summary>
+    /// 多选
+    /// </summary>
     MultiSelect,
-    Judge
+
+    /// <summary>
+    /// 判断
+    /// </summary>
+    Judge,
+
+    /// <summary>
+    /// 填空
+    /// </summary>
+    FillInTheBlanks
 }
