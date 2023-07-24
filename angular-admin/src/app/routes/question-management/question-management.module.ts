@@ -9,6 +9,7 @@ import { QuestionManagementAnswerComponent } from './answer/answer.component';
 import { MultiSelectComponent } from './answer/multi-select.component';
 import { SingleSelectComponent } from './answer/single-select.component';
 import { JudgeComponent } from './answer/judge.component';
+import { BlankComponent } from './answer/blank.component';
 
 const COMPONENTS: Type<void>[] = [
   QuestionManagementQuestionComponent,
@@ -18,7 +19,8 @@ const COMPONENTS: Type<void>[] = [
   QuestionManagementAnswerComponent,
   MultiSelectComponent,
   SingleSelectComponent,
-  JudgeComponent
+  JudgeComponent,
+  BlankComponent
 ];
 
 @NgModule({

@@ -9,6 +9,8 @@ import { map, tap } from 'rxjs/operators';
 import { GetQuestionsInput, QuestionListDto } from '@proxy/super-abp/exam/admin/question-management/questions';
 import { EnumService, QuestionRepoService, QuestionService } from '@proxy/super-abp/exam/admin/controllers';
 import { Router } from '@angular/router';
+import { QuestionType } from '@proxy/super-abp/exam/question-management/questions';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-question-management-question',
@@ -43,15 +45,13 @@ export class QuestionManagementQuestionComponent implements OnInit {
           width: 250,
           allowClear: true,
           asyncData: () =>
-            this.enumService.getQuestionType().pipe(
-              map((res: Record<number, string>) => {
-                const temp: SFSchemaEnumType[] = [];
-                Object.keys(res).forEach(key => {
-                  temp.push({ label: res[key], value: key });
-                });
-                return temp;
-              })
-            )
+            of(
+              Object.keys(QuestionType)
+                .filter(k => !isNaN(Number(k)))
+                .map(key => {
+                  return { label: this.localizationService.instant('Exam::QuestionType:' + key), value: +key };
+                })
+            ).pipe()
         } as SFSelectWidgetSchema
       },
       repositoryId: {
@@ -84,13 +84,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
     { title: this.localizationService.instant('Exam::QuestionRepository'), index: 'questionRepository' },
     {
       title: this.localizationService.instant('Exam::QuestionType'),
-      index: 'questionType',
-      type: 'tag',
-      tag: {
-        0: { text: this.localizationService.instant('Exam::QuestionType:0'), color: 'default' },
-        1: { text: this.localizationService.instant('Exam::QuestionType:1'), color: 'processing' },
-        2: { text: this.localizationService.instant('Exam::QuestionType:2'), color: 'success' }
-      }
+      render: 'questionType'
     },
     { title: this.localizationService.instant('Exam::QuestionContent'), index: 'content' },
     { title: this.localizationService.instant('Exam::CreationTime'), index: 'creationTime', type: 'date' },
@@ -136,7 +130,6 @@ export class QuestionManagementQuestionComponent implements OnInit {
     private localizationService: LocalizationService,
     private messageService: NzMessageService,
     private permissionService: PermissionService,
-    private enumService: EnumService,
     private questionService: QuestionService,
     private questionRepositoryService: QuestionRepoService
   ) {}
@@ -185,7 +178,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
     } else {
       delete this.params.content;
     }
-    if (e.questionType) {
+    if (e.questionType > -1) {
       this.params.questionType = e.questionType;
     } else {
       delete this.params.questionType;

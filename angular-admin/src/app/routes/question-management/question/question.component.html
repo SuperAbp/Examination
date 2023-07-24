@@ -7,7 +7,20 @@
 </page-header>
 <nz-card>
   <sf mode="search" [schema]="searchSchema" (formSubmit)="search($event)" (formReset)="reset()"></sf>
-  <st #st [data]="questions" [columns]="columns" [loading]="loading" [page]="page" [total]="total"
-    (change)="change($event)" [header]="'Exam::DataStart' | abpLocalization"
-    [footer]="'Exam::DataEnd' | abpLocalization" responsiveHideHeaderFooter></st>
+  <st
+    #st
+    [data]="questions"
+    [columns]="columns"
+    [loading]="loading"
+    [page]="page"
+    [total]="total"
+    (change)="change($event)"
+    [header]="'Exam::DataStart' | abpLocalization"
+    [footer]="'Exam::DataEnd' | abpLocalization"
+    responsiveHideHeaderFooter
+  >
+    <ng-template st-row="questionType" let-item>
+      <span>{{ 'Exam::QuestionType:' + item.questionType | abpLocalization }}</span>
+    </ng-template>
+  </st>
 </nz-card>
