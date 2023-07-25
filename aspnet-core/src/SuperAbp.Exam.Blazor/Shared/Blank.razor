@@ -1,0 +1,27 @@
+﻿@for (int i = 0; i < Answers.Count; i++)
+{
+    <Input Placeholder="@L["Answer"]"  />
+}
+@if (!ShowAnalysis)
+{
+    <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
+}
+
+
+@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Localization
+@inject IStringLocalizer<ExamResource> L
+@code {
+    [Parameter]
+    public Guid QuestionId { get; set; }
+    [Parameter]
+    public IReadOnlyList<QuestionAnswerListDto> Answers { get; set; }
+    [Parameter]
+    public bool ShowAnalysis { get; set; }
+
+    async Task ValidateAsync()
+    {
+
+    }
+}
