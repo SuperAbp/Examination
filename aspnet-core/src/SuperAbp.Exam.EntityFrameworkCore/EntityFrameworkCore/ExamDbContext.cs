@@ -74,6 +74,8 @@ public class ExamDbContext :
 
     public DbSet<Training> Trains { get; set; }
 
+    public DbSet<IdentityUserDelegation> UserDelegations { get; set; }
+
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
     {

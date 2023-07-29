@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.Autofac" Version="7.1.0" />
+    <PackageReference Include="Volo.Abp.Autofac" Version="7.3.0" />
     <ProjectReference Include="..\SuperAbp.Exam.Application.Contracts\SuperAbp.Exam.Application.Contracts.csproj" />
     <ProjectReference Include="..\SuperAbp.Exam.EntityFrameworkCore\SuperAbp.Exam.EntityFrameworkCore.csproj" />
   </ItemGroup>
