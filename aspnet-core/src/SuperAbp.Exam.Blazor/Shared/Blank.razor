@@ -1,0 +1,103 @@
+﻿<style>
+    .block{
+        background-color: #f5f5f5;
+        padding: 5px 10px;
+        margin-bottom: 16px;
+    }
+
+        .block .title {
+        color: red;
+    }
+
+    .block .body{
+        font-size: 0.75rem;
+        margin-left: 15px;
+    }
+</style>
+@if (!ShowAnalysis || (ShowAnalysis && !AnswersNullOrWhiteSpace()))
+{
+    @for (int i = 0; i < Answers.Count; i++)
+    {
+        var tempIndex = i;
+        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="ShowAnalysis"/>
+        <br/>
+        <br/>
+    }
+}
+@if (ShowAnalysis)
+{
+    <div class="block">
+        <span class="title">答案：</span>
+    <div class="body">
+        @foreach (var item in Answers)
+        {
+            <div>@item.Content</div>
+        }
+    </div>
+    </div>
+}
+@if (!ShowAnalysis)
+{
+    <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
+}
+
+
+@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.Localization
+@using Volo.Abp.AspNetCore.Components.Notifications
+@inject IStringLocalizer<ExamResource> L
+@inject IUiNotificationService UiNotificationService
+@code {
+    [Parameter]
+    public Guid QuestionId { get; set; }
+    [Parameter]
+    public IReadOnlyList<QuestionAnswerListDto> Answers { get; set; }
+    [Parameter]
+    public List<QuestionAnswerItem> SelectedQuestionAnswers { get; set; }
+    [Parameter]
+    public bool ShowAnalysis { get; set; }
+    [Parameter]
+    public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
+
+    string[] _answerItems = Array.Empty<string>();
+
+
+    protected override void OnParametersSet()
+    {
+        if (_answerItems.Length != Answers.Count)
+        {
+            _answerItems = new string[Answers.Count];
+        }
+        if (!ShowAnalysis) return;
+        var selectedAnswer = SelectedQuestionAnswers.Find(a => a.QuestionId == QuestionId);
+        if (selectedAnswer is null)
+        {
+            return;
+        }
+        _answerItems = selectedAnswer.Answer.Split("||");
+    }
+
+    private bool AnswersNullOrWhiteSpace()
+    {
+        return _answerItems.Any(a => a.IsNullOrWhiteSpace());
+    }
+    private async Task ValidateAsync()
+    {
+        if (AnswersNullOrWhiteSpace())
+        {
+            await UiNotificationService.Error("请先填写答案");
+            return;
+        }
+        var answerContents = Answers.Select(a => a.Content).ToArray();
+        var right = _answerItems.Length == answerContents.Length && !_answerItems.Except(answerContents).Any();
+        await OnSubmit.InvokeAsync(new QuestionAnswerItem()
+        {
+            QuestionId = QuestionId,
+            Answer = String.Join("||", _answerItems),
+            Right = right
+        });
+    }
+}
+

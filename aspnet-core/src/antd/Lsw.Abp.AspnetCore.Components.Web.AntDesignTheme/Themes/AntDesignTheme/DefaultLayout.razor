@@ -1,0 +1,68 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.Extensions.Options
+@using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Settings
+@inject IOptions<AbpAntDesignThemeOptions> Options
+
+
+@if (Options.Value.Menu.Placement == MenuPlacement.Top)
+{
+    <Layout Class="ant-design-layout">
+        <Header Class="@HeaderClass">
+            <Branding/>
+            <MainMenu Placement="@MenuPlacement" Theme="@MenuTheme" Collapsed="@Collapsed"/>
+            <Row Justify="end">
+                <NavToolbar/>
+            </Row>
+        </Header>
+        <Content Class="ant-design-content">
+            <PageAlert/>
+            <div class="ant-design-body-content">
+                @Body
+            </div>
+            <UiPageProgress/>
+        </Content>
+        <Footer Class="ant-design-footer"></Footer>
+    </Layout>
+}
+else
+{
+    <Layout Class="ant-design-layout">
+        <Sider
+            Style="@SiderStyle"
+            Class="ant-design-side"
+            Theme="@SiderTheme"
+            Collapsible
+            NoTrigger
+            Collapsed=Collapsed>
+            <Branding Collapsed="@Collapsed"/>
+            <MainMenu Placement="@MenuPlacement" Theme="@MenuTheme" Collapsed="@Collapsed"/>
+        </Sider>
+        <Layout Class="ant-design-layout">
+            <Header Class="@HeaderClass">
+                <div style="float: left">
+                    @if (Collapsed)
+                    {
+                        <Icon Type="menu-unfold" Theme="outline" Class="trigger" OnClick="OnCollapse"/>
+                    }
+                    else
+                    {
+                        <Icon Type="menu-fold" Theme="outline" Class="trigger" OnClick="OnCollapse"/>
+                    }
+                </div>
+
+                <Row Justify="end">
+                    <NavToolbar/>
+                </Row>
+                
+            </Header>
+            <Content Class="ant-design-content">
+                <PageAlert/>
+                <div class="ant-design-body-content">
+                    @Body
+                </div>
+                <UiPageProgress/>
+            </Content>
+            <Footer Class="ant-design-footer"></Footer>
+        </Layout>
+    </Layout>
+}

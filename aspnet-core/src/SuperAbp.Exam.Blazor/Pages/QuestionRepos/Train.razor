@@ -13,6 +13,7 @@
     }
 
     .bottom {
+        margin-top: 10px;
         display: flex;
         -o-justify-content: space-between;
         -webkit-justify-content: space-between;
@@ -69,21 +70,30 @@ else
                                 <span class="number">@(_questionIndex + 1)</span>
                                 <span>@_question.Content</span>
                             </h2>
-                            @if (_question.QuestionType == QuestionType.SingleSelect || _question.QuestionType == QuestionType.Judge)
+                            @switch(_question.QuestionType)
                             {
-                                <SingleSelect QuestionId="_question.Id"
-                                              Answers="_questionAnswers"
-                                              SelectedQuestionAnswers="_selectedQuestionAnswers"
-                                              ShowAnalysis="_showAnalysis"
-                                              OnSelected="@SelectedAsync"></SingleSelect>
-                            }
-                            else
-                            {
-                                <MultiSelect QuestionId="_question.Id"
-                                             Answers="_questionAnswers"
-                                             SelectedQuestionAnswers="_selectedQuestionAnswers"
-                                             ShowAnalysis="_showAnalysis"
-                                             OnSelected="@SelectedAsync"></MultiSelect>
+                                case QuestionType.SingleSelect:
+                                case QuestionType.Judge:
+                                    <SingleSelect QuestionId="_question.Id"
+                                                  Answers="_questionAnswers"
+                                                  SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                                  ShowAnalysis="_showAnalysis"
+                                                  OnSubmit="@SubmitAsync"></SingleSelect>
+                                    break;
+                                case QuestionType.MultiSelect:
+                                    <MultiSelect QuestionId="_question.Id"
+                                                 Answers="_questionAnswers"
+                                                 SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                                 ShowAnalysis="_showAnalysis"
+                                                 OnSubmit="@SubmitAsync"></MultiSelect>
+                                    break;
+                                case QuestionType.FillInTheBlanks:
+                                    <Blank QuestionId="_question.Id"
+                                           Answers="_questionAnswers"
+                                           SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                           ShowAnalysis="_showAnalysis"
+                                           OnSubmit="@SubmitAsync"></Blank>
+                                    break;
                             }
                         }
                         @if (_showAnalysis && !String.IsNullOrEmpty(_question?.Analysis))
@@ -167,13 +177,13 @@ else
 
     Guid[] GetSuccessIds()
     {
-        return _trains.Where(a => a.Right).Select(a => a.Id).Union(
+        return _trains.Where(a => a.Right).Select(a => a.QuestionId).Union(
             _selectedQuestionAnswers.Where(a => a.Right).Select(a => a.QuestionId))
             .ToArray();
     }
     Guid[] GetErrorIds()
     {
-        return _trains.Where(a => !a.Right).Select(a => a.Id).Union(
+        return _trains.Where(a => !a.Right).Select(a => a.QuestionId).Union(
             _selectedQuestionAnswers.Where(a => !a.Right).Select(a => a.QuestionId))
             .ToArray();
     }
@@ -233,7 +243,7 @@ else
     }
     
 
-    public async Task SelectedAsync(QuestionAnswerItem item)
+    public async Task SubmitAsync(QuestionAnswerItem item)
     {
         _showAnalysis = true;
         var right = item.Right;
@@ -243,7 +253,7 @@ else
             await TrainingAppService.CreateAsync(new TrainingCreateDto()
             {
                 QuestionRepositoryId = QuestionRepositoryId,
-                    QuestionId = item.QuestionId,
+                QuestionId = item.QuestionId,
                 Right = right
             });
         }

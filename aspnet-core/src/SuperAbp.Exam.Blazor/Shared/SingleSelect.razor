@@ -88,7 +88,7 @@
     [Parameter]
     public bool ShowAnalysis { get; set; }
     [Parameter]
-    public EventCallback<QuestionAnswerItem> OnSelected { get; set; }
+    public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
     
     Guid _selectedAnswerId = new Guid();
     
@@ -100,7 +100,7 @@
         var selectedAnswer = SelectedQuestionAnswers.Find(a => a.QuestionId == QuestionId);
         var answer = selectedAnswer is null 
             ? Answers.Single(a => a.Right) 
-            : Answers.First(a => a.Id == new Guid(selectedAnswer.AnswerId));
+            : Answers.First(a => a.Id == new Guid(selectedAnswer.Answer));
         _selectedAnswerId = answer.Id;
     }
     public string GetBorderColor(QuestionAnswerListDto answer)
@@ -131,10 +131,10 @@
             return;
         }
         var right = answer.Right;
-        await OnSelected.InvokeAsync(new QuestionAnswerItem()
+        await OnSubmit.InvokeAsync(new QuestionAnswerItem()
         {
             QuestionId = QuestionId,
-                AnswerId = answerId.ToString(),
+                Answer = answerId.ToString(),
                     Right = right
         });
     }

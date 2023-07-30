@@ -1,0 +1,50 @@
+﻿@using Microsoft.Extensions.Options
+@inject IOptions<PageHeaderOptions> Options
+
+<Row Class="ant-design-row-breadcrumb">
+    <Col Span="12">
+        <Breadcrumb Class="ant-design-breadcrumb">
+            @if (Options.Value.RenderBreadcrumbs && BreadcrumbItems.Any())
+            {
+                @if (BreadcrumbShowHome)
+                {
+                    <BreadcrumbItem Href="">
+                        <Icon Type="home"/>
+                    </BreadcrumbItem>
+                }
+                @foreach (var item in BreadcrumbItems)
+                {
+                    <BreadcrumbItem Href="@item.Url">
+                        @if (!item.Icon.IsNullOrWhiteSpace())
+                        {
+                            <Icon Type="@item.Icon"/>
+                        }
+                        @item.Text
+                    </BreadcrumbItem>
+                }
+            }
+        </Breadcrumb>
+    </Col>
+    
+    <Col Span="12">
+        @if (Options.Value.RenderToolbar)
+        {
+            <Row justify="end">
+                @if (Toolbar == null)
+                {
+                    @ChildContent
+                }
+                @foreach (var toolbarItemRender in ToolbarItemRenders)
+                {
+                    <div style="margin: 0 5px">
+                        @toolbarItemRender
+                    </div>
+                }
+            </Row>
+        }
+    </Col>
+</Row>
+@if (Options.Value.RenderPageTitle)
+{
+    <div class="ant-design-page-title">@Title</div>
+}

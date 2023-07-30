@@ -89,7 +89,7 @@
     [Parameter]
     public bool ShowAnalysis { get; set; }
     [Parameter]
-    public EventCallback<QuestionAnswerItem> OnSelected { get; set; }
+    public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 
     List<Guid> _selectedAnswerIds = new();
     protected override void OnParametersSet()
@@ -107,7 +107,7 @@
         }
         else
         {
-            var answerIds = selectedAnswer.AnswerId.Split(",");
+            var answerIds = selectedAnswer.Answer.Split(",");
             _selectedAnswerIds = answerIds.Select(a => new Guid(a)).ToList();
         }
     }
@@ -167,10 +167,10 @@
             .ToArray();
         bool right = _selectedAnswerIds.Count == rightIds.Length
                      && _selectedAnswerIds.Except(rightIds).ToArray().Length == 0;
-        await OnSelected.InvokeAsync(new QuestionAnswerItem()
+        await OnSubmit.InvokeAsync(new QuestionAnswerItem()
             {
                 QuestionId = QuestionId,
-                AnswerId = String.Join(",", _selectedAnswerIds),
+                Answer = String.Join(",", _selectedAnswerIds),
                 Right = right
             });
     }

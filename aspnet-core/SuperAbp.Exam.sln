@@ -51,6 +51,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperAbp.Exam.HttpApi", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperAbp.Exam.Blazor", "src\SuperAbp.Exam.Blazor\SuperAbp.Exam.Blazor.csproj", "{58416733-08D6-47B1-A30E-4BCCFBB46B00}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lsw.Abp.AspnetCore.Components.WebAssembly.AntDesignTheme", "src\antd\Lsw.Abp.AspnetCore.Components.WebAssembly.AntDesignTheme\Lsw.Abp.AspnetCore.Components.WebAssembly.AntDesignTheme.csproj", "{61275BE5-56B3-402D-8CD7-FBEC66193C9A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "theme", "theme", "{652B1579-D8BC-4C88-862F-D11ECD47681E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme", "src\antd\Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme\Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.csproj", "{F49861A7-D536-4397-A35D-C604882313B6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lsw.Abp.AntDesignUI", "src\antd\Lsw.Abp.AntDesignUI\Lsw.Abp.AntDesignUI.csproj", "{C1AF5A33-B1D5-4F70-AD81-DF4BAF82FD19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +141,18 @@ Global
 		{58416733-08D6-47B1-A30E-4BCCFBB46B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58416733-08D6-47B1-A30E-4BCCFBB46B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58416733-08D6-47B1-A30E-4BCCFBB46B00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61275BE5-56B3-402D-8CD7-FBEC66193C9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61275BE5-56B3-402D-8CD7-FBEC66193C9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61275BE5-56B3-402D-8CD7-FBEC66193C9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61275BE5-56B3-402D-8CD7-FBEC66193C9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F49861A7-D536-4397-A35D-C604882313B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F49861A7-D536-4397-A35D-C604882313B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F49861A7-D536-4397-A35D-C604882313B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F49861A7-D536-4397-A35D-C604882313B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1AF5A33-B1D5-4F70-AD81-DF4BAF82FD19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1AF5A33-B1D5-4F70-AD81-DF4BAF82FD19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1AF5A33-B1D5-4F70-AD81-DF4BAF82FD19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1AF5A33-B1D5-4F70-AD81-DF4BAF82FD19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -160,6 +180,10 @@ Global
 		{AE0B9B32-99CE-4F8F-876C-E1325AB23FFB} = {7817B89A-5842-462B-92DF-4F862C5BFA9F}
 		{E5ADAB00-DEA1-48C7-A21B-8199BBA5B76C} = {7817B89A-5842-462B-92DF-4F862C5BFA9F}
 		{58416733-08D6-47B1-A30E-4BCCFBB46B00} = {7817B89A-5842-462B-92DF-4F862C5BFA9F}
+		{61275BE5-56B3-402D-8CD7-FBEC66193C9A} = {652B1579-D8BC-4C88-862F-D11ECD47681E}
+		{652B1579-D8BC-4C88-862F-D11ECD47681E} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
+		{F49861A7-D536-4397-A35D-C604882313B6} = {652B1579-D8BC-4C88-862F-D11ECD47681E}
+		{C1AF5A33-B1D5-4F70-AD81-DF4BAF82FD19} = {652B1579-D8BC-4C88-862F-D11ECD47681E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}
