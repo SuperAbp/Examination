@@ -1,20 +1,46 @@
 ﻿@page "/repository/{id:guid}"
-@using SuperAbp.Exam.QuestionManagement.QuestionRepos
+
+<style>
+    h3{
+        font-weight: 700;
+    }
+</style>
 
 @if(_repository is not null)
 {
-<h2>@_repository.Title</h2>
+    <Card>
+        <TitleTemplate>
+            <span @onclick="GoDetail" style="cursor: pointer">
+                <Icon Type="arrow-left" Theme="outline" />返回
+            </span>
+            <Divider Type="DirectionVHType.Vertical" />@_repository.Title
+        </TitleTemplate>
+        <Body>
+            @if (!_repository.Remark.IsNullOrWhiteSpace())
+            {
+                <h3>简介：</h3>
+                <p>@_repository.Remark</p>
+                <Divider />
+            }
 
-    <span>简介：@_repository.Remark</span>
+            <h3>自由练习</h3>
+            <Button OnClick="() => StartTraining(0)">顺序练习</Button>
+            <Button OnClick="() => StartTraining(1)">背题模式</Button>
 
-<Card Bordered="true">
-    <Button OnClick="()=>StartTraining(0)">顺序练习</Button>
-</Card>
-
-<Card Bordered="true">
-        <Button OnClick="()=>StartTraining(1)">背题模式</Button>
-</Card>
+            <Divider />
+        <h3>题型练习</h3>
+        @foreach (var questionType in GetQuestionTypes())
+        {
+                <Button OnClick="() => StartTraining(0, (int)questionType)">@L["QuestionType:"+questionType]</Button>
+        }
+        </Body>
+    </Card>
 }
+@using SuperAbp.Exam.QuestionManagement.QuestionRepos
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.Questions
+@inject IStringLocalizer<ExamResource> L
 @inject IQuestionRepoAppService QuestionRepoAppService
 @inject NavigationManager Navigation
 @code {
@@ -28,9 +54,29 @@
         _repository = await QuestionRepoAppService.GetAsync(Id);
     }
 
-    private void StartTraining(int trainType)
+    private Array GetQuestionTypes()
     {
-        Navigation.NavigateTo(trainType > 0 ? $"/repository/{Id}/training/{trainType}" : $"/repository/{Id}/training");
+        return Enum.GetValues(typeof(QuestionType));
+    }
+    private void StartTraining(int trainType, int? questionType = null)
+    {
+        var url = $"/repository/{Id}/training";
+        if (trainType > 0)
+        {
+            url = $"/repository/{Id}/training/{trainType}";
+        }
+        else
+        {
+            if (questionType.HasValue)
+            {
+                url += "?questionType=" + questionType.Value;
+            }
+        }
+        Navigation.NavigateTo(url);
+    }
+    private void GoDetail()
+    {
+        Navigation.NavigateTo("/repository");
     }
 
 }

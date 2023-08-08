@@ -6,6 +6,8 @@
     "Menu:QuestionRepository": "题库",
     "Placeholder": "请输入{0}",
     "ChoosePlaceholder": "请选择{0}",
+    "Action": "操作",
+    "Detail": "详情",
     "Title": "标题",
     "Remark": "备注",
     "IsRight": "是否正确",

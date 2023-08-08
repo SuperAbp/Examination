@@ -35,10 +35,7 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
         /// <returns>结果</returns>
         public virtual async Task<PagedResultDto<QuestionListDto>> GetListAsync(GetQuestionsInput input)
         {
-            var queryable = await _questionRepository.GetQueryableAsync();
-
-            queryable = queryable
-                .Where(q => q.QuestionRepositoryId == input.QuestionRepositoryId);
+            var queryable = await FilterAsync(input);
 
             long totalCount = await AsyncExecuter.CountAsync(queryable);
 
@@ -52,11 +49,19 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
 
         public async Task<ListResultDto<Guid>> GetIdsAsync(GetQuestionsInput input)
         {
-            var queryable = await _questionRepository.GetQueryableAsync();
-            queryable = queryable
-                .Where(q => q.QuestionRepositoryId == input.QuestionRepositoryId);
+            var queryable = await FilterAsync(input);
             var ids = await AsyncExecuter.ToListAsync(queryable.Select(q => q.Id));
             return new ListResultDto<Guid>(ids);
+        }
+
+        private async Task<IQueryable<Question>> FilterAsync(GetQuestionsInput input)
+        {
+            var queryable = await _questionRepository.GetQueryableAsync();
+            queryable = queryable
+                .Where(q => q.QuestionRepositoryId == input.QuestionRepositoryId)
+                .WhereIf(!input.Content.IsNullOrWhiteSpace(), q => q.Content.Contains(input.Content))
+                .WhereIf(input.QuestionType.HasValue, q => q.QuestionType == input.QuestionType.Value);
+            return queryable;
         }
 
         public virtual async Task<QuestionDetailDto> GetAsync(Guid id)
