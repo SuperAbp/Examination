@@ -25,18 +25,25 @@ public class QuestionRepository : EfCoreRepository<ExamDbContext, Question, Guid
 
     public async Task<int> GetCountAsync(Guid questionRepositoryId)
     {
-        var dbset = await GetDbSetAsync();
-        return await dbset
+        return await (await GetDbSetAsync())
             .Where(r => r.QuestionRepositoryId == questionRepositoryId)
             .CountAsync();
     }
 
     public async Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType)
     {
-        var dbset = await GetDbSetAsync();
-        return await dbset
+        return await (await GetDbSetAsync())
             .Where(r => r.QuestionRepositoryId == questionRepositoryId && r.QuestionType == questionType)
             .CountAsync();
+    }
+
+    public async Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId)
+    {
+        var dbSet = await GetDbSetAsync();
+        return await dbSet.Where(q => q.QuestionRepositoryId == questionRepositoryId)
+            .GroupBy(q => q.QuestionType)
+            .Select(q => q.Key)
+            .ToListAsync();
     }
 
     public async Task<List<Question>> GetListAsync(Guid questionRepositoryId)

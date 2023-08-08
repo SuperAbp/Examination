@@ -16,15 +16,23 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionRepos
     public class QuestionRepoAppService : ExamAppService, IQuestionRepoAppService
     {
         private readonly IQuestionRepoRepository _questionRepoRepository;
+        private readonly IQuestionRepository _questionRepository;
 
         /// <summary>
         /// .ctor
         /// </summary>
         /// <param name="questionRepoRepository"></param>
         public QuestionRepoAppService(
-            IQuestionRepoRepository questionRepoRepository)
+            IQuestionRepoRepository questionRepoRepository, IQuestionRepository questionRepository)
         {
             _questionRepoRepository = questionRepoRepository;
+            _questionRepository = questionRepository;
+        }
+
+        public virtual async Task<ListResultDto<QuestionType>> GetQuestionTypesAsync(Guid id)
+        {
+            var questionTypes = await _questionRepository.GetQuestionTypesAsync(id);
+            return new ListResultDto<QuestionType>(questionTypes);
         }
 
         public virtual async Task<PagedResultDto<QuestionRepoListDto>> GetListAsync(GetQuestionReposInput input)

@@ -26,6 +26,13 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType);
 
     /// <summary>
+    /// 题型
+    /// </summary>
+    /// <param name="questionRepositoryId"></param>
+    /// <returns></returns>
+    Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId);
+
+    /// <summary>
     /// 列表
     /// </summary>
     /// <param name="questionRepositoryId">题库Id</param>
