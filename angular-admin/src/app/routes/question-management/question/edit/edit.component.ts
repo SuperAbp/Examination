@@ -1,13 +1,12 @@
 import { LocalizationService } from '@abp/ng.core';
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EnumService, QuestionAnswerService, QuestionRepoService, QuestionService } from '@proxy/super-abp/exam/admin/controllers';
+import { QuestionAnswerService, QuestionRepoService, QuestionService } from '@proxy/super-abp/exam/admin/controllers';
 import { QuestionRepoListDto } from '@proxy/super-abp/exam/admin/question-management/question-repos';
 import { GetQuestionForEditorOutput } from '@proxy/super-abp/exam/admin/question-management/questions';
 import { QuestionType } from '@proxy/super-abp/exam/question-management/questions';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { forkJoin, from, Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 import { QuestionManagementAnswerComponent } from '../../answer/answer.component';
 
@@ -40,12 +39,10 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private messageService: NzMessageService,
     private localizationService: LocalizationService,
     private questionService: QuestionService,
     private questionRepoService: QuestionRepoService,
-    private answerService: QuestionAnswerService,
-    private enumService: EnumService
+    private answerService: QuestionAnswerService
   ) {}
 
   ngOnInit(): void {

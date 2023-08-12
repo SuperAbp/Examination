@@ -11,7 +11,7 @@ namespace SuperAbp.Exam.PaperManagement.PaperRepos
     public class PaperRepo : Entity<Guid>, IHasCreationTime, ISoftDelete
     {
         /// <summary>
-        /// 考试Id
+        /// 试卷Id
         /// </summary>
         public Guid PaperId { get; set; }
 
