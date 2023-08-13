@@ -18,6 +18,6 @@ namespace SuperAbp.Exam.PaperManagement.PaperRepos
 
         Task DeleteAsync(Guid paperId, Guid questionRepositoryId);
 
-        Task DeleteByExamingIdAsync(Guid paperId);
+        Task DeleteByExamIdAsync(Guid paperId);
     }
 }

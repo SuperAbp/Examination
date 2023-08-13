@@ -24,7 +24,7 @@ namespace SuperAbp.Exam.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.Exams.Examing", b =>
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.Exams.Examination", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -100,13 +100,19 @@ namespace SuperAbp.Exam.Migrations
 
                     b.HasIndex("PaperId");
 
-                    b.ToTable("AppExaming", (string)null);
+                    b.ToTable("AppExamination", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperRepos.PaperRepo", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("BlankCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("BlankScore")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2")

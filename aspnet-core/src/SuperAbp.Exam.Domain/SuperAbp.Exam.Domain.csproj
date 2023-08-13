@@ -16,6 +16,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ExamManagement\UserExams\**" />
+    <EmbeddedResource Remove="ExamManagement\UserExams\**" />
+    <None Remove="ExamManagement\UserExams\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SuperAbp.Exam.Domain.Shared\SuperAbp.Exam.Domain.Shared.csproj" />
   </ItemGroup>
 
@@ -34,7 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ExamManagement\Papers\" />
     <Folder Include="TrainingManagement\" />
   </ItemGroup>
 

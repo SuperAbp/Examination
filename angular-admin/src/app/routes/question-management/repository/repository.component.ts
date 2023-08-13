@@ -38,6 +38,10 @@ export class QuestionManagementRepositoryComponent implements OnInit {
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
     { title: this.localizationService.instant('Exam::Title'), index: 'title' },
+    { title: this.localizationService.instant('Exam::SingleCount'), index: 'singleCount' },
+    { title: this.localizationService.instant('Exam::MultiCount'), index: 'multiCount' },
+    { title: this.localizationService.instant('Exam::JudgeCount'), index: 'judgeCount' },
+    { title: this.localizationService.instant('Exam::BlankCount'), index: 'blankCount' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [

@@ -21,5 +21,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
         public decimal? MultiScore { get; set; }
         public int? JudgeCount { get; set; }
         public decimal? JudgeScore { get; set; }
+        public int? BlankCount { get; set; }
+        public decimal? BlankScore { get; set; }
     }
 }

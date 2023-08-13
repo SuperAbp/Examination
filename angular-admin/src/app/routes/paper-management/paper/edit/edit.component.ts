@@ -1,18 +1,14 @@
-import { LocalizationService } from '@abp/ng.core';
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize, tap } from 'rxjs/operators';
-import { NzModalRef } from 'ng-zorro-antd/modal';
 import { ActivatedRoute, Router } from '@angular/router';
 import { dateTimePickerUtil } from '@delon/util';
-import { DisabledTimeFn, DisabledTimePartial } from 'ng-zorro-antd/date-picker';
 import { PaperManagementRepositoryComponent } from '../../repository/repository.component';
 import { GetPaperForEditorOutput } from '@proxy/super-abp/exam/admin/paper-management/papers';
-import { PaperRepoService, PaperService } from '@proxy/super-abp/exam/admin/controllers';
+import { PaperService } from '@proxy/super-abp/exam/admin/controllers';
 
 @Component({
-  selector: 'app-exam-management-examing-edit',
+  selector: 'app-exam-management-paper-edit',
   templateUrl: './edit.component.html',
   styles: [
     `
@@ -24,38 +20,22 @@ import { PaperRepoService, PaperService } from '@proxy/super-abp/exam/admin/cont
 })
 export class PaperManagementPaperEditComponent implements OnInit {
   paperId: string;
-  examing: GetPaperForEditorOutput;
+  paper: GetPaperForEditorOutput;
 
   @ViewChild('PaperRepository')
   paperRepositoryComponent: PaperManagementRepositoryComponent;
 
   loading = false;
   isConfirmLoading = false;
-  showExamingTime: boolean;
+  showPaperTime: boolean;
   form: FormGroup = null;
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private messageService: NzMessageService,
-    private localizationService: LocalizationService,
-    private paperService: PaperService,
-    private paperRepositoryService: PaperRepoService
+    private paperService: PaperService
   ) {}
-
-  get isLimitedTime() {
-    return this.form.get('isLimitedTime');
-  }
-  get examingTimes() {
-    return this.form.get('examingTimes');
-  }
-  get startTime() {
-    return this.form.get('startTime');
-  }
-  get endTime() {
-    return this.form.get('endTime');
-  }
   get score() {
     return this.form.get('score');
   }
@@ -78,14 +58,14 @@ export class PaperManagementPaperEditComponent implements OnInit {
           .getEditor(this.paperId)
           .pipe(
             tap(response => {
-              this.examing = response;
+              this.paper = response;
               this.buildForm();
               this.loading = false;
             })
           )
           .subscribe();
       } else {
-        this.examing = {} as GetPaperForEditorOutput;
+        this.paper = {} as GetPaperForEditorOutput;
         this.buildForm();
         this.loading = false;
       }
@@ -94,11 +74,9 @@ export class PaperManagementPaperEditComponent implements OnInit {
 
   buildForm() {
     this.form = this.fb.group({
-      name: [this.examing.name || '', [Validators.required]],
-      description: [this.examing.description || ''],
-      score: [this.examing.score || 0],
-      isLimitedTime: [false],
-      examingTimes: [[]],
+      name: [this.paper.name || '', [Validators.required]],
+      description: [this.paper.description || ''],
+      score: [this.paper.score || 0],
       repositories: this.fb.array([])
     });
   }
@@ -117,12 +95,12 @@ export class PaperManagementPaperEditComponent implements OnInit {
     if (this.paperId) {
       this.paperService
         .update(this.paperId, {
-          ...this.examing,
+          ...this.paper,
           ...this.form.value,
           ...dynamicPara
         })
         .pipe(
-          tap(res => {
+          tap(() => {
             this.paperRepositoryComponent
               .save(this.paperId)
               .pipe(
@@ -160,13 +138,6 @@ export class PaperManagementPaperEditComponent implements OnInit {
     }
   }
 
-  examingTimeChange(e) {
-    this.startTime.setValue(e[0]);
-    this.endTime.setValue(e[1]);
-  }
-  changeExamingTimeStatus(e) {
-    this.showExamingTime = e;
-  }
   changeTotalScore(e) {
     this.score.setValue(e);
   }

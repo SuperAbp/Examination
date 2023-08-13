@@ -49,10 +49,13 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
 
         public virtual async Task<QuestionRepoCountDto> GetQuestionCountAsync(Guid id)
         {
-            var dto = new QuestionRepoCountDto();
-            dto.SingleCount = await _questionRepository.GetCountAsync(id, QuestionType.SingleSelect);
-            dto.JudgeCount = await _questionRepository.GetCountAsync(id, QuestionType.Judge);
-            dto.MultiCount = await _questionRepository.GetCountAsync(id, QuestionType.MultiSelect);
+            var dto = new QuestionRepoCountDto
+            {
+                SingleCount = await _questionRepository.GetCountAsync(id, QuestionType.SingleSelect),
+                JudgeCount = await _questionRepository.GetCountAsync(id, QuestionType.Judge),
+                MultiCount = await _questionRepository.GetCountAsync(id, QuestionType.MultiSelect),
+                BlankCount = await _questionRepository.GetCountAsync(id, QuestionType.FillInTheBlanks)
+            };
             return dto;
         }
 
@@ -76,6 +79,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
                 dto.SingleCount = await _questionRepository.GetCountAsync(item.Id, QuestionType.SingleSelect);
                 dto.JudgeCount = await _questionRepository.GetCountAsync(item.Id, QuestionType.Judge);
                 dto.MultiCount = await _questionRepository.GetCountAsync(item.Id, QuestionType.MultiSelect);
+                dto.BlankCount = await _questionRepository.GetCountAsync(item.Id, QuestionType.FillInTheBlanks);
                 dtos.Add(dto);
             }
             return new PagedResultDto<QuestionRepoListDto>(totalCount, dtos);

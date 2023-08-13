@@ -44,12 +44,12 @@ public class ExamMenuContributor : IMenuContributor
                 icon: IconType.Outline.Home
             )
         );
-        if (await context.IsGrantedAsync(ExamPermissions.Examings.Default))
+        if (await context.IsGrantedAsync(ExamPermissions.Exams.Default))
         {
             context.Menu.Items.Add(new ApplicationMenuItem(
                 ExamMenus.Exam,
                 l["Menu:MyExam"],
-                "/Examing",
+                "/Exam",
                 icon: IconType.Outline.Home
             ));
             context.Menu.Items.Add(new ApplicationMenuItem(

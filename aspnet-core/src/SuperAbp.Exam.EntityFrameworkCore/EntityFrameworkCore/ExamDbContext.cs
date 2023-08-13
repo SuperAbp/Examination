@@ -68,9 +68,9 @@ public class ExamDbContext :
     public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
     public DbSet<QuestionRepo> QuestionRepositories { get; set; }
     public DbSet<Paper> Papers { get; set; }
-    public DbSet<PaperRepo> ExamingRepositories { get; set; }
+    public DbSet<PaperRepo> ExamRepositories { get; set; }
 
-    public DbSet<Examing> Exams { get; set; }
+    public DbSet<Examination> Exams { get; set; }
 
     public DbSet<Training> Trains { get; set; }
 
@@ -145,9 +145,9 @@ public class ExamDbContext :
             b.ConfigureByConvention();
         });
 
-        builder.Entity<Examing>(b =>
+        builder.Entity<Examination>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "Examing", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "Examination", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
 

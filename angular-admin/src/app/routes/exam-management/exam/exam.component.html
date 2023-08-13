@@ -1,0 +1,26 @@
+<page-header [action]="phActionTpl">
+  <ng-template #phActionTpl>
+    <button (click)="add()" nz-button nzType="primary" *abpPermission="'Exam.Exam.Create'">
+      {{ 'Exam::NewExam' | abpLocalization }}
+    </button>
+  </ng-template>
+</page-header>
+<nz-card>
+  <sf mode="search" [schema]="searchSchema" (formSubmit)="search($event)" (formReset)="reset()"></sf>
+  <st
+    #st
+    [data]="exams"
+    [columns]="columns"
+    [loading]="loading"
+    [page]="page"
+    [total]="total"
+    (change)="change($event)"
+    [header]="'Exam::DataStart' | abpLocalization"
+    [footer]="'Exam::DataEnd' | abpLocalization"
+    responsiveHideHeaderFooter
+  >
+    <ng-template st-row="score" let-item>
+      <span>{{ item.score }}（{{ 'Exam::PassingScore' | abpLocalization }}：{{ item.passingScore }}）</span>
+    </ng-template>
+  </st>
+</nz-card>

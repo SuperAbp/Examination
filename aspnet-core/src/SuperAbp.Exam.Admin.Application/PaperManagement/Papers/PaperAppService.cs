@@ -20,20 +20,21 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
     [Authorize(ExamPermissions.Papers.Default)]
     public class PaperAppService : ExamAppService, IPaperAppService
     {
-        private readonly IPaperRepository _examingRepository;
-        private readonly IPaperRepoRepository _examingRepoRepository;
+        private readonly IPaperRepository _paperRepository;
+        private readonly IPaperRepoRepository _paperRepoRepository;
 
         /// <summary>
         /// .ctor
         /// </summary>
-        /// <param name="examingRepository"></param>
-        /// <param name="examingRepoRepository"></param>
+        /// <param name="paperRepository"></param>
+        /// <param name="paperRepoRepository"></param>
         public PaperAppService(
-            IPaperRepository examingRepository, IPaperRepoRepository examingRepoRepository)
+            IPaperRepository paperRepository, IPaperRepoRepository paperRepoRepository)
         {
-            _examingRepository = examingRepository;
-            _examingRepoRepository = examingRepoRepository;
+            _paperRepository = paperRepository;
+            _paperRepoRepository = paperRepoRepository;
         }
+
         /// <summary>
         /// 列表
         /// </summary>
@@ -43,12 +44,14 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         {
             await NormalizeMaxResultCountAsync(input);
 
-            var queryable = await _examingRepository.GetQueryableAsync();
+            var queryable = await _paperRepository.GetQueryableAsync();
+
+            queryable = queryable.WhereIf(!input.Name.IsNullOrWhiteSpace(), e => e.Name.Contains(input.Name));
 
             long totalCount = await AsyncExecuter.CountAsync(queryable);
 
             var entities = await AsyncExecuter.ToListAsync(queryable
-                .OrderBy(input.Sorting ?? "Id DESC")
+                .OrderBy(input.Sorting ?? PaperConsts.DefaultSorting)
                 .PageBy(input));
 
             var dtos = ObjectMapper.Map<List<Paper>, List<PaperListDto>>(entities);
@@ -63,7 +66,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         /// <returns></returns>
         public virtual async Task<GetPaperForEditorOutput> GetEditorAsync(Guid id)
         {
-            Paper entity = await _examingRepository.GetAsync(id);
+            Paper entity = await _paperRepository.GetAsync(id);
 
             return ObjectMapper.Map<Paper, GetPaperForEditorOutput>(entity);
         }
@@ -76,12 +79,12 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         [Authorize(ExamPermissions.Papers.Create)]
         public virtual async Task<PaperListDto> CreateAsync(PaperCreateDto input)
         {
-            if (await _examingRepository.ExistsByNameAsync(input.Name.Trim()))
+            if (await _paperRepository.ExistsByNameAsync(input.Name.Trim()))
             {
-                throw new UserFriendlyException(L["ExamingExists"]);
+                throw new UserFriendlyException(L["ExamExists"]);
             }
             var entity = ObjectMapper.Map<PaperCreateDto, Paper>(input);
-            entity = await _examingRepository.InsertAsync(entity, true);
+            entity = await _paperRepository.InsertAsync(entity, true);
             return ObjectMapper.Map<Paper, PaperListDto>(entity);
         }
 
@@ -94,9 +97,9 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         [Authorize(ExamPermissions.Papers.Update)]
         public virtual async Task<PaperListDto> UpdateAsync(Guid id, PaperUpdateDto input)
         {
-            var entity = await _examingRepository.GetAsync(id);
+            var entity = await _paperRepository.GetAsync(id);
             entity = ObjectMapper.Map(input, entity);
-            entity = await _examingRepository.UpdateAsync(entity);
+            entity = await _paperRepository.UpdateAsync(entity);
             return ObjectMapper.Map<Paper, PaperListDto>(entity);
         }
 
@@ -108,8 +111,8 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         [Authorize(ExamPermissions.Papers.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
-            await _examingRepoRepository.DeleteByExamingIdAsync(id);
-            await _examingRepository.DeleteAsync(s => s.Id == id);
+            await _paperRepoRepository.DeleteByExamIdAsync(id);
+            await _paperRepository.DeleteAsync(s => s.Id == id);
         }
 
         /// <summary>

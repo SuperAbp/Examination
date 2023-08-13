@@ -43,7 +43,7 @@ public class PaperRepoRepository : EfCoreRepository<ExamDbContext, PaperRepo, Gu
         await DeleteAsync(er => er.PaperId == paperId && er.QuestionRepositoryId == questionRepositoryId);
     }
 
-    public async Task DeleteByExamingIdAsync(Guid paperId)
+    public async Task DeleteByExamIdAsync(Guid paperId)
     {
         await DeleteAsync(er => er.PaperId == paperId);
     }

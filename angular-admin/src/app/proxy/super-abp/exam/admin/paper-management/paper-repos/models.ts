@@ -1,14 +1,13 @@
 import type { EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
-export interface GetPaperRepoForEditorOutput extends PaperRepoCreateOrUpdateDtoBase {
-}
+export interface GetPaperRepoForEditorOutput extends PaperRepoCreateOrUpdateDtoBase {}
 
 export interface GetPaperReposInput extends PagedAndSortedResultRequestDto {
-  examingId?: string;
+  paperId?: string;
 }
 
 export interface PaperRepoCreateDto extends PaperRepoCreateOrUpdateDtoBase {
-  examingId?: string;
+  paperId?: string;
   questionRepositoryId?: string;
 }
 
@@ -19,6 +18,8 @@ export interface PaperRepoCreateOrUpdateDtoBase {
   multiScore?: number;
   judgeCount?: number;
   judgeScore?: number;
+  blankCount?: number;
+  blankScore?: number;
 }
 
 export interface PaperRepoListDto extends EntityDto<string> {
@@ -30,7 +31,8 @@ export interface PaperRepoListDto extends EntityDto<string> {
   multiScore?: number;
   judgeCount?: number;
   judgeScore?: number;
+  blankCount?: number;
+  blankScore?: number;
 }
 
-export interface PaperRepoUpdateDto extends PaperRepoCreateOrUpdateDtoBase {
-}
+export interface PaperRepoUpdateDto extends PaperRepoCreateOrUpdateDtoBase {}

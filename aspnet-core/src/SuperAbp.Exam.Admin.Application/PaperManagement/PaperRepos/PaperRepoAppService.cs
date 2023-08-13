@@ -58,6 +58,8 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
                     MultiScore = er.MultiScore,
                     JudgeCount = er.JudgeCount,
                     JudgeScore = er.JudgeScore,
+                    BlankCount = er.BlankCount,
+                    BlankScore = er.BlankScore,
                     CreationTime = er.CreationTime
                 };
 

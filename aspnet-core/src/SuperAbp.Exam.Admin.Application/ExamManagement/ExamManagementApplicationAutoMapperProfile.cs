@@ -14,14 +14,15 @@ namespace SuperAbp.Exam.Admin.ExamManagement
         /// </summary>
         public ExamManagementApplicationAutoMapperProfile()
         {
+            #region 考试
 
-             #region 考试
-            CreateMap<Examing, GetExamingForEditorOutput>();
-            CreateMap<Examing, ExamingListDto>();
-            CreateMap<Examing, ExamingDetailDto>();
-            CreateMap<ExamingCreateDto, Examing>();
-            CreateMap<ExamingUpdateDto, Examing>();
-            #endregion
+            CreateMap<Examination, GetExamForEditorOutput>();
+            CreateMap<Examination, ExamListDto>();
+            CreateMap<Examination, ExamDetailDto>();
+            CreateMap<ExamCreateDto, Examination>();
+            CreateMap<ExamUpdateDto, Examination>();
+
+            #endregion 考试
         }
     }
 }

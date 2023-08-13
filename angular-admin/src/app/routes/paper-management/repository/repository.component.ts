@@ -1,9 +1,6 @@
-import { ConfigStateService, LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { STChange, STColumn, STComponent, STPage } from '@delon/abc/st';
-import { SFSchema } from '@delon/form';
-import { ModalHelper } from '@delon/theme';
+import { LocalizationService, PermissionService } from '@abp/ng.core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaperRepoService, QuestionRepoService } from '@proxy/super-abp/exam/admin/controllers';
 import { GetPaperReposInput, PaperRepoCreateDto, PaperRepoListDto } from '@proxy/super-abp/exam/admin/paper-management/paper-repos';
 import { QuestionRepoListDto } from '@proxy/super-abp/exam/admin/question-management/question-repos';
@@ -17,6 +14,7 @@ export interface PaperRepoCreateTemp extends PaperRepoCreateDto {
   singleTotalCount: number;
   multiTotalCount?: number;
   judgeTotalCount?: number;
+  blankTotalCount?: number;
 }
 @Component({
   selector: 'app-paper-management-repository',
@@ -37,7 +35,7 @@ export class PaperManagementRepositoryComponent implements OnInit {
   paperId: string;
 
   @Input()
-  examingForm: FormGroup;
+  paperForm: FormGroup;
   @Output()
   totalScoreChange = new EventEmitter();
 
@@ -56,14 +54,13 @@ export class PaperManagementRepositoryComponent implements OnInit {
     private fb: FormBuilder,
     private localizationService: LocalizationService,
     private messageService: NzMessageService,
-    private permissionService: PermissionService,
     private repositoryService: PaperRepoService,
     private questionRepositoryService: QuestionRepoService,
     private readonly paperRepositoryService: PaperRepoService
   ) {}
 
   get repositories() {
-    return this.examingForm.get('repositories') as FormArray;
+    return this.paperForm.get('repositories') as FormArray;
   }
 
   ngOnInit() {
@@ -102,7 +99,7 @@ export class PaperManagementRepositoryComponent implements OnInit {
               tap(res => {
                 this.add({
                   id: repo.id,
-                  examingId: this.paperId,
+                  paperId: this.paperId,
                   questionRepository: repo.questionRepository,
                   questionRepositoryId: repo.questionRepositoryId,
                   singleTotalCount: res.singleCount,
@@ -113,7 +110,10 @@ export class PaperManagementRepositoryComponent implements OnInit {
                   multiScore: repo.multiScore,
                   judgeTotalCount: res.judgeCount,
                   judgeCount: repo.judgeCount,
-                  judgeScore: repo.judgeScore
+                  judgeScore: repo.judgeScore,
+                  blankTotalCount: res.blankCount,
+                  blankCount: repo.blankCount,
+                  blankScore: repo.blankScore
                 } as PaperRepoCreateTemp);
               })
             )
@@ -126,11 +126,12 @@ export class PaperManagementRepositoryComponent implements OnInit {
     let item = this.repositoryItems.find(i => i.id == this.currentQuestionRepositoryId);
     this.add({
       questionRepositoryId: item.id,
-      examingId: this.paperId,
+      paperId: this.paperId,
       questionRepository: item.title,
       singleTotalCount: item.singleCount,
       multiTotalCount: item.multiCount,
-      judgeTotalCount: item.judgeCount
+      judgeTotalCount: item.judgeCount,
+      blankTotalCount: item.blankCount
     });
     this.currentQuestionRepositoryId = null;
     this.modalIsShow = false;
@@ -159,7 +160,9 @@ export class PaperManagementRepositoryComponent implements OnInit {
       judgeCount: [item.judgeCount || 0, [Validators.required]],
       judgeScore: [item.judgeScore || 0, [Validators.required]],
       multiCount: [item.multiCount || 0, [Validators.required]],
-      multiScore: [item.multiScore || 0, [Validators.required]]
+      multiScore: [item.multiScore || 0, [Validators.required]],
+      blankCount: [item.blankCount || 0, [Validators.required]],
+      blankScore: [item.blankScore || 0, [Validators.required]]
     });
   }
   delete(index: number, item: PaperRepoCreateTemp) {
@@ -204,7 +207,8 @@ export class PaperManagementRepositoryComponent implements OnInit {
         totalScore +=
           c.get('singleCount').value * c.get('singleScore').value +
           c.get('judgeCount').value * c.get('judgeScore').value +
-          c.get('multiCount').value * c.get('multiScore').value;
+          c.get('multiCount').value * c.get('multiScore').value +
+          c.get('blankCount').value * c.get('blankScore').value;
       });
       this.totalScoreChange.emit(totalScore);
     }
@@ -212,7 +216,7 @@ export class PaperManagementRepositoryComponent implements OnInit {
 
   resetParameters(): GetPaperReposInput {
     return {
-      examingId: this.paperId,
+      paperId: this.paperId,
       skipCount: 0,
       maxResultCount: 10,
       sorting: 'CreationTime DESC'

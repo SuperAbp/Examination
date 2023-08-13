@@ -42,8 +42,8 @@ const routes: Routes = [
         loadChildren: () => import('./paper-management/paper-management.module').then(m => m.PaperManagementModule)
       },
       {
-        path: 'examing-management',
-        loadChildren: () => import('./examing-management/examing-management.module').then(m => m.ExamingManagementModule)
+        path: 'exam-management',
+        loadChildren: () => import('./exam-management/exam-management.module').then(m => m.ExamManagementModule)
       }
     ]
   },

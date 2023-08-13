@@ -12,7 +12,7 @@ public class PaperRepositoryDetail
     /// 题库Id
     /// </summary>
     public Guid QuestionRepositoryId { get; set; }
-    
+
     /// <summary>
     /// 单选数量
     /// </summary>
@@ -42,6 +42,16 @@ public class PaperRepositoryDetail
     /// 判断分数
     /// </summary>
     public decimal? JudgeScore { get; set; }
+
+    /// <summary>
+    /// 填空数量
+    /// </summary>
+    public int? BlankCount { get; set; }
+
+    /// <summary>
+    /// 填空分数
+    /// </summary>
+    public decimal? BlankScore { get; set; }
 
     public DateTime CreationTime { get; set; }
 }

@@ -11,7 +11,7 @@ import { GetPapersInput, PaperListDto } from '@proxy/super-abp/exam/admin/paper-
 import { PaperService } from '@proxy/super-abp/exam/admin/controllers';
 
 @Component({
-  selector: 'app-exam-management-examing',
+  selector: 'app-exam-management-paper',
   templateUrl: './paper.component.html'
 })
 export class PaperManagementPaperComponent implements OnInit {
@@ -40,6 +40,7 @@ export class PaperManagementPaperComponent implements OnInit {
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
     { title: this.localizationService.instant('Exam::Name'), index: 'name' },
+    { title: this.localizationService.instant('Exam::Score'), index: 'score' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [
@@ -100,8 +101,7 @@ export class PaperManagementPaperComponent implements OnInit {
   resetParameters(): GetPapersInput {
     return {
       skipCount: 0,
-      maxResultCount: 10,
-      sorting: 'Id Desc'
+      maxResultCount: 10
     };
   }
   change(e: STChange) {
@@ -119,11 +119,11 @@ export class PaperManagementPaperComponent implements OnInit {
     this.st.load(1);
   }
   search(e) {
-    // if (e.name) {
-    //   this.params.name = e.name;
-    // } else {
-    //   delete this.params.name;
-    // }
+    if (e.name) {
+      this.params.name = e.name;
+    } else {
+      delete this.params.name;
+    }
     this.st.load(1);
   }
   add() {

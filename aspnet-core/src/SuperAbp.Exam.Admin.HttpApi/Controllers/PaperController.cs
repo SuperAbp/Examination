@@ -12,11 +12,11 @@ namespace SuperAbp.Exam.Admin.Controllers
     [Route("api/paper")]
     public class PaperController : ExamController, IPaperAppService
     {
-        private readonly IPaperAppService _examingAppService;
+        private readonly IPaperAppService _paperAppService;
 
-        public PaperController(IPaperAppService examingAppService)
+        public PaperController(IPaperAppService paperAppService)
         {
-            _examingAppService = examingAppService;
+            _paperAppService = paperAppService;
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace SuperAbp.Exam.Admin.Controllers
         [HttpGet]
         public virtual async Task<PagedResultDto<PaperListDto>> GetListAsync(GetPapersInput input)
         {
-            return await _examingAppService.GetListAsync(input);
+            return await _paperAppService.GetListAsync(input);
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace SuperAbp.Exam.Admin.Controllers
         [HttpGet("{id}/editor")]
         public virtual async Task<GetPaperForEditorOutput> GetEditorAsync(Guid id)
         {
-            return await _examingAppService.GetEditorAsync(id);
+            return await _paperAppService.GetEditorAsync(id);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace SuperAbp.Exam.Admin.Controllers
         [HttpPost]
         public virtual async Task<PaperListDto> CreateAsync(PaperCreateDto input)
         {
-            return await _examingAppService.CreateAsync(input);
+            return await _paperAppService.CreateAsync(input);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace SuperAbp.Exam.Admin.Controllers
         [HttpPut("{id}")]
         public virtual async Task<PaperListDto> UpdateAsync(Guid id, PaperUpdateDto input)
         {
-            return await _examingAppService.UpdateAsync(id, input);
+            return await _paperAppService.UpdateAsync(id, input);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace SuperAbp.Exam.Admin.Controllers
         [HttpDelete("{id}")]
         public virtual async Task DeleteAsync(Guid id)
         {
-            await _examingAppService.DeleteAsync(id);
+            await _paperAppService.DeleteAsync(id);
         }
     }
 }

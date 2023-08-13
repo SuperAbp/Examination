@@ -122,7 +122,7 @@ export class StartupService {
               },
               {
                 text: '考试管理',
-                link: '/examing-management/examing'
+                link: '/exam-management/exam'
               }
             ]
           }

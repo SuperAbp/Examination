@@ -55,6 +55,16 @@ namespace SuperAbp.Exam.PaperManagement.PaperRepos
         /// </summary>
         public decimal? JudgeScore { get; set; }
 
+        /// <summary>
+        /// 填空数量
+        /// </summary>
+        public int? BlankCount { get; set; }
+
+        /// <summary>
+        /// 填空分数
+        /// </summary>
+        public decimal? BlankScore { get; set; }
+
         public DateTime CreationTime { get; set; }
         public bool IsDeleted { get; set; }
     }
