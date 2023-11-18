@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "Default": "Server=(LocalDb)\\MSSQLLocalDB;Database=Exam;Trusted_Connection=True;TrustServerCertificate=True"
+    "Default": "Server=(LocalDb)\\MSSQLLocalDB;Database=Exam;Trusted_Connection=True"
   },
   "Redis": {
     "Configuration": "127.0.0.1"

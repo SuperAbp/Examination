@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SuperAbp.MenuManagement.Application.Contracts" Version="0.3.0" />
+    <PackageReference Include="SuperAbp.MenuManagement.Application.Contracts" Version="0.4.1" />
   </ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\SuperAbp.Exam.Application.Contracts.Shared\SuperAbp.Exam.Application.Contracts.Shared.csproj" />

@@ -14,6 +14,9 @@ using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Themes.AntDesignTheme;
 using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme;
 using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Settings;
 using Lsw.Abp.AspnetCore.Components.WebAssembly.AntDesignTheme;
+using Volo.Abp.TenantManagement.Blazor.WebAssembly;
+using Volo.Abp.Identity.Blazor.WebAssembly;
+using Volo.Abp.SettingManagement.Blazor.WebAssembly;
 
 namespace SuperAbp.Exam.Blazor;
 
@@ -21,7 +24,10 @@ namespace SuperAbp.Exam.Blazor;
     typeof(AbpAutofacWebAssemblyModule),
     typeof(ExamHttpApiClientModule),
     typeof(AbpAutoMapperModule),
-    typeof(AbpAspNetCoreComponentsWebAssemblyAntDesignThemeModule)
+    typeof(AbpAspNetCoreComponentsWebAssemblyAntDesignThemeModule),
+     typeof(AbpIdentityBlazorWebAssemblyModule),
+    typeof(AbpTenantManagementBlazorWebAssemblyModule),
+    typeof(AbpSettingManagementBlazorWebAssemblyModule)
 )]
 public class ExamBlazorModule : AbpModule
 {

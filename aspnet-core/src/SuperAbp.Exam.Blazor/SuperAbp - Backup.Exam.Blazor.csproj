@@ -9,6 +9,8 @@
 
   <ItemGroup>
 
+    <PackageReference Include="AntDesign" Version="0.15.5" />
+
     <PackageReference Include="Lsw.Abp.AspnetCore.Components.WebAssembly.AntDesignTheme" Version="0.9.0" />
 
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.12" />
@@ -16,15 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.Autofac.WebAssembly" Version="7.4.0" />
-    <PackageReference Include="Volo.Abp.AutoMapper" Version="7.4.0" />
-	  
+    <PackageReference Include="Volo.Abp.Autofac.WebAssembly" Version="7.4.2" />
+    <PackageReference Include="Volo.Abp.AutoMapper" Version="7.4.2" />
   </ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Volo.Abp.Identity.Blazor.WebAssembly" Version="7.4.0" />
-		<PackageReference Include="Volo.Abp.TenantManagement.Blazor.WebAssembly" Version="7.4.0" />
-		<PackageReference Include="Volo.Abp.SettingManagement.Blazor.WebAssembly" Version="7.4.0" />
-	</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SuperAbp.Exam.HttpApi.Client\SuperAbp.Exam.HttpApi.Client.csproj" />

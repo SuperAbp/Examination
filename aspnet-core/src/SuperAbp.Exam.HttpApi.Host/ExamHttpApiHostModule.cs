@@ -10,8 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SuperAbp.Exam.EntityFrameworkCore;
 using SuperAbp.Exam.MultiTenancy;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Bundling;
 using Microsoft.OpenApi.Models;
 using OpenIddict.Validation.AspNetCore;
 using Volo.Abp;
@@ -37,7 +37,7 @@ namespace SuperAbp.Exam;
     typeof(AbpAspNetCoreMultiTenancyModule),
     typeof(ExamApplicationModule),
     typeof(ExamEntityFrameworkCoreModule),
-    typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
+    typeof(AbpAspNetCoreMvcUiBasicThemeModule),
     typeof(AbpAccountWebOpenIddictModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule)
@@ -81,7 +81,7 @@ public class ExamHttpApiHostModule : AbpModule
         Configure<AbpBundlingOptions>(options =>
         {
             options.StyleBundles.Configure(
-                LeptonXLiteThemeBundles.Styles.Global,
+                BasicThemeBundles.Styles.Global,
                 bundle =>
                 {
                     bundle.AddFiles("/global-styles.css");
@@ -95,7 +95,7 @@ public class ExamHttpApiHostModule : AbpModule
         Configure<AppUrlOptions>(options =>
         {
             options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
-            options.RedirectAllowedUrls.AddRange(configuration["App:RedirectAllowedUrls"].Split(','));
+            options.RedirectAllowedUrls.AddRange(configuration["App:RedirectAllowedUrls"]?.Split(',') ?? Array.Empty<string>());
 
             options.Applications["Angular"].RootUrl = configuration["App:ClientUrl"];
             options.Applications["Angular"].Urls[AccountUrlNames.PasswordReset] = "account/reset-password";
@@ -137,7 +137,7 @@ public class ExamHttpApiHostModule : AbpModule
     private static void ConfigureSwaggerServices(ServiceConfigurationContext context, IConfiguration configuration)
     {
         context.Services.AddAbpSwaggerGenWithOAuth(
-            configuration["AuthServer:Authority"],
+            configuration["AuthServer:Authority"]!,
             new Dictionary<string, string>
             {
                     {"Exam", "Exam API"}
@@ -155,14 +155,12 @@ public class ExamHttpApiHostModule : AbpModule
         context.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(builder =>
-               {
+            {
                 builder
-                    .WithOrigins(
-                        configuration["App:CorsOrigins"]
-                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                            .Select(o => o.RemovePostFix("/"))
-                            .ToArray()
-                    )
+                    .WithOrigins(configuration["App:CorsOrigins"]?
+                        .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                        .Select(o => o.RemovePostFix("/"))
+                        .ToArray() ?? Array.Empty<string>())
                     .WithAbpExposedHeaders()
                     .SetIsOriginAllowedToAllowWildcardSubdomains()
                     .AllowAnyHeader()
