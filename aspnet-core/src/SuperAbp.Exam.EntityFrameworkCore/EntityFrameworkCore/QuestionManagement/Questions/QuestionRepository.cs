@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.Questions;
 
@@ -46,9 +48,35 @@ public class QuestionRepository : EfCoreRepository<ExamDbContext, Question, Guid
             .ToListAsync();
     }
 
-    public async Task<List<Question>> GetListAsync(Guid questionRepositoryId)
+    public async Task<List<Question>> GetListAsync(string sorting = null,
+        int skipCount = 0,
+        int maxResultCount = int.MaxValue,
+        Guid? questionRepositoryId = null,
+        QuestionType? questionType = null,
+        CancellationToken cancellationToken = default)
     {
-        return await GetListAsync(q => q.QuestionRepositoryId == questionRepositoryId);
+        var queryable = await GetQueryableAsync();
+
+        return await queryable
+            .WhereIf(questionRepositoryId.HasValue, p => p.QuestionRepositoryId == questionRepositoryId.Value)
+            .WhereIf(questionType.HasValue, p => p.QuestionType == questionType.Value)
+            .OrderBy(string.IsNullOrWhiteSpace(sorting) ? QuestionConsts.DefaultSorting : sorting)
+            .OrderBy(q => Guid.NewGuid())
+            .PageBy(skipCount, maxResultCount)
+            .ToListAsync(cancellationToken: cancellationToken);
+    }
+
+    public async Task<List<Question>> GetRandomListAsync(int maxResultCount = Int32.MaxValue, Guid? questionRepositoryId = null,
+        QuestionType? questionType = null, CancellationToken cancellationToken = default)
+    {
+        var queryable = await GetQueryableAsync();
+
+        return await queryable
+            .WhereIf(questionRepositoryId.HasValue, p => p.QuestionRepositoryId == questionRepositoryId.Value)
+            .WhereIf(questionType.HasValue, p => p.QuestionType == questionType.Value)
+            .OrderBy(q => Guid.NewGuid())
+            .Take(maxResultCount)
+            .ToListAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId)

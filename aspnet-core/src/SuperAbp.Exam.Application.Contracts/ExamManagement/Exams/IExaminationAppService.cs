@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SuperAbp.Exam.Admin.ExamManagement.Exams;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 

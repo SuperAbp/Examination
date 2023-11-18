@@ -29,10 +29,12 @@
 @using System.Text.Json;
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.ExamManagement.Exams
+@using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Localization
 @attribute [Authorize]
 @inject NavigationManager Navigation
 @inject IExaminationAppService ExamAppService
+@inject IUserExamAppService UserExamAppService
 @inject IStringLocalizer<ExamResource> L
 @code {
     IReadOnlyList<ExamListDto> _exams;
@@ -54,6 +56,7 @@
 
     private async Task BeganAsync(Guid id)
     {
-        Navigation.NavigateTo("/Exam/Start/"+id);
+        var dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = id });
+        Navigation.NavigateTo($"/Exam/Start/{dto.Id}");
     }
 }

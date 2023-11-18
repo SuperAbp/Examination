@@ -1,4 +1,14 @@
 ﻿@page "/exam/start/{id:guid}"
+@using SuperAbp.Exam.ExamManagement.UserExams
+@using SuperAbp.Exam.ExamManagement.UserExamQuestions
+@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using SuperAbp.Exam.TrainingManagement
+@using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.Localization
+@using Volo.Abp.AspNetCore.Components.Notifications
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.ExamManagement.Exams
 
 <style>
     .question-content .title {
@@ -41,68 +51,176 @@
         margin-left: 5px;
     }
 </style>
+@if (loading)
+{
+    <div style=" text-align: center;margin: 50px 0;">
+        <Spin />
+    </div>
+}
+else
+{
 
-<GridRow Gutter="16">
-    <GridCol Span="4">
-        <Card>
-            <div class="header">
-                <span>单选题</span>
-                <span>共20题</span>
-            </div>
-            <div class="content">
-                <div>
-                    @for (int i = 1; i < 10; i++)
+    <GridRow Gutter="16">
+        <GridCol Span="4">
+            @*<QuestionNumber CurrentId="_questionIds[_questionIndex]"
+                            Ids="_questionIds"></QuestionNumber>*@
+        </GridCol>
+        <GridCol Span="16">
+            <Card class="question-content">
+                <Body>
+                @if (loadingQuestion)
+                {
+                    <Spin/>
+                }
+                else
+                {
+                    var questionTypes = _examQuestions.GroupBy(q => q.QuestionType).Select(q => new
                     {
-                        <Tag Color="@(Successes.Contains(i.ToString())? "success": "default")">@i</Tag>
+                        QuestionType = q.Key,
+                        Count = q.Count()
+                    });
+                    foreach (var questionType in questionTypes)
+                    {
+                            
+                        var currentQuestions = _examQuestions.Where(q => q.QuestionType == questionType.QuestionType).ToArray();
+                            <h2>@L["QuestionType:"+questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q=>q.QuestionScore))分）</h2>
+                        for (int i = 1; i <= currentQuestions.Length; i++)
+                        {
+                                var examQuestion = _examQuestions[i - 1];
+                                <h2 class="title">
+                                    <span class="number">@i</span>
+                                    <span>【@L["QuestionType:"+examQuestion.QuestionType]】@examQuestion.Question</span>
+                                </h2>
+                                @switch (examQuestion.QuestionType)
+                                {
+                                    case QuestionType.SingleSelect:
+                                    case QuestionType.Judge:
+                                        <SingleSelect QuestionId="examQuestion.QuestionId"
+                                                      Answered="@examQuestion.Answers"
+                                                      Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                                      OnSubmit="@SubmitAsync"></SingleSelect>
+                                        break;
+                                    case QuestionType.MultiSelect:
+                                        <MultiSelect QuestionId="examQuestion.QuestionId"
+                                                     Answered="@examQuestion.Answers"
+                                                     Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                                     ShowAnalysis="false"
+                                                     OnSelect="@SelectAsync"></MultiSelect>
+                                        break;
+                                    case QuestionType.FillInTheBlanks:
+                                        <Blank QuestionId="examQuestion.QuestionId"
+                                               Answered="@examQuestion.Answers"
+                                               Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                               ShowAnalysis="false"
+                                               OnSubmit="@SubmitAsync"></Blank>
+                                        break;
+                                }
+                        }
                     }
-                </div>
-            </div>
-        </Card>
-    </GridCol>
-    <GridCol Span="16">
-        <Card class="question-content">
-            <h2 class="title">
-                <span class="number">1</span>
-                <span>地球上0度经线和0度纬线的长度相比（）</span>
-            </h2>
-            <RadioGroup class="chooses" @bind-Value="radioValue5" Size="large">
-                <Radio class="choose-item" Value="@("A")">
-                    <span class="tag">A</span>
-                    <span class="content">Hangzhou</span>
-                </Radio>
-                <Radio class="choose-item" Value="@("B")">
-                    <span class="tag">A</span>
-                    <span class="content">Hangzhou</span>
-                </Radio>
-                <Radio class="choose-item" Value="@("C")">
-                    <span class="tag">A</span>
-                    <span class="content">Hangzhou</span>
-                </Radio>
-                <Radio class="choose-item" Value="@("D")">
-                    <span class="tag">A</span>
-                    <span class="content">Hangzhou</span>
-                </Radio>
-            </RadioGroup>
-        </Card>
-    </GridCol>
-    <GridCol Span="4">
-        <div style="background-color: #fff">3</div>
-    </GridCol>
-</GridRow>
-
+                   @* for (int i = 1; i <= _examQuestions.Count; i++)
+                    {
+                        var examQuestion = _examQuestions[i - 1];
+                            <h2 class="title">
+                                <span class="number">@i</span>
+                                <span>【@L["QuestionType:"+examQuestion.QuestionType]】@examQuestion.Question</span>
+                            </h2>
+                            @switch (examQuestion.QuestionType)
+                            {
+                                case QuestionType.SingleSelect:
+                                case QuestionType.Judge:
+                                    <SingleSelect QuestionId="examQuestion.QuestionId"
+                                                  Answered="@examQuestion.Answers"
+                                                  Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                                  OnSubmit="@SubmitAsync"></SingleSelect>
+                                    break;
+                                case QuestionType.MultiSelect:
+                                    <MultiSelect QuestionId="examQuestion.QuestionId"
+                                                 Answered="@examQuestion.Answers"
+                                                 Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                                 ShowAnalysis="false"
+                                                 OnSelect="@SelectAsync"></MultiSelect>
+                                    break;
+                                case QuestionType.FillInTheBlanks:
+                                    <Blank QuestionId="examQuestion.QuestionId"
+                                           Answered="@examQuestion.Answers"
+                                           Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                           ShowAnalysis="false"
+                                           OnSubmit="@SubmitAsync"></Blank>
+                                    break;
+                            }
+                    }*@
+                }
+                </Body>
+            </Card>
+        </GridCol>
+        <GridCol Span="4">
+            <div style="background-color: #fff">3</div>
+        </GridCol>
+    </GridRow>
+}
+@inject NavigationManager Navigation
+@inject IStringLocalizer<ExamResource> L
+@inject IUiNotificationService UiNotificationService
+@inject IUserExamAppService UserExamAppService
+@inject IExaminationAppService ExaminationAppService
+@inject IUserExamQuestionAppService UserExamQuestionAppService
 @code {
     [Parameter]
     public Guid Id { get; set; }
 
-    string radioValue5;
-    private List<string> Successes { get; set; } = new List<string>();
+    bool loading = true;
+    bool loadingQuestion = false;
 
-    private List<dynamic> Questions = new List<dynamic>()
+    ExamDetailDto _exam;
+    IReadOnlyList<UserExamQuestionListDto> _examQuestions = Array.Empty<UserExamQuestionListDto>();
+    IReadOnlyList<Guid> _questionIds = Array.Empty<Guid>();
+
+    protected override async Task OnInitializedAsync()
     {
-        new
-        {
-            Title = "人们把社会生产的各个部门划分为三类产业，下列属于第三产业的是（）"
-        }
-    };
+        var userExam = await UserExamAppService.GetAsync(Id);
+        _exam = await ExaminationAppService.GetAsync(userExam.ExamId);
+        var dto = await UserExamQuestionAppService.GetListAsync(new GetUserExamQuestionsInput() { UserExamId = Id });
+        _examQuestions = dto.Items;
+        _questionIds = dto.Items.Select(q=>q.QuestionId).ToArray();
+        loading = false;
+    }
+    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamQuestionListDto.QuestionAnswerListDto> answers)
+    {
+        return answers
+            .Select(qa => new QuestionAnswerViewModel
+            {
+                Id = qa.Id,
+                Content = qa.Content,
+                Right = false
+            }).ToArray();
+    }
+    public virtual async Task SubmitAsync(QuestionAnswerItem item)
+    {
+        await AnswerAnswer(item.QuestionId, item.Answer);
+    }
 
+    public virtual async Task SelectAsync(QuestionAnswerSelectEventArgs item)
+    {
+        await AnswerAnswer(item.QuestionId, item.Answer);
+    }
+
+    /// <summary>
+    /// 答题
+    /// </summary>
+    /// <param name="questionId">题目Id</param>
+    /// <param name="answer">答案</param>
+    /// <returns></returns>
+    protected async Task AnswerAnswer(Guid questionId, string answer)
+    {
+        var examQuestionId = _examQuestions.First(q => q.QuestionId == questionId).Id;
+
+        await UserExamQuestionAppService.AnswerAsync(examQuestionId, new UserExamQuestionAnswerDto()
+        {
+            Answers = answer
+        });
+    }
+    protected virtual void GoDetail()
+    {
+        Navigation.NavigateTo($"/exam");
+    }
 }

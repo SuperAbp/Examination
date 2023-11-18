@@ -53,7 +53,7 @@
     {
         var tempIndex = i;
         var answer = Answers[tempIndex];
-        <div class="@GetBorderColor(answer)" @onclick="() => SelectAnswer(answer)">
+        <div class="@GetBorderColor(answer)" @onclick="async () => await SelectAnswerAsync(answer)">
             <div class="body">
                 <div>
                     <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
@@ -71,11 +71,15 @@
 </div>
 @if (!ShowAnalysis)
 {
-    <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
+    if (OnSubmit.HasDelegate)
+    {
+        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
+    }
 }
 
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.Blazor.Pages
 @using Volo.Abp
 @using Volo.Abp.AspNetCore.Components.Notifications
 @inject IUiNotificationService UiNotificationService
@@ -83,18 +87,26 @@
     [Parameter]
     public Guid QuestionId { get; set; }
     [Parameter]
-    public IReadOnlyList<QuestionAnswerListDto> Answers { get; set; }
+    public IReadOnlyList<QuestionAnswerViewModel> Answers { get; set; }
     [Parameter]
     public List<QuestionAnswerItem> SelectedQuestionAnswers { get; set; }
     [Parameter]
     public bool ShowAnalysis { get; set; }
     [Parameter]
+    public string Answered { get; set; }
+    [Parameter]
+    public EventCallback<QuestionAnswerSelectEventArgs> OnSelect { get; set; }
+    [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 
-    List<Guid> _selectedAnswerIds = new();
-    protected override void OnParametersSet()
+
+    List<Guid> _selectedAnswerIds = new List<Guid>();
+    protected override void OnInitialized()
     {
-        _selectedAnswerIds = new List<Guid>();
+        if (!Answered.IsNullOrWhiteSpace())
+        {
+            _selectedAnswerIds = Answered.Split(ExamConsts.Splitter).Select(v => new Guid(v)).ToList();
+        }
         if (!ShowAnalysis) return;
 
         var selectedAnswer = SelectedQuestionAnswers.Find(a => a.QuestionId == QuestionId);
@@ -112,7 +124,7 @@
         }
     }
 
-    public string GetBorderColor(QuestionAnswerListDto answer)
+    public string GetBorderColor(QuestionAnswerViewModel answer)
     {
         List<string> classes = new List<string>() { "choose-item" };
         if (_selectedAnswerIds.Contains(answer.Id))
@@ -125,7 +137,7 @@
         }
         return String.Join(" ", classes);
     }
-    string GetResultClass(QuestionAnswerListDto answer)
+    string GetResultClass(QuestionAnswerViewModel answer)
     {
         List<string> classes = new List<string>() { "result" };
         if (ShowAnalysis && answer.Right)
@@ -135,7 +147,7 @@
         return String.Join(" ", classes);
     }
 
-    void SelectAnswer(QuestionAnswerListDto answer)
+    async Task SelectAnswerAsync(QuestionAnswerViewModel answer)
     {
         if (ShowAnalysis)
         {
@@ -148,6 +160,14 @@
         else
         {
             _selectedAnswerIds.Add(answer.Id);
+        }
+        if (OnSelect.HasDelegate)
+        {
+            await OnSelect.InvokeAsync(new QuestionAnswerSelectEventArgs()
+            {
+                QuestionId = QuestionId,
+                Answer = String.Join(ExamConsts.Splitter, _selectedAnswerIds),
+            });
         }
     }
     void OnChange(string[] checkedValues)
@@ -167,11 +187,15 @@
             .ToArray();
         bool right = _selectedAnswerIds.Count == rightIds.Length
                      && _selectedAnswerIds.Except(rightIds).ToArray().Length == 0;
-        await OnSubmit.InvokeAsync(new QuestionAnswerItem()
+
+        if (OnSubmit.HasDelegate)
+        {
+            await OnSubmit.InvokeAsync(new QuestionAnswerItem()
             {
                 QuestionId = QuestionId,
-                Answer = String.Join(",", _selectedAnswerIds),
+                Answer = String.Join(ExamConsts.Splitter, _selectedAnswerIds),
                 Right = right
             });
+        }
     }
 }

@@ -74,6 +74,7 @@
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using System.Diagnostics
 @using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.Blazor.Pages
 @using Volo.Abp
 @using Volo.Abp.AspNetCore.Components.Notifications
 @inject IUiNotificationService UiNotificationService
@@ -82,28 +83,34 @@
     [Parameter]
     public Guid QuestionId { get; set; }
     [Parameter]
-    public IReadOnlyList<QuestionAnswerListDto> Answers { get; set; }
+    public IReadOnlyList<QuestionAnswerViewModel> Answers { get; set; }
     [Parameter]
     public List<QuestionAnswerItem> SelectedQuestionAnswers { get; set; }
     [Parameter]
     public bool ShowAnalysis { get; set; }
     [Parameter]
+    public string Answered { get; set; }
+    [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
     
     Guid _selectedAnswerId = new Guid();
-    
-    protected override void OnParametersSet()
+
+    protected override void OnInitialized()
     {
         _selectedAnswerId = new Guid();
+        if (!Answered.IsNullOrWhiteSpace())
+        {
+            _selectedAnswerId = new Guid(Answered);
+        }
         if (!ShowAnalysis) return;
 
         var selectedAnswer = SelectedQuestionAnswers.Find(a => a.QuestionId == QuestionId);
-        var answer = selectedAnswer is null 
-            ? Answers.Single(a => a.Right) 
+        var answer = selectedAnswer is null
+            ? Answers.Single(a => a.Right)
             : Answers.First(a => a.Id == new Guid(selectedAnswer.Answer));
         _selectedAnswerId = answer.Id;
     }
-    public string GetBorderColor(QuestionAnswerListDto answer)
+    public string GetBorderColor(QuestionAnswerViewModel answer)
     {
         List<string> classes = new List<string>() { "choose-item" };
         if (_selectedAnswerId == answer.Id)
@@ -112,7 +119,7 @@
         }
         return String.Join(" ", classes);
     }
-    string GetResultClass(QuestionAnswerListDto answer)
+    string GetResultClass(QuestionAnswerViewModel answer)
     {
         List<string> classes = new List<string>() { "result" };
         if (ShowAnalysis && answer.Right)

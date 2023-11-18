@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SuperAbp.Exam.PaperManagement.PaperRepos;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
@@ -33,9 +37,20 @@ public class PaperRepoRepository : EfCoreRepository<ExamDbContext, PaperRepo, Gu
                                      && er.QuestionRepositoryId == questionRepositoryId);
     }
 
-    public async Task<List<PaperRepo>> GetListAsync(Guid paperId)
+    public async Task<List<PaperRepo>> GetListAsync(
+        string sorting = null,
+        int skipCount = 0,
+        int maxResultCount = int.MaxValue,
+        Guid? paperId = null,
+        CancellationToken cancellationToken = default)
     {
-        return await GetListAsync(r => r.PaperId == paperId);
+        var queryable = await GetQueryableAsync();
+
+        return await queryable
+             .WhereIf(paperId.HasValue, p => p.PaperId == paperId.Value)
+             .OrderBy(string.IsNullOrWhiteSpace(sorting) ? PaperRepoConsts.DefaultSorting : sorting)
+             .PageBy(skipCount, maxResultCount)
+             .ToListAsync(cancellationToken: cancellationToken);
     }
 
     public async Task DeleteAsync(Guid paperId, Guid questionRepositoryId)

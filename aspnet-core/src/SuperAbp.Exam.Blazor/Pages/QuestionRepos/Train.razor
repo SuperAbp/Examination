@@ -154,9 +154,9 @@ else
     bool loading = true;
     bool loadingQuestion = false;
     IReadOnlyList<Guid> _questionIds = Array.Empty<Guid>();
-    IReadOnlyList<QuestionAnswerListDto> _questionAnswers = Array.Empty<QuestionAnswerListDto>();
+    IReadOnlyList<QuestionAnswerViewModel> _questionAnswers = Array.Empty<QuestionAnswerViewModel>();
     IReadOnlyList<TrainingListDto> _trains = Array.Empty<TrainingListDto>();
-    readonly Dictionary<Guid, Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerListDto>>> _cacheQuestions = new();
+    readonly Dictionary<Guid, Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>> _cacheQuestions = new();
     readonly List<QuestionAnswerItem> _selectedQuestionAnswers = new();
     QuestionDetailDto _question;
     bool _showAnalysis = false;
@@ -252,13 +252,23 @@ else
         if (_cacheQuestions.ContainsKey(id))
         {
             _question = _cacheQuestions[id].Item1;
-            _questionAnswers = _cacheQuestions[id].Item2;
+            _questionAnswers = _cacheQuestions[id].Item2.Select(i => new QuestionAnswerViewModel
+            {
+                Id = i.Id,
+                Content = i.Content,
+                Right = i.Right
+            }).ToArray();
         }
         else
         {
             _question = await QuestionAppService.GetAsync(id);
-            _questionAnswers = (await QuestionAnswerAppService.GetListAsync(id)).Items;
-            _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerListDto>>(_question, _questionAnswers));
+            _questionAnswers = (await QuestionAnswerAppService.GetListAsync(id)).Items.Select(i => new QuestionAnswerViewModel
+                {
+                    Id = i.Id,
+                    Content = i.Content,
+                    Right = i.Right
+                }).ToArray();
+            _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>(_question, _questionAnswers));
         }
     }
     

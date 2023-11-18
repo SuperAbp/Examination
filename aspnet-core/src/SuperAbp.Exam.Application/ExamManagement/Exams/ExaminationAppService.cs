@@ -9,7 +9,6 @@ using Volo.Abp.Linq;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 using SuperAbp.Exam.Permissions;
-using SuperAbp.Exam.Admin.ExamManagement.Exams;
 
 namespace SuperAbp.Exam.ExamManagement.Exams
 {
@@ -54,7 +53,8 @@ namespace SuperAbp.Exam.ExamManagement.Exams
 
             var queryable = await _examRepository.GetQueryableAsync();
 
-            queryable = queryable.WhereIf(!input.Name.IsNullOrWhiteSpace(), e => e.Name.Contains(input.Name));
+            queryable = queryable
+                .WhereIf(!input.Name.IsNullOrWhiteSpace(), e => e.Name.Contains(input.Name));
 
             long totalCount = await AsyncExecuter.CountAsync(queryable);
 
