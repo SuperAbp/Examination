@@ -4,18 +4,14 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SuperAbp.Exam.EntityFrameworkCore;
 using SuperAbp.Exam.MultiTenancy;
 using Microsoft.OpenApi.Models;
-using OpenIddict.Validation.AspNetCore;
 using Volo.Abp;
 using Volo.Abp.Account;
-using Volo.Abp.Account.Web;
-using Volo.Abp.AspNetCore.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
@@ -27,55 +23,62 @@ using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Bundling;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
+using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
+using Volo.Abp.Caching.StackExchangeRedis;
+using Volo.Abp.DistributedLocking;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Volo.Abp.Caching;
+using Medallion.Threading.Redis;
+using Medallion.Threading;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Hosting;
+using StackExchange.Redis;
 
 namespace SuperAbp.Exam.Admin;
 
 [DependsOn(
     typeof(ExamHttpApiModule),
     typeof(AbpAutofacModule),
-    typeof(AbpAspNetCoreMultiTenancyModule),
+    typeof(AbpCachingStackExchangeRedisModule),
+    typeof(AbpDistributedLockingModule),
+    typeof(AbpAspNetCoreMvcUiMultiTenancyModule),
     typeof(ExamApplicationModule),
     typeof(ExamEntityFrameworkCoreModule),
-    typeof(AbpAspNetCoreMvcUiBasicThemeModule),
-    typeof(AbpAccountWebOpenIddictModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule)
 )]
 public class ExamHttpApiHostModule : AbpModule
 {
-    public override void PreConfigureServices(ServiceConfigurationContext context)
-    {
-        PreConfigure<OpenIddictBuilder>(builder =>
-        {
-            builder.AddValidation(options =>
-            {
-                options.AddAudiences("Exam");
-                options.UseLocalServer();
-                options.UseAspNetCore();
-            });
-        });
-    }
-
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
 
-        ConfigureAuthentication(context);
+        ConfigureAuthentication(context, configuration);
+        ConfigureCache(configuration);
         ConfigureJson();
-        ConfigureBundles();
         ConfigureUrls(configuration);
         ConfigureLocalization();
         ConfigureVirtualFileSystem(context);
+        ConfigureDataProtection(context, configuration, hostingEnvironment);
+        ConfigureDistributedLocking(context, configuration);
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
     }
-
-    private void ConfigureAuthentication(ServiceConfigurationContext context)
+    private void ConfigureCache(IConfiguration configuration)
     {
-        context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
+        Configure<AbpDistributedCacheOptions>(options => { options.KeyPrefix = "Exam:"; });
+    }
+
+    private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
+    {
+        context.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.Authority = configuration["AuthServer:Authority"];
+                options.RequireHttpsMetadata = Convert.ToBoolean(configuration["AuthServer:RequireHttpsMetadata"]);
+                options.Audience = "Exam";
+            });
     }
 
     private void ConfigureJson()
@@ -83,20 +86,6 @@ public class ExamHttpApiHostModule : AbpModule
         Configure<AbpJsonOptions>(options =>
         {
             options.OutputDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
-        });
-    }
-
-    private void ConfigureBundles()
-    {
-        Configure<AbpBundlingOptions>(options =>
-        {
-            options.StyleBundles.Configure(
-                BasicThemeBundles.Styles.Global,
-                bundle =>
-                {
-                    bundle.AddFiles("/global-styles.css");
-                }
-            );
         });
     }
 
@@ -160,13 +149,12 @@ public class ExamHttpApiHostModule : AbpModule
 
                 #region 注释
 
-                var httpApiName = "SuperAbp.Exam.Admin.HttpApi.xml";
-                var applicationContractsName = "SuperAbp.Exam.Admin.Application.Contracts.xml";
-                string baseDirectory = AppContext.BaseDirectory;
-                var httpApiPath = Path.Combine(baseDirectory, httpApiName);
-                var applicationContractsPath = Path.Combine(baseDirectory, applicationContractsName);
-                options.IncludeXmlComments(httpApiPath, true);
-                options.IncludeXmlComments(applicationContractsPath, true);
+                var binXmlFiles =
+                    new DirectoryInfo(AppContext.BaseDirectory).GetFiles("*.xml", SearchOption.TopDirectoryOnly);
+                foreach (var filePath in binXmlFiles.Select(item => item.FullName))
+                {
+                    options.IncludeXmlComments(filePath, true);
+                }
 
                 #endregion 注释
             });
@@ -196,6 +184,30 @@ public class ExamHttpApiHostModule : AbpModule
             options.Languages.Add(new LanguageInfo("de-DE", "de-DE", "Deutsch", "de"));
             options.Languages.Add(new LanguageInfo("es", "es", "Español", "es"));
             options.Languages.Add(new LanguageInfo("el", "el", "Ελληνικά"));
+        });
+    }
+
+    private void ConfigureDataProtection(
+        ServiceConfigurationContext context,
+        IConfiguration configuration,
+        IWebHostEnvironment hostingEnvironment)
+    {
+        var dataProtectionBuilder = context.Services.AddDataProtection().SetApplicationName("Exam");
+        if (!hostingEnvironment.IsDevelopment())
+        {
+            var redis = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]!);
+            dataProtectionBuilder.PersistKeysToStackExchangeRedis(redis, "Exam-Protection-Keys");
+        }
+    }
+
+    private void ConfigureDistributedLocking(
+        ServiceConfigurationContext context,
+        IConfiguration configuration)
+    {
+        context.Services.AddSingleton<IDistributedLockProvider>(sp =>
+        {
+            var connection = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]!);
+            return new RedisDistributedSynchronizationProvider(connection.GetDatabase());
         });
     }
 
@@ -243,7 +255,6 @@ public class ExamHttpApiHostModule : AbpModule
         app.UseRouting();
         app.UseCors();
         app.UseAuthentication();
-        app.UseAbpOpenIddictValidation();
 
         if (MultiTenancyConsts.IsEnabled)
         {

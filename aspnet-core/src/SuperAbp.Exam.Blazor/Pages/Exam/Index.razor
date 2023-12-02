@@ -51,6 +51,7 @@
     }
     public async Task OnChange(QueryModel<ExamListDto> queryModel)
     {
+        await Task.CompletedTask;
         Console.WriteLine(JsonSerializer.Serialize(queryModel));
     }
 
