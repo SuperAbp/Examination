@@ -18,6 +18,13 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         Task<UserExamDetailDto> GetAsync(Guid id);
 
         /// <summary>
+        /// 考试分组列表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<PagedResultDto<UserExamWithExamListDto>> GetExamListAsync(GetUserExamsInput input);
+
+        /// <summary>
         /// 列表
         /// </summary>
         /// <param name="input">查询条件</param>

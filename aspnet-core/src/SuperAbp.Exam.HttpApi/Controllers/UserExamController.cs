@@ -30,6 +30,16 @@ namespace SuperAbp.Exam.Controllers
         {
             return await _userExamAppService.GetAsync(id);
         }
+        /// <summary>
+        /// 考试列表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("exams")]
+        public async Task<PagedResultDto<UserExamWithExamListDto>> GetExamListAsync(GetUserExamsInput input)
+        {
+            return await _userExamAppService.GetExamListAsync(input);
+        }
 
         /// <summary>
         /// 列表
@@ -52,5 +62,6 @@ namespace SuperAbp.Exam.Controllers
         {
             return await _userExamAppService.CreateAsync(input);
         }
+
     }
 }
