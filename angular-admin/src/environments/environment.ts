@@ -2,7 +2,7 @@
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { DelonMockModule } from '@delon/mock';
+import { provideMockConfig, mockInterceptor } from '@delon/mock';
 import { Environment } from 'src/Environment';
 
 import * as MOCKDATA from '../../_mock';
@@ -15,12 +15,12 @@ export const environment = {
     logoUrl: ''
   },
   oAuthConfig: {
-    issuer: 'https://localhost:44388/',
+    issuer: 'https://localhost:44386/',
     redirectUri: baseUrl,
-      clientId: 'Exam_Admin_App',
-      responseType: 'code',
-      scope: 'offline_access Exam',
-    requireHttps: true,
+    clientId: 'Exam_Admin_App',
+    responseType: 'code',
+    scope: 'offline_access Exam',
+    requireHttps: true
   },
   apis: {
     default: {
@@ -45,7 +45,9 @@ export const environment = {
   },
   production: false,
   useHash: true,
-  modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
+  providers: [provideMockConfig({ data: MOCKDATA })],
+  interceptorFns: [mockInterceptor],
+  modules: []
 } as Environment;
 
 /*

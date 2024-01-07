@@ -1,8 +1,11 @@
 import { AuthService } from '@abp/ng.core';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { SettingsService, User } from '@delon/theme';
+import { I18nPipe, SettingsService, User } from '@delon/theme';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { tap } from 'rxjs';
 
 @Component({
@@ -34,7 +37,9 @@ import { tap } from 'rxjs';
       </div>
     </nz-dropdown-menu>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NzDropDownModule, NzMenuModule, NzIconModule, I18nPipe, NzAvatarModule]
 })
 export class HeaderUserComponent {
   get user(): User {
@@ -44,7 +49,6 @@ export class HeaderUserComponent {
   constructor(
     private authService: AuthService,
     private settings: SettingsService,
-    private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {}
 

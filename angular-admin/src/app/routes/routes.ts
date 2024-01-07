@@ -14,7 +14,7 @@ import { UserLockComponent } from './passport/lock/lock.component';
 // passport pages
 import { UserLoginComponent } from './passport/login/login.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: LayoutBasicComponent,
@@ -31,7 +31,7 @@ const routes: Routes = [
       },
       {
         path: 'menu-management',
-        loadChildren: () => import('@super-abp/ng.menu-management').then(m => m.MenuManagementModule)
+        loadChildren: () => import('@super-abp/ng.menu-management').then(m => m.routes)
       },
       {
         path: 'question-management',
@@ -67,16 +67,3 @@ const routes: Routes = [
   { path: 'passport/callback/:type', component: CallbackComponent },
   { path: '**', redirectTo: 'exception/404' }
 ];
-
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      useHash: environment.useHash,
-      // NOTICE: If you use `reuse-tab` component and turn on keepingScroll you can set to `disabled`
-      // Pls refer to https://ng-alain.com/components/reuse-tab
-      scrollPositionRestoration: 'top'
-    })
-  ],
-  exports: [RouterModule]
-})
-export class RouteRoutingModule {}
