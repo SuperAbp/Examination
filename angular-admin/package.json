@@ -91,7 +91,7 @@
     "stylelint-order": "^6.0.3",
     "typescript": "~5.0.4",
     "ng-alain": "^16.2.0",
-    "ng-alain-plugin-theme": "^15.0.1"
+    "ng-alain-plugin-theme": "^16.2.0"
   },
   "lint-staged": {
     "(src)/**/*.{html,ts}": [
