@@ -6,6 +6,15 @@ import { dateTimePickerUtil } from '@delon/util';
 import { PaperManagementRepositoryComponent } from '../../repository/repository.component';
 import { GetPaperForEditorOutput } from '@proxy/super-abp/exam/admin/paper-management/papers';
 import { PaperService } from '@proxy/super-abp/exam/admin/controllers';
+import { CoreModule } from '@abp/ng.core';
+import { PageHeaderModule } from '@delon/abc/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 
 @Component({
   selector: 'app-exam-management-paper-edit',
@@ -16,6 +25,19 @@ import { PaperService } from '@proxy/super-abp/exam/admin/controllers';
         width: 95px;
       }
     `
+  ],
+  standalone: true,
+  imports: [
+    CoreModule,
+    PageHeaderModule,
+    FooterToolbarModule,
+    NzSpinModule,
+    NzCardModule,
+    NzFormModule,
+    NzInputModule,
+    NzInputNumberModule,
+    NzButtonModule,
+    PaperManagementRepositoryComponent
   ]
 })
 export class PaperManagementPaperEditComponent implements OnInit {

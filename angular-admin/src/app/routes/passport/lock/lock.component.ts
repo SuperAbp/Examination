@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -21,15 +21,13 @@ export class UserLockComponent {
     password: new FormControl('', { nonNullable: true, validators: [Validators.required] })
   });
 
+  private tokenService = inject(DA_SERVICE_TOKEN);
+  private settings = inject(SettingsService);
+  private router = inject(Router);
+
   get user(): User {
     return this.settings.user;
   }
-
-  constructor(
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    private settings: SettingsService,
-    private router: Router
-  ) {}
 
   submit(): void {
     this.f.controls.password.markAsDirty();

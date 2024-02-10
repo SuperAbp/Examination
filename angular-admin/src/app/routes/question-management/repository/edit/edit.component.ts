@@ -1,15 +1,21 @@
-import { LocalizationService } from '@abp/ng.core';
+import { CoreModule, LocalizationService } from '@abp/ng.core';
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize, tap } from 'rxjs/operators';
-import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { QuestionRepoService } from '@proxy/super-abp/exam/admin/controllers';
 import { GetQuestionRepoForEditorOutput } from '@proxy/super-abp/exam/admin/question-management/question-repos';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'app-question-management-repository-edit',
-  templateUrl: './edit.component.html'
+  templateUrl: './edit.component.html',
+  standalone: true,
+  imports: [CoreModule, NzSpinModule, NzModalModule, NzFormModule, NzInputModule, NzButtonModule]
 })
 export class QuestionManagementRepositoryEditComponent implements OnInit {
   @Input()

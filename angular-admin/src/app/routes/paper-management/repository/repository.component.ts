@@ -1,10 +1,20 @@
-import { LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CoreModule, LocalizationService } from '@abp/ng.core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaperRepoService, QuestionRepoService } from '@proxy/super-abp/exam/admin/controllers';
 import { GetPaperReposInput, PaperRepoCreateDto, PaperRepoListDto } from '@proxy/super-abp/exam/admin/paper-management/paper-repos';
 import { QuestionRepoListDto } from '@proxy/super-abp/exam/admin/question-management/question-repos';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzImageViewComponent } from 'ng-zorro-antd/experimental/image';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { forkJoin, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -28,6 +38,19 @@ export interface PaperRepoCreateTemp extends PaperRepoCreateDto {
         width: 100%;
       }
     `
+  ],
+  standalone: true,
+  imports: [
+    CoreModule,
+    NzButtonModule,
+    NzTableModule,
+    NzFormModule,
+    NzInputNumberModule,
+    NzPopconfirmModule,
+    NzToolTipModule,
+    NzModalModule,
+    NzIconModule,
+    NzSelectModule
   ]
 })
 export class PaperManagementRepositoryComponent implements OnInit {
@@ -50,14 +73,12 @@ export class PaperManagementRepositoryComponent implements OnInit {
   removeRepositoryIds: any[] = [];
   repositoryTemps: PaperRepoCreateTemp[] = [];
 
-  constructor(
-    private fb: FormBuilder,
-    private localizationService: LocalizationService,
-    private messageService: NzMessageService,
-    private repositoryService: PaperRepoService,
-    private questionRepositoryService: QuestionRepoService,
-    private readonly paperRepositoryService: PaperRepoService
-  ) {}
+  private fb = inject(FormBuilder);
+  private localizationService = inject(LocalizationService);
+  private messageService = inject(NzMessageService);
+  private repositoryService = inject(PaperRepoService);
+  private questionRepositoryService = inject(QuestionRepoService);
+  private readonly paperRepositoryService = inject(PaperRepoService);
 
   get repositories() {
     return this.paperForm.get('repositories') as FormArray;

@@ -35,15 +35,15 @@ export const routes: Routes = [
       },
       {
         path: 'question-management',
-        loadChildren: () => import('./question-management/question-management.module').then(m => m.QuestionManagementModule)
+        loadChildren: () => import('./question-management/routes').then(m => m.routes)
       },
       {
         path: 'paper-management',
-        loadChildren: () => import('./paper-management/paper-management.module').then(m => m.PaperManagementModule)
+        loadChildren: () => import('./paper-management/routes').then(m => m.routes)
       },
       {
         path: 'exam-management',
-        loadChildren: () => import('./exam-management/exam-management.module').then(m => m.ExamManagementModule)
+        loadChildren: () => import('./exam-management/routes').then(m => m.routes)
       }
     ]
   },

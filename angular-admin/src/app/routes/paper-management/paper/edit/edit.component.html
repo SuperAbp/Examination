@@ -1,57 +1,65 @@
-<page-header *ngIf="paperId && form" [action]="phActionTpl" [title]="'Exam::Edit' | abpLocalization">
-  <ng-template #phActionTpl>
-    <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
-  </ng-template>
-</page-header>
-<page-header *ngIf="!paperId" [title]="'Exam::NewExam' | abpLocalization"></page-header>
-<ng-template #loaderRef>
-  <nz-spin class="modal-spin"></nz-spin>
-</ng-template>
-<ng-container *ngIf="form; else loaderRef">
-  <nz-card [nzTitle]="'Exam::QuestionRepository' | abpLocalization">
-    <app-paper-management-repository
-      #PaperRepository
-      [paperId]="paperId"
-      [paperForm]="form"
-      (totalScoreChange)="changeTotalScore($event)"
-    ></app-paper-management-repository>
-  </nz-card>
-  <nz-card [nzTitle]="'Exam::ExamConfig' | abpLocalization">
-    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="horizontal">
-      <nz-form-item>
-        <nz-form-label nzRequired>{{ 'Exam::Name' | abpLocalization }}</nz-form-label>
-        <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="nameErrorTpl">
-          <input formControlName="name" nz-input [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Name' | abpLocalization)" />
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
-            </ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>{{ 'Exam::Description' | abpLocalization }}</nz-form-label>
-        <nz-form-control>
-          <textarea
-            rows="4"
-            nz-input
-            formControlName="description"
-            [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Description' | abpLocalization)"
-          ></textarea>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>{{ 'Exam::Score' | abpLocalization }}</nz-form-label>
-        <nz-form-control>
-          <nz-input-number nzDisabled formControlName="score"></nz-input-number>
-        </nz-form-control>
-      </nz-form-item>
-    </form>
-  </nz-card>
-</ng-container>
+@if (form) {
+  @if (paperId) {
+    <page-header [action]="phActionTpl" [title]="'Exam::Edit' | abpLocalization">
+      <ng-template #phActionTpl>
+        <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
+      </ng-template>
+    </page-header>
+  } @else {
+    <page-header [title]="'Exam::NewExam' | abpLocalization"></page-header>
+  }
+  <ng-container>
+    <nz-card [nzTitle]="'Exam::QuestionRepository' | abpLocalization">
+      <app-paper-management-repository
+        #PaperRepository
+        [paperId]="paperId"
+        [paperForm]="form"
+        (totalScoreChange)="changeTotalScore($event)"
+      ></app-paper-management-repository>
+    </nz-card>
+    <nz-card [nzTitle]="'Exam::ExamConfig' | abpLocalization">
+      <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="horizontal">
+        <nz-form-item>
+          <nz-form-label nzRequired>{{ 'Exam::Name' | abpLocalization }}</nz-form-label>
+          <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization" [nzErrorTip]="nameErrorTpl">
+            <input
+              formControlName="name"
+              nz-input
+              [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Name' | abpLocalization)"
+            />
+            <ng-template #nameErrorTpl let-control>
+              @if (control.hasError('required')) {
+                {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+              }
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>{{ 'Exam::Description' | abpLocalization }}</nz-form-label>
+          <nz-form-control>
+            <textarea
+              rows="4"
+              nz-input
+              formControlName="description"
+              [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Description' | abpLocalization)"
+            ></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>{{ 'Exam::Score' | abpLocalization }}</nz-form-label>
+          <nz-form-control>
+            <nz-input-number nzDisabled formControlName="score"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-card>
+  </ng-container>
 
-<footer-toolbar>
-  <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
-    {{ 'Exam::Submit' | abpLocalization }}
-  </button>
-</footer-toolbar>
+  <footer-toolbar>
+    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
+      {{ 'Exam::Submit' | abpLocalization }}
+    </button>
+  </footer-toolbar>
+} @else {
+  <nz-spin class="modal-spin"></nz-spin>
+}

@@ -1,7 +1,7 @@
-import { ConfigStateService, LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { STChange, STColumn, STComponent, STData, STPage } from '@delon/abc/st';
-import { SFSchema, SFStringWidgetSchema } from '@delon/form';
+import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
+import { DelonFormModule, SFSchema, SFStringWidgetSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
 import { PaperManagementPaperEditComponent } from './edit/edit.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -9,12 +9,22 @@ import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { GetPapersInput, PaperListDto } from '@proxy/super-abp/exam/admin/paper-management/papers';
 import { PaperService } from '@proxy/super-abp/exam/admin/controllers';
+import { PageHeaderModule } from '@delon/abc/page-header';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'app-exam-management-paper',
-  templateUrl: './paper.component.html'
+  templateUrl: './paper.component.html',
+  standalone: true,
+  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class PaperManagementPaperComponent implements OnInit {
+  private router = inject(Router);
+  private localizationService = inject(LocalizationService);
+  private messageService = inject(NzMessageService);
+  private permissionService = inject(PermissionService);
+  private paperService = inject(PaperService);
   papers: PaperListDto[];
   total: number;
   loading = false;
@@ -79,13 +89,7 @@ export class PaperManagementPaperComponent implements OnInit {
     }
   ];
 
-  constructor(
-    private router: Router,
-    private localizationService: LocalizationService,
-    private messageService: NzMessageService,
-    private permissionService: PermissionService,
-    private paperService: PaperService
-  ) {}
+  constructor() {}
 
   ngOnInit() {
     this.params = this.resetParameters();

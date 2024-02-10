@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { QuestionAnswerService } from '@proxy/super-abp/exam/admin/controllers';
 import {
@@ -34,7 +34,8 @@ interface QuestionAnswerTemp extends QuestionAnswerCreateDto {
         content: '*';
       }
     `
-  ]
+  ],
+  standalone: true
 })
 export class QuestionManagementAnswerComponent {
   @Input()
@@ -49,7 +50,10 @@ export class QuestionManagementAnswerComponent {
   loading = false;
   params: GetQuestionAnswersInput;
 
-  constructor(protected fb: FormBuilder, protected answerService: QuestionAnswerService) {}
+  constructor(
+    protected fb: FormBuilder,
+    protected answerService: QuestionAnswerService
+  ) {}
 
   get options() {
     return this.questionForm.get('options') as FormArray;

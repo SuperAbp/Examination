@@ -18,26 +18,15 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "es2020",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "useDefineForClassFields": true,
+    "lib": ["es2020", "dom"],
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@shared": [
-        "src/app/shared/index"
-      ],
-      "@core": [
-        "src/app/core/index"
-      ],
-      "@proxy/*": [
-        "src/app/proxy/*"
-      ],
-      "@env/*": [
-        "src/environments/*"
-      ]
-    },
-    "useDefineForClassFields": false
+      "@shared": ["src/app/shared/index"],
+      "@core": ["src/app/core/index"],
+      "@proxy/*": ["src/app/proxy/*"],
+      "@env/*": ["src/environments/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

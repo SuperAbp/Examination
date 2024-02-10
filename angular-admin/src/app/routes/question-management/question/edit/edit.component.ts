@@ -1,5 +1,5 @@
-import { LocalizationService } from '@abp/ng.core';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { CoreModule, LocalizationService } from '@abp/ng.core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionAnswerService, QuestionRepoService, QuestionService } from '@proxy/super-abp/exam/admin/controllers';
@@ -9,10 +9,40 @@ import { QuestionType } from '@proxy/super-abp/exam/question-management/question
 import { forkJoin, Observable } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 import { QuestionManagementAnswerComponent } from '../../answer/answer.component';
+import { PageHeaderModule } from '@delon/abc/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
+import { SingleSelectComponent } from '../../answer/single-select.component';
+import { MultiSelectComponent } from '../../answer/multi-select.component';
+import { BlankComponent } from '../../answer/blank.component';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { JudgeComponent } from '../../answer/judge.component';
 
 @Component({
   selector: 'app-question-management-question-edit',
-  templateUrl: './edit.component.html'
+  templateUrl: './edit.component.html',
+  standalone: true,
+  imports: [
+    CoreModule,
+    PageHeaderModule,
+    FooterToolbarModule,
+    NzSpinModule,
+    NzCardModule,
+    NzGridModule,
+    NzFormModule,
+    NzSelectModule,
+    NzInputModule,
+    NzButtonModule,
+    JudgeComponent,
+    SingleSelectComponent,
+    MultiSelectComponent,
+    BlankComponent
+  ]
 })
 export class QuestionManagementQuestionEditComponent implements OnInit {
   questionId: string;
@@ -21,6 +51,13 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
 
   question: GetQuestionForEditorOutput;
 
+  private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private localizationService = inject(LocalizationService);
+  private questionService = inject(QuestionService);
+  private questionRepoService = inject(QuestionRepoService);
+  private answerService = inject(QuestionAnswerService);
   loading = false;
   isConfirmLoading = false;
   questionTypes: Array<{ label: string; value: number }> = [];
@@ -34,16 +71,6 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
   get questionType() {
     return this.form.get('questionType');
   }
-
-  constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private localizationService: LocalizationService,
-    private questionService: QuestionService,
-    private questionRepoService: QuestionRepoService,
-    private answerService: QuestionAnswerService
-  ) {}
 
   ngOnInit(): void {
     this.loading = true;
