@@ -15,6 +15,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzDatePickerModule, NzRangePickerComponent } from 'ng-zorro-antd/date-picker';
 import { NzButtonComponent, NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 @Component({
   selector: 'app-exam-management-exam-edit',
@@ -39,6 +40,7 @@ import { NzButtonComponent, NzButtonModule } from 'ng-zorro-antd/button';
     NzSelectModule,
     NzInputModule,
     NzInputNumberModule,
+    NzCheckboxModule,
     NzDatePickerModule,
     NzButtonModule
   ]
@@ -189,7 +191,7 @@ export class ExamManagementExamEditComponent implements OnInit {
         })
         .pipe(
           tap(response => {
-            this.messageService.success(this.localizationService.instant('*::SaveSucceed'));
+            this.messageService.success(this.localizationService.instant('Exam::SaveSuccessfully'));
             this.modal.close(true);
           }),
           finalize(() => (this.isConfirmLoading = false))
@@ -203,7 +205,7 @@ export class ExamManagementExamEditComponent implements OnInit {
         })
         .pipe(
           tap(response => {
-            this.messageService.success(this.localizationService.instant('*::SaveSucceed'));
+            this.messageService.success(this.localizationService.instant('Exam::SaveSuccessfully'));
             this.modal.close(true);
           }),
           finalize(() => (this.isConfirmLoading = false))

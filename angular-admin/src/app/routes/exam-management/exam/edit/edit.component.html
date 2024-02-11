@@ -74,11 +74,12 @@
           </nz-form-item>
         </div>
       </div>
-      @if (showExamTime) {
-        <nz-form-item>
-          <nz-form-label>{{ 'Exam::ExamTime' | abpLocalization }}</nz-form-label>
-          <nz-form-control>
-            <label nz-checkbox formControlName="isLimitedTime" (ngModelChange)="changeExamTimeStatus($event)"></label>
+
+      <nz-form-item>
+        <nz-form-label>{{ 'Exam::ExamTime' | abpLocalization }}</nz-form-label>
+        <nz-form-control>
+          <label nz-checkbox formControlName="isLimitedTime" (ngModelChange)="changeExamTimeStatus($event)"></label>
+          @if (showExamTime) {
             <span style="margin-left: 20px">
               <nz-range-picker
                 nzFormat="yyyy-MM-dd HH:mm:ss"
@@ -88,9 +89,9 @@
                 (ngModelChange)="examTimeChange($event)"
               ></nz-range-picker>
             </span>
-          </nz-form-control>
-        </nz-form-item>
-      }
+          }
+        </nz-form-control>
+      </nz-form-item>
     </form>
   </div>
   <div class="modal-footer">

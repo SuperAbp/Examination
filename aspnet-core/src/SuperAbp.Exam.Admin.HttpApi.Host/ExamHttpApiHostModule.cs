@@ -86,6 +86,7 @@ public class ExamHttpApiHostModule : AbpModule
         Configure<AbpJsonOptions>(options =>
         {
             options.OutputDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+            options.InputDateTimeFormats = new List<string> { "yyyy-MM-dd HH:mm:ss" };
         });
     }
 
