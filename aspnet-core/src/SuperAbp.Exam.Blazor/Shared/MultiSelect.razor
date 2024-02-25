@@ -62,7 +62,7 @@
                 @if (answer.Right)
                 {
                     <div class="@GetResultClass(answer)">
-                        <Icon Type="check-circle" Theme="twotone" TwotoneColor="#52c41a" />
+                        <Icon Name="IconName.CheckCircle" IconStyle="IconStyle.Regular" TextColor="TextColor.Success" />
                     </div>
                 }
             </div>
@@ -73,7 +73,7 @@
 {
     if (OnSubmit.HasDelegate)
     {
-        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
+        <Button Color="@Color.Primary" Size="@Size.Small" Clicked="ValidateAsync">确认答案</Button>
     }
 }
 
@@ -119,7 +119,7 @@
         }
         else
         {
-            var answerIds = selectedAnswer.Answer.Split(",");
+            var answerIds = selectedAnswer.Answer.Split(ExamConsts.Splitter);
             _selectedAnswerIds = answerIds.Select(a => new Guid(a)).ToList();
         }
     }

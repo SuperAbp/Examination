@@ -34,33 +34,33 @@
 </style>
 @if (loading)
 {
-    <div style=" text-align: center;margin: 50px 0;">
-        <Spin />
-    </div>
+    <SpinKit Type="SpinKitType.Circle" Centered="true" />
 }
 else
 {
-    <GridRow Gutter="16">
-        <GridCol Span="4">
+    <Row>
+        <Column ColumnSize="ColumnSize.Is2">
             <QuestionNumber 
                 CurrentId="_questionIds[_questionIndex]"
                 Ids="_questionIds"
                 SuccessIds="GetSuccessIds()"
                 ErrorIds="GetErrorIds()"
                 OnChanged="ShowQuestionAsync"></QuestionNumber>
-        </GridCol>
-        <GridCol Span="20">
-            <Card class="question-content">
-                <TitleTemplate>
+     </Column>
+     <Column ColumnSize="ColumnSize.Is10">
+         <Card class="question-content">
+             <CardHeader>
+                 <CardTitle Size="4">
                     <span @onclick="GoDetail" style="cursor: pointer">
-                        <Icon Type="arrow-left" Theme="outline"/>返回
+                        <Icon Name="IconName.ArrowLeft" />
                     </span>
-                    <Divider Type="DirectionVHType.Vertical" />题库训练
-                </TitleTemplate>
-                <Body>
+                    题库训练
+                    </CardTitle>
+             </CardHeader>             
+                <CardBody>
                 @if (loadingQuestion)
                 {
-                    <Spin/>
+                    <SpinKit Type="SpinKitType.Circle" Centered="true" />
                 }
                 else
                 {
@@ -99,35 +99,39 @@ else
                     @if (_showAnalysis && !String.IsNullOrEmpty(_question?.Analysis))
                     {
                         <div class="analysis">
-                            <Card Title="题目解析">
-                                @_question.Analysis
+                            <Card >
+                                    <CardTitle>题目解析</CardTitle>
+                                    <CardBody>
+                                        @_question.Analysis
+                                    </CardBody>
+                                
                             </Card>
                         </div>
                     }
                     <div class="bottom">
                         @if (_questionIndex <= 0)
                         {
-                            <Button OnClick="PrevAsync" Disabled>上一题</Button>
+                            <Button Clicked="PrevAsync" Disabled>上一题</Button>
                         }
                         else
                         {
-                            <Button OnClick="PrevAsync">上一题</Button>
+                                <Button Clicked="PrevAsync">上一题</Button>
                         }
                         @if (_questionIndex >= _questionIds.Count - 1)
                         {
-                            <Button OnClick="NextAsync" Disabled>下一题</Button>
+                                <Button Clicked="NextAsync" Disabled>下一题</Button>
                         }
                         else
                         {
-                            <Button OnClick="NextAsync">下一题</Button>
+                                <Button Clicked="NextAsync">下一题</Button>
                         }
 
                     </div>
                 }
-                </Body>
+                </CardBody>
             </Card>
-        </GridCol>
-    </GridRow>
+     </Column>
+ </Row>
 }
 
 @using SuperAbp.Exam.QuestionManagement.Questions
@@ -157,7 +161,7 @@ else
     IReadOnlyList<QuestionAnswerViewModel> _questionAnswers = Array.Empty<QuestionAnswerViewModel>();
     IReadOnlyList<TrainingListDto> _trains = Array.Empty<TrainingListDto>();
     readonly Dictionary<Guid, Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>> _cacheQuestions = new();
-    readonly List<QuestionAnswerItem> _selectedQuestionAnswers = new();
+    List<QuestionAnswerItem> _selectedQuestionAnswers = new();
     QuestionDetailDto _question;
     bool _showAnalysis = false;
     int _questionIndex = 0;
@@ -235,15 +239,17 @@ else
     public async Task ShowQuestionAsync(Guid id)
     {
         _questionIndex = _questionIds.ToList().IndexOf(id);
-        loadingQuestion = true;
-        _showAnalysis = false;
-        
+        loadingQuestion = true;        
+
         await LoadQuestionAsync(id);
-        if (TrainType is 1 || _selectedQuestionAnswers.Any(a => a.QuestionId == id))
+        if (TrainType is (int)TrainingType.Remember || _selectedQuestionAnswers.Any(a => a.QuestionId == id))
         {
             _showAnalysis = true;
         }
-
+        else
+        {
+            _showAnalysis = false;
+        }
         loadingQuestion = false;
     }
 
@@ -271,13 +277,14 @@ else
             _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>(_question, _questionAnswers));
         }
     }
-    
+
 
     public async Task SubmitAsync(QuestionAnswerItem item)
     {
         _showAnalysis = true;
         var right = item.Right;
         var training = _trains.SingleOrDefault(t => t.QuestionId == item.QuestionId);
+
         if (training is null)
         {
             await TrainingAppService.CreateAsync(new TrainingCreateDto()
@@ -292,6 +299,7 @@ else
             await TrainingAppService.SetIsRightAsync(training.Id, right);
         }
         _selectedQuestionAnswers.Add(item);
+        this.StateHasChanged();
     }
 
     private void GoDetail()

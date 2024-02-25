@@ -19,7 +19,7 @@
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
-        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="ShowAnalysis"/>
+        <TextEdit Placeholder="@L["Answer"]" @bind-Text="_answerItems[tempIndex]" Disabled="ShowAnalysis" />
         <br/>
         <br/>
     }
@@ -38,7 +38,7 @@
 }
 else
 {
-    <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
+    <Button Color="Color.Primary" Size="Size.Small" Clicked="ValidateAsync">确认答案</Button>
 }
 
 

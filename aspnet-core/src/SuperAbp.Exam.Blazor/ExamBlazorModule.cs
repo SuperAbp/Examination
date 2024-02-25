@@ -1,27 +1,26 @@
 ﻿using System;
 using System.Net.Http;
+using Blazorise.AntDesign;
+using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SuperAbp.Exam.Blazor.Menus;
 using OpenIddict.Abstractions;
+using Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme;
+using Volo.Abp.AspNetCore.Components.Web.BasicTheme.Themes.Basic;
+using Volo.Abp.AspNetCore.Components.Web.Theming.Routing;
 using Volo.Abp.Autofac.WebAssembly;
-using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation;
-using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Routing;
-using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Themes.AntDesignTheme;
-using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme;
-using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Settings;
-using Lsw.Abp.AspnetCore.Components.WebAssembly.AntDesignTheme;
+using Volo.Abp.AutoMapper;
 
 namespace SuperAbp.Exam.Blazor;
 
 [DependsOn(
     typeof(AbpAutofacWebAssemblyModule),
     typeof(ExamHttpApiClientModule),
-    typeof(AbpAutoMapperModule),
-    typeof(AbpAspNetCoreComponentsWebAssemblyAntDesignThemeModule)
+    typeof(AbpAspNetCoreComponentsWebAssemblyBasicThemeModule)
 )]
 public class ExamBlazorModule : AbpModule
 {
@@ -32,14 +31,11 @@ public class ExamBlazorModule : AbpModule
 
         ConfigureAuthentication(builder);
         ConfigureHttpClient(context, environment);
+        ConfigureBlazorise(context);
         ConfigureRouter(context);
         ConfigureUI(builder);
         ConfigureMenu(context);
         ConfigureAutoMapper(context);
-        Configure<AbpAntDesignThemeOptions>(options =>
-        {
-            options.Menu.Placement = MenuPlacement.Top;
-        });
     }
 
     private void ConfigureRouter(ServiceConfigurationContext context)
@@ -56,6 +52,13 @@ public class ExamBlazorModule : AbpModule
         {
             options.MenuContributors.Add(new ExamMenuContributor(context.Services.GetConfiguration()));
         });
+    }
+
+    private void ConfigureBlazorise(ServiceConfigurationContext context)
+    {
+        context.Services
+            .AddAntDesignProviders()
+            .AddFontAwesomeIcons();
     }
 
     private static void ConfigureAuthentication(WebAssemblyHostBuilder builder)
@@ -76,6 +79,7 @@ public class ExamBlazorModule : AbpModule
     private static void ConfigureUI(WebAssemblyHostBuilder builder)
     {
         builder.RootComponents.Add<App>("#ApplicationContainer");
+
     }
 
     private static void ConfigureHttpClient(ServiceConfigurationContext context, IWebAssemblyHostEnvironment environment)

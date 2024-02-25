@@ -8,4 +8,5 @@ public class ExamMenus
     public const string QuestionRepository = Prefix + ".QuestionRepository";
 
     //Add your menu items here...
+
 }

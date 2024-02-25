@@ -53,24 +53,19 @@
 </style>
 @if (loading)
 {
-    <div style=" text-align: center;margin: 50px 0;">
-        <Spin />
-    </div>
+    <SpinKit Type="SpinKitType.Circle" Centered="true" />
 }
 else
 {
-
-    <GridRow Gutter="16">
-        <GridCol Span="4">
+    <Row>
+        <Column ColumnSize="ColumnSize.Is2">
             @*<QuestionNumber CurrentId="_questionIds[_questionIndex]"
-                            Ids="_questionIds"></QuestionNumber>*@
-        </GridCol>
-        <GridCol Span="16">
-            <Card class="question-content">
-                <Body>
-                @if (loadingQuestion)
+        Ids="_questionIds"></QuestionNumber>*@
+        </Column>
+        <Column ColumnSize="ColumnSize.Is10" Class="question-content">
+            @if (loadingQuestion)
                 {
-                    <Spin/>
+                <SpinKit Type="SpinKitType.Circle" Centered="true" />
                 }
                 else
                 {
@@ -150,13 +145,11 @@ else
                             }
                     }*@
                 }
-                </Body>
-            </Card>
-        </GridCol>
-        <GridCol Span="4">
+        </Column>
+        <Column ColumnSize="ColumnSize.Is2">
             <div style="background-color: #fff">3</div>
-        </GridCol>
-    </GridRow>
+        </Column>
+    </Row>
 }
 @inject NavigationManager Navigation
 @inject IStringLocalizer<ExamResource> L

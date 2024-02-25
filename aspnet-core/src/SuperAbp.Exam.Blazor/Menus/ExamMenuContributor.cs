@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AntDesign;
 using Microsoft.Extensions.Configuration;
 using SuperAbp.Exam.Localization;
 using SuperAbp.Exam.Permissions;
@@ -41,7 +40,7 @@ public class ExamMenuContributor : IMenuContributor
                 ExamMenus.Home,
                 l["Menu:Home"],
                 "/",
-                icon: IconType.Outline.Home
+                icon: "fas fa-home"
             )
         );
         if (await context.IsGrantedAsync(ExamPermissions.Exams.Default))
@@ -50,15 +49,15 @@ public class ExamMenuContributor : IMenuContributor
                 ExamMenus.Exam,
                 l["Menu:MyExam"],
                 "/Exam",
-                icon: IconType.Outline.Home
+                icon: "fas fa-home"
             ));
             context.Menu.Items.Add(new ApplicationMenuItem(
                 ExamMenus.QuestionRepository,
                 l["Menu:QuestionRepository"],
                 "/Repository",
-                icon: IconType.Outline.Home
+                icon: "fas fa-home"
             ));
-        }
+        }        
     }
 
     private Task ConfigureUserMenuAsync(MenuConfigurationContext context)
@@ -71,7 +70,7 @@ public class ExamMenuContributor : IMenuContributor
             "Account.Manage",
             accountStringLocalizer["MyAccount"],
             $"{authServerUrl.EnsureEndsWith('/')}Account/Manage?returnUrl={_configuration["App:SelfUrl"]}",
-            icon: IconType.Outline.Setting,
+            icon: "fa fa-cog",
             order: 1000,
             null).RequireAuthenticated());
 

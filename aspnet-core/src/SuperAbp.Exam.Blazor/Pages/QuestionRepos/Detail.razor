@@ -1,89 +1,50 @@
 ﻿@page "/repository/{id:guid}"
-
-<style>
-    h3{
-        font-weight: 700;
-    }
-</style>
-
-@if(_repository is not null)
-{
-    <Card>
-        <TitleTemplate>
-            <span @onclick="GoDetail" style="cursor: pointer">
-                <Icon Type="arrow-left" Theme="outline" />返回
-            </span>
-            <Divider Type="DirectionVHType.Vertical" />@_repository.Title
-        </TitleTemplate>
-        <Body>
-            @if (!_repository.Remark.IsNullOrWhiteSpace())
-            {
-                <h3>简介：</h3>
-                <p>@_repository.Remark</p>
-                <Divider />
-            }
-
-            <h3>自由练习</h3>
-            <Button OnClick="() => StartTraining(0)">顺序练习</Button>
-            <Button OnClick="() => StartTraining(1)">背题模式</Button>
-            
-        @if (_questionTypes.Count > 0)
-        {
-            <Divider/>
-            <h3>题型练习</h3>
-            @foreach (var questionType in _questionTypes)
-            {
-                <Button OnClick="() => StartTraining(0, (int)questionType)">@L["QuestionType:" + questionType]</Button>
-            }
-        }
-        </Body>
-    </Card>
-}
-@using SuperAbp.Exam.QuestionManagement.QuestionRepos
 @using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Localization
-@using SuperAbp.Exam.QuestionManagement.Questions
-@using Volo.Abp.Application.Dtos
+@using SuperAbp.Exam.QuestionManagement.QuestionRepos
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
 @inject IStringLocalizer<ExamResource> L
 @inject IQuestionRepoAppService QuestionRepoAppService
 @inject NavigationManager Navigation
-@code {
-    [Parameter]
-    public Guid Id { get; set; }
+<style>
+    .btn {
+        margin-right: 8px;
+      }
+</style>
 
-    IReadOnlyList<QuestionType> _questionTypes = Array.Empty<QuestionType>();
-
-    QuestionRepoDetailDto _repository;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _repository = await QuestionRepoAppService.GetAsync(Id);
-        _questionTypes = await GetQuestionTypesAsync();
-    }
-
-    private async Task<IReadOnlyList<QuestionType>> GetQuestionTypesAsync()
-    {
-        return (await QuestionRepoAppService.GetQuestionTypesAsync(Id)).Items;
-    }
-    private void StartTraining(int trainType, int? questionType = null)
-    {
-        var url = $"/repository/{Id}/training";
-        if (trainType > 0)
-        {
-            url = $"/repository/{Id}/training/{trainType}";
-        }
-        else
-        {
-            if (questionType.HasValue)
+@if(QuestionRepository is not null)
+{
+    <Card>
+        <CardHeader>
+            <CardTitle Size="3">
+                <span @onclick="GoDetail" style="cursor: pointer">
+                    <Icon Name="IconName.ArrowLeft" />
+                </span>
+                @QuestionRepository.Title
+            </CardTitle>
+        </CardHeader>
+        <CardBody>
+            @if (!QuestionRepository.Remark.IsNullOrWhiteSpace())
             {
-                url += "?questionType=" + questionType.Value;
+                <Heading Size="HeadingSize.Is4">简介：</Heading>
+                <p>@QuestionRepository.Remark</p>
+                <Divider />
+            }
+
+            <Heading Size="HeadingSize.Is4">自由练习</Heading>
+            <Button Margin="Margin.Is3.FromEnd" Color="Color.Primary" Clicked="() => StartTraining((int)TrainingType.Order)">顺序练习</Button>
+            <Button Color="Color.Primary" Clicked="() => StartTraining((int)TrainingType.Remember)">背题模式</Button>
+            
+        @if (_questionTypes.Count > 0)
+        {
+            <Divider Margin="Margin.Is3.OnY"/>
+                <Heading Size="HeadingSize.Is4">题型练习</Heading>
+            @foreach (var questionType in _questionTypes)
+            {
+                <Button Margin="Margin.Is3.FromEnd" Color="Color.Primary" Clicked="() => StartTraining(0, (int)questionType)">@L["QuestionType:" + questionType]</Button>
             }
         }
-        Navigation.NavigateTo(url);
-    }
-    private void GoDetail()
-    {
-        Navigation.NavigateTo("/repository");
-    }
-
+        </CardBody>
+    </Card>
 }

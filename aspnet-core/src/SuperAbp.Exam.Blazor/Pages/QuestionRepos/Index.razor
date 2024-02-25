@@ -1,23 +1,22 @@
 ﻿@page "/repository"
 
-
-<Card Title="我的考试">
-    <Table TItem="QuestionRepoListDto"
-           DataSource="@_repositories"
-        Total="_total"
-        @bind-PageIndex="_pageIndex"
-        @bind-PageSize="_pageSize">
-        <Selection Key="@(context.Id.ToString())" />
-        <PropertyColumn Property="c=>c.Title" Title="@L["Title"]" />
-        <PropertyColumn Property="c=>c.CreationTime" Title="@L["CreationTime"]" />
-        <ActionColumn Title="@L["Action"]">
-            <Space>
-                <SpaceItem>
-                    <Button Type="@ButtonType.Primary" OnClick="() =>  GoDetail(context.Id)">@L["Detail"]</Button>
-                </SpaceItem>
-            </Space>
-        </ActionColumn>
-    </Table>
+<Card>
+    <CardHeader>
+        @* ************************* PAGE HEADER ************************* *@
+        <PageHeader Title="@L["QuestionRepository"]"
+                    BreadcrumbItems="@BreadcrumbItems" />
+    </CardHeader>
+    <CardBody>
+        <AbpExtensibleDataGrid TItem="QuestionRepoListDto"
+                               Data="Repositories"
+                               ReadData="OnDataGridReadAsync"
+                               TotalItems="TotalCount"
+                               ShowPager="true"
+                               PageSize="PageSize"
+                               CurrentPage="@CurrentPage"
+                               Columns="@ExamTableColumns">
+        </AbpExtensibleDataGrid>
+    </CardBody>
 </Card>
 
 @using SuperAbp.Exam.QuestionManagement.QuestionRepos
@@ -25,26 +24,7 @@
 @using Microsoft.AspNetCore.Components
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Localization
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
 @inject NavigationManager Navigation
 @inject IStringLocalizer<ExamResource> L
 @inject IQuestionRepoAppService QuestionRepoAppService
-@code {
-    IReadOnlyList<QuestionRepoListDto> _repositories;
-    int _pageIndex = 1;
-    int _pageSize = 10;
-    int _total = 0;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        var result = await QuestionRepoAppService.GetListAsync(new GetQuestionReposInput() { SkipCount = (_pageIndex - 1) * _pageSize, MaxResultCount = _pageSize, Sorting = QuestionRepoConsts.DefaultSorting });
-        _repositories = result.Items;
-        _total = (int)result.TotalCount;
-    }
-
-    private void GoDetail(Guid id)
-    {
-        Navigation.NavigateTo($"/repository/{id}");
-    }
-
-}
