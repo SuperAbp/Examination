@@ -53,10 +53,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperAbp.Exam.DbMigrator", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperAbp.Exam.AuthServer", "src\SuperAbp.Exam.AuthServer\SuperAbp.Exam.AuthServer.csproj", "{99D67717-345F-4945-B941-CE7B844D1E93}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "theme", "theme", "{BAA4B5E9-E129-4A1D-BE4A-27315F6013E9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.AspnetCore.Components.Web.AntDesignTheme", "src\SuperAbp.AspnetCore.Components.Web.AntDesignTheme\SuperAbp.AspnetCore.Components.Web.AntDesignTheme.csproj", "{FCDD772D-8AEA-49FE-83CF-A7633CCDCEC1}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,10 +139,6 @@ Global
 		{99D67717-345F-4945-B941-CE7B844D1E93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99D67717-345F-4945-B941-CE7B844D1E93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99D67717-345F-4945-B941-CE7B844D1E93}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FCDD772D-8AEA-49FE-83CF-A7633CCDCEC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FCDD772D-8AEA-49FE-83CF-A7633CCDCEC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FCDD772D-8AEA-49FE-83CF-A7633CCDCEC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FCDD772D-8AEA-49FE-83CF-A7633CCDCEC1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -175,7 +167,6 @@ Global
 		{DCCA2522-B6A8-47EA-AE53-05329453ADBC} = {7817B89A-5842-462B-92DF-4F862C5BFA9F}
 		{2EB41428-B888-4DC6-8E25-9DB2E31F5DEF} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 		{99D67717-345F-4945-B941-CE7B844D1E93} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
-		{FCDD772D-8AEA-49FE-83CF-A7633CCDCEC1} = {BAA4B5E9-E129-4A1D-BE4A-27315F6013E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}
