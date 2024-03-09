@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using Blazorise.AntDesign;
 using Blazorise.Icons.FontAwesome;
@@ -14,6 +14,7 @@ using Volo.Abp.Autofac.WebAssembly;
 using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.AutoMapper;
+using Volo.Abp.AspNetCore.Components.Web.BasicTheme;
 
 namespace SuperAbp.Exam.Blazor;
 
@@ -22,7 +23,8 @@ namespace SuperAbp.Exam.Blazor;
     typeof(ExamHttpApiClientModule),
     typeof(AbpAspNetCoreComponentsWebAssemblyBasicThemeModule)
 )]
-public class ExamBlazorModule : AbpModule
+[DependsOn(typeof(AbpAspNetCoreComponentsWebBasicThemeModule))]
+    public class ExamBlazorModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

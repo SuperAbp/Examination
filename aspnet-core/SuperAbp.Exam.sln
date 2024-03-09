@@ -5,6 +5,10 @@ VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CA9AC87F-097E-4F15-8393-4BC07735A5B0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Volo.Abp.AspNetCore.Components.Web.BasicTheme", "packages\Volo.Abp.AspNetCore.Components.Web.BasicTheme\\Volo.Abp.AspNetCore.Components.Web.BasicTheme.csproj", "{7e711cdc-8306-4c4e-a763-ba5df688e355}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme", "packages\Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme\\Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme.csproj", "{ec1d1398-c807-4e6d-b79a-2d57c7da9fab}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{04DBDB01-70F4-4E06-B468-8F87850B22BE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperAbp.Exam.Application.Tests", "test\SuperAbp.Exam.Application.Tests\SuperAbp.Exam.Application.Tests.csproj", "{50B2631D-129C-47B3-A587-029CCD6099BC}"
@@ -59,6 +63,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7e711cdc-8306-4c4e-a763-ba5df688e355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7e711cdc-8306-4c4e-a763-ba5df688e355}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7e711cdc-8306-4c4e-a763-ba5df688e355}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7e711cdc-8306-4c4e-a763-ba5df688e355}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ec1d1398-c807-4e6d-b79a-2d57c7da9fab}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ec1d1398-c807-4e6d-b79a-2d57c7da9fab}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ec1d1398-c807-4e6d-b79a-2d57c7da9fab}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ec1d1398-c807-4e6d-b79a-2d57c7da9fab}.Release|Any CPU.Build.0 = Release|Any CPU
 		{50B2631D-129C-47B3-A587-029CCD6099BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{50B2631D-129C-47B3-A587-029CCD6099BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50B2631D-129C-47B3-A587-029CCD6099BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -144,6 +156,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{7e711cdc-8306-4c4e-a763-ba5df688e355} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
+		{ec1d1398-c807-4e6d-b79a-2d57c7da9fab} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 		{50B2631D-129C-47B3-A587-029CCD6099BC} = {04DBDB01-70F4-4E06-B468-8F87850B22BE}
 		{1FE30EB9-74A9-47F5-A9F6-7B1FAB672D81} = {04DBDB01-70F4-4E06-B468-8F87850B22BE}
 		{91853F21-9CD9-4132-BC29-A7D5D84FFFE7} = {04DBDB01-70F4-4E06-B468-8F87850B22BE}

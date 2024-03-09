@@ -1,0 +1,21 @@
+﻿@inherits LayoutComponentBase
+
+<Layout Class="layout">
+    <Header>
+        <div class="logo" />
+        <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Horizontal" DefaultSelectedKeys=@(new[]{"2"})>
+            <MenuItem RouterLink="/Exam" Key="1">考试</MenuItem>
+            <MenuItem Key="2">nav 2</MenuItem>
+            <MenuItem Key="3">nav 3</MenuItem>
+        </Menu>
+    </Header>
+    <Content Style="padding: 0 50px;">
+        <Breadcrumb Style="margin: 16px 0;">
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>List</BreadcrumbItem>
+            <BreadcrumbItem>App</BreadcrumbItem>
+        </Breadcrumb>
+        @Body
+    </Content>
+    <Footer Style="text-align: center; ">Ant Design ©2018 Created by Ant UED</Footer>
+</Layout>
