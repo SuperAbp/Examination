@@ -7,56 +7,36 @@
     var url = MenuItem.Url == null ? "#" : MenuItem.Url.TrimStart('/', '~');
     var customComponentType = MenuItem.GetComponentTypeOrDefault();
 }
-@if (MenuItem.IsLeaf)
+@if (MenuItem.IsLeaf && MenuItem.Url != null)
 {
-    if (customComponentType != null)
-    {
-        <DynamicComponent Type="@customComponentType" />
-    }
-    else if (MenuItem.Url != null)
-    {
-        <li class="nav-item @cssClass @disabled" id="@elementId">
-            <a class="nav-link" href="@url" target="@MenuItem.Target">
-                @if (MenuItem.Icon != null)
-                {
-                    if (MenuItem.Icon.StartsWith("fa"))
-                    {
-                        <i class="@MenuItem.Icon me-1"></i>
-                    }
-                }
-                @MenuItem.DisplayName
-            </a>
-        </li>
-    }
+    <MenuItem Key="@elementId" RouterLink="@url" Disabled="@MenuItem.IsDisabled">
+        @if (!MenuItem.Icon.IsNullOrWhiteSpace())
+        {
+            <AntDesign.Icon Type="@MenuItem.Icon" Theme="outline"></AntDesign.Icon>
+        }
+        <span>@MenuItem.DisplayName</span>
+    </MenuItem>
 }
 else
 {
-    <li class="nav-item">
-        <div class="dropdown">
-            @if (customComponentType != null)
-            {
-                <DynamicComponent Type="@customComponentType" />
-            }
-            else
-            {
-                <a class="nav-link dropdown-toggle" @onclick="ToggleSubMenu" id="Menu_@(MenuItem.Name)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    @if (MenuItem.Icon != null)
-                    {
-                        if (MenuItem.Icon.StartsWith("fa"))
-                        {
-                            <i class="@MenuItem.Icon me-1"></i>
-                        }
-                    }
-                    @MenuItem.DisplayName
-                </a>
-            }
+    <SubMenu Title="@MenuItem.DisplayName" TitleTemplate="@GetSubMenuTemplate(MenuItem)" Key="@elementId">
+        @foreach (var menuItem in MenuItem.Items)
+        {
+            <FirstLevelNavMenuItem MenuItem="@menuItem" />
+        }
+        </SubMenu>
 
-            <div class="dropdown-menu border-0 shadow-sm @(IsSubMenuOpen ? "show" : "")" aria-labelledby="Menu_@(MenuItem.Name)">
-                @foreach (var childMenuItem in MenuItem.Items)
-                {
-                    <SecondLevelNavMenuItem MenuItem="childMenuItem" />
-                }
-            </div>
-        </div>
-    </li>
+}
+@{
+
+    RenderFragment GetSubMenuTemplate(ApplicationMenuItem menu)
+    {
+        return @<span>
+        @if (!MenuItem.Icon.IsNullOrWhiteSpace())
+    {
+        <AntDesign.Icon Type="@MenuItem.Icon" Theme="outline"></AntDesign.Icon>
+    }
+        <span>@menu.DisplayName</span>
+    </span>;
+    }
 }

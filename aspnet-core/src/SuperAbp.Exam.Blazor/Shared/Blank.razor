@@ -1,44 +1,44 @@
-﻿<style>
-    .block{
-        background-color: #f5f5f5;
-        padding: 5px 10px;
-        margin-bottom: 16px;
-    }
+﻿﻿<style>
+     .block {
+         background-color: #f5f5f5;
+         padding: 5px 10px;
+         margin-bottom: 16px;
+     }
 
-        .block .title {
-        color: red;
-    }
+         .block .title {
+             color: red;
+         }
 
-    .block .body{
-        font-size: 0.75rem;
-        margin-left: 15px;
-    }
+         .block .body {
+             font-size: 0.75rem;
+             margin-left: 15px;
+         }
 </style>
 @if (!ShowAnalysis || (ShowAnalysis && !AnswersNullOrWhiteSpace()))
 {
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
-        <TextEdit Placeholder="@L["Answer"]" @bind-Text="_answerItems[tempIndex]" Disabled="ShowAnalysis" />
-        <br/>
-        <br/>
+        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="ShowAnalysis" />
+        <br />
+        <br />
     }
 }
 @if (ShowAnalysis)
 {
     <div class="block">
         <span class="title">答案：</span>
-    <div class="body">
-        @foreach (var item in Answers)
-        {
-            <div>@item.Content</div>
-        }
-    </div>
+        <div class="body">
+            @foreach (var item in Answers)
+            {
+                <div>@item.Content</div>
+            }
+        </div>
     </div>
 }
 else
 {
-    <Button Color="Color.Primary" Size="Size.Small" Clicked="ValidateAsync">确认答案</Button>
+    <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
 }
 
 
@@ -100,11 +100,10 @@ else
         var answerContents = Answers.Select(a => a.Content).ToArray();
         var right = _answerItems.Length == answerContents.Length && !_answerItems.Except(answerContents).Any();
         await OnSubmit.InvokeAsync(new QuestionAnswerItem()
-        {
-            QuestionId = QuestionId,
+            {
+                QuestionId = QuestionId,
                 Answer = String.Join(ExamConsts.Splitter, _answerItems),
-            Right = right
-        });
+                Right = right
+            });
     }
 }
-

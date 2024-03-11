@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AntDesign" />
     <PackageReference Include="Volo.Abp.AspNetCore.Components.Web.Theming" VersionOverride="8.0.0" />
   </ItemGroup>
 

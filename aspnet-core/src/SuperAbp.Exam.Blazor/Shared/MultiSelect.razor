@@ -1,9 +1,10 @@
-﻿
+﻿﻿
 
 <style>
     .chooses .disabled {
         cursor: not-allowed;
     }
+
     .chooses .choose-item {
         padding: 9px 20px 9px 5px;
         -ms-border-radius: 4px;
@@ -17,6 +18,7 @@
         font-weight: bold;
         color: #1890ff;
     }
+
     .chooses .choose-item.primary {
         border-color: #1890ff;
     }
@@ -38,14 +40,14 @@
         display: none;
     }
 
-    .chooses .choose-item .result.show {
-        display: block;
-    }
+        .chooses .choose-item .result.show {
+            display: block;
+        }
 
-    .chooses .choose-item .result span {
-        vert-align: middle;
-        font-size: 1rem;
-    }
+        .chooses .choose-item .result span {
+            vert-align: middle;
+            font-size: 1rem;
+        }
 </style>
 
 <div class="chooses">
@@ -62,18 +64,18 @@
                 @if (answer.Right)
                 {
                     <div class="@GetResultClass(answer)">
-                        <Icon Name="IconName.CheckCircle" IconStyle="IconStyle.Regular" TextColor="TextColor.Success" />
+                        <Icon Type="check-circle" Theme="twotone" TwotoneColor="#52c41a" />
                     </div>
                 }
             </div>
-            </div>
+        </div>
     }
 </div>
 @if (!ShowAnalysis)
 {
     if (OnSubmit.HasDelegate)
     {
-        <Button Color="@Color.Primary" Size="@Size.Small" Clicked="ValidateAsync">确认答案</Button>
+        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
     }
 }
 
@@ -119,7 +121,7 @@
         }
         else
         {
-            var answerIds = selectedAnswer.Answer.Split(ExamConsts.Splitter);
+            var answerIds = selectedAnswer.Answer.Split(",");
             _selectedAnswerIds = answerIds.Select(a => new Guid(a)).ToList();
         }
     }
@@ -164,10 +166,10 @@
         if (OnSelect.HasDelegate)
         {
             await OnSelect.InvokeAsync(new QuestionAnswerSelectEventArgs()
-            {
-                QuestionId = QuestionId,
-                Answer = String.Join(ExamConsts.Splitter, _selectedAnswerIds),
-            });
+                {
+                    QuestionId = QuestionId,
+                    Answer = String.Join(ExamConsts.Splitter, _selectedAnswerIds),
+                });
         }
     }
     void OnChange(string[] checkedValues)
@@ -191,11 +193,11 @@
         if (OnSubmit.HasDelegate)
         {
             await OnSubmit.InvokeAsync(new QuestionAnswerItem()
-            {
-                QuestionId = QuestionId,
-                Answer = String.Join(ExamConsts.Splitter, _selectedAnswerIds),
-                Right = right
-            });
+                {
+                    QuestionId = QuestionId,
+                    Answer = String.Join(ExamConsts.Splitter, _selectedAnswerIds),
+                    Right = right
+                });
         }
     }
 }

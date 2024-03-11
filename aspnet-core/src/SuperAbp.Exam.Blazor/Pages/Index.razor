@@ -1,17 +1,18 @@
 ﻿@page "/"
 @using Volo.Abp.MultiTenancy
-@using Volo.Abp.AspNetCore.Components.Alerts
 @inherits ExamComponentBase
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize]
 
 
+
 <div class="page-content">
     <div style="text-align: center">
 
-        <Alert Color="Color.Success" Visible>
-            <AlertMessage>Success</AlertMessage>
-            <AlertDescription>Congratulations, BookStore is successfully runningsafasf!</AlertDescription>
-        </Alert>
+        <AntDesign.Alert Type="@AlertType.Success"
+               Message="Success"
+               Description=" Congratulations, BookStore is successfully runningsafasf!"
+               ShowIcon="true" />
+        <AntDesign.Divider />
     </div>
 </div>

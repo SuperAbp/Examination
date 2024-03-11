@@ -1,64 +1,60 @@
-﻿<style>
-    .ant-radio-group.ant-radio-group-vertical .ant-radio-wrapper{
-        display: flex;
-        height: auto;
-        line-height: normal;
-        width: 100%;
-        padding: 9px 20px 9px 5px;
-        -ms-border-radius: 4px;
-        border-radius: 4px;
-        border: 1px solid #d9d9d9;
-        margin-bottom: 10px;
-    }
+﻿﻿<style>
+     .chooses .choose-item {
+         width: 100%;
+         padding: 9px 20px 9px 5px;
+         -ms-border-radius: 4px;
+         border-radius: 4px;
+         border: 1px solid #d9d9d9;
+         margin-bottom: 10px;
+     }
 
-        .chooses .ant-radio-wrapper:has(> .primary) {
-        border-color: #1890ff;
-    } 
+         .chooses .choose-item.primary {
+             border-color: #1890ff;
+         }
 
-    .chooses .ant-radio {
-        display: none;
-    }
 
-    .chooses .ant-radio-wrapper .form-check-label {
-        padding-left: 8px;
-        width: 100%;
-        }
 
-    .chooses .ant-radio-wrapper .tag {
-        width: 10px;
-        font-weight: bold;
-        color: #1890ff;
-    }
+     .chooses .ant-radio {
+         display: none;
+     }
 
-    .chooses .ant-radio-wrapper .content {
-        color: #000;
-        margin-left: 5px;
-    }
+         .chooses .ant-radio + * {
+             width: 100%;
+         }
 
-    .chooses .result {
-        display: none;
-    }
+     .chooses .choose-item .tag {
+         width: 10px;
+         font-weight: bold;
+         color: #1890ff;
+     }
 
-    .chooses .result.show {
-        display: block;
-    }
-    .chooses .result span {
-        vert-align: middle;
-        font-size: 1rem;
-    }
+     .chooses .choose-item .content {
+         color: #000;
+         margin-left: 5px;
+     }
+
+     .chooses .result {
+         display: none;
+     }
+
+         .chooses .result.show {
+             display: block;
+         }
+
+         .chooses .result span {
+             vert-align: middle;
+             font-size: 1rem;
+         }
 
 </style>
-@QuestionChanged
-@ShowAnalysis
-@_selectedAnswerId
-<RadioGroup class="chooses" Orientation="Orientation.Vertical" TValue="Guid" CheckedValue="@_selectedAnswerId" CheckedValueChanged="@ValidateAsync" Disabled="ShowAnalysis">
+<RadioGroup class="chooses" @bind-Value="_selectedAnswerId" Size="large" TValue="Guid" OnChange="ValidateAsync" Disabled="ShowAnalysis">
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
         var answer = Answers[tempIndex];
 
         <Radio class="@GetBorderColor(answer)" Value="@answer.Id">
-            <div style="display: flex; justify-content: space-between;">
+            <div style="display: flex; -o-justify-content: space-between; -webkit-justify-content: space-between; justify-content: space-between;">
                 <div>
                     <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
                     <span class="content">@answer.Content</span>
@@ -66,22 +62,21 @@
                 @if (answer.Right)
                 {
                     <div class="@GetResultClass(answer)">
-                        <Icon Name="IconName.CheckCircle" IconStyle="IconStyle.Regular" TextColor="TextColor.Success"/>
+                        <Icon Type="check-circle" Theme="twotone" TwotoneColor="#52c41a" />
+                        @*<span>答案</span>*@
                     </div>
                 }
             </div>
         </Radio>
-        }
+    }
 </RadioGroup>
 
 @using SuperAbp.Exam.TrainingManagement
-@using SuperAbp.Exam.Blazor.Pages.QuestionRepos
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using System.Diagnostics
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages
 @using Volo.Abp
-@using Volo.Abp.AspNetCore.Components.Messages
 @using Volo.Abp.AspNetCore.Components.Notifications
 @inject IUiNotificationService UiNotificationService
 @inject ITrainingAppService TrainingAppService
@@ -95,41 +90,26 @@
     [Parameter]
     public bool ShowAnalysis { get; set; }
     [Parameter]
+    public string Answered { get; set; }
+    [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 
-    Guid _selectedAnswerId = default;
-    bool QuestionChanged = false;
+    Guid _selectedAnswerId = new Guid();
 
-    public override async Task SetParametersAsync(ParameterView parameters)
+    protected override void OnInitialized()
     {
-        if (parameters.TryGetValue<Guid>(nameof(QuestionId), out var value))
+        _selectedAnswerId = new Guid();
+        if (!Answered.IsNullOrWhiteSpace())
         {
-            if (QuestionId != value)
-            {
-                QuestionChanged = true;
-            }
-            else
-            {
-                QuestionChanged = false;
-            }
+            _selectedAnswerId = new Guid(Answered);
         }
+        if (!ShowAnalysis) return;
 
-        await base.SetParametersAsync(parameters);
-    }
-    protected override void OnParametersSet()
-    {
-        if (QuestionChanged)
-        {
-            _selectedAnswerId = default;
-            if(ShowAnalysis)
-            {
-                var selectedAnswer = SelectedQuestionAnswers.Find(a => a.QuestionId == QuestionId);
-                var answer = selectedAnswer is null
-                    ? Answers.Single(a => a.Right)
-                    : Answers.First(a => a.Id == new Guid(selectedAnswer.Answer));
-                _selectedAnswerId = answer.Id;
-            }
-        }
+        var selectedAnswer = SelectedQuestionAnswers.Find(a => a.QuestionId == QuestionId);
+        var answer = selectedAnswer is null
+            ? Answers.Single(a => a.Right)
+            : Answers.First(a => a.Id == new Guid(selectedAnswer.Answer));
+        _selectedAnswerId = answer.Id;
     }
     public string GetBorderColor(QuestionAnswerViewModel answer)
     {
@@ -141,7 +121,7 @@
         return String.Join(" ", classes);
     }
     string GetResultClass(QuestionAnswerViewModel answer)
-    {        
+    {
         List<string> classes = new List<string>() { "result" };
         if (ShowAnalysis && answer.Right)
         {
@@ -152,24 +132,18 @@
 
     public async Task ValidateAsync(Guid answerId)
     {
-        // TODO:值改变会处罚此方法。click事件早于bind
-        if (ShowAnalysis)
-        {
-            return;
-        }        
         var answer = Answers.FirstOrDefault(a => a.Id == answerId);
         if (answer is null)
         {
             await UiNotificationService.Error("请先选择答案");
             return;
         }
-        _selectedAnswerId = answerId;
         var right = answer.Right;
         await OnSubmit.InvokeAsync(new QuestionAnswerItem()
-        {
-            QuestionId = QuestionId,
+            {
+                QuestionId = QuestionId,
                 Answer = answerId.ToString(),
-                    Right = right
-        });
+                Right = right
+            });
     }
 }

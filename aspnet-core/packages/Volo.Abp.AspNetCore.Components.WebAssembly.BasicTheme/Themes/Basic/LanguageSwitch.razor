@@ -5,17 +5,23 @@
 @inject IJSRuntime JsRuntime
 @if (_otherLanguages != null && _otherLanguages.Any())
 {
-    <BarDropdown RightAligned="true">
-        <BarDropdownToggle>
-            @_currentLanguage.DisplayName
-        </BarDropdownToggle>
-        <BarDropdownMenu>
-            @foreach (var language in _otherLanguages)
-            {
-                <BarDropdownItem Clicked="() => ChangeLanguageAsync(language)">@language.DisplayName</BarDropdownItem>
-            }
-        </BarDropdownMenu>
-    </BarDropdown>
+    <AntDesign.Dropdown>
+     <Overlay>
+         <Menu>
+             @foreach (var language in _otherLanguages)
+             {
+                 <MenuItem OnClick="() => ChangeLanguageAsync(language)">
+                         @language.DisplayName
+                 </MenuItem>
+             }
+         </Menu>
+     </Overlay>
+     <ChildContent>
+         <a class="ant-dropdown-link" @onclick:preventDefault>
+             @_currentLanguage.DisplayName <AntDesign.Icon Type="down" />
+         </a>
+     </ChildContent>
+ </AntDesign.Dropdown>
 }
 @code {
     private IReadOnlyList<LanguageInfo> _otherLanguages;

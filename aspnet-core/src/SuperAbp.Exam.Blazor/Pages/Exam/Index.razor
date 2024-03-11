@@ -1,33 +1,57 @@
 ﻿@page "/exam"
+
+<Card Title="我的考试">
+    <Table 
+           TItem="ExamListDto"
+           DataSource="@Exams"
+           Total="TotalCount"
+           @bind-PageIndex="CurrentPage"
+           @bind-PageSize="PageSize">
+        <Selection Key="@(context.Id.ToString())" />
+        <PropertyColumn Property="c=>c.Name" Title="@L["Name"]" />
+        <PropertyColumn Title="@L["Score"]" Field="@($"{context.Score}（{L["PassingScore"]}：{context.PassingScore}）")" />
+        <PropertyColumn Property="c=>c.TotalTime" Title="@L["TotalTime"]" />
+        <PropertyColumn Title="@L["ExamTime"]" Field="@($"{context.StartTime} ~ {context.EndTime}")" />
+        <ActionColumn Title="@L["Action"]">
+            @if (context.StartTime.HasValue && context.EndTime.HasValue && (DateTime.Now > context.StartTime.Value && DateTime.Now < context.EndTime.Value))
+            {
+                <Space>
+                    <SpaceItem>
+                        <Button Type="@ButtonType.Primary" OnClick="()=>BeganAsync(context.Id)">@L["BeganExam"]</Button>
+                    </SpaceItem>
+                </Space>
+            }
+        </ActionColumn>
+    </Table>
+</Card>
+@using AntDesign.TableModels;
 @using System.Text.Json;
 @using Microsoft.Extensions.Localization
-@using Microsoft.AspNetCore.Authorization;
 @using SuperAbp.Exam.ExamManagement.Exams
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Localization
-@using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns
-@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
 @attribute [Authorize]
 @inject NavigationManager Navigation
 @inject IExaminationAppService ExamAppService
 @inject IUserExamAppService UserExamAppService
 @inject IStringLocalizer<ExamResource> L
+@code {
+    IReadOnlyList<ExamListDto> Exams;
 
-<Card>
-    <CardHeader>
-        @* ************************* PAGE HEADER ************************* *@
-        <PageHeader Title="@L["MyExam"]"
-                    BreadcrumbItems="@BreadcrumbItems" />
-    </CardHeader>
-    <CardBody>
-        <AbpExtensibleDataGrid TItem="ExamListDto"
-                               Data="Exams"
-                               ReadData="OnDataGridReadAsync"
-                               TotalItems="TotalCount"
-                               ShowPager="true"
-                               PageSize="PageSize"
-                               CurrentPage="@CurrentPage"
-                               Columns="@ExamTableColumns">
-        </AbpExtensibleDataGrid>
-    </CardBody>
-</Card>
+    int CurrentPage = 1;
+    int PageSize = 10;
+    int TotalCount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await ExamAppService.GetListAsync(new GetExamsInput() { SkipCount = 0, MaxResultCount = 10, Sorting = ExaminationConsts.DefaultSorting });
+        Exams = result.Items;
+        TotalCount = (int)result.TotalCount;
+    }
+
+    private async Task BeganAsync(Guid id)
+    {
+        var dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = id });
+        Navigation.NavigateTo($"/Exam/Start/{dto.Id}");
+    }
+}

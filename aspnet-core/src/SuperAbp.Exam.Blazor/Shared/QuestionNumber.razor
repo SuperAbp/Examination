@@ -1,17 +1,15 @@
-﻿<Card>
-    <CardBody>
-        <div class="content">
-            <div>
-                @for (int i = 0; i < Ids.Count; i++)
-                {
-                    var tempIndex = i;
-                    var id = Ids[tempIndex];
-                    var color = GetNumberColor(id);
-                    <Badge Color="@color" @onclick="async () => await ClickAsync(id)">@(tempIndex + 1)</Badge>
-                }
-            </div>
+﻿﻿<Card>
+    <div class="content">
+        <div>
+            @for (int i = 0; i < Ids.Count; i++)
+            {
+                var tempIndex = i;
+                var id = Ids[tempIndex];
+                var color = GetNumberColor(id);
+                <Tag Color="@color" OnClick="async () => await ClickAsync(id)">@(tempIndex + 1)</Tag>
+            }
         </div>
-    </CardBody>
+    </div>
 </Card>
 @code {
     [Parameter]
@@ -27,21 +25,21 @@
     [Parameter]
     public EventCallback<Guid> OnChanged { get; set; }
 
-    Color GetNumberColor(Guid id)
+    string GetNumberColor(Guid id)
     {
         if (CurrentId == id)
         {
-            return Color.Primary;
+            return "processing";
         }
         if (SuccessIds.Contains(id))
         {
-            return Color.Success;
+            return "success";
         }
         if (ErrorIds.Contains(id))
         {
-            return Color.Danger;
+            return "error";
         }
-        return Color.Info;
+        return "default";
     }
 
     async Task ClickAsync(Guid id)

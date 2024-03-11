@@ -10,8 +10,25 @@
 @inject IStringLocalizer<AbpUiResource> UiLocalizer
 <AuthorizeView>
     <Authorized>
-        <Dropdown RightAligned="true">
-            <DropdownToggle Color="Color.Default">
+        <AntDesign.Dropdown>
+             <Overlay>
+                 <AntDesign.Menu>
+                     @if (Menu != null)
+                     {
+                         @foreach (var menuItem in Menu.Items)
+                         {
+                             <MenuItem OnClick="@(() => NavigateToAsync(menuItem.Url, menuItem.Target))">
+                                 @menuItem.DisplayName
+                             </MenuItem>
+                         }
+                     }
+                     <MenuDivider/>
+                     <MenuItem OnClick="BeginSignOut">
+                          @UiLocalizer["Logout"]
+                      </MenuItem>
+                 </AntDesign.Menu>
+             </Overlay>
+             <ChildContent>
                 @if (CurrentTenant.Name != null)
                 {
                     <span><i>@CurrentTenant.Name</i>\@CurrentUser.UserName</span>
@@ -20,19 +37,9 @@
                 {
                     <span>@CurrentUser.UserName</span>
                 }
-            </DropdownToggle>
-            <DropdownMenu>
-                @if (Menu != null)
-                {
-                    @foreach (var menuItem in Menu.Items)
-                    {
-                        <DropdownItem Clicked="@(() => NavigateToAsync(menuItem.Url, menuItem.Target))">@menuItem.DisplayName</DropdownItem>
-                    }
-                }
-                <DropdownDivider />
-                <DropdownItem Clicked="BeginSignOut">@UiLocalizer["Logout"]</DropdownItem>
-            </DropdownMenu>
-        </Dropdown>
+                <AntDesign.Icon Type="down" />
+             </ChildContent>
+         </AntDesign.Dropdown>
     </Authorized>
     <NotAuthorized>
         <a class="nav-link" href="authentication/login">@UiLocalizer["Login"]</a>
