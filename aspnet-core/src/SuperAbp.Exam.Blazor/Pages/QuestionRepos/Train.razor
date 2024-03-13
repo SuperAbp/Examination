@@ -1,0 +1,302 @@
+﻿@page "/repository/{QuestionRepositoryId:guid}/training/{TrainType:int?}"
+
+<style>
+    .question-content .title {
+        font-size: 18px;
+    }
+
+    .question-content .title .number {
+        font-weight: bold;
+    }
+    .question-content .chooses {
+        width: 100%;
+    }
+
+    .bottom {
+        margin-top: 10px;
+        display: flex;
+        -o-justify-content: space-between;
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
+    }
+
+    .analysis {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .ant-tag.current {
+        color: #389e0d;
+        background: #f6ffed;
+        border-color: #b7eb8f;
+    }
+
+</style>
+@if (loading)
+{
+    <div style=" text-align: center;margin: 50px 0;">
+        <Spin />
+    </div>
+}
+else
+{
+    <GridRow Gutter="16">
+        <GridCol Span="4">
+            <QuestionNumber 
+                CurrentId="_questionIds[_questionIndex]"
+                Ids="_questionIds"
+                SuccessIds="GetSuccessIds()"
+                ErrorIds="GetErrorIds()"
+                OnChanged="ShowQuestionAsync"></QuestionNumber>
+        </GridCol>
+        <GridCol Span="20">
+            <Card class="question-content">
+                <TitleTemplate>
+                    <span @onclick="GoDetail" style="cursor: pointer">
+                        <Icon Type="arrow-left" Theme="outline"/>返回
+                    </span>
+                    <Divider Type="DirectionVHType.Vertical" />题库训练
+                </TitleTemplate>
+                <Body>
+                @if (loadingQuestion)
+                {
+                    <Spin/>
+                }
+                else
+                {
+                    @if (_question != null)
+                    {
+                        <h2 class="title">
+                            <span class="number">@(_questionIndex + 1)</span>
+                            <span>@_question.Content</span>
+                        </h2>
+                        @switch(_question.QuestionType)
+                        {
+                            case QuestionType.SingleSelect:
+                            case QuestionType.Judge:
+                                <SingleSelect QuestionId="_question.Id"
+                                              Answers="_questionAnswers"
+                                              SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                              ShowAnalysis="_showAnalysis"
+                                              OnSubmit="@SubmitAsync"></SingleSelect>
+                                break;
+                            case QuestionType.MultiSelect:
+                                <MultiSelect QuestionId="_question.Id"
+                                             Answers="_questionAnswers"
+                                             SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                             ShowAnalysis="_showAnalysis"
+                                             OnSubmit="@SubmitAsync"></MultiSelect>
+                                break;
+                            case QuestionType.FillInTheBlanks:
+                                <Blank QuestionId="_question.Id"
+                                       Answers="_questionAnswers"
+                                       SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                       ShowAnalysis="_showAnalysis"
+                                       OnSubmit="@SubmitAsync"></Blank>
+                                break;
+                        }
+                    }
+                    @if (_showAnalysis && !String.IsNullOrEmpty(_question?.Analysis))
+                    {
+                        <div class="analysis">
+                            <Card Title="题目解析">
+                                @_question.Analysis
+                            </Card>
+                        </div>
+                    }
+                    <div class="bottom">
+                        @if (_questionIndex <= 0)
+                        {
+                            <Button OnClick="PrevAsync" Disabled>上一题</Button>
+                        }
+                        else
+                        {
+                            <Button OnClick="PrevAsync">上一题</Button>
+                        }
+                        @if (_questionIndex >= _questionIds.Count - 1)
+                        {
+                            <Button OnClick="NextAsync" Disabled>下一题</Button>
+                        }
+                        else
+                        {
+                            <Button OnClick="NextAsync">下一题</Button>
+                        }
+
+                    </div>
+                }
+                </Body>
+            </Card>
+        </GridCol>
+    </GridRow>
+}
+
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
+@using SuperAbp.Exam.TrainingManagement
+@using SuperAbp.Exam.Blazor.Model
+@using NUglify.Helpers
+@using Volo.Abp.AspNetCore.Components.Notifications
+@inject NavigationManager Navigation
+@inject IQuestionAppService QuestionAppService
+@inject IQuestionAnswerAppService QuestionAnswerAppService
+@inject ITrainingAppService TrainingAppService
+@inject IUiNotificationService UiNotificationService
+@code {
+    [Parameter]
+    public Guid QuestionRepositoryId { get; set; }
+
+    [Parameter]
+    public int? TrainType { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "QuestionType")]
+    public int? CurrentQuestionType { get; set; }
+
+    bool loading = true;
+    bool loadingQuestion = false;
+    IReadOnlyList<Guid> _questionIds = Array.Empty<Guid>();
+    IReadOnlyList<QuestionAnswerViewModel> _questionAnswers = Array.Empty<QuestionAnswerViewModel>();
+    IReadOnlyList<TrainingListDto> _trains = Array.Empty<TrainingListDto>();
+    readonly Dictionary<Guid, Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>> _cacheQuestions = new();
+    readonly List<QuestionAnswerItem> _selectedQuestionAnswers = new();
+    QuestionDetailDto _question;
+    bool _showAnalysis = false;
+    int _questionIndex = 0;
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await QuestionAppService.GetIdsAsync(new GetQuestionsInput()
+        {
+            QuestionRepositoryId = QuestionRepositoryId, 
+                QuestionType =CurrentQuestionType.HasValue && Enum.IsDefined(typeof(QuestionType), CurrentQuestionType.Value)
+                ? (QuestionType)CurrentQuestionType.Value
+                : null
+        });
+        _questionIds = result.Items;
+        if (_questionIds.Count <= 0)
+        {
+            GoDetail();
+            return;
+        }
+
+        int maxIndex = 0;
+        if (TrainType is null or 0)
+        {
+            var trainResult = await TrainingAppService.GetListAsync(new GetTrainsInput() { QuestionRepositoryId = QuestionRepositoryId });
+            _trains = trainResult.Items;
+
+            maxIndex = _trains.Count > 0 
+                ? _trains.Max(t => _questionIds.ToList().IndexOf(t.QuestionId))
+                : 0;
+            if (maxIndex >= _questionIds.Count || maxIndex < 0)
+            {
+                maxIndex = 0;
+            }
+        }
+        await ShowQuestionAsync(maxIndex);
+        loading = false;
+    }
+
+    Guid[] GetSuccessIds()
+    {
+        return _trains.Where(a => a.Right).Select(a => a.QuestionId).Union(
+            _selectedQuestionAnswers.Where(a => a.Right).Select(a => a.QuestionId))
+            .ToArray();
+    }
+    Guid[] GetErrorIds()
+    {
+        return _trains.Where(a => !a.Right).Select(a => a.QuestionId).Union(
+            _selectedQuestionAnswers.Where(a => !a.Right).Select(a => a.QuestionId))
+            .ToArray();
+    }
+    public async Task NextAsync()
+    {
+        if (_questionIndex >= _questionIds.Count)
+        {
+            _questionIndex = _questionIds.Count - 1;
+            return;
+
+        }
+
+        await ShowQuestionAsync(_questionIndex + 1);
+    }
+    public async Task PrevAsync()
+    {
+        if (_questionIndex < 0)
+        {
+            _questionIndex = 0;
+            return;
+        }
+        await ShowQuestionAsync(_questionIndex - 1);
+    }
+
+    async Task ShowQuestionAsync(int index)
+    {
+        await ShowQuestionAsync(_questionIds[index]);
+    }
+    public async Task ShowQuestionAsync(Guid id)
+    {
+        _questionIndex = _questionIds.ToList().IndexOf(id);
+        loadingQuestion = true;
+        _showAnalysis = false;
+        
+        await LoadQuestionAsync(id);
+        if (TrainType is 1 || _selectedQuestionAnswers.Any(a => a.QuestionId == id))
+        {
+            _showAnalysis = true;
+        }
+
+        loadingQuestion = false;
+    }
+
+    private async Task LoadQuestionAsync(Guid id)
+    {
+        if (_cacheQuestions.ContainsKey(id))
+        {
+            _question = _cacheQuestions[id].Item1;
+            _questionAnswers = _cacheQuestions[id].Item2.Select(i => new QuestionAnswerViewModel
+            {
+                Id = i.Id,
+                Content = i.Content,
+                Right = i.Right
+            }).ToArray();
+        }
+        else
+        {
+            _question = await QuestionAppService.GetAsync(id);
+            _questionAnswers = (await QuestionAnswerAppService.GetListAsync(id)).Items.Select(i => new QuestionAnswerViewModel
+                {
+                    Id = i.Id,
+                    Content = i.Content,
+                    Right = i.Right
+                }).ToArray();
+            _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>(_question, _questionAnswers));
+        }
+    }
+    
+
+    public async Task SubmitAsync(QuestionAnswerItem item)
+    {
+        _showAnalysis = true;
+        var right = item.Right;
+        var training = _trains.SingleOrDefault(t => t.QuestionId == item.QuestionId);
+        if (training is null)
+        {
+            await TrainingAppService.CreateAsync(new TrainingCreateDto()
+            {
+                QuestionRepositoryId = QuestionRepositoryId,
+                QuestionId = item.QuestionId,
+                Right = right
+            });
+        }
+        else
+        {
+            await TrainingAppService.SetIsRightAsync(training.Id, right);
+        }
+        _selectedQuestionAnswers.Add(item);
+    }
+
+    private void GoDetail()
+    {
+        Navigation.NavigateTo($"/repository/{QuestionRepositoryId}");
+    }
+
+}

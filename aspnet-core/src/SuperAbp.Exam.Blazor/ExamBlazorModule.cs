@@ -1,7 +1,5 @@
 using System;
 using System.Net.Http;
-using Blazorise.AntDesign;
-using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,13 +31,11 @@ namespace SuperAbp.Exam.Blazor;
 
         ConfigureAuthentication(builder);
         ConfigureHttpClient(context, environment);
-        ConfigureBlazorise(context);
         ConfigureRouter(context);
         ConfigureUI(builder);
         ConfigureMenu(context);
         ConfigureAutoMapper(context);
     }
-
     private void ConfigureRouter(ServiceConfigurationContext context)
     {
         Configure<AbpRouterOptions>(options =>
@@ -56,12 +52,6 @@ namespace SuperAbp.Exam.Blazor;
         });
     }
 
-    private void ConfigureBlazorise(ServiceConfigurationContext context)
-    {
-        context.Services
-            .AddAntDesignProviders()
-            .AddFontAwesomeIcons();
-    }
 
     private static void ConfigureAuthentication(WebAssemblyHostBuilder builder)
     {

@@ -14,7 +14,6 @@ public class ExamBundleContributor : IBundleContributor
 
     public void AddStyles(BundleContext context)
     {
-        context.Add("_content/Volo.Abp.AspNetCore.Components.Web.BasicTheme/libs/abp/css/theme.css");
         context.Add("main.css", true);
     }
 }

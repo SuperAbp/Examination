@@ -1,14 +1,16 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AspNetCore.Components.Web.Theming;
 using Volo.Abp.AspNetCore.Components.Web.Theming.Theming;
 using Volo.Abp.Modularity;
+using Volo.Abp.AspNetCore.Components.WebAssembly.Theming;
 
 namespace Volo.Abp.AspNetCore.Components.Web.BasicTheme;
 
 [DependsOn(
     typeof(AbpAspNetCoreComponentsWebThemingModule)
 )]
-public class AbpAspNetCoreComponentsWebBasicThemeModule : AbpModule
+[DependsOn(typeof(AbpAspNetCoreComponentsWebAssemblyThemingModule))]
+    public class AbpAspNetCoreComponentsWebBasicThemeModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

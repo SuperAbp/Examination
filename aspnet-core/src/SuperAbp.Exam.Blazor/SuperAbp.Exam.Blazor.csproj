@@ -8,9 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazorise.AntDesign" Version="1.4.1" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.4.1" />
-    <PackageReference Include="Blazorise.SpinKit" Version="1.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" />
     <ProjectReference Include="..\..\packages\Volo.Abp.AspNetCore.Components.Web.BasicTheme\Volo.Abp.AspNetCore.Components.Web.BasicTheme.csproj" />
