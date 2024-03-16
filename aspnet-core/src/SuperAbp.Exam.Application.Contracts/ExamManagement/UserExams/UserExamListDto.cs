@@ -8,8 +8,22 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     /// </summary>
     public class UserExamListDto: EntityDto<Guid>
     {
-        public System.Guid UserId { get; set; }
-        public System.Guid ExamId { get; set; }
-        public decimal TotalScore { get; set; }
+        public Guid ExamId { get; set; }
+
+        /// <summary>
+        /// 考试名称
+        /// </summary>
+        public string ExamName { get; set; }
+        /// <summary>
+        /// 次数
+        /// </summary>
+        public int Count { get; set; }
+
+        /// <summary>
+        /// 最高分
+        /// </summary>
+        public decimal MaxScore { get; set; }
+
+        public DateTime LastTime { get; set; }
     }
 }

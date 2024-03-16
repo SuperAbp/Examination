@@ -38,44 +38,29 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             return ObjectMapper.Map<UserExam, UserExamDetailDto>(entity);
         }
 
-        public virtual async Task<PagedResultDto<UserExamWithExamListDto>> GetExamListAsync(GetUserExamsInput input)
-        {
-            var queryable = await _userExamRepository.GetQueryableAsync();
-            var examQueryable = await _examRepository.GetQueryableAsync();
-            var result = from ue in queryable
-                    group ue by ue.ExamId into g
-                    join e in examQueryable on g.Key equals e.Id
-                    select new UserExamWithExam
-                    {
-                        ExamId = g.Key,
-                        ExamName = e.Name,
-                        Count = g.Count(),
-                        LastTime = g.Max(m => m.CreationTime),
-                        MaxScore = g.Max(m => m.TotalScore)
-                    };
-            var totalCount = await AsyncExecuter.CountAsync(result);
-            var entities = await AsyncExecuter.ToListAsync(result
-                .OrderBy(input.Sorting ?? "ExamName DESC")
-                .PageBy(input));
-
-            var dtos = ObjectMapper.Map<List<UserExamWithExam>, List<UserExamWithExamListDto>>(entities);
-            return new PagedResultDto<UserExamWithExamListDto>(totalCount, dtos);
-
-        }
         public virtual async Task<PagedResultDto<UserExamListDto>> GetListAsync(GetUserExamsInput input)
         {
             await NormalizeMaxResultCountAsync(input);
 
             var queryable = await _userExamRepository.GetQueryableAsync();
-
-            long totalCount = await AsyncExecuter.CountAsync(queryable);
-
-            var entities = await AsyncExecuter.ToListAsync(queryable
-                .OrderBy(input.Sorting ?? "Id DESC")
+            var examQueryable = await _examRepository.GetQueryableAsync();
+            var result = from ue in queryable
+                         join e in examQueryable on ue.ExamId equals e.Id
+                         group new { ue, e } by ue.ExamId into g
+                         select new UserExamWithExam
+                         {
+                             ExamId = g.Key,
+                             ExamName = g.Max(m => m.e.Name),
+                             Count = g.Count(),
+                             LastTime = g.Max(m => m.ue.CreationTime),
+                             MaxScore = g.Max(m => m.ue.TotalScore)
+                         };
+            var totalCount = await AsyncExecuter.CountAsync(result);
+            var entities = await AsyncExecuter.ToListAsync(result
+                .OrderBy(input.Sorting ?? UserExamConsts.DefaultSorting)
                 .PageBy(input));
 
-            var dtos = ObjectMapper.Map<List<UserExam>, List<UserExamListDto>>(entities);
-
+            var dtos = ObjectMapper.Map<List<UserExamWithExam>, List<UserExamListDto>>(entities);
             return new PagedResultDto<UserExamListDto>(totalCount, dtos);
         }
 

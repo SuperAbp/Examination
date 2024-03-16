@@ -1,5 +1,46 @@
-﻿<h3>Exam</h3>
+﻿@page "/my/exam"
 
+<Card Title="考试记录">
+    <Table TItem="UserExamListDto"
+           DataSource="@UserExams"
+           Total="TotalCount"
+           Loading="Loading"
+           @bind-PageIndex="CurrentPage"
+           @bind-PageSize="PageSize"
+           OnChange="Change">
+        <Selection Key="@(context.ExamId.ToString())" />
+        <PropertyColumn Property="c=>c.ExamName" Title="@L["ExamName"]" />
+        <PropertyColumn Property="c=>c.Count" Title="@L["ExamCount"]" />
+        <PropertyColumn Property="c=>c.MaxScore" Title="@L["MaxScore"]" />
+        <PropertyColumn Property="c=>c.LastTime" Title="@L["LastTime"]" />
+    </Table>
+</Card>
+
+@using AntDesign.TableModels
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.ExamManagement.UserExams
+@using SuperAbp.Exam.Localization
+@inject IStringLocalizer<ExamResource> L
+@inject IUserExamAppService UserExamAppService
 @code {
+    IReadOnlyList<UserExamListDto> UserExams;
+
+    int CurrentPage = 1;
+    int PageSize = 10;
+    int TotalCount = 0;
+    bool Loading = true;
+
     // TODO:展示考试列表。查看明细进入此考试的考试记录
+    public async Task Change(QueryModel model)
+    {
+        await GetListAsync(model.PageIndex, model.PageSize);
+    }
+    protected async Task GetListAsync(int pageIndex, int pageSize, string sorting = null)
+    {
+        this.Loading = true;
+        var result = await UserExamAppService.GetListAsync(new GetUserExamsInput() { SkipCount = 0, MaxResultCount = PageSize });
+        UserExams = result.Items;
+        TotalCount = (int)result.TotalCount;
+        this.Loading = false;
+    }
 }

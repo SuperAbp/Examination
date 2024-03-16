@@ -5,6 +5,7 @@ public class ExamMenus
     private const string Prefix = "Exam";
     public const string Home = Prefix + ".Home";
     public const string Exam = Prefix + ".Exam";
+    public const string MyExam = Prefix + ".MyExam";
     public const string QuestionRepository = Prefix + ".QuestionRepository";
 
     //Add your menu items here...
