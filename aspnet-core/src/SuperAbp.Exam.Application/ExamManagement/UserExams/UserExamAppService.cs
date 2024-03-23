@@ -44,6 +44,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
             var queryable = await _userExamRepository.GetQueryableAsync();
             var examQueryable = await _examRepository.GetQueryableAsync();
+            // TODO:性能较低，需要优化
             var result = from ue in queryable
                          join e in examQueryable on ue.ExamId equals e.Id
                          group new { ue, e } by ue.ExamId into g
@@ -66,11 +67,15 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public virtual async Task<UserExamListDto> CreateAsync(UserExamCreateDto input)
         {
-            if (await _userExamRepository.AnyByExamIdAndUserIdAsync(input.ExamId, CurrentUser.GetId()))
+            if(await _userExamRepository.AnyAsync(ue => ue.UserId == CurrentUser.GetId() && !ue.Finished))
             {
-                throw new UserFriendlyException("您已经参加过此考试！");
+                throw new BusinessException(ExamDomainErrorCodes.ExistsUnfinishedExams);
             }
-
+            var exam = await _examRepository.GetAsync(input.ExamId);
+            if (exam.StartTime > DateTime.Now || exam.EndTime < DateTime.Now)
+            {
+                throw new BusinessException(ExamDomainErrorCodes.OutOfExamTime);
+            }
             var userExam = new UserExam(GuidGenerator.Create(), input.ExamId, CurrentUser.GetId());
             await _userExamManager.CreateQuestionsAsync(userExam.Id, input.ExamId);
             await _userExamRepository.InsertAsync(userExam);

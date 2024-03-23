@@ -32,10 +32,12 @@
 @using SuperAbp.Exam.ExamManagement.Exams
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Localization
+@using Volo.Abp.AspNetCore.Components.Notifications
 @attribute [Authorize]
 @inject NavigationManager Navigation
 @inject IExaminationAppService ExamAppService
 @inject IUserExamAppService UserExamAppService
+@inject IUiNotificationService NotificationService
 @inject IStringLocalizer<ExamResource> L
 @code {
     IReadOnlyList<ExamListDto> Exams;

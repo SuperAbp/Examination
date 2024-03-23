@@ -82,6 +82,8 @@
     "Permission:Management": "管理",
     "Permission:Create": "创建",
     "Permission:Edit": "修改",
-    "Permission:Delete": "删除"
+    "Permission:Delete": "删除",
+    "SuperAbp.Exam:000001": "存在未完成的考试",
+    "SuperAbp.Exam:000002": "不在考试时间内"
   }
 }
