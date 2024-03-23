@@ -21,6 +21,16 @@ namespace SuperAbp.Exam.Controllers
         }
 
         /// <summary>
+        /// 获取未完成的考试
+        /// </summary>
+        /// <returns>考试Id（没有则为null）</returns>
+        [HttpGet("unfinished")]
+        public async Task<Guid?> GetUnfinishedAsync()
+        {
+           return await _userExamAppService.GetUnfinishedAsync();
+        }
+
+        /// <summary>
         /// 详情
         /// </summary>
         /// <param name="id">主键</param>

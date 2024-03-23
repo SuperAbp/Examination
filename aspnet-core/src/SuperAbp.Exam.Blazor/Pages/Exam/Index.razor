@@ -1,5 +1,11 @@
 ﻿@page "/exam"
 
+@if (UnfinishedUserExamId.HasValue && UnfinishedUserExamId.Value != new Guid())
+{
+    <a href="/Exam/Start/@UnfinishedUserExamId.Value" style="display: block;margin-bottom: 20px;">
+    <Alert Message="存在未完成的考试，立即进入" Type="@AlertType.Warning" ShowIcon="true" />
+    </a>
+}
 <Card Title="我的考试">
     <Table 
            TItem="ExamListDto"
@@ -41,12 +47,16 @@
 @inject IStringLocalizer<ExamResource> L
 @code {
     IReadOnlyList<ExamListDto> Exams;
-
+    Guid? UnfinishedUserExamId;
     int CurrentPage = 1;
     int PageSize = 10;
     int TotalCount = 0;
     bool Loading = true;
 
+    protected override async Task OnInitializedAsync()
+    {
+        UnfinishedUserExamId = await UserExamAppService.GetUnfinishedAsync();
+    }
     public async Task Change(QueryModel model)
     {
         await GetListAsync(model.PageIndex, model.PageSize);

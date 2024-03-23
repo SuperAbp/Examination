@@ -31,6 +31,12 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             _paperRepoRepository = paperRepoRepository;
         }
 
+        public async Task<Guid?> GetUnfinishedAsync()
+        {
+            var userExam = await _userExamRepository.FindAsync(u => u.UserId == CurrentUser.GetId() && !u.Finished);
+            return userExam?.Id;
+            
+        }
         public virtual async Task<UserExamDetailDto> GetAsync(Guid id)
         {
             UserExam entity = await _userExamRepository.GetAsync(id);
@@ -90,5 +96,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 input.MaxResultCount = maxPageSize.Value;
             }
         }
+
     }
 }
