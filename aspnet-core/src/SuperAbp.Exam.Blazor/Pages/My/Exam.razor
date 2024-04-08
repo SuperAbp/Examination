@@ -1,5 +1,35 @@
-﻿<h3>Exam</h3>
+﻿<Card Title="我的考试">
+    <Table TItem="UserExamWithExamListDto"
+           DataSource="@_userExams"
+           Total="_total"
+           @bind-PageIndex="_pageIndex"
+           @bind-PageSize="_pageSize">
+        <PropertyColumn Property="c=>c.ExamName" Title="@L["Name"]" />
+        <PropertyColumn Property="c=>c.Count" Title="@L["Count"]" />
+        <PropertyColumn Property="c=>c.MaxScore" Title="@L["MaxScore"]" />
+        <PropertyColumn Property="c=>c.LastTime" Title="@L["LastTime"]" />
+    </Table>
+</Card>
 
+@attribute [Authorize]
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.ExamManagement.UserExams
+@using SuperAbp.Exam.Localization
+@inject IStringLocalizer<ExamResource> L
+@inject IUserExamAppService UserExamAppService
 @code {
     // TODO:展示考试列表。查看明细进入此考试的考试记录
+    IReadOnlyList<UserExamWithExamListDto> _userExams;
+
+    int _pageIndex = 1;
+    int _pageSize = 10;
+    int _total = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await UserExamAppService.GetExamListAsync(new GetUserExamsInput() { SkipCount = 0, MaxResultCount = 10 });
+        _userExams = result.Items;
+        _total = (int)result.TotalCount;
+    }
+
 }

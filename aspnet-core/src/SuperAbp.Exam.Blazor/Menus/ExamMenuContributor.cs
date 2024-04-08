@@ -59,6 +59,12 @@ public class ExamMenuContributor : IMenuContributor
                 icon: IconType.Outline.Home
             ));
         }
+        context.Menu.Items.Add(new ApplicationMenuItem(
+                ExamMenus.MyExam,
+                l["Menu:MyExam"],
+                "/My/Exam",
+                icon: IconType.Outline.Home
+            ));
     }
 
     private Task ConfigureUserMenuAsync(MenuConfigurationContext context)

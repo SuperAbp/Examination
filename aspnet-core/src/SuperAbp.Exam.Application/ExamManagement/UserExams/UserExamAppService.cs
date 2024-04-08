@@ -66,15 +66,25 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         {
             await NormalizeMaxResultCountAsync(input);
 
-            var queryable = await _userExamRepository.GetQueryableAsync();
+            var userExamQueryable = await _userExamRepository.GetQueryableAsync();
+            var eaxmQueryablke = await _examRepository.GetQueryableAsync();
+            long totalCount = await AsyncExecuter.CountAsync(userExamQueryable);
 
-            long totalCount = await AsyncExecuter.CountAsync(queryable);
+            var queryable = from ue in userExamQueryable
+                            join e in eaxmQueryablke on ue.ExamId equals e.Id
+                            select new UserExamWithDetail
+                            {
+                                Exam = e.Name,
+                                TotalScore = ue.TotalScore,
+                                CreationTime = ue.CreationTime,
+                            };
 
             var entities = await AsyncExecuter.ToListAsync(queryable
                 .OrderBy(input.Sorting ?? "Id DESC")
                 .PageBy(input));
 
-            var dtos = ObjectMapper.Map<List<UserExam>, List<UserExamListDto>>(entities);
+            var dtos = ObjectMapper.Map<List<UserExamWithDetail>, List<UserExamListDto>>(entities);
+
 
             return new PagedResultDto<UserExamListDto>(totalCount, dtos);
         }

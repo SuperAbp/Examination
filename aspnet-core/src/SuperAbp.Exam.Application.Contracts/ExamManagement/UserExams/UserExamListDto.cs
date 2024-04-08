@@ -8,8 +8,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     /// </summary>
     public class UserExamListDto: EntityDto<Guid>
     {
-        public System.Guid UserId { get; set; }
-        public System.Guid ExamId { get; set; }
+        /// <summary>
+        /// 考试
+        /// </summary>
+        public string Exam { get; set; }
         public decimal TotalScore { get; set; }
     }
 }
