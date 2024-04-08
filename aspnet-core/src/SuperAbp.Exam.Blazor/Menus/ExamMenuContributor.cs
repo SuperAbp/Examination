@@ -48,8 +48,14 @@ public class ExamMenuContributor : IMenuContributor
         {
             context.Menu.Items.Add(new ApplicationMenuItem(
                 ExamMenus.Exam,
-                l["Menu:MyExam"],
+                l["Menu:OnlineExam"],
                 "/Exam",
+                icon: IconType.Outline.Home
+            ));
+            context.Menu.Items.Add(new ApplicationMenuItem(
+                ExamMenus.MyExam,
+                l["Menu:MyExam"],
+                "/My/Exam",
                 icon: IconType.Outline.Home
             ));
             context.Menu.Items.Add(new ApplicationMenuItem(

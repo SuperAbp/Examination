@@ -11,18 +11,17 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     public interface IUserExamAppService : IApplicationService
     {
         /// <summary>
+        /// 获取未完成的考试
+        /// </summary>
+        /// <returns>考试Id（没有则为null）</returns>
+        Task<Guid?> GetUnfinishedAsync();
+
+        /// <summary>
         /// 详情
         /// </summary>
         /// <param name="id">主键</param>
         /// <returns></returns>
         Task<UserExamDetailDto> GetAsync(Guid id);
-
-        /// <summary>
-        /// 考试分组列表
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        Task<PagedResultDto<UserExamWithExamListDto>> GetExamListAsync(GetUserExamsInput input);
 
         /// <summary>
         /// 列表

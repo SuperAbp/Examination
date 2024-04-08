@@ -1,7 +1,19 @@
-import { Component } from '@angular/core';
-import { SettingsService, User } from '@delon/theme';
-import { LayoutDefaultOptions } from '@delon/theme/layout-default';
+import { Component, inject } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { I18nPipe, SettingsService, User } from '@delon/theme';
+import { LayoutDefaultModule, LayoutDefaultOptions } from '@delon/theme/layout-default';
+import { SettingDrawerModule } from '@delon/theme/setting-drawer';
+import { ThemeBtnComponent } from '@delon/theme/theme-btn';
 import { environment } from '@env/environment';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+
+import { HeaderClearStorageComponent } from './widgets/clear-storage.component';
+import { HeaderFullScreenComponent } from './widgets/fullscreen.component';
+import { HeaderUserComponent } from './widgets/user.component';
+import { HeaderI18nComponent } from './widgets/i18n.component';
 
 @Component({
   selector: 'layout-basic',
@@ -21,9 +33,6 @@ import { environment } from '@env/environment';
         <div layout-default-header-item-trigger (click)="searchToggleStatus = !searchToggleStatus">
           <i nz-icon nzType="search"></i>
         </div>
-      </layout-default-header-item>
-      <layout-default-header-item direction="middle">
-        <header-search class="alain-default__search" [toggleChange]="searchToggleStatus"></header-search>
       </layout-default-header-item>
       <layout-default-header-item direction="right" hidden="mobile">
         <div layout-default-header-item-trigger nz-dropdown [nzDropdownMenu]="settingsMenu" nzTrigger="click" nzPlacement="bottomRight">
@@ -66,14 +75,33 @@ import { environment } from '@env/environment';
       </ng-template>
     </layout-default>
 
-    <setting-drawer *ngIf="showSettingDrawer"></setting-drawer>
+    @if (showSettingDrawer) {
+      <setting-drawer />
+    }
     <theme-btn></theme-btn>
   `,
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    I18nPipe,
+    LayoutDefaultModule,
+    NzIconModule,
+    NzMenuModule,
+    NzDropDownModule,
+    NzAvatarModule,
+    SettingDrawerModule,
+    ThemeBtnComponent,
+    HeaderClearStorageComponent,
+    HeaderFullScreenComponent,
+    HeaderUserComponent,
+    HeaderI18nComponent
+  ]
 })
 export class LayoutBasicComponent {
   options: LayoutDefaultOptions = {
     logoExpanded: `./assets/logo-full.svg`,
-    logoCollapsed: `./assets/logo.svg`,
+    logoCollapsed: `./assets/logo.svg`
   };
   searchToggleStatus = false;
   showSettingDrawer = !environment.production;

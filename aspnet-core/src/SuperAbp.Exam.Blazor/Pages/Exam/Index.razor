@@ -1,12 +1,20 @@
 ﻿@page "/exam"
 
+@if (UnfinishedUserExamId.HasValue && UnfinishedUserExamId.Value != new Guid())
+{
+    <a href="/Exam/Start/@UnfinishedUserExamId.Value" style="display: block;margin-bottom: 20px;">
+    <Alert Message="存在未完成的考试，立即进入" Type="@AlertType.Warning" ShowIcon="true" />
+    </a>
+}
 <Card Title="我的考试">
     <Table 
            TItem="ExamListDto"
-           DataSource="@_exams"
-           Total="_total"
-           @bind-PageIndex="_pageIndex"
-           @bind-PageSize="_pageSize">
+           DataSource="@Exams"
+           Loading="Loading"
+           Total="TotalCount"
+           @bind-PageIndex="CurrentPage"
+           @bind-PageSize="PageSize"
+           OnChange="Change">
         <Selection Key="@(context.Id.ToString())" />
         <PropertyColumn Property="c=>c.Name" Title="@L["Name"]" />
         <PropertyColumn Title="@L["Score"]" Field="@($"{context.Score}（{L["PassingScore"]}：{context.PassingScore}）")" />
@@ -30,23 +38,39 @@
 @using SuperAbp.Exam.ExamManagement.Exams
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Localization
+@using Volo.Abp.AspNetCore.Components.Notifications
 @attribute [Authorize]
 @inject NavigationManager Navigation
 @inject IExaminationAppService ExamAppService
 @inject IUserExamAppService UserExamAppService
+@inject IUiNotificationService NotificationService
 @inject IStringLocalizer<ExamResource> L
 @code {
-    IReadOnlyList<ExamListDto> _exams;
-
-    int _pageIndex = 1;
-    int _pageSize = 10;
-    int _total = 0;
+    IReadOnlyList<ExamListDto> Exams;
+    Guid? UnfinishedUserExamId;
+    int CurrentPage = 1;
+    int PageSize = 10;
+    int TotalCount = 0;
+    bool Loading = true;
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await ExamAppService.GetListAsync(new GetExamsInput() { SkipCount = 0, MaxResultCount = 10, Sorting = ExaminationConsts.DefaultSorting });
-        _exams = result.Items;
-        _total = (int)result.TotalCount;
+        UnfinishedUserExamId = await UserExamAppService.GetUnfinishedAsync();
+    }
+    public async Task Change(QueryModel model)
+    {
+        await GetListAsync(model.PageIndex, model.PageSize);
+    }
+    protected async Task GetListAsync(int pageIndex, int pageSize, string sorting = null)
+    {
+        this.Loading = true;
+        var result = await ExamAppService
+            .GetListAsync(new GetExamsInput()
+                { SkipCount = (pageIndex - 1) * pageSize, MaxResultCount = pageSize, Sorting = sorting });
+        Exams = result.Items;
+        TotalCount = (int)result.TotalCount;        
+        this.Loading = false;
+
     }
 
     private async Task BeganAsync(Guid id)

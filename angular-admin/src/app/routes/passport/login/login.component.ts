@@ -1,5 +1,5 @@
 import { AuthService } from '@abp/ng.core';
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { StartupService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService, SocialService } from '@delon/auth';
@@ -12,20 +12,19 @@ import { OAuthService } from 'angular-oauth2-oidc';
   providers: [SocialService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserLoginComponent {
+export class UserLoginComponent implements OnInit {
+  private router = inject(Router);
+  private tokenService = inject(DA_SERVICE_TOKEN);
+  private startupSrv = inject(StartupService);
+  private oAuthService = inject(OAuthService);
+  private authService = inject(AuthService);
   get hasLoggedIn(): boolean {
     return this.oAuthService.hasValidAccessToken();
   }
-  constructor(
-    private router: Router,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    private startupSrv: StartupService,
-    private oAuthService: OAuthService,
-    private authService: AuthService
-  ) {
+  ngOnInit(): void {
     if (this.hasLoggedIn) {
       this.tokenService.set({
-        token: oAuthService.getAccessToken(),
+        token: this.oAuthService.getAccessToken(),
         expired: this.oAuthService.getAccessTokenExpiration()
       });
       this.startupSrv.load().subscribe(() => {

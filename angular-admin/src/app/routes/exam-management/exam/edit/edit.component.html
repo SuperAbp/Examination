@@ -1,95 +1,104 @@
-<div class="modal-header">
-  <div class="modal-title" *ngIf="form && !examId">{{ 'Exam::NewExam' | abpLocalization }}</div>
-  <div class="modal-title" *ngIf="form && examId">{{ 'Exam::Edit' | abpLocalization }}</div>
-</div>
-<div class="modal-body">
-  <ng-template #loaderRef>
-    <nz-spin class="modal-spin"></nz-spin>
-  </ng-template>
-  <form *ngIf="form; else loaderRef" nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
-    <nz-form-item>
-      <nz-form-label>{{ 'Exam::Paper' | abpLocalization }}</nz-form-label>
-      <nz-form-control>
-        <nz-select
-          nzShowSearch
-          nzServerSearch
-          [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::Paper' | abpLocalization)"
-          formControlName="paperId"
-          [nzShowArrow]="false"
-          (nzOnSearch)="searchPaper($event)"
-          (ngModelChange)="choosePaper($event)"
-        >
-          <nz-option *ngFor="let p of papers" [nzLabel]="p.name" [nzValue]="p.id"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label nzRequired>{{ 'Exam::Name' | abpLocalization }}</nz-form-label>
-      <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="nameErrorTpl">
-        <input formControlName="name" nz-input [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Name' | abpLocalization)" />
-        <ng-template #nameErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">
-            {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
-          </ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label>{{ 'Exam::Description' | abpLocalization }}</nz-form-label>
-      <nz-form-control>
-        <textarea
-          rows="4"
-          formControlName="description"
-          nz-input
-          [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Description' | abpLocalization)"
-        ></textarea>
-      </nz-form-control>
-    </nz-form-item>
-    <div nz-row>
-      <div nz-col nzSpan="8">
-        <nz-form-item>
-          <nz-form-label>{{ 'Exam::Score' | abpLocalization }}</nz-form-label>
-          <nz-form-control>
-            <nz-input-number nzDisabled formControlName="score"></nz-input-number>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-      <div nz-col nzSpan="8">
-        <nz-form-item>
-          <nz-form-label>{{ 'Exam::PassingScore' | abpLocalization }}</nz-form-label>
-          <nz-form-control>
-            <nz-input-number formControlName="passingScore" [nzMin]="1" [nzMax]="score.value"></nz-input-number>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-      <div nz-col nzSpan="8">
-        <nz-form-item>
-          <nz-form-label>{{ 'Exam::TotalTimeWithMinute' | abpLocalization }}</nz-form-label>
-          <nz-form-control>
-            <nz-input-number formControlName="totalTime" [nzMin]="1"></nz-input-number>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
+@if (form) {
+  <div class="modal-header">
+    <div class="modal-title">
+      @if (examId) {
+        {{ 'Exam::Edit' | abpLocalization }}
+      } @else {
+        {{ 'Exam::NewExam' | abpLocalization }}
+      }
     </div>
-    <nz-form-item>
-      <nz-form-label>{{ 'Exam::ExamTime' | abpLocalization }}</nz-form-label>
-      <nz-form-control>
-        <label nz-checkbox formControlName="isLimitedTime" (ngModelChange)="changeExamTimeStatus($event)"></label>
-        <span style="margin-left: 20px" *ngIf="showExamTime">
-          <nz-range-picker
-            nzFormat="yyyy-MM-dd HH:mm:ss"
-            [nzDisabledDate]="disabledDate"
-            [nzShowTime]="true"
-            formControlName="examTimes"
-            (ngModelChange)="examTimeChange($event)"
-          ></nz-range-picker>
-        </span>
-      </nz-form-control>
-    </nz-form-item>
-  </form>
-</div>
-<div class="modal-footer">
-  <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
-    {{ 'Exam::Submit' | abpLocalization }}
-  </button>
-</div>
+  </div>
+  <div class="modal-body">
+    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-label>{{ 'Exam::Paper' | abpLocalization }}</nz-form-label>
+        <nz-form-control>
+          <nz-select
+            nzShowSearch
+            nzServerSearch
+            [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::Paper' | abpLocalization)"
+            formControlName="paperId"
+            [nzShowArrow]="false"
+            (nzOnSearch)="searchPaper($event)"
+            (ngModelChange)="choosePaper($event)"
+          >
+            <nz-option *ngFor="let p of papers" [nzLabel]="p.name" [nzValue]="p.id"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'Exam::Name' | abpLocalization }}</nz-form-label>
+        <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization" [nzErrorTip]="nameErrorTpl">
+          <input formControlName="name" nz-input [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Name' | abpLocalization)" />
+          <ng-template #nameErrorTpl let-control>
+            @if (control.hasError('required')) {
+              {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+            }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'Exam::Description' | abpLocalization }}</nz-form-label>
+        <nz-form-control>
+          <textarea
+            rows="4"
+            formControlName="description"
+            nz-input
+            [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Description' | abpLocalization)"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+      <div nz-row>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>{{ 'Exam::Score' | abpLocalization }}</nz-form-label>
+            <nz-form-control>
+              <nz-input-number nzDisabled formControlName="score"></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>{{ 'Exam::PassingScore' | abpLocalization }}</nz-form-label>
+            <nz-form-control>
+              <nz-input-number formControlName="passingScore" [nzMin]="1" [nzMax]="score.value"></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>{{ 'Exam::TotalTimeWithMinute' | abpLocalization }}</nz-form-label>
+            <nz-form-control>
+              <nz-input-number formControlName="totalTime" [nzMin]="1"></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <nz-form-item>
+        <nz-form-label>{{ 'Exam::ExamTime' | abpLocalization }}</nz-form-label>
+        <nz-form-control>
+          <label nz-checkbox formControlName="isLimitedTime" (ngModelChange)="changeExamTimeStatus($event)"></label>
+          @if (showExamTime) {
+            <span style="margin-left: 20px">
+              <nz-range-picker
+                nzFormat="yyyy-MM-dd HH:mm:ss"
+                [nzDisabledDate]="disabledDate"
+                [nzShowTime]="true"
+                formControlName="examTimes"
+                (ngModelChange)="examTimeChange($event)"
+              ></nz-range-picker>
+            </span>
+          }
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
+      {{ 'Exam::Submit' | abpLocalization }}
+    </button>
+  </div>
+} @else {
+  <nz-spin class="modal-spin"></nz-spin>
+}

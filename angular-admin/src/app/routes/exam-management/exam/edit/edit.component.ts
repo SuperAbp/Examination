@@ -1,13 +1,21 @@
-import { LocalizationService } from '@abp/ng.core';
+import { CoreModule, LocalizationService } from '@abp/ng.core';
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize, tap } from 'rxjs/operators';
-import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { ExaminationService, PaperService } from '@proxy/super-abp/exam/admin/controllers';
 import { dateTimePickerUtil } from '@delon/util';
 import { PaperListDto } from '@proxy/super-abp/exam/admin/paper-management/papers';
 import { GetExamForEditorOutput } from '@proxy/super-abp/exam/admin/exam-management/exams';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzDatePickerModule, NzRangePickerComponent } from 'ng-zorro-antd/date-picker';
+import { NzButtonComponent, NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 @Component({
   selector: 'app-exam-management-exam-edit',
@@ -22,6 +30,19 @@ import { GetExamForEditorOutput } from '@proxy/super-abp/exam/admin/exam-managem
         margin-right: 8px;
       }
     `
+  ],
+  standalone: true,
+  imports: [
+    CoreModule,
+    NzModalModule,
+    NzFormModule,
+    NzSpinModule,
+    NzSelectModule,
+    NzInputModule,
+    NzInputNumberModule,
+    NzCheckboxModule,
+    NzDatePickerModule,
+    NzButtonModule
   ]
 })
 export class ExamManagementExamEditComponent implements OnInit {
@@ -170,7 +191,7 @@ export class ExamManagementExamEditComponent implements OnInit {
         })
         .pipe(
           tap(response => {
-            this.messageService.success(this.localizationService.instant('*::SaveSucceed'));
+            this.messageService.success(this.localizationService.instant('Exam::SaveSuccessfully'));
             this.modal.close(true);
           }),
           finalize(() => (this.isConfirmLoading = false))
@@ -184,7 +205,7 @@ export class ExamManagementExamEditComponent implements OnInit {
         })
         .pipe(
           tap(response => {
-            this.messageService.success(this.localizationService.instant('*::SaveSucceed'));
+            this.messageService.success(this.localizationService.instant('Exam::SaveSuccessfully'));
             this.modal.close(true);
           }),
           finalize(() => (this.isConfirmLoading = false))

@@ -1,19 +1,30 @@
-import { ConfigStateService, LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { STChange, STColumn, STComponent, STPage } from '@delon/abc/st';
-import { SFSchema } from '@delon/form';
+import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
+import { DelonFormModule, SFSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
 import { QuestionManagementRepositoryEditComponent } from './edit/edit.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
 import { GetQuestionReposInput, QuestionRepoListDto } from '@proxy/super-abp/exam/admin/question-management/question-repos';
 import { QuestionRepoService } from '@proxy/super-abp/exam/admin/controllers';
+import { PageHeaderModule } from '@delon/abc/page-header';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
 
 @Component({
   selector: 'app-question-management-repository',
-  templateUrl: './repository.component.html'
+  templateUrl: './repository.component.html',
+  standalone: true,
+  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzButtonModule, NzCardModule]
 })
 export class QuestionManagementRepositoryComponent implements OnInit {
+  private modal = inject(ModalHelper);
+  private localizationService = inject(LocalizationService);
+  private messageService = inject(NzMessageService);
+  private permissionService = inject(PermissionService);
+  private repositoryService = inject(QuestionRepoService);
+
   repositorys: QuestionRepoListDto[];
   total: number;
   loading = false;
@@ -83,14 +94,6 @@ export class QuestionManagementRepositoryComponent implements OnInit {
       ]
     }
   ];
-
-  constructor(
-    private modal: ModalHelper,
-    private localizationService: LocalizationService,
-    private messageService: NzMessageService,
-    private permissionService: PermissionService,
-    private repositoryService: QuestionRepoService
-  ) {}
 
   ngOnInit() {
     this.params = this.resetParameters();

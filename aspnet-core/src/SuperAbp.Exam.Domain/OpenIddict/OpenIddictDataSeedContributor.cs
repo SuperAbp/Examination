@@ -189,6 +189,53 @@ public class OpenIddictDataSeedContributor : IDataSeedContributor, ITransientDep
                 clientUri: swaggerRootUrl
             );
         }
+
+        // Admin Swagger Client
+        var swaggerAdminClientId = configurationSection["Exam_Admin_Swagger:ClientId"];
+        if (!swaggerAdminClientId.IsNullOrWhiteSpace())
+        {
+            var swaggerAdminRootUrl = configurationSection["Exam_Admin_Swagger:RootUrl"].TrimEnd('/');
+
+            await CreateApplicationAsync(
+                name: swaggerAdminClientId,
+                type: OpenIddictConstants.ClientTypes.Public,
+                consentType: OpenIddictConstants.ConsentTypes.Implicit,
+                displayName: "Swagger Admin Application",
+                secret: null,
+                grantTypes: new List<string>
+                {
+                    OpenIddictConstants.GrantTypes.AuthorizationCode,
+                },
+                scopes: commonScopes,
+                redirectUri: $"{swaggerAdminRootUrl}/swagger/oauth2-redirect.html",
+                clientUri: swaggerAdminRootUrl
+            );
+        }
+
+        // Addmin Console Test / Angular Client
+        var consoleAndAngularAdminClientId = configurationSection["Exam_Admin_App:ClientId"];
+        if (!consoleAndAngularAdminClientId.IsNullOrWhiteSpace())
+        {
+            var consoleAndAngularAdminClientRootUrl = configurationSection["Exam_Admin_App:RootUrl"]?.TrimEnd('/');
+            await CreateApplicationAsync(
+                name: consoleAndAngularAdminClientId,
+                type: OpenIddictConstants.ClientTypes.Public,
+                consentType: OpenIddictConstants.ConsentTypes.Implicit,
+                displayName: "Console Admin Test / Angular Admin Application",
+                secret: null,
+                grantTypes: new List<string>
+                {
+                    OpenIddictConstants.GrantTypes.AuthorizationCode,
+                    OpenIddictConstants.GrantTypes.Password,
+                    OpenIddictConstants.GrantTypes.ClientCredentials,
+                    OpenIddictConstants.GrantTypes.RefreshToken
+                },
+                scopes: commonScopes,
+                redirectUri: consoleAndAngularAdminClientRootUrl,
+                clientUri: consoleAndAngularAdminClientRootUrl,
+                postLogoutRedirectUri: consoleAndAngularAdminClientRootUrl
+            );
+        }
     }
 
     private async Task CreateApplicationAsync(
@@ -220,7 +267,7 @@ public class OpenIddictDataSeedContributor : IDataSeedContributor, ITransientDep
 
         var application = new AbpApplicationDescriptor {
             ClientId = name,
-            Type = type,
+            ClientType = type,
             ClientSecret = secret,
             ConsentType = consentType,
             DisplayName = displayName,

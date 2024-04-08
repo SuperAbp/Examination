@@ -1,8 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { QuestionAnswerService } from '@proxy/super-abp/exam/admin/controllers';
 import { QuestionAnswerCreateDto } from '@proxy/super-abp/exam/admin/question-management/question-answers';
 import { QuestionManagementAnswerComponent } from './answer.component';
+import { CoreModule } from '@abp/ng.core';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
 
 interface QuestionAnswerTemp extends QuestionAnswerCreateDto {
   id?: string;
@@ -10,10 +20,26 @@ interface QuestionAnswerTemp extends QuestionAnswerCreateDto {
 
 @Component({
   selector: 'judge',
-  templateUrl: './judge.component.html'
+  templateUrl: './judge.component.html',
+  standalone: true,
+  imports: [
+    CoreModule,
+    NzButtonModule,
+    NzTableModule,
+    NzFormModule,
+    NzInputModule,
+    NzInputNumberModule,
+    NzPopconfirmModule,
+    NzToolTipModule,
+    NzRadioModule,
+    NzIconModule
+  ]
 })
 export class JudgeComponent extends QuestionManagementAnswerComponent implements OnInit {
-  constructor(protected override fb: FormBuilder, protected override answerService: QuestionAnswerService) {
+  constructor(
+    protected override fb: FormBuilder,
+    protected override answerService: QuestionAnswerService
+  ) {
     super(fb, answerService);
   }
 

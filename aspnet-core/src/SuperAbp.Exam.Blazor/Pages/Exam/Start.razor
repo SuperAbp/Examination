@@ -80,8 +80,7 @@ else
                         Count = q.Count()
                     });
                     foreach (var questionType in questionTypes)
-                    {
-                            
+                    {                            
                         var currentQuestions = _examQuestions.Where(q => q.QuestionType == questionType.QuestionType).ToArray();
                             <h2>@L["QuestionType:"+questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q=>q.QuestionScore))分）</h2>
                         for (int i = 1; i <= currentQuestions.Length; i++)

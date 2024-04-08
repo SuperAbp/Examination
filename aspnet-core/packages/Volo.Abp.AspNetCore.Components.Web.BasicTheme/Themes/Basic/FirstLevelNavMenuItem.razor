@@ -1,0 +1,42 @@
+﻿@using Volo.Abp.AspNetCore.Components.Web.BasicTheme.Navigation;
+@using Volo.Abp.UI.Navigation
+@{
+    var elementId = MenuItem.ElementId ?? "MenuItem_" + MenuItem.Name.Replace(".", "_");
+    var cssClass = string.IsNullOrEmpty(MenuItem.CssClass) ? string.Empty : MenuItem.CssClass;
+    var disabled = MenuItem.IsDisabled ? "disabled" : string.Empty;
+    var url = MenuItem.Url == null ? "#" : MenuItem.Url.TrimStart('/', '~');
+    var customComponentType = MenuItem.GetComponentTypeOrDefault();
+}
+@if (MenuItem.IsLeaf && MenuItem.Url != null)
+{
+    <MenuItem Key="@elementId" RouterLink="@url" Disabled="@MenuItem.IsDisabled">
+        @if (!MenuItem.Icon.IsNullOrWhiteSpace())
+        {
+            <AntDesign.Icon Type="@MenuItem.Icon" Theme="outline"></AntDesign.Icon>
+        }
+        <span>@MenuItem.DisplayName</span>
+    </MenuItem>
+}
+else
+{
+    <SubMenu Title="@MenuItem.DisplayName" TitleTemplate="@GetSubMenuTemplate(MenuItem)" Key="@elementId">
+        @foreach (var menuItem in MenuItem.Items)
+        {
+            <FirstLevelNavMenuItem MenuItem="@menuItem" />
+        }
+        </SubMenu>
+
+}
+@{
+
+    RenderFragment GetSubMenuTemplate(ApplicationMenuItem menu)
+    {
+        return @<span>
+        @if (!MenuItem.Icon.IsNullOrWhiteSpace())
+    {
+        <AntDesign.Icon Type="@MenuItem.Icon" Theme="outline"></AntDesign.Icon>
+    }
+        <span>@menu.DisplayName</span>
+    </span>;
+    }
+}

@@ -251,6 +251,8 @@ paket-files/
 .idea/
 *.sln.iml
 
+!**/packages/*Theme*
+!**/packages/*Theming*
 # Exam
 src/SuperAbp.Exam.Web/Logs/*
 src/SuperAbp.Exam.Web.Host/Logs/*

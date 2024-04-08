@@ -2,5 +2,7 @@
 
 public static class ExamDomainErrorCodes
 {
-    /* You can add your business exception error codes here, as constants */
+    public static string ExistsUnfinishedExams = "SuperAbp.Exam:000001";
+    public static string OutOfExamTime = "SuperAbp.Exam:000002";
+    
 }

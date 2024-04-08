@@ -8,7 +8,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 {
     public class UserExamWithExam
     {
-
         public Guid ExamId { get; set; }
         /// <summary>
         /// 考试名称

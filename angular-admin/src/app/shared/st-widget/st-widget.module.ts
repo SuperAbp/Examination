@@ -1,17 +1,18 @@
 import { NgModule } from '@angular/core';
+import { STWidgetRegistry } from '@delon/abc/st';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
 
-// import { STWidgetRegistry } from '@delon/abc/st';
 import { SharedModule } from '../shared.module';
-
-export const STWIDGET_COMPONENTS = [];
+import { STSetPriceWidget } from './st-set-price.widget';
+export const STWIDGET_COMPONENTS = [STSetPriceWidget];
 
 @NgModule({
   declarations: STWIDGET_COMPONENTS,
-  imports: [SharedModule],
+  imports: [SharedModule, NzTabsModule],
   exports: [...STWIDGET_COMPONENTS]
 })
 export class STWidgetModule {
-  // constructor(widgetRegistry: STWidgetRegistry) {
-  //   widgetRegistry.register(STImgWidget.KEY, STImgWidget);
-  // }
+  constructor(widgetRegistry: STWidgetRegistry) {
+    widgetRegistry.register(STSetPriceWidget.KEY, STSetPriceWidget);
+  }
 }

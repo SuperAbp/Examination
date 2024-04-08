@@ -1,7 +1,7 @@
-import { LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { STChange, STColumn, STComponent, STData, STPage } from '@delon/abc/st';
-import { SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFStringWidgetSchema } from '@delon/form';
+import { CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
+import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFStringWidgetSchema } from '@delon/form';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { map, tap } from 'rxjs/operators';
 import { GetQuestionsInput, QuestionListDto } from '@proxy/super-abp/exam/admin/question-management/questions';
@@ -9,12 +9,24 @@ import { QuestionRepoService, QuestionService } from '@proxy/super-abp/exam/admi
 import { Router } from '@angular/router';
 import { QuestionType } from '@proxy/super-abp/exam/question-management/questions';
 import { of } from 'rxjs';
+import { PageHeaderModule } from '@delon/abc/page-header';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'app-question-management-question',
-  templateUrl: './question.component.html'
+  templateUrl: './question.component.html',
+  standalone: true,
+  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class QuestionManagementQuestionComponent implements OnInit {
+  private router = inject(Router);
+  private localizationService = inject(LocalizationService);
+  private messageService = inject(NzMessageService);
+  private permissionService = inject(PermissionService);
+  private questionService = inject(QuestionService);
+  private questionRepositoryService = inject(QuestionRepoService);
+
   questions: QuestionListDto[];
   total: number;
   loading = false;
@@ -122,15 +134,6 @@ export class QuestionManagementQuestionComponent implements OnInit {
       ]
     }
   ];
-
-  constructor(
-    private router: Router,
-    private localizationService: LocalizationService,
-    private messageService: NzMessageService,
-    private permissionService: PermissionService,
-    private questionService: QuestionService,
-    private questionRepositoryService: QuestionRepoService
-  ) {}
 
   ngOnInit() {
     this.params = this.resetParameters();

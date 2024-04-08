@@ -1,9 +1,10 @@
-﻿
+﻿﻿
 
 <style>
     .chooses .disabled {
         cursor: not-allowed;
     }
+
     .chooses .choose-item {
         padding: 9px 20px 9px 5px;
         -ms-border-radius: 4px;
@@ -17,6 +18,7 @@
         font-weight: bold;
         color: #1890ff;
     }
+
     .chooses .choose-item.primary {
         border-color: #1890ff;
     }
@@ -38,14 +40,14 @@
         display: none;
     }
 
-    .chooses .choose-item .result.show {
-        display: block;
-    }
+        .chooses .choose-item .result.show {
+            display: block;
+        }
 
-    .chooses .choose-item .result span {
-        vert-align: middle;
-        font-size: 1rem;
-    }
+        .chooses .choose-item .result span {
+            vert-align: middle;
+            font-size: 1rem;
+        }
 </style>
 
 <div class="chooses">
@@ -66,7 +68,7 @@
                     </div>
                 }
             </div>
-            </div>
+        </div>
     }
 </div>
 @if (!ShowAnalysis)
@@ -164,10 +166,10 @@
         if (OnSelect.HasDelegate)
         {
             await OnSelect.InvokeAsync(new QuestionAnswerSelectEventArgs()
-            {
-                QuestionId = QuestionId,
-                Answer = String.Join(ExamConsts.Splitter, _selectedAnswerIds),
-            });
+                {
+                    QuestionId = QuestionId,
+                    Answer = String.Join(ExamConsts.Splitter, _selectedAnswerIds),
+                });
         }
     }
     void OnChange(string[] checkedValues)
@@ -191,11 +193,11 @@
         if (OnSubmit.HasDelegate)
         {
             await OnSubmit.InvokeAsync(new QuestionAnswerItem()
-            {
-                QuestionId = QuestionId,
-                Answer = String.Join(ExamConsts.Splitter, _selectedAnswerIds),
-                Right = right
-            });
+                {
+                    QuestionId = QuestionId,
+                    Answer = String.Join(ExamConsts.Splitter, _selectedAnswerIds),
+                    Right = right
+                });
         }
     }
 }

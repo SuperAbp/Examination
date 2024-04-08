@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SocialService } from '@delon/auth';
 import { SettingsService } from '@delon/theme';
@@ -11,7 +11,9 @@ import { SettingsService } from '@delon/theme';
 export class CallbackComponent implements OnInit {
   type = '';
 
-  constructor(private socialService: SocialService, private settingsSrv: SettingsService, private route: ActivatedRoute) {}
+  private socialService = inject(SocialService);
+  private settingsSrv = inject(SettingsService);
+  private route = inject(ActivatedRoute);
 
   ngOnInit(): void {
     this.type = this.route.snapshot.params['type'];

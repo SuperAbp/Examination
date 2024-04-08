@@ -1,0 +1,23 @@
+﻿@using Volo.Abp.BlazoriseUI.Components
+@using Volo.Abp.Ui.LayoutHooks
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Components.LayoutHooks
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Components
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@inherits LayoutComponentBase
+<Layout Class="ant-design-layout">
+    <Header Class="ant-design-header-top">
+        <Branding />
+        <NavMenu />
+        <Row Justify="end">
+            <NavToolbar />
+        </Row>
+    </Header>
+    <Content Class="ant-design-content">
+        @* <PageAlert/> *@
+        <div class="ant-design-body-content">
+            @Body
+        </div>
+        @* <UiPageProgress /> *@
+    </Content>
+    <Footer Class="ant-design-footer"></Footer>
+</Layout>

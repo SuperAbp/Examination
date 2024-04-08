@@ -31,9 +31,12 @@ using Volo.Abp.Caching.StackExchangeRedis;
 using Volo.Abp.DistributedLocking;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
+using Volo.Abp.OpenIddict;
+using Volo.Abp.Security.Claims;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.UI;
 using Volo.Abp.VirtualFileSystem;
+using Volo.Abp.Account.Localization;
 
 namespace SuperAbp.Exam;
 
@@ -52,6 +55,9 @@ public class ExamAuthServerModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
+        var hostingEnvironment = context.Services.GetHostingEnvironment();
+        var configuration = context.Services.GetConfiguration();
+
         PreConfigure<OpenIddictBuilder>(builder =>
         {
             builder.AddValidation(options =>
@@ -61,6 +67,19 @@ public class ExamAuthServerModule : AbpModule
                 options.UseAspNetCore();
             });
         });
+
+        if (!hostingEnvironment.IsDevelopment())
+        {
+            PreConfigure<AbpOpenIddictAspNetCoreOptions>(options =>
+            {
+                options.AddDevelopmentEncryptionAndSigningCertificate = false;
+            });
+
+            PreConfigure<OpenIddictServerBuilder>(serverBuilder =>
+            {
+                serverBuilder.AddProductionEncryptionAndSigningCertificate("openiddict.pfx", "40cfac02-5cb7-4b2e-a498-546ab58e2d46");
+            });
+        }
     }
 
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -73,7 +92,8 @@ public class ExamAuthServerModule : AbpModule
             options.Resources
                 .Get<ExamResource>()
                 .AddBaseTypes(
-                    typeof(AbpUiResource)
+                    typeof(AbpUiResource),
+                    typeof(AccountResource)
                 );
         });
 
@@ -153,6 +173,11 @@ public class ExamAuthServerModule : AbpModule
                     .AllowCredentials();
             });
         });
+
+        context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
+        {
+            options.IsDynamicClaimsEnabled = true;
+        });
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
@@ -185,7 +210,9 @@ public class ExamAuthServerModule : AbpModule
         }
 
         app.UseUnitOfWork();
+        app.UseDynamicClaims();
         app.UseAuthorization();
+
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();

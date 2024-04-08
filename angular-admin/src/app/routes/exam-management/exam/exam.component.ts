@@ -1,19 +1,29 @@
-import { ConfigStateService, LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { STChange, STColumn, STComponent, STPage } from '@delon/abc/st';
-import { SFSchema, SFStringWidgetSchema } from '@delon/form';
+import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
+import { DelonFormModule, SFSchema, SFStringWidgetSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
 import { ExaminationService } from '@proxy/super-abp/exam/admin/controllers';
 import { ExamListDto, GetExamsInput } from '@proxy/super-abp/exam/admin/exam-management/exams';
 import { ExamManagementExamEditComponent } from './edit/edit.component';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { PageHeaderModule } from '@delon/abc/page-header';
 
 @Component({
   selector: 'app-exam-management-exam',
-  templateUrl: './exam.component.html'
+  templateUrl: './exam.component.html',
+  standalone: true,
+  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class ExamManagementExamComponent implements OnInit {
+  private modal = inject(ModalHelper);
+  private localizationService = inject(LocalizationService);
+  private messageService = inject(NzMessageService);
+  private permissionService = inject(PermissionService);
+  private examService = inject(ExaminationService);
   exams: ExamListDto[];
   total: number;
   loading = false;
@@ -91,14 +101,6 @@ export class ExamManagementExamComponent implements OnInit {
     }
   ];
 
-  constructor(
-    private modal: ModalHelper,
-    private localizationService: LocalizationService,
-    private messageService: NzMessageService,
-    private permissionService: PermissionService,
-    private examService: ExaminationService
-  ) {}
-
   ngOnInit() {
     this.params = this.resetParameters();
     this.getList();
@@ -113,8 +115,7 @@ export class ExamManagementExamComponent implements OnInit {
   resetParameters(): GetExamsInput {
     return {
       skipCount: 0,
-      maxResultCount: 10,
-      sorting: 'Id Desc'
+      maxResultCount: 10
     };
   }
   change(e: STChange) {

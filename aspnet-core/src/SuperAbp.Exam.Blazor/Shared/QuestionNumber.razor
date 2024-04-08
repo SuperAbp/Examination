@@ -1,4 +1,4 @@
-﻿<Card>
+﻿﻿<Card>
     <div class="content">
         <div>
             @for (int i = 0; i < Ids.Count; i++)
@@ -24,7 +24,7 @@
     public IReadOnlyList<Guid> ErrorIds { get; set; } = Array.Empty<Guid>();
     [Parameter]
     public EventCallback<Guid> OnChanged { get; set; }
-    
+
     string GetNumberColor(Guid id)
     {
         if (CurrentId == id)

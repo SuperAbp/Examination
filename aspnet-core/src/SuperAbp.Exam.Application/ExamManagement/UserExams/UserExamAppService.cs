@@ -31,6 +31,12 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             _paperRepoRepository = paperRepoRepository;
         }
 
+        public async Task<Guid?> GetUnfinishedAsync()
+        {
+            var userExam = await _userExamRepository.FindAsync(u => u.UserId == CurrentUser.GetId() && !u.Finished);
+            return userExam?.Id;
+            
+        }
         public virtual async Task<UserExamDetailDto> GetAsync(Guid id)
         {
             UserExam entity = await _userExamRepository.GetAsync(id);
@@ -38,64 +44,44 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             return ObjectMapper.Map<UserExam, UserExamDetailDto>(entity);
         }
 
-        public virtual async Task<PagedResultDto<UserExamWithExamListDto>> GetExamListAsync(GetUserExamsInput input)
-        {
-            var queryable = await _userExamRepository.GetQueryableAsync();
-            var examQueryable = await _examRepository.GetQueryableAsync();
-            var result = from ue in queryable
-                    group ue by ue.ExamId into g
-                    join e in examQueryable on g.Key equals e.Id
-                    select new UserExamWithExam
-                    {
-                        ExamId = g.Key,
-                        ExamName = e.Name,
-                        Count = g.Count(),
-                        LastTime = g.Max(m => m.CreationTime),
-                        MaxScore = g.Max(m => m.TotalScore)
-                    };
-            var totalCount = await AsyncExecuter.CountAsync(result);
-            var entities = await AsyncExecuter.ToListAsync(result
-                .OrderBy(input.Sorting ?? "ExamName DESC")
-                .PageBy(input));
-
-            var dtos = ObjectMapper.Map<List<UserExamWithExam>, List<UserExamWithExamListDto>>(entities);
-            return new PagedResultDto<UserExamWithExamListDto>(totalCount, dtos);
-
-        }
         public virtual async Task<PagedResultDto<UserExamListDto>> GetListAsync(GetUserExamsInput input)
         {
             await NormalizeMaxResultCountAsync(input);
 
-            var userExamQueryable = await _userExamRepository.GetQueryableAsync();
-            var eaxmQueryablke = await _examRepository.GetQueryableAsync();
-            long totalCount = await AsyncExecuter.CountAsync(userExamQueryable);
-
-            var queryable = from ue in userExamQueryable
-                            join e in eaxmQueryablke on ue.ExamId equals e.Id
-                            select new UserExamWithDetail
-                            {
-                                Exam = e.Name,
-                                TotalScore = ue.TotalScore,
-                                CreationTime = ue.CreationTime,
-                            };
-
-            var entities = await AsyncExecuter.ToListAsync(queryable
-                .OrderBy(input.Sorting ?? "Id DESC")
+            var queryable = await _userExamRepository.GetQueryableAsync();
+            var examQueryable = await _examRepository.GetQueryableAsync();
+            // TODO:性能较低，需要优化
+            var result = from ue in queryable
+                         join e in examQueryable on ue.ExamId equals e.Id
+                         group new { ue, e } by ue.ExamId into g
+                         select new UserExamWithExam
+                         {
+                             ExamId = g.Key,
+                             ExamName = g.Max(m => m.e.Name),
+                             Count = g.Count(),
+                             LastTime = g.Max(m => m.ue.CreationTime),
+                             MaxScore = g.Max(m => m.ue.TotalScore)
+                         };
+            var totalCount = await AsyncExecuter.CountAsync(result);
+            var entities = await AsyncExecuter.ToListAsync(result
+                .OrderBy(input.Sorting ?? UserExamConsts.DefaultSorting)
                 .PageBy(input));
 
-            var dtos = ObjectMapper.Map<List<UserExamWithDetail>, List<UserExamListDto>>(entities);
-
-
+            var dtos = ObjectMapper.Map<List<UserExamWithExam>, List<UserExamListDto>>(entities);
             return new PagedResultDto<UserExamListDto>(totalCount, dtos);
         }
 
         public virtual async Task<UserExamListDto> CreateAsync(UserExamCreateDto input)
         {
-            if (await _userExamRepository.AnyByExamIdAndUserIdAsync(input.ExamId, CurrentUser.GetId()))
+            if(await _userExamRepository.AnyAsync(ue => ue.UserId == CurrentUser.GetId() && !ue.Finished))
             {
-                throw new UserFriendlyException("您已经参加过此考试！");
+                throw new BusinessException(ExamDomainErrorCodes.ExistsUnfinishedExams);
             }
-
+            var exam = await _examRepository.GetAsync(input.ExamId);
+            if (exam.StartTime > DateTime.Now || exam.EndTime < DateTime.Now)
+            {
+                throw new BusinessException(ExamDomainErrorCodes.OutOfExamTime);
+            }
             var userExam = new UserExam(GuidGenerator.Create(), input.ExamId, CurrentUser.GetId());
             await _userExamManager.CreateQuestionsAsync(userExam.Id, input.ExamId);
             await _userExamRepository.InsertAsync(userExam);
@@ -110,5 +96,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 input.MaxResultCount = maxPageSize.Value;
             }
         }
+
     }
 }
