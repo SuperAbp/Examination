@@ -5,3 +5,4 @@
 /aspnet-core/src/SuperAbp.Exam.Admin.HttpApi.Host/Logs
 /aspnet-core/src/SuperAbp.Exam.Admin.HttpApi.Host/yarn.lock
 /aspnet-core/src/SuperAbp.Exam.HttpApi.Host/yarn.lock
+.vshistory

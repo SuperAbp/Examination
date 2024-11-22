@@ -4,12 +4,12 @@
   
 
   <PropertyGroup><LangVersion>latest</LangVersion>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AntDesign" />
-    <PackageReference Include="Volo.Abp.AspNetCore.Components.Web.Theming" VersionOverride="8.0.0" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Components.Web.Theming" VersionOverride="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

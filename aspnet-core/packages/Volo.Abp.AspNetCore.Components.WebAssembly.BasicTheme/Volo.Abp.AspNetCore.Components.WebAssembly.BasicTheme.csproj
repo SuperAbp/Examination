@@ -4,14 +4,14 @@
     
 
     <PropertyGroup><LangVersion>latest</LangVersion>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <PackageId>Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme</PackageId>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Volo.Abp.AspNetCore.Components.Web.BasicTheme\Volo.Abp.AspNetCore.Components.Web.BasicTheme.csproj" />
         <ProjectReference Include="..\Volo.Abp.AspNetCore.Components.WebAssembly.Theming\Volo.Abp.AspNetCore.Components.WebAssembly.Theming.csproj" />
-        <PackageReference Include="Volo.Abp.Http.Client.IdentityModel.WebAssembly" VersionOverride="8.0.0" />
+        <PackageReference Include="Volo.Abp.Http.Client.IdentityModel.WebAssembly" VersionOverride="9.0.0" />
     </ItemGroup>
 
 </Project>
