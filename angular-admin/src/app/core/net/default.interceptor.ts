@@ -1,16 +1,6 @@
 import { AuthService, LocalizationParam, LocalizationService } from '@abp/ng.core';
 import { clearOAuthStorage } from '@abp/ng.oauth';
-import {
-  HttpContext,
-  HttpErrorResponse,
-  HttpEvent,
-  HttpHandler,
-  HttpHandlerFn,
-  HttpInterceptor,
-  HttpInterceptorFn,
-  HttpRequest,
-  HttpResponseBase
-} from '@angular/common/http';
+import { HttpContext, HttpErrorResponse, HttpEvent, HttpHandler, HttpHandlerFn, HttpInterceptor, HttpInterceptorFn, HttpRequest, HttpResponseBase } from '@angular/common/http';
 import { Injectable, Injector, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
