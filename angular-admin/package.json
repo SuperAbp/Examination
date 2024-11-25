@@ -18,8 +18,7 @@
     "prepare": "cd .. && husky install",
     "lint": "npm run lint:ts && npm run lint:style",
     "lint:ts": "ng lint --fix",
-    "lint:style": "npx stylelint \"src/**/*.less\" --fix",
-    "postinstall": "ng-less-javascript-enabled-patch"
+    "lint:style": "npx stylelint \"src/**/*.less\" --fix"
   },
   "private": true,
   "dependencies": {
