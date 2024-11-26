@@ -25,18 +25,12 @@ export const environment = {
   apis: {
     default: {
       url: 'https://localhost:44388',
-      rootNamespace: 'Lzez.Exam'
+      rootNamespace: 'SuperAbp.Exam'
     }
   },
   resource: {
     mediaUrl: 'https://localhost:44388/api/super-abp/media',
-    userUrl: 'https://passport.lzez.com.cn',
-    erpUrl: 'https://erp.ahsanle.cn/'
-  },
-  identity: {
-    url: 'https://passport.lzez.com.cn',
-    loginCallback: 'ejaLfSbcqezvj9WGUAxoCzq+GvfAAiXWu/38eLB9fsWP2rA/H6eh4b2Ugp1sUF6v',
-    logoutCallback: 'ejaLfSbcqezvj9WGUAxoC8aQim04tniO'
+    userUrl: 'https://localhost:44386'
   },
   api: {
     baseUrl: './',

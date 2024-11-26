@@ -1,4 +1,5 @@
-﻿using SuperAbp.Exam.Localization;
+﻿using SuperAbp.AuditLogging;
+using SuperAbp.Exam.Localization;
 using SuperAbp.MenuManagement;
 using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
@@ -25,7 +26,8 @@ namespace SuperAbp.Exam;
     typeof(AbpPermissionManagementDomainSharedModule),
     typeof(AbpSettingManagementDomainSharedModule),
     typeof(AbpTenantManagementDomainSharedModule),
-    typeof(SuperAbpMenuManagementDomainSharedModule)
+    typeof(SuperAbpMenuManagementDomainSharedModule),
+    typeof(SuperAbpAuditLoggingDomainSharedModule)
     )]
 public class ExamDomainSharedModule : AbpModule
 {

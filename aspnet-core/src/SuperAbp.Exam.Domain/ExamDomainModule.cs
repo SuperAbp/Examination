@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SuperAbp.AuditLogging;
 using SuperAbp.Exam.MultiTenancy;
 using SuperAbp.MenuManagement;
 using Volo.Abp.AuditLogging;
@@ -30,7 +31,8 @@ namespace SuperAbp.Exam;
     typeof(AbpSettingManagementDomainModule),
     typeof(AbpTenantManagementDomainModule),
     typeof(AbpEmailingModule),
-    typeof(SuperAbpMenuManagementDomainModule)
+    typeof(SuperAbpMenuManagementDomainModule),
+    typeof(SuperAbpAuditLoggingDomainModule)
 )]
 public class ExamDomainModule : AbpModule
 {

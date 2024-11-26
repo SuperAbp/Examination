@@ -20,7 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SuperAbp.MenuManagement.Domain" Version="0.5.0" />
+    <PackageReference Include="SuperAbp.AuditLogging.Domain" Version="0.6.0" />
+    <PackageReference Include="SuperAbp.MenuManagement.Domain" Version="0.6.0" />
     <PackageReference Include="Volo.Abp.Emailing" Version="9.0.0" />
     <PackageReference Include="Volo.Abp.Identity.Domain" Version="9.0.0" />
     <PackageReference Include="Volo.Abp.PermissionManagement.Domain.Identity" Version="9.0.0" />

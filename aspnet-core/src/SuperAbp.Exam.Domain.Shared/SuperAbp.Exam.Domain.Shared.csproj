@@ -9,7 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SuperAbp.MenuManagement.Domain.Shared" Version="0.5.0" />
+    <PackageReference Include="SuperAbp.AuditLogging.Domain.Shared" Version="0.6.0" />
+    <PackageReference Include="SuperAbp.MenuManagement.Domain.Shared" Version="0.6.0" />
     <PackageReference Include="Volo.Abp.Identity.Domain.Shared" Version="9.0.0" />
     <PackageReference Include="Volo.Abp.BackgroundJobs.Domain.Shared" Version="9.0.0" />
     <PackageReference Include="Volo.Abp.AuditLogging.Domain.Shared" Version="9.0.0" />
