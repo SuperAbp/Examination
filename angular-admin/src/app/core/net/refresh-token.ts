@@ -1,7 +1,8 @@
 import { HttpClient, HttpHandlerFn, HttpRequest, HttpResponseBase } from '@angular/common/http';
 import { APP_INITIALIZER, Injector, Provider } from '@angular/core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
-import { BehaviorSubject, Observable, catchError, filter, switchMap, take, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, filter, from, switchMap, take, throwError } from 'rxjs';
+import { OAuthService, TokenResponse } from 'angular-oauth2-oidc';
 
 import { toLogin } from './helper';
 
@@ -22,21 +23,16 @@ function reAttachToken(injector: Injector, req: HttpRequest<any>): HttpRequest<a
   });
 }
 
-function refreshTokenRequest(injector: Injector): Observable<any> {
-  const model = injector.get(DA_SERVICE_TOKEN).get();
-  return injector.get(HttpClient).post(`/api/auth/refresh`, { headers: { refresh_token: model?.['refresh_token'] || '' } });
+function refreshTokenRequest(injector: Injector): Observable<TokenResponse> {
+  const oAuthService = injector.get(OAuthService);
+  return from(oAuthService.refreshToken());
 }
 
 /**
  * 刷新Token方式一：使用 401 重新刷新 Token
  */
 export function tryRefreshToken(injector: Injector, ev: HttpResponseBase, req: HttpRequest<any>, next: HttpHandlerFn): Observable<any> {
-  // 1、若请求为刷新Token请求，表示来自刷新Token可以直接跳转登录页
-  if ([`/api/auth/refresh`].some(url => req.url.includes(url))) {
-    toLogin(injector);
-    return throwError(() => ev);
-  }
-  // 2、如果 `refreshToking` 为 `true` 表示已经在请求刷新 Token 中，后续所有请求转入等待状态，直至结果返回后再重新发起请求
+  // 1、如果 `refreshToking` 为 `true` 表示已经在请求刷新 Token 中，后续所有请求转入等待状态，直至结果返回后再重新发起请求
   if (refreshToking) {
     return refreshToken$.pipe(
       filter(v => !!v),
@@ -44,7 +40,7 @@ export function tryRefreshToken(injector: Injector, ev: HttpResponseBase, req: H
       switchMap(() => next(reAttachToken(injector, req)))
     );
   }
-  // 3、尝试调用刷新 Token
+  // 2、尝试调用刷新 Token
   refreshToking = true;
   refreshToken$.next(null);
 
@@ -54,7 +50,10 @@ export function tryRefreshToken(injector: Injector, ev: HttpResponseBase, req: H
       refreshToking = false;
       refreshToken$.next(res);
       // 重新保存新 token
-      injector.get(DA_SERVICE_TOKEN).set(res);
+      injector.get(DA_SERVICE_TOKEN).set({
+        token: res.access_token,
+        expired: res.expires_in
+      });
       // 重新发起请求
       return next(reAttachToken(injector, req));
     }),
@@ -72,17 +71,17 @@ function buildAuthRefresh(injector: Injector) {
     .pipe(
       filter(() => !refreshToking),
       switchMap(res => {
-        console.log(res);
         refreshToking = true;
         return refreshTokenRequest(injector);
       })
     )
     .subscribe({
       next: res => {
-        // TODO: Mock expired value
-        res.expired = +new Date() + 1000 * 60 * 5;
         refreshToking = false;
-        tokenSrv.set(res);
+        tokenSrv.set({
+          token: res.access_token,
+          expired: res.expires_in
+        });
       },
       error: () => toLogin(injector)
     });
