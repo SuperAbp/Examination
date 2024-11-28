@@ -1,12 +1,12 @@
 import { CoreModule } from '@abp/ng.core';
 import { registerLocale } from '@abp/ng.core/locale';
-import { AbpOAuthModule } from '@abp/ng.oauth';
+import { AbpOAuthModule, provideAbpOAuth } from '@abp/ng.oauth';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { default as ngLang } from '@angular/common/locales/zh';
 import { ApplicationConfig, EnvironmentProviders, Provider, importProvidersFrom } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling, withHashLocation, RouterFeatures } from '@angular/router';
-import { defaultInterceptor, provideBindAuthRefresh, provideStartup } from '@core';
+import { I18NService, defaultInterceptor, provideBindAuthRefresh, provideStartup } from '@core';
 import { provideCellWidgets } from '@delon/abc/cell';
 import { provideSTWidgets } from '@delon/abc/st';
 import { authJWTInterceptor, authSimpleInterceptor, provideAuth } from '@delon/auth';
@@ -54,15 +54,15 @@ const providers: Array<Provider | EnvironmentProviders> = [
     CoreModule.forRoot({
       environment,
       registerLocaleFn: registerLocale()
-    }),
-    AbpOAuthModule.forRoot()
+    })
   ]),
   provideHttpClient(withInterceptors([...(environment.interceptorFns ?? []), defaultInterceptor, authJWTInterceptor])),
   provideAnimations(),
   provideRouter(routes, ...routerFeatures),
-  provideAlain({ config: alainConfig, defaultLang, icons: [...ICONS_AUTO, ...ICONS] }),
+  provideAlain({ config: alainConfig, defaultLang, i18nClass: I18NService, icons: [...ICONS_AUTO, ...ICONS] }),
   provideNzConfig(ngZorroConfig),
   provideAuth(),
+  provideAbpOAuth(),
   provideCellWidgets(...CELL_WIDGETS),
   provideSTWidgets(...ST_WIDGETS),
   provideSFConfig({ widgets: SF_WIDGETS }),

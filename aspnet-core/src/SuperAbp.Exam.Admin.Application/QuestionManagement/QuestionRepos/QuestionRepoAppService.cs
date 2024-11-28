@@ -35,11 +35,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
             _questionRepository = questionRepository;
         }
 
-        /// <summary>
-        /// 详情
-        /// </summary>
-        /// <param name="id">主键</param>
-        /// <returns></returns>
         public virtual async Task<QuestionRepoDetailDto> GetAsync(Guid id)
         {
             QuestionRepo entity = await _questionRepoRepository.GetAsync(id);
@@ -59,11 +54,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
             return dto;
         }
 
-        /// <summary>
-        /// 列表
-        /// </summary>
-        /// <param name="input">查询条件</param>
-        /// <returns>结果</returns>
         public virtual async Task<PagedResultDto<QuestionRepoListDto>> GetListAsync(GetQuestionReposInput input)
         {
             long totalCount = await _questionRepoRepository.GetCountAsync(input.Title);
@@ -85,11 +75,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
             return new PagedResultDto<QuestionRepoListDto>(totalCount, dtos);
         }
 
-        /// <summary>
-        /// 获取修改
-        /// </summary>
-        /// <param name="id">主键</param>
-        /// <returns></returns>
         public virtual async Task<GetQuestionRepoForEditorOutput> GetEditorAsync(Guid id)
         {
             QuestionRepo entity = await _questionRepoRepository.GetAsync(id);
@@ -97,11 +82,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
             return ObjectMapper.Map<QuestionRepo, GetQuestionRepoForEditorOutput>(entity);
         }
 
-        /// <summary>
-        /// 创建
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
         [Authorize(ExamPermissions.QuestionRepositories.Create)]
         public virtual async Task<QuestionRepoListDto> CreateAsync(QuestionRepoCreateDto input)
         {
@@ -110,12 +90,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
             return ObjectMapper.Map<QuestionRepo, QuestionRepoListDto>(entity);
         }
 
-        /// <summary>
-        /// 编辑
-        /// </summary>
-        /// <param name="id">主键</param>
-        /// <param name="input"></param>
-        /// <returns></returns>
         [Authorize(ExamPermissions.QuestionRepositories.Update)]
         public virtual async Task<QuestionRepoListDto> UpdateAsync(Guid id, QuestionRepoUpdateDto input)
         {
@@ -125,11 +99,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
             return ObjectMapper.Map<QuestionRepo, QuestionRepoListDto>(entity);
         }
 
-        /// <summary>
-        /// 删除
-        /// </summary>
-        /// <param name="id">主键</param>
-        /// <returns></returns>
         [Authorize(ExamPermissions.QuestionRepositories.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
