@@ -87,12 +87,17 @@ export const defaultInterceptor: HttpInterceptorFn = (req, next) => {
   }
   const injector = inject(Injector);
   const tokenService = injector.get(DA_SERVICE_TOKEN) as ITokenService;
-  if (
-    (tokenService.get().token === '' || tokenService.get().token === undefined) &&
-    (url.indexOf('application-configuration') > 0 || url.indexOf('app/data') > 0)
-  ) {
+  if (url.indexOf('/api/auth/refresh') > 0) {
     url = `${url}?_allow_anonymous=true`;
     req.context.set(ALLOW_ANONYMOUS, true);
+  } else {
+    if (
+      (tokenService.get().token === '' || tokenService.get().token === undefined) &&
+      (url.indexOf('application-configuration') > 0 || url.indexOf('app/data') > 0)
+    ) {
+      url = `${url}?_allow_anonymous=true`;
+      req.context.set(ALLOW_ANONYMOUS, true);
+    }
   }
   const newReq = req.clone({ url, setHeaders: getAdditionalHeaders(req.headers) });
 
@@ -104,7 +109,7 @@ export const defaultInterceptor: HttpInterceptorFn = (req, next) => {
       }
       // 若一切都正常，则后续操作
       return of(ev);
-    })
-    // catchError((err: HttpErrorResponse) => handleData(injector, err, newReq, next))
+    }),
+    catchError((err: HttpErrorResponse) => handleData(injector, err, newReq, next))
   );
 };

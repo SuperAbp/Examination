@@ -1,4 +1,5 @@
-﻿using SuperAbp.MenuManagement;
+﻿using SuperAbp.AuditLogging;
+using SuperAbp.MenuManagement;
 using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.FeatureManagement;
@@ -19,7 +20,8 @@ namespace SuperAbp.Exam.Admin;
     typeof(AbpTenantManagementApplicationModule),
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule),
-    typeof(SuperAbpMenuManagementApplicationModule)
+    typeof(SuperAbpMenuManagementApplicationModule),
+    typeof(SuperAbpAuditLoggingApplicationModule)
     )]
 public class ExamApplicationModule : AbpModule
 {

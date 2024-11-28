@@ -3,13 +3,14 @@
   <Import Project="..\..\common.props" />
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>SuperAbp.Exam.Admin</RootNamespace>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SuperAbp.MenuManagement.Application.Contracts" Version="0.5.0" />
+    <PackageReference Include="SuperAbp.AuditLogging.Application.Contracts" Version="0.6.0" />
+    <PackageReference Include="SuperAbp.MenuManagement.Application.Contracts" Version="0.6.0" />
   </ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\SuperAbp.Exam.Application.Contracts.Shared\SuperAbp.Exam.Application.Contracts.Shared.csproj" />

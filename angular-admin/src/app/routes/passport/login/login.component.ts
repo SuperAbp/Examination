@@ -2,7 +2,7 @@ import { AuthService } from '@abp/ng.core';
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { StartupService } from '@core';
-import { DA_SERVICE_TOKEN, ITokenService, SocialService } from '@delon/auth';
+import { DA_SERVICE_TOKEN, SocialService } from '@delon/auth';
 import { _HttpClient } from '@delon/theme';
 import { OAuthService } from 'angular-oauth2-oidc';
 

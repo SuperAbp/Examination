@@ -6,7 +6,7 @@
     <PackageVersion Include="AlibabaCloud.SDK.Dysmsapi20170525" Version="2.0.24" />
     <PackageVersion Include="aliyun-net-sdk-sts" Version="3.1.2" />
     <PackageVersion Include="Aliyun.OSS.SDK.NetCore" Version="2.13.0" />
-    <PackageVersion Include="AntDesign" Version="0.18.0" />
+    <PackageVersion Include="AntDesign" Version="1.0.1" />
     <PackageVersion Include="AsyncKeyedLock" Version="6.2.2" />
     <PackageVersion Include="Autofac" Version="7.1.0" />
     <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
@@ -162,6 +162,7 @@
     <PackageVersion Include="System.Text.Json" Version="8.0.0" />
     <PackageVersion Include="TimeZoneConverter" Version="6.1.0" />
     <PackageVersion Include="Unidecode.NET" Version="2.1.0" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.Components.Web.Theming" Version="9.0.0" />
     <PackageVersion Include="Volo.Abp.AspNetCore.Components.WebAssembly.Theming" Version="8.0.0" />
     <PackageVersion Include="xunit" Version="2.6.1" />
     <PackageVersion Include="xunit.extensibility.execution" Version="2.6.1" />

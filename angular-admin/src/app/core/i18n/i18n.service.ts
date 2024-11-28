@@ -5,7 +5,7 @@ import { registerLocaleData } from '@angular/common';
 import ngEn from '@angular/common/locales/en';
 import ngZh from '@angular/common/locales/zh';
 import ngZhTw from '@angular/common/locales/zh-Hant';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   DelonLocaleService,
   en_US as delonEnUS,
@@ -13,17 +13,12 @@ import {
   zh_CN as delonZhCn,
   zh_TW as delonZhTw,
   _HttpClient,
-  AlainI18nBaseService,
+  AlainI18nBaseService
 } from '@delon/theme';
 import { AlainConfigService } from '@delon/util/config';
 import { enUS as dfEn, zhCN as dfZhCn, zhTW as dfZhTw } from 'date-fns/locale';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
-import {
-  en_US as zorroEnUS,
-  NzI18nService,
-  zh_CN as zorroZhCN,
-  zh_TW as zorroZhTW,
-} from 'ng-zorro-antd/i18n';
+import { en_US as zorroEnUS, NzI18nService, zh_CN as zorroZhCN, zh_TW as zorroZhTW } from 'ng-zorro-antd/i18n';
 import { Observable } from 'rxjs';
 
 interface LangConfigData {
@@ -45,7 +40,7 @@ const LANGS: { [key: string]: LangConfigData } = {
     date: dfZhCn,
     delon: delonZhCn,
     abbr: '🇨🇳',
-    abp: 'zh-Hans',
+    abp: 'zh-Hans'
   },
   'en-US': {
     text: 'English',
@@ -54,34 +49,29 @@ const LANGS: { [key: string]: LangConfigData } = {
     date: dfEn,
     delon: delonEnUS,
     abbr: '🇬🇧',
-    abp: 'en-US',
-  },
+    abp: 'en-US'
+  }
 };
 
 @Injectable({ providedIn: 'root' })
 export class I18NService extends AlainI18nBaseService {
+  private readonly http = inject(_HttpClient);
+  private readonly settings = inject(SettingsService);
+  private readonly nzI18nService = inject(NzI18nService);
+  private readonly delonLocaleService = inject(DelonLocaleService);
+  private readonly platform = inject(Platform);
+  private readonly sessionState = inject(SessionStateService);
+
   protected override _defaultLang = DEFAULT;
-  private _langs = Object.keys(LANGS).map((code) => {
+  private _langs = Object.keys(LANGS).map(code => {
     const item = LANGS[code];
     return { code, text: item.text, abbr: item.abbr };
   });
 
-  constructor(
-    private http: _HttpClient,
-    private settings: SettingsService,
-    private nzI18nService: NzI18nService,
-    private delonLocaleService: DelonLocaleService,
-    private platform: Platform,
-    cogSrv: AlainConfigService,
-    private sessionState: SessionStateService
-  ) {
+  constructor(cogSrv: AlainConfigService) {
     super(cogSrv);
-
     const defaultLang = this.getDefaultLang();
-    this._defaultLang =
-      this._langs.findIndex((w) => w.code === defaultLang) === -1
-        ? DEFAULT
-        : defaultLang;
+    this._defaultLang = this._langs.findIndex(w => w.code === defaultLang) === -1 ? DEFAULT : defaultLang;
   }
 
   private getDefaultLang(): string {
@@ -91,9 +81,7 @@ export class I18NService extends AlainI18nBaseService {
     if (this.settings.layout.lang) {
       return this.settings.layout.lang;
     }
-    let res =
-      (navigator.languages ? navigator.languages[0] : null) ||
-      navigator.language;
+    let res = (navigator.languages ? navigator.languages[0] : null) || navigator.language;
     const arr = res.split('-');
     return arr.length <= 1 ? res : `${arr[0]}-${arr[1].toUpperCase()}`;
   }

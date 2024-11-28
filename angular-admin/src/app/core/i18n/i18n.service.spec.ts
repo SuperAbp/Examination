@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { DelonLocaleService, SettingsService } from '@delon/theme';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
@@ -6,6 +6,7 @@ import { NzI18nService } from 'ng-zorro-antd/i18n';
 import { of } from 'rxjs';
 
 import { I18NService } from './i18n.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('Service: I18n', () => {
   let injector: TestBed;
@@ -33,14 +34,16 @@ describe('Service: I18n', () => {
 
   function genModule(): void {
     injector = TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         I18NService,
         { provide: SettingsService, useValue: MockSettingsService },
         { provide: NzI18nService, useValue: MockNzI18nService },
-        { provide: DelonLocaleService, useValue: MockDelonLocaleService }
-      ]
-    });
+        { provide: DelonLocaleService, useValue: MockDelonLocaleService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     srv = TestBed.inject(I18NService);
   }
 

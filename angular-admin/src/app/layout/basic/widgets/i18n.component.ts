@@ -1,9 +1,7 @@
-import { COOKIE_LANGUAGE_KEY } from '@abp/ng.core';
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, booleanAttribute, inject } from '@angular/core';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN, I18nPipe, SettingsService } from '@delon/theme';
-import { BooleanInput, InputBoolean } from '@delon/util/decorator';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
@@ -39,9 +37,11 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
   imports: [I18nPipe, NzDropDownModule, NzIconModule, NzMenuModule]
 })
 export class HeaderI18nComponent {
-  static ngAcceptInputType_showLangText: BooleanInput;
+  private readonly settings = inject(SettingsService);
+  private readonly i18n = inject<I18NService>(ALAIN_I18N_TOKEN);
+  private readonly doc = inject(DOCUMENT);
   /** Whether to display language text */
-  @Input() @InputBoolean() showLangText = true;
+  @Input({ transform: booleanAttribute }) showLangText = true;
 
   get langs(): Array<{ code: string; text: string; abbr: string }> {
     return this.i18n.getLangs();
@@ -51,26 +51,16 @@ export class HeaderI18nComponent {
     return this.settings.layout.lang;
   }
 
-  constructor(
-    private settings: SettingsService,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-    @Inject(DOCUMENT) private doc: any
-  ) {}
-
   change(lang: string): void {
     const spinEl = this.doc.createElement('div');
     spinEl.setAttribute('class', `page-loading ant-spin ant-spin-lg ant-spin-spinning`);
     spinEl.innerHTML = `<span class="ant-spin-dot ant-spin-dot-spin"><i></i><i></i><i></i><i></i></span>`;
     this.doc.body.appendChild(spinEl);
 
-    this.i18n.use(lang, {});
-    this.settings.setLayout('lang', lang);
-    setTimeout(() => this.doc.location.reload());
-    // this.i18n.loadLangData(lang).subscribe((res) => {
-    //   debugger;
-    //   this.i18n.use(lang, res);
-    //   this.settings.setLayout('lang', lang);
-    //   setTimeout(() => this.doc.location.reload());
-    // });
+    this.i18n.loadLangData(lang).subscribe(res => {
+      this.i18n.use(lang, res);
+      this.settings.setLayout('lang', lang);
+      setTimeout(() => this.doc.location.reload());
+    });
   }
 }
