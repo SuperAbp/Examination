@@ -43,6 +43,17 @@ public class QuestionController : ExamController, IQuestionAppService
     }
 
     /// <summary>
+    /// 导入
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [HttpPost("import")]
+    public async Task ImportAsync(QuestionImportDto input)
+    {
+        await _questionAppService.ImportAsync(input);
+    }
+
+    /// <summary>
     /// 创建
     /// </summary>
     /// <param name="input"></param>

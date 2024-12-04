@@ -26,6 +26,13 @@ public interface IQuestionAppService : IApplicationService
     Task<GetQuestionForEditorOutput> GetEditorAsync(Guid id);
 
     /// <summary>
+    /// 导入
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    Task ImportAsync(QuestionImportDto input);
+
+    /// <summary>
     /// 创建
     /// </summary>
     /// <param name="input"></param>

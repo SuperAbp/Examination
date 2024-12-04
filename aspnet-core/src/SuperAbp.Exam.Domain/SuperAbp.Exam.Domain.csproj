@@ -6,15 +6,6 @@
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>SuperAbp.Exam</RootNamespace>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>10.0</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>10.0</LangVersion>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\SuperAbp.Exam.Domain.Shared\SuperAbp.Exam.Domain.Shared.csproj" />
   </ItemGroup>

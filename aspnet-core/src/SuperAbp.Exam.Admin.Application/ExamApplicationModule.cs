@@ -1,5 +1,9 @@
-﻿using SuperAbp.AuditLogging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SuperAbp.AuditLogging;
+using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using SuperAbp.MenuManagement;
+using System;
+using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.FeatureManagement;
@@ -30,6 +34,21 @@ public class ExamApplicationModule : AbpModule
         Configure<AbpAutoMapperOptions>(options =>
         {
             options.AddMaps<ExamApplicationModule>();
+        });
+        context.Services.AddTransient(factory =>
+        {
+            Func<QuestionType, IQuestionAnalysis> accessor = key =>
+            {
+                return key switch
+                {
+                    QuestionType.SingleSelect => factory.GetService<SelectAnalysis>(),
+                    QuestionType.MultiSelect => factory.GetService<SelectAnalysis>(),
+                    QuestionType.Judge => factory.GetService<JudgeAnalysis>(),
+                    QuestionType.FillInTheBlanks => factory.GetService<FillInTheBlanksAnalysis>(),
+                    _ => throw new ArgumentNullException($"Not Support key : {key}")
+                };
+            };
+            return accessor;
         });
     }
 }
