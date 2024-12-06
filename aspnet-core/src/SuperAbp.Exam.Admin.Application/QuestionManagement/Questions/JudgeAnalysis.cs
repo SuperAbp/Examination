@@ -71,7 +71,7 @@ public class JudgeAnalysis : IQuestionAnalysis, ITransientDependency
         return questions;
     }
 
-    private static bool GetAnswersInTitle(Regex answerRegex, string[] right, ref string line)
+    private bool GetAnswersInTitle(Regex answerRegex, string[] right, ref string line)
     {
         if (!answerRegex.IsMatch(line))
         {
@@ -82,7 +82,7 @@ public class JudgeAnalysis : IQuestionAnalysis, ITransientDependency
         return GetResult(right, match.Value.Trim());
     }
 
-    private static bool GetResult(string[] right, string result)
+    private bool GetResult(string[] right, string result)
     {
         return right.Contains(result);
     }

@@ -62,7 +62,7 @@ public class SelectAnalysis : IQuestionAnalysis, ITransientDependency
         return questions;
     }
 
-    private static char[] GetAnswersInTitle(Regex answerRegex, ref string line)
+    private char[] GetAnswersInTitle(Regex answerRegex, ref string line)
     {
         if (!answerRegex.IsMatch(line))
         {
