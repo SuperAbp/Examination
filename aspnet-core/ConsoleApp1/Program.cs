@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Text.Unicode;
 
 namespace ConsoleApp1;
 
@@ -10,6 +13,14 @@ internal class Program
     {
         List<Question> questions;
         string content = await File.ReadAllTextAsync(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Doc.txt"));
+        string s = JsonSerializer.Serialize(new
+        {
+            questionType = 0,
+            content = content
+        }, new JsonSerializerOptions()
+        {
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+        });
         string[] lines = content.Split(["\r\n"], StringSplitOptions.None);
         questions = SelectMatch(lines);
         // questions = JudgeMatch(lines);

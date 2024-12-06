@@ -48,7 +48,7 @@ public class QuestionController : ExamController, IQuestionAppService
     /// <param name="input"></param>
     /// <returns></returns>
     [HttpPost("import")]
-    public async Task ImportAsync(QuestionImportDto input)
+    public virtual async Task ImportAsync(QuestionImportDto input)
     {
         await _questionAppService.ImportAsync(input);
     }
