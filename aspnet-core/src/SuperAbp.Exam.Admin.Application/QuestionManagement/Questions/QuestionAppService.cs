@@ -99,31 +99,14 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
                     {
                         questionAnswer.Right = item.Answers.Contains(i);
                     }
+
                     answers.Add(questionAnswer);
                 }
+
                 questions.Add(question);
             }
-
-            for (int i = 0; i < questions.Count; i++)
-            {
-                Question question = questions[i];
-                Console.WriteLine($"{i + 1}. {question.Content}");
-                var tempAnswers = answers.Where(a => a.QuestionId == question.Id).ToList();
-                for (int j = 0; j < tempAnswers.Count; j++)
-                {
-                    QuestionAnswer option = tempAnswers[j];
-                    Console.WriteLine($"{(char)(65 + j)}. {option.Content} ———— {option.Right}");
-                }
-
-                if (!String.IsNullOrWhiteSpace(question.Analysis))
-                {
-                    Console.WriteLine($"解析：{question.Analysis}");
-                }
-
-                Console.WriteLine();
-            }
-            // await questionRepository.InsertManyAsync(questions);
-            // await questionAnswerRepository.InsertManyAsync(answers);
+            await questionRepository.InsertManyAsync(questions);
+            await questionAnswerRepository.InsertManyAsync(answers);
         }
 
         [Authorize(ExamPermissions.Questions.Create)]
