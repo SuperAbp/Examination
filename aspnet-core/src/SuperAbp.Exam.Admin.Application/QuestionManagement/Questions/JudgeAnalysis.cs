@@ -44,6 +44,7 @@ public class JudgeAnalysis : IQuestionAnalysis, ITransientDependency
             }
             else
             {
+                bool answer = GetAnswersInTitle(answerRegex, right, ref formatLine);
                 string title = formatLine;
                 if (titleRegex.IsMatch(formatLine))
                 {
@@ -64,7 +65,7 @@ public class JudgeAnalysis : IQuestionAnalysis, ITransientDependency
                             Content = "错误",
                         }
                     ],
-                    Answers = [GetAnswersInTitle(answerRegex, right, ref formatLine) ? 0 : 1]
+                    Answers = [answer ? 0 : 1]
                 });
             }
         }
@@ -78,7 +79,7 @@ public class JudgeAnalysis : IQuestionAnalysis, ITransientDependency
             return false;
         }
         Match match = answerRegex.Match(line);
-        line = answerRegex.Replace(line, String.Empty);
+        line = answerRegex.Replace(line, String.Empty).Replace("()", "（）");
         return GetResult(right, match.Value.Trim());
     }
 

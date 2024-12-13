@@ -14,7 +14,7 @@ public class SelectAnalysis : IQuestionAnalysis, ITransientDependency
         Regex answerRegex = new Regex(@"(?<=[\(（])([A-Za-z\s]+?)(?=[\）)])");
         Regex titleRegex = new Regex(@"^(?:\d+)(?:[.、]|\s)(.*)");
         Regex optionRequiredRegex = new Regex(@"^(?:[A-Za-z]+)(?:[.、]|\s)(.*)");
-        Regex optionRegex = new Regex(@"[A-Za-z][、.](.+?)(?=\s*[A-Za-z][、.]|$)");
+        Regex optionRegex = new Regex(@"[A-Za-z][、. ](.+?)(?=\s*[A-Za-z][、.]|$)");
 
         foreach (string line in lines)
         {
@@ -31,11 +31,6 @@ public class SelectAnalysis : IQuestionAnalysis, ITransientDependency
             else if (formatLine.StartsWith("答案："))
             {
                 QuestionImportModel question = questions.Last();
-                if (question.Options.Count > 0)
-                {
-                    continue;
-                }
-
                 question.Answers.AddRange(formatLine.Replace("答案：", String.Empty).Trim().Select(c => c - 65));
             }
             else if (formatLine.StartsWith("解析："))
@@ -69,7 +64,7 @@ public class SelectAnalysis : IQuestionAnalysis, ITransientDependency
             return [];
         }
         MatchCollection matches = answerRegex.Matches(line);
-        line = answerRegex.Replace(line, String.Empty);
+        line = answerRegex.Replace(line, String.Empty).Replace("()", "（）");
         return matches.SelectMany(m => m.Value.Trim().ToCharArray()).ToArray();
     }
 }
