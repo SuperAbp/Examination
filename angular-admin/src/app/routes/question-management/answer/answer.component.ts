@@ -1,12 +1,8 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { QuestionAnswerService } from '@proxy/super-abp/exam/admin/controllers';
-import {
-  GetQuestionAnswersInput,
-  QuestionAnswerCreateDto,
-  QuestionAnswerListDto
-} from '@proxy/super-abp/exam/admin/question-management/question-answers';
-import { QuestionType } from '@proxy/super-abp/exam/question-management/questions';
+import { QuestionAnswerService } from '@proxy/admin/controllers';
+import { GetQuestionAnswersInput, QuestionAnswerCreateDto, QuestionAnswerListDto } from '@proxy/admin/question-management/question-answers';
+import { QuestionType } from '@proxy/question-management/questions';
 import { forkJoin, Observable } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 

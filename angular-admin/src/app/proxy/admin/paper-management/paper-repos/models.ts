@@ -1,6 +1,7 @@
 import type { EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
-export interface GetPaperRepoForEditorOutput extends PaperRepoCreateOrUpdateDtoBase {}
+export interface GetPaperRepoForEditorOutput extends PaperRepoCreateOrUpdateDtoBase {
+}
 
 export interface GetPaperReposInput extends PagedAndSortedResultRequestDto {
   paperId?: string;
@@ -35,4 +36,5 @@ export interface PaperRepoListDto extends EntityDto<string> {
   blankScore?: number;
 }
 
-export interface PaperRepoUpdateDto extends PaperRepoCreateOrUpdateDtoBase {}
+export interface PaperRepoUpdateDto extends PaperRepoCreateOrUpdateDtoBase {
+}

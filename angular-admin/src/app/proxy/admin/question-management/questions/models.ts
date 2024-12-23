@@ -20,6 +20,12 @@ export interface QuestionCreateOrUpdateDtoBase {
   questionRepositoryId?: string;
 }
 
+export interface QuestionImportDto {
+  questionRepositoryId?: string;
+  questionType: QuestionType;
+  content?: string;
+}
+
 export interface QuestionListDto extends EntityDto<string> {
   questionRepository?: string;
   questionType: QuestionType;

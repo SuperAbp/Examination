@@ -8,6 +8,7 @@ public static class ExamPermissions
     {
         public const string Default = GroupName + ".Question";
         public const string Management = Default + ".Management";
+        public const string Import = Default + ".Import";
         public const string Create = Default + ".Create";
         public const string Update = Default + ".Update";
         public const string Delete = Default + ".Delete";

@@ -12,6 +12,7 @@ public class ExamPermissionDefinitionProvider : PermissionDefinitionProvider
 
         var questions = myGroup.AddPermission(ExamPermissions.Questions.Default, L("Permission:Questions"));
         questions.AddChild(ExamPermissions.Questions.Management, L("Permission:Management"));
+        questions.AddChild(ExamPermissions.Questions.Import, L("Permission:Import"));
         questions.AddChild(ExamPermissions.Questions.Create, L("Permission:Create"));
         questions.AddChild(ExamPermissions.Questions.Update, L("Permission:Edit"));
         questions.AddChild(ExamPermissions.Questions.Delete, L("Permission:Delete"));

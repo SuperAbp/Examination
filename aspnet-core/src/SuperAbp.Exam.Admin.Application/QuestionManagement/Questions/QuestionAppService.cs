@@ -4,17 +4,10 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Volo.Abp;
-using Volo.Abp.Linq;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.Domain.Repositories;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.Permissions;
-using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
-using static SuperAbp.Exam.Permissions.ExamPermissions;
-using System.Text.RegularExpressions;
-using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
@@ -71,9 +64,10 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             return ObjectMapper.Map<Question, GetQuestionForEditorOutput>(entity);
         }
 
+        [Authorize(ExamPermissions.Questions.Import)]
         public virtual async Task ImportAsync(QuestionImportDto input)
         {
-            string[] lines = input.Content.Split(["\r\n"], StringSplitOptions.None);
+            string[] lines = input.Content.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
             List<QuestionImportModel> items = questionAnalysis(input.QuestionType).Analyse(lines);
             List<Question> questions = [];
             List<QuestionAnswer> answers = [];

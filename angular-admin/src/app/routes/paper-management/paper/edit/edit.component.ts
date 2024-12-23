@@ -4,8 +4,6 @@ import { finalize, tap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { dateTimePickerUtil } from '@delon/util';
 import { PaperManagementRepositoryComponent } from '../../repository/repository.component';
-import { GetPaperForEditorOutput } from '@proxy/super-abp/exam/admin/paper-management/papers';
-import { PaperService } from '@proxy/super-abp/exam/admin/controllers';
 import { CoreModule } from '@abp/ng.core';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -15,6 +13,8 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
+import { GetPaperForEditorOutput } from '@proxy/admin/paper-management/papers';
+import { PaperService } from '@proxy/admin/controllers';
 
 @Component({
   selector: 'app-exam-management-paper-edit',

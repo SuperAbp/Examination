@@ -4,14 +4,14 @@ import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delo
 import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFStringWidgetSchema } from '@delon/form';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { map, tap } from 'rxjs/operators';
-import { GetQuestionsInput, QuestionListDto } from '@proxy/super-abp/exam/admin/question-management/questions';
-import { QuestionRepoService, QuestionService } from '@proxy/super-abp/exam/admin/controllers';
 import { Router } from '@angular/router';
-import { QuestionType } from '@proxy/super-abp/exam/question-management/questions';
 import { of } from 'rxjs';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { QuestionRepoService, QuestionService } from '@proxy/admin/controllers';
+import { GetQuestionsInput, QuestionListDto } from '@proxy/admin/question-management/questions';
+import { QuestionType } from '@proxy/question-management/questions';
 
 @Component({
   selector: 'app-question-management-question',
@@ -188,5 +188,8 @@ export class QuestionManagementQuestionComponent implements OnInit {
   }
   add() {
     this.router.navigateByUrl('/question-management/question/create');
+  }
+  import() {
+    this.router.navigateByUrl('/question-management/question/import');
   }
 }

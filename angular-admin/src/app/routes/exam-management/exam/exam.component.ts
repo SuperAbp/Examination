@@ -5,12 +5,12 @@ import { DelonFormModule, SFSchema, SFStringWidgetSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
-import { ExaminationService } from '@proxy/super-abp/exam/admin/controllers';
-import { ExamListDto, GetExamsInput } from '@proxy/super-abp/exam/admin/exam-management/exams';
 import { ExamManagementExamEditComponent } from './edit/edit.component';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { PageHeaderModule } from '@delon/abc/page-header';
+import { ExaminationService } from '@proxy/admin/controllers';
+import { ExamListDto, GetExamsInput } from '@proxy/admin/exam-management/exams';
 
 @Component({
   selector: 'app-exam-management-exam',

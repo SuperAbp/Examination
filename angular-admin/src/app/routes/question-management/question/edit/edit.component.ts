@@ -2,10 +2,6 @@ import { CoreModule, LocalizationService } from '@abp/ng.core';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuestionAnswerService, QuestionRepoService, QuestionService } from '@proxy/super-abp/exam/admin/controllers';
-import { QuestionRepoListDto } from '@proxy/super-abp/exam/admin/question-management/question-repos';
-import { GetQuestionForEditorOutput } from '@proxy/super-abp/exam/admin/question-management/questions';
-import { QuestionType } from '@proxy/super-abp/exam/question-management/questions';
 import { forkJoin, Observable } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 import { QuestionManagementAnswerComponent } from '../../answer/answer.component';
@@ -22,6 +18,10 @@ import { MultiSelectComponent } from '../../answer/multi-select.component';
 import { BlankComponent } from '../../answer/blank.component';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { JudgeComponent } from '../../answer/judge.component';
+import { GetQuestionForEditorOutput } from '@proxy/admin/question-management/questions';
+import { QuestionAnswerService, QuestionRepoService, QuestionService } from '@proxy/admin/controllers';
+import { QuestionType } from '@proxy/question-management/questions';
+import { QuestionRepoListDto } from '@proxy/admin/question-management/question-repos';
 
 @Component({
   selector: 'app-question-management-question-edit',

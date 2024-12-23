@@ -1,11 +1,10 @@
 import { CoreModule, LocalizationService } from '@abp/ng.core';
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PaperRepoService, QuestionRepoService } from '@proxy/super-abp/exam/admin/controllers';
-import { GetPaperReposInput, PaperRepoCreateDto, PaperRepoListDto } from '@proxy/super-abp/exam/admin/paper-management/paper-repos';
-import { QuestionRepoListDto } from '@proxy/super-abp/exam/admin/question-management/question-repos';
+import { PaperRepoService, QuestionRepoService } from '@proxy/admin/controllers';
+import { GetPaperReposInput, PaperRepoCreateDto, PaperRepoListDto } from '@proxy/admin/paper-management/paper-repos';
+import { QuestionRepoListDto } from '@proxy/admin/question-management/question-repos';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzImageViewComponent } from 'ng-zorro-antd/experimental/image';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';

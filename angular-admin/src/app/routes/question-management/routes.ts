@@ -5,6 +5,7 @@ import { QuestionManagementQuestionEditComponent } from './question/edit/edit.co
 import { QuestionManagementQuestionComponent } from './question/question.component';
 import { QuestionManagementRepositoryComponent } from './repository/repository.component';
 import { QuestionManagementAnswerComponent } from './answer/answer.component';
+import { QuestionManagementQuestionImportComponent } from './question/import/import.component';
 export const routes: Routes = [
   {
     path: 'repository',
@@ -36,6 +37,14 @@ export const routes: Routes = [
     canActivate: [authJWTCanActivate, permissionGuard],
     data: {
       requiredPolicy: 'Exam.Question.Create'
+    }
+  },
+  {
+    path: 'question/import',
+    component: QuestionManagementQuestionImportComponent,
+    canActivate: [authJWTCanActivate, permissionGuard],
+    data: {
+      requiredPolicy: 'Exam.Question.Import'
     }
   },
   { path: 'answer', component: QuestionManagementAnswerComponent }
