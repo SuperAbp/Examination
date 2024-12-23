@@ -6,11 +6,11 @@ import { ModalHelper } from '@delon/theme';
 import { QuestionManagementRepositoryEditComponent } from './edit/edit.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
-import { GetQuestionReposInput, QuestionRepoListDto } from '@proxy/super-abp/exam/admin/question-management/question-repos';
-import { QuestionRepoService } from '@proxy/super-abp/exam/admin/controllers';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { QuestionRepoService } from '@proxy/admin/controllers';
+import { GetQuestionReposInput, QuestionRepoListDto } from '@proxy/admin/question-management/question-repos';
 
 @Component({
   selector: 'app-question-management-repository',

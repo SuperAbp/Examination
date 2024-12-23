@@ -1,0 +1,105 @@
+@if (form) {
+  <ng-template #phActionTpl>
+    <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
+  </ng-template>
+  <page-header [action]="phActionTpl" [title]="'Exam::NewQuestion' | abpLocalization"></page-header>
+  <form nz-form [formGroup]="form" nzLayout="horizontal">
+    <nz-card>
+      <nz-row nzGutter="16">
+        <nz-col nzLg="12" nzXs="24">
+          <nz-form-item>
+            <nz-form-label nzRequired>{{ 'Exam::QuestionType' | abpLocalization }}</nz-form-label>
+            <nz-form-control
+              nzHasFeedback
+              [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
+              [nzErrorTip]="questionTypeErrorTpl"
+            >
+              <nz-select
+                formControlName="questionType"
+                nzShowSearch
+                nzAllowClear
+                [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization: ('Exam::QuestionType' | abpLocalization)"
+              >
+                @for (questionType of questionTypes; track $index) {
+                  <nz-option [nzValue]="questionType.value" [nzLabel]="questionType.label"></nz-option>
+                }
+              </nz-select>
+              <ng-template #questionTypeErrorTpl let-control>
+                @if (control.hasError('required')) {
+                  {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+                }
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col nzLg="12" nzXs="24">
+          <nz-form-item>
+            <nz-form-label nzRequired>{{ 'Exam::QuestionRepository' | abpLocalization }}</nz-form-label>
+            <nz-form-control
+              nzHasFeedback
+              [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
+              [nzErrorTip]="questionRepositoryErrorTpl"
+            >
+              <nz-select
+                formControlName="questionRepositoryId"
+                nzShowSearch
+                nzAllowClear
+                [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization: ('Exam::QuestionRepository' | abpLocalization)"
+              >
+                <nz-option
+                  *ngFor="let questionRepository of questionRepositories"
+                  [nzValue]="questionRepository.id"
+                  [nzLabel]="questionRepository.title"
+                ></nz-option>
+              </nz-select>
+              <ng-template #questionRepositoryErrorTpl let-control>
+                @if (control.hasError('required')) {
+                  {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+                }
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+      </nz-row>
+      <nz-card [nzExtra]="extraTemplate" [nzTitle]="'Exam::Content' | abpLocalization">
+        <nz-form-item>
+          <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization" [nzErrorTip]="contentErrorTpl">
+            <textarea
+              formControlName="content"
+              nz-input
+              rows="10"
+              [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Content' | abpLocalization)"
+            ></textarea>
+            <ng-template #contentErrorTpl let-control>
+              @if (control.hasError('required')) {
+                {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+              }
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-card>
+      <ng-template #extraTemplate>
+        <button nz-button (click)="showTips(tplContent)">{{ 'Exam::Tips' | abpLocalization }}</button>
+        <ng-template #tplContent>
+          <ol>
+            <li>所有题干的格式必须是数字加、或.。如 1、1.</li>
+            <li>选择题最少2个选项A,B，最多支持7个选项A,B,C,D,E,F,G且按照顺序使用</li>
+            <li>选择题选项必须为A-G加、或.。 如 A、A.</li>
+            <li>选择题必须每一个选项占一行</li>
+            <li>答案必须统一放在题目后面，且后面加上：如 答案：</li>
+            <li>解析必须统一放在题目后面，且后面加上：如 解析：（解析不是必填的）</li>
+            <li>判断题答案必须是“错”“对”或者“正确”“错误”</li>
+            <li>为保证识别正确，请勿填写除题干、选项、答案、解析以外的内容</li>
+          </ol>
+        </ng-template>
+      </ng-template>
+    </nz-card>
+  </form>
+  <footer-toolbar>
+    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
+      {{ 'Exam::Import' | abpLocalization }}
+    </button>
+  </footer-toolbar>
+} @else {
+  <nz-spin class="modal-spin"></nz-spin>
+}

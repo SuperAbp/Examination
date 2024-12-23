@@ -1,2 +1,3 @@
-import * as SuperAbp from './super-abp';
-export { SuperAbp };
+import * as Admin from './admin';
+import * as QuestionManagement from './question-management';
+export { Admin, QuestionManagement };

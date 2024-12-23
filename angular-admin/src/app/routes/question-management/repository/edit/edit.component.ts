@@ -4,12 +4,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize, tap } from 'rxjs/operators';
 import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
-import { QuestionRepoService } from '@proxy/super-abp/exam/admin/controllers';
-import { GetQuestionRepoForEditorOutput } from '@proxy/super-abp/exam/admin/question-management/question-repos';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { GetQuestionRepoForEditorOutput } from '@proxy/admin/question-management/question-repos';
+import { QuestionRepoService } from '@proxy/admin/controllers';
 
 @Component({
   selector: 'app-question-management-repository-edit',

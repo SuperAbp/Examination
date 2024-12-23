@@ -1,7 +1,7 @@
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
-import type { GetQuestionForEditorOutput, GetQuestionsInput, QuestionCreateDto, QuestionListDto, QuestionUpdateDto } from '../question-management/questions/models';
+import type { GetQuestionForEditorOutput, GetQuestionsInput, QuestionCreateDto, QuestionImportDto, QuestionListDto, QuestionUpdateDto } from '../question-management/questions/models';
 
 @Injectable({
   providedIn: 'root',
@@ -40,6 +40,15 @@ export class QuestionService {
       method: 'GET',
       url: '/api/question-management/question',
       params: { content: input.content, questionType: input.questionType, questionRepositoryIds: input.questionRepositoryIds, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  import = (input: QuestionImportDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: '/api/question-management/question/import',
+      body: input,
     },
     { apiName: this.apiName,...config });
   

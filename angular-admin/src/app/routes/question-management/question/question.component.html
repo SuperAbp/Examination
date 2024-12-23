@@ -1,5 +1,8 @@
 <page-header [action]="phActionTpl">
   <ng-template #phActionTpl>
+    <button (click)="import()" nz-button nzType="primary" *abpPermission="'Exam.Question.Import'">
+      {{ 'Exam::Import' | abpLocalization }}
+    </button>
     <button (click)="add()" nz-button nzType="primary" *abpPermission="'Exam.Question.Create'">
       {{ 'Exam::NewQuestion' | abpLocalization }}
     </button>
