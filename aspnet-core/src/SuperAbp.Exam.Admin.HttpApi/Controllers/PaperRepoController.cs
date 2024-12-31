@@ -10,11 +10,11 @@ namespace SuperAbp.Exam.Admin.Controllers
     /// 考试题库
     /// </summary>
     [Route("api/paper-repository")]
-    public class PaperRepoController : ExamController, IPaperRepoAppService
+    public class PaperRepoController : ExamController, IPaperRepoAdminAppService
     {
-        private readonly IPaperRepoAppService _examRepoAppService;
+        private readonly IPaperRepoAdminAppService _examRepoAppService;
 
-        public PaperRepoController(IPaperRepoAppService examRepoAppService)
+        public PaperRepoController(IPaperRepoAdminAppService examRepoAppService)
         {
             _examRepoAppService = examRepoAppService;
         }

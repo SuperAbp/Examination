@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Domain.Repositories;
 
 namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
@@ -22,7 +21,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<List<UserExamQuestionWithDetail>> GetListAsync(
-            string sorting = null,
+            string? sorting = null,
             int skipCount = 0,
             int maxResultCount = int.MaxValue,
             Guid? userExamId = null,

@@ -4,19 +4,13 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
     <RootNamespace>SuperAbp.Exam</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>10.0</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>10.0</LangVersion>
-  </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\SuperAbp.Exam.EntityFrameworkCore.Tests\SuperAbp.Exam.EntityFrameworkCore.Tests.csproj" />
+    <ProjectReference Include="..\..\src\SuperAbp.Exam.Domain\SuperAbp.Exam.Domain.csproj" />
+    <ProjectReference Include="..\SuperAbp.Exam.TestBase\SuperAbp.Exam.TestBase.csproj" />
   </ItemGroup>
 
   <ItemGroup>

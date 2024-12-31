@@ -13,10 +13,10 @@ namespace SuperAbp.Exam.PaperManagement.PaperRepos
     {
         Task<PaperRepo> GetAsync(Guid paperId, Guid questionRepositoryId);
 
-        Task<PaperRepo> FindAsync(Guid paperId, Guid questionRepositoryId);
+        Task<PaperRepo?> FindAsync(Guid paperId, Guid questionRepositoryId);
 
         Task<List<PaperRepo>> GetListAsync(
-            string sorting = null,
+            string? sorting = null,
             int skipCount = 0,
             int maxResultCount = int.MaxValue,
             Guid? paperId = null,

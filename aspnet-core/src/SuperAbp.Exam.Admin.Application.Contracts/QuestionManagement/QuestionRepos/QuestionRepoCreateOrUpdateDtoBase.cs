@@ -2,7 +2,7 @@
 {
     public class QuestionRepoCreateOrUpdateDtoBase
     {
-        public string Title { get; set; }
-        public string Remark { get; set; }
+        public required string Title { get; set; }
+        public string? Remark { get; set; }
     }
 }

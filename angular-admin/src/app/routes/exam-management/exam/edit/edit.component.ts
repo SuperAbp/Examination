@@ -112,7 +112,7 @@ export class ExamManagementExamEditComponent implements OnInit {
           this.form = this.fb.group({
             name: [this.exam.name || '', [Validators.required]],
             description: [this.exam.description || ''],
-            score: [this.exam.score || ''],
+            score: [this.exam.score || 0],
             passingScore: [this.exam.passingScore || 0],
             totalTime: [this.exam.totalTime || 0],
             paperId: [this.exam.paperId || ''],

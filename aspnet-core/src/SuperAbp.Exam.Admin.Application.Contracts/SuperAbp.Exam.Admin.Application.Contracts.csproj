@@ -5,12 +5,14 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>SuperAbp.Exam.Admin</RootNamespace>
+	  <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="SuperAbp.AuditLogging.Application.Contracts" Version="0.6.0" />
     <PackageReference Include="SuperAbp.MenuManagement.Application.Contracts" Version="0.6.0" />
+    <PackageReference Include="Volo.Abp.FluentValidation" Version="9.0.0" />
   </ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\SuperAbp.Exam.Application.Contracts.Shared\SuperAbp.Exam.Application.Contracts.Shared.csproj" />

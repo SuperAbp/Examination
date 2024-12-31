@@ -11,7 +11,7 @@ public class GetQuestionsInput
     /// <summary>
     /// 题干
     /// </summary>
-    public string Content { get; set; }
+    public string? Content { get; set; }
 
     public QuestionType? QuestionType { get; set; }
 

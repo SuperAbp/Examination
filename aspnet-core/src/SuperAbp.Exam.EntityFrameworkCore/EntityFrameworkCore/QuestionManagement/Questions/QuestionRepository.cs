@@ -48,7 +48,7 @@ public class QuestionRepository : EfCoreRepository<ExamDbContext, Question, Guid
             .ToListAsync();
     }
 
-    public async Task<List<Question>> GetListAsync(string sorting = null,
+    public async Task<List<Question>> GetListAsync(string? sorting = null,
         int skipCount = 0,
         int maxResultCount = int.MaxValue,
         Guid? questionRepositoryId = null,
@@ -79,9 +79,14 @@ public class QuestionRepository : EfCoreRepository<ExamDbContext, Question, Guid
             .ToListAsync(cancellationToken: cancellationToken);
     }
 
-    public async Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId)
+    public async Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId, CancellationToken cancellationToken = default)
     {
         var dbSet = await GetDbSetAsync();
-        return await dbSet.AnyAsync(q => q.QuestionRepositoryId == questionRepositoryId && q.Id == questionId);
+        return await dbSet.AnyAsync(q => q.QuestionRepositoryId == questionRepositoryId && q.Id == questionId, GetCancellationToken(cancellationToken));
+    }
+
+    public async Task<bool> ContentExistsAsync(string content, CancellationToken cancellationToken = default)
+    {
+        return await (await GetDbSetAsync()).AnyAsync(x => x.Content == content, GetCancellationToken(cancellationToken));
     }
 }

@@ -1,57 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.QuestionManagement.QuestionRepos
 {
-    /// <summary>
-    /// 题库管理
-    /// </summary>
-    public class QuestionRepoAppService : ExamAppService, IQuestionRepoAppService
+    public class QuestionRepoAppService(
+        IQuestionRepoRepository questionRepoRepository,
+        IQuestionRepository questionRepository)
+        : ExamAppService, IQuestionRepoAppService
     {
-        private readonly IQuestionRepoRepository _questionRepoRepository;
-        private readonly IQuestionRepository _questionRepository;
-
-        /// <summary>
-        /// .ctor
-        /// </summary>
-        /// <param name="questionRepoRepository"></param>
-        public QuestionRepoAppService(
-            IQuestionRepoRepository questionRepoRepository, IQuestionRepository questionRepository)
-        {
-            _questionRepoRepository = questionRepoRepository;
-            _questionRepository = questionRepository;
-        }
-
         public virtual async Task<ListResultDto<QuestionType>> GetQuestionTypesAsync(Guid id)
         {
-            var questionTypes = await _questionRepository.GetQuestionTypesAsync(id);
+            List<QuestionType> questionTypes = await questionRepository.GetQuestionTypesAsync(id);
             return new ListResultDto<QuestionType>(questionTypes);
         }
 
         public virtual async Task<PagedResultDto<QuestionRepoListDto>> GetListAsync(GetQuestionReposInput input)
         {
-            long totalCount = await _questionRepoRepository.GetCountAsync(input.Title);
+            long totalCount = await questionRepoRepository.GetCountAsync(input.Title);
 
-            var entities = await _questionRepoRepository
+            List<QuestionRepo> entities = await questionRepoRepository
                 .GetListAsync(input.Title, input.Sorting ?? QuestionRepoConsts.DefaultSorting, input.SkipCount,
                     input.MaxResultCount);
 
-            var dtos = ObjectMapper.Map<List<QuestionRepo>, List<QuestionRepoListDto>>(entities);
+            List<QuestionRepoListDto> dtos = ObjectMapper.Map<List<QuestionRepo>, List<QuestionRepoListDto>>(entities);
             return new PagedResultDto<QuestionRepoListDto>(totalCount, dtos);
         }
 
         public async Task<QuestionRepoDetailDto> GetAsync(Guid id)
         {
-            var questionRepo = await _questionRepoRepository.GetAsync(id);
+            QuestionRepo questionRepo = await questionRepoRepository.GetAsync(id);
 
-            var dto = ObjectMapper.Map<QuestionRepo, QuestionRepoDetailDto>(questionRepo);
+            QuestionRepoDetailDto dto = ObjectMapper.Map<QuestionRepo, QuestionRepoDetailDto>(questionRepo);
             return dto;
         }
     }

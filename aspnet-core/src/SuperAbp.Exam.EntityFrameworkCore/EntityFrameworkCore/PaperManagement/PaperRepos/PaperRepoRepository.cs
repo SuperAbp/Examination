@@ -31,14 +31,14 @@ public class PaperRepoRepository : EfCoreRepository<ExamDbContext, PaperRepo, Gu
                               && er.QuestionRepositoryId == questionRepositoryId);
     }
 
-    public async Task<PaperRepo> FindAsync(Guid paperId, Guid questionRepositoryId)
+    public async Task<PaperRepo?> FindAsync(Guid paperId, Guid questionRepositoryId)
     {
         return await FindAsync(er => er.PaperId == paperId
                                      && er.QuestionRepositoryId == questionRepositoryId);
     }
 
     public async Task<List<PaperRepo>> GetListAsync(
-        string sorting = null,
+        string? sorting = null,
         int skipCount = 0,
         int maxResultCount = int.MaxValue,
         Guid? paperId = null,

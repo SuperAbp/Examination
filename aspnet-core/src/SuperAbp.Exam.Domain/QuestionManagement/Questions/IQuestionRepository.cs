@@ -45,7 +45,7 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<List<Question>> GetListAsync(
-        string sorting = null,
+        string? sorting = null,
         int skipCount = 0,
         int maxResultCount = int.MaxValue,
         Guid? questionRepositoryId = null,
@@ -71,6 +71,9 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// </summary>
     /// <param name="questionRepositoryId"></param>
     /// <param name="questionId"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId);
+    Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId, CancellationToken cancellationToken = default);
+
+    Task<bool> ContentExistsAsync(string content, CancellationToken cancellationToken = default);
 }

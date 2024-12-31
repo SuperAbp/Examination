@@ -9,6 +9,9 @@ namespace SuperAbp.Exam.TrainingManagement;
 /// </summary>
 public class Training : AggregateRoot<Guid>, IHasCreationTime
 {
+    protected Training()
+    { }
+
     public Training(Guid id, Guid userId, Guid questionRepositoryId, Guid questionId, bool right) : base(id)
     {
         UserId = userId;

@@ -10,6 +10,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
         /// <summary>
         /// 标题
         /// </summary>
-        public string Title { get; set; }
+        public string? Title { get; set; }
     }
 }

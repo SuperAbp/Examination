@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers;
@@ -12,12 +9,15 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 /// </summary>
 public class QuestionAnswer : FullAuditedEntity<Guid>
 {
-    public QuestionAnswer()
-    {
-    }
+    protected QuestionAnswer()
+    { }
 
-    public QuestionAnswer(Guid id) : base(id)
+    [SetsRequiredMembers]
+    public QuestionAnswer(Guid id, Guid questionId, string content, bool right) : base(id)
     {
+        Right = right;
+        Content = content;
+        QuestionId = questionId;
     }
 
     /// <summary>
@@ -28,12 +28,12 @@ public class QuestionAnswer : FullAuditedEntity<Guid>
     /// <summary>
     /// 内容
     /// </summary>
-    public string Content { get; set; }
+    public required string Content { get; set; }
 
     /// <summary>
     /// 解析
     /// </summary>
-    public string Analysis { get; set; }
+    public string? Analysis { get; set; }
 
     /// <summary>
     /// 排序

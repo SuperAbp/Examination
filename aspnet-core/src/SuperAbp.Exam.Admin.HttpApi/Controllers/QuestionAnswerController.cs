@@ -11,11 +11,11 @@ namespace SuperAbp.Exam.Admin.Controllers
     /// 答案
     /// </summary>
     [Route("api/question-management/question-answer")]
-    public class QuestionAnswerController : ExamController, IQuestionAnswerAppService
+    public class QuestionAnswerController : ExamController, IQuestionAnswerAdminAppService
     {
-        private readonly IQuestionAnswerAppService _questionAnswerAppService;
+        private readonly IQuestionAnswerAdminAppService _questionAnswerAppService;
 
-        public QuestionAnswerController(IQuestionAnswerAppService questionAnswerAppService)
+        public QuestionAnswerController(IQuestionAnswerAdminAppService questionAnswerAppService)
         {
             _questionAnswerAppService = questionAnswerAppService;
         }

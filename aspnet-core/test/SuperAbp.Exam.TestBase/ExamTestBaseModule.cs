@@ -13,15 +13,10 @@ namespace SuperAbp.Exam;
     typeof(AbpAutofacModule),
     typeof(AbpTestBaseModule),
     typeof(AbpAuthorizationModule),
-    typeof(ExamDomainModule)
-    )]
+    typeof(AbpBackgroundJobsAbstractionsModule)
+)]
 public class ExamTestBaseModule : AbpModule
 {
-    public override void PreConfigureServices(ServiceConfigurationContext context)
-    {
-
-    }
-
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         Configure<AbpBackgroundJobOptions>(options =>

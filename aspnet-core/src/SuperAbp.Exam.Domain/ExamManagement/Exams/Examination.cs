@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SuperAbp.Exam.ExamManagement.Exams;
@@ -8,15 +10,28 @@ namespace SuperAbp.Exam.ExamManagement.Exams;
 /// </summary>
 public class Examination : FullAuditedAggregateRoot<Guid>
 {
+    protected Examination()
+    { }
+
+    [SetsRequiredMembers]
+    public Examination(Guid id, Guid paperId, string name, decimal score, decimal passingScore, int totalTime) : base(id)
+    {
+        Name = name;
+        Score = score;
+        PassingScore = passingScore;
+        TotalTime = totalTime;
+        PaperId = paperId;
+    }
+
     /// <summary>
     /// 名称
     /// </summary>
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     /// <summary>
     /// 描述
     /// </summary>
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     /// <summary>
     /// 分数
@@ -41,10 +56,32 @@ public class Examination : FullAuditedAggregateRoot<Guid>
     /// <summary>
     /// 开始时间
     /// </summary>
-    public DateTime? StartTime { get; set; }
+    public DateTime? StartTime { get; private set; }
 
     /// <summary>
     /// 结束时间
     /// </summary>
-    public DateTime? EndTime { get; set; }
+    public DateTime? EndTime { get; private set; }
+
+    public void SetTime(DateTime? startTime, DateTime? endTime)
+    {
+        if (startTime.HasValue && endTime.HasValue)
+        {
+            if (endTime < startTime)
+            {
+                throw new UserFriendlyException("结束时间必须晚于开始时间！");
+            }
+
+            StartTime = startTime;
+            EndTime = endTime;
+        }
+        else if (startTime.HasValue)
+        {
+            StartTime = startTime;
+        }
+        else if (endTime.HasValue)
+        {
+            EndTime = endTime;
+        }
+    }
 }

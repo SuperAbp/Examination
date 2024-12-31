@@ -1,14 +1,11 @@
 ﻿using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.Domain.Repositories;
-using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
 
 namespace SuperAbp.Exam.TrainingManagement;
@@ -29,11 +26,11 @@ public class TrainingAppService : ExamAppService, ITrainingAppService
 
     public async Task<ListResultDto<TrainingListDto>> GetListAsync(GetTrainsInput input)
     {
-        var trains = await _trainingRepository
+        List<Training> trains = await _trainingRepository
             .GetListAsync(t => t.QuestionRepositoryId == input.QuestionRepositoryId
                                && t.UserId == CurrentUser.GetId());
 
-        var dtos = ObjectMapper.Map<List<Training>, List<TrainingListDto>>(trains);
+        List<TrainingListDto> dtos = ObjectMapper.Map<List<Training>, List<TrainingListDto>>(trains);
 
         return new ListResultDto<TrainingListDto>(dtos);
     }
@@ -53,7 +50,7 @@ public class TrainingAppService : ExamAppService, ITrainingAppService
         {
             throw new UserFriendlyException("请勿重复答题");
         }
-        var training = new Training(GuidGenerator.Create(), CurrentUser.GetId(), input.QuestionRepositoryId, input.QuestionId, input.Right);
+        Training training = new(GuidGenerator.Create(), CurrentUser.GetId(), input.QuestionRepositoryId, input.QuestionId, input.Right);
         await _trainingRepository.InsertAsync(training);
         return ObjectMapper.Map<Training, TrainingListDto>(training);
     }

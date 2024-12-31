@@ -19,7 +19,7 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionRepos
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<string> FindTitleAsync(Guid id);
+        Task<string?> FindTitleAsync(Guid id);
 
         /// <summary>
         /// 数量
@@ -28,7 +28,7 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionRepos
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<int> GetCountAsync(
-            string title = null,
+            string? title = null,
             CancellationToken cancellationToken = default
         );
 
@@ -41,8 +41,8 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionRepos
         /// <param name="maxResultCount">最大</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<QuestionRepo>> GetListAsync(string title = null,
-            string sorting = null,
+        Task<List<QuestionRepo>> GetListAsync(string? title = null,
+            string? sorting = null,
             int skipCount = 0,
             int maxResultCount = int.MaxValue,
             CancellationToken cancellationToken = default);

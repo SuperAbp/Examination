@@ -11,11 +11,11 @@ namespace SuperAbp.Exam.Admin.Controllers
     /// 考试
     /// </summary>
     [Route("api/exam")]
-    public class ExaminationController : ExamController, IExaminationAppService
+    public class ExaminationController : ExamController, IExaminationAdminAppService
     {
-        private readonly IExaminationAppService _examAppService;
+        private readonly IExaminationAdminAppService _examAppService;
 
-        public ExaminationController(IExaminationAppService examAppService)
+        public ExaminationController(IExaminationAdminAppService examAppService)
         {
             _examAppService = examAppService;
         }
