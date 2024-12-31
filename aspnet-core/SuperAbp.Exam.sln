@@ -51,8 +51,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperAbp.Exam.AuthServer", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Volo.Abp.AspNetCore.Components.WebAssembly.Theming", "packages\Volo.Abp.AspNetCore.Components.WebAssembly.Theming\Volo.Abp.AspNetCore.Components.WebAssembly.Theming.csproj", "{7BA439E6-CFED-47F1-9B93-4D9377CC818C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{304C2971-D982-4DE2-861A-1201EB8BDFCA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.Application.Tests", "test\SuperAbp.Exam.Application.Tests\SuperAbp.Exam.Application.Tests.csproj", "{915F45E9-C4B3-4F9E-AD98-F8344E232EEC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.Domain.Tests", "test\SuperAbp.Exam.Domain.Tests\SuperAbp.Exam.Domain.Tests.csproj", "{BF733DD8-1E17-4413-981E-AE3DF11EDFEA}"
@@ -143,10 +141,6 @@ Global
 		{7BA439E6-CFED-47F1-9B93-4D9377CC818C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BA439E6-CFED-47F1-9B93-4D9377CC818C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BA439E6-CFED-47F1-9B93-4D9377CC818C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{304C2971-D982-4DE2-861A-1201EB8BDFCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{304C2971-D982-4DE2-861A-1201EB8BDFCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{304C2971-D982-4DE2-861A-1201EB8BDFCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{304C2971-D982-4DE2-861A-1201EB8BDFCA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{915F45E9-C4B3-4F9E-AD98-F8344E232EEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{915F45E9-C4B3-4F9E-AD98-F8344E232EEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{915F45E9-C4B3-4F9E-AD98-F8344E232EEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
