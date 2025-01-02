@@ -55,7 +55,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers
         public virtual async Task<QuestionAnswerListDto> UpdateAsync(Guid id, QuestionAnswerUpdateDto input)
         {
             QuestionAnswer answer = await questionAnswerRepository.GetAsync(id);
-            answer.Content = input.Content;
+            await questionAnswerManager.SetContentAsync(answer, input.Content);
             answer.Analysis = input.Analysis;
             answer.Sort = input.Sort;
             answer.Right = input.Right;

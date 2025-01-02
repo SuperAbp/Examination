@@ -28,9 +28,9 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionAnswers
             return await GetListAsync(a => a.QuestionId == questionId);
         }
 
-        public async Task<bool> ContentExistsAsync(string content, CancellationToken cancellationToken = default)
+        public async Task<bool> ContentExistsAsync(Guid questionId, string content, CancellationToken cancellationToken = default)
         {
-            return await (await GetDbSetAsync()).AnyAsync(x => x.Content == content, GetCancellationToken(cancellationToken));
+            return await (await GetDbSetAsync()).AnyAsync(x => x.QuestionId == questionId && x.Content == content, GetCancellationToken(cancellationToken));
         }
     }
 }

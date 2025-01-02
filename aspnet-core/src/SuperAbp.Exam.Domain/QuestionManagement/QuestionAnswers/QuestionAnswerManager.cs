@@ -10,14 +10,25 @@ public class QuestionAnswerManager(IQuestionAnswerRepository questionAnswerRepos
 
     public virtual async Task<QuestionAnswer> CreateAsync(Guid questionId, string content, bool right)
     {
-        await CheckContentAsync(content);
+        await CheckContentAsync(questionId, content);
 
         return new QuestionAnswer(GuidGenerator.Create(), questionId, content, right);
     }
 
-    protected virtual async Task CheckContentAsync(string content)
+    public virtual async Task SetContentAsync(QuestionAnswer answer, string content)
     {
-        if (await QuestionAnswerRepository.ContentExistsAsync(content))
+        if (content == answer.Content)
+        {
+            return;
+        }
+        await CheckContentAsync(answer.QuestionId, content);
+
+        answer.Content = content;
+    }
+
+    protected virtual async Task CheckContentAsync(Guid questionId, string content)
+    {
+        if (await QuestionAnswerRepository.ContentExistsAsync(questionId, content))
         {
             throw new QuestionAnswerContentAlreadyExistException(content);
         }

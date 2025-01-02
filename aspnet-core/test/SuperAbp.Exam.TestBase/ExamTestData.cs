@@ -5,14 +5,49 @@ namespace SuperAbp.Exam;
 
 public class ExamTestData : ISingletonDependency
 {
-    public Guid Question1Id = Guid.NewGuid();
-    public Guid Question2Id = Guid.NewGuid();
-    public string Question1Content1 = "Question1的Content";
-    public string Question1Content2 = "Question2的Content";
-    public Guid Answer1Id = Guid.NewGuid();
-    public Guid Answer2Id = Guid.NewGuid();
-    public Guid Answer3Id = Guid.NewGuid();
-    public Guid Answer4Id = Guid.NewGuid();
+    public Guid Question11Id = Guid.NewGuid();
+    public Guid Question12Id = Guid.NewGuid();
+    public Guid Question21Id = Guid.NewGuid();
+    public Guid Question22Id = Guid.NewGuid();
+    public string Question11Content1 = "Question11的Content";
+    public string Question12Content2 = "Question12的Content";
+    public string Question21Content1 = "Question21的Content";
+    public string Question22Content2 = "Question22的Content";
+
+    public Guid Answer111Id = Guid.NewGuid();
+    public string Answer111Content = "Answer1的Content";
+    public Guid Answer112Id = Guid.NewGuid();
+    public string Answer112Content = "Answer2的Content";
+    public Guid Answer113Id = Guid.NewGuid();
+    public string Answer113Content = "Answer3的Content";
+    public Guid Answer114Id = Guid.NewGuid();
+    public string Answer114Content = "Answer4的Content";
+    public Guid Answer121Id = Guid.NewGuid();
+    public string Answer121Content = "Answer1的Content";
+    public Guid Answer122Id = Guid.NewGuid();
+    public string Answer122Content = "Answer2的Content";
+    public Guid Answer123Id = Guid.NewGuid();
+    public string Answer123Content = "Answer3的Content";
+    public Guid Answer124Id = Guid.NewGuid();
+    public string Answer124Content = "Answer4的Content";
+
+    public Guid Answer211Id = Guid.NewGuid();
+    public string Answer211Content = "Answer1的Content";
+    public Guid Answer212Id = Guid.NewGuid();
+    public string Answer212Content = "Answer2的Content";
+    public Guid Answer213Id = Guid.NewGuid();
+    public string Answer213Content = "Answer3的Content";
+    public Guid Answer214Id = Guid.NewGuid();
+    public string Answer214Content = "Answer4的Content";
+    public Guid Answer221Id = Guid.NewGuid();
+    public string Answer221Content = "Answer1的Content";
+    public Guid Answer222Id = Guid.NewGuid();
+    public string Answer222Content = "Answer2的Content";
+    public Guid Answer223Id = Guid.NewGuid();
+    public string Answer223Content = "Answer3的Content";
+    public Guid Answer224Id = Guid.NewGuid();
+    public string Answer224Content = "Answer4的Content";
+
     public Guid QuestionRepository1Id = Guid.NewGuid();
     public Guid QuestionRepository2Id = Guid.NewGuid();
     public string QuestionRepository1Title = "Question Repository1的Title";

@@ -35,7 +35,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
     [Fact]
     public async Task Should_Get_For_Editor()
     {
-        GetQuestionForEditorOutput result = await _questionAppService.GetEditorAsync(_testData.Question1Id);
+        GetQuestionForEditorOutput result = await _questionAppService.GetEditorAsync(_testData.Question11Id);
         result.ShouldNotBeNull();
     }
 
@@ -64,7 +64,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
         {
             QuestionRepositoryId = _testData.QuestionRepository1Id,
             QuestionType = QuestionType.MultiSelect,
-            Content = _testData.Question1Content1,
+            Content = _testData.Question11Content1,
             Analysis = "New_Analysis"
         };
         await Should.ThrowAsync<QuestionContentAlreadyExistException>(
@@ -74,21 +74,18 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
     [Fact]
     public async Task Should_Update()
     {
-        await WithUnitOfWorkAsync(async () =>
+        QuestionUpdateDto dto = new()
         {
-            QuestionUpdateDto dto = new()
-            {
-                QuestionRepositoryId = _testData.QuestionRepository2Id,
-                Content = "Update_Content",
-                Analysis = "Update_Analysis"
-            };
-            await _questionAppService.UpdateAsync(_testData.Question1Id, dto);
-            GetQuestionForEditorOutput question = await _questionAppService.GetEditorAsync(_testData.Question1Id);
-            question.ShouldNotBeNull();
-            question.QuestionRepositoryId.ShouldBe(dto.QuestionRepositoryId);
-            question.Content.ShouldBe(dto.Content);
-            question.Analysis.ShouldBe(dto.Analysis);
-        });
+            QuestionRepositoryId = _testData.QuestionRepository2Id,
+            Content = "Update_Content",
+            Analysis = "Update_Analysis"
+        };
+        await _questionAppService.UpdateAsync(_testData.Question11Id, dto);
+        GetQuestionForEditorOutput question = await _questionAppService.GetEditorAsync(_testData.Question11Id);
+        question.ShouldNotBeNull();
+        question.QuestionRepositoryId.ShouldBe(dto.QuestionRepositoryId);
+        question.Content.ShouldBe(dto.Content);
+        question.Analysis.ShouldBe(dto.Analysis);
     }
 
     [Fact]
@@ -97,19 +94,19 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
         QuestionUpdateDto dto = new()
         {
             QuestionRepositoryId = _testData.QuestionRepository1Id,
-            Content = _testData.Question1Content2,
+            Content = _testData.Question12Content2,
             Analysis = "Update_Analysis"
         };
         await Should.ThrowAsync<QuestionContentAlreadyExistException>(
-            async () => await _questionAppService.UpdateAsync(_testData.Question1Id, dto));
+            async () => await _questionAppService.UpdateAsync(_testData.Question11Id, dto));
     }
 
     [Fact]
     public async Task Should_Delete()
     {
-        await _questionAppService.DeleteAsync(_testData.Question1Id);
+        await _questionAppService.DeleteAsync(_testData.Question11Id);
         await Should.ThrowAsync<EntityNotFoundException>(
             async () =>
-                await _questionAppService.GetEditorAsync(_testData.Question1Id));
+                await _questionAppService.GetEditorAsync(_testData.Question11Id));
     }
 }

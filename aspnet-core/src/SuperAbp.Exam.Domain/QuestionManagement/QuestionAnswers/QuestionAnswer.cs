@@ -10,7 +10,7 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 public class QuestionAnswer : FullAuditedEntity<Guid>
 {
     protected QuestionAnswer()
-    { }
+    { Content = String.Empty; }
 
     [SetsRequiredMembers]
     protected internal QuestionAnswer(Guid id, Guid questionId, string content, bool right) : base(id)
@@ -28,7 +28,7 @@ public class QuestionAnswer : FullAuditedEntity<Guid>
     /// <summary>
     /// 内容
     /// </summary>
-    public required string Content { get; set; }
+    public string Content { get; internal set; }
 
     /// <summary>
     /// 解析

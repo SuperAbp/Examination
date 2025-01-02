@@ -18,6 +18,6 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers
         /// <returns></returns>
         Task<List<QuestionAnswer>> GetListAsync(Guid questionId);
 
-        Task<bool> ContentExistsAsync(string content, CancellationToken cancellationToken = default);
+        Task<bool> ContentExistsAsync(Guid questionId, string content, CancellationToken cancellationToken = default);
     }
 }

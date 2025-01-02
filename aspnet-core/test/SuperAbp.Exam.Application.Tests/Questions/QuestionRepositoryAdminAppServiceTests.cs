@@ -74,34 +74,28 @@ public abstract class QuestionRepositoryAdminAppServiceTests<TStartupModule> : E
     [Fact]
     public async Task Should_Update()
     {
-        await WithUnitOfWorkAsync(async () =>
+        QuestionRepoUpdateDto dto = new()
         {
-            QuestionRepoUpdateDto dto = new()
-            {
-                Title = "Update_Title",
-                Remark = "Update_Remark"
-            };
-            await _questionRepoAppService.UpdateAsync(_testData.QuestionRepository1Id, dto);
-            GetQuestionRepoForEditorOutput question = await _questionRepoAppService.GetEditorAsync(_testData.QuestionRepository1Id);
-            question.ShouldNotBeNull();
-            question.Title.ShouldBe(dto.Title);
-            question.Remark.ShouldBe(dto.Remark);
-        });
+            Title = "Update_Title",
+            Remark = "Update_Remark"
+        };
+        await _questionRepoAppService.UpdateAsync(_testData.QuestionRepository1Id, dto);
+        GetQuestionRepoForEditorOutput question = await _questionRepoAppService.GetEditorAsync(_testData.QuestionRepository1Id);
+        question.ShouldNotBeNull();
+        question.Title.ShouldBe(dto.Title);
+        question.Remark.ShouldBe(dto.Remark);
     }
 
     [Fact]
     public async Task Should_Update_Throw_Exist_Title()
     {
-        await WithUnitOfWorkAsync(async () =>
+        QuestionRepoUpdateDto dto = new()
         {
-            QuestionRepoUpdateDto dto = new()
-            {
-                Title = _testData.QuestionRepository2Title,
-                Remark = "Update_Remark"
-            };
-            await Should.ThrowAsync<QuestionRepositoryTitleAlreadyExistException>(
-                async () => await _questionRepoAppService.UpdateAsync(_testData.QuestionRepository1Id, dto));
-        });
+            Title = _testData.QuestionRepository2Title,
+            Remark = "Update_Remark"
+        };
+        await Should.ThrowAsync<QuestionRepositoryTitleAlreadyExistException>(
+            async () => await _questionRepoAppService.UpdateAsync(_testData.QuestionRepository1Id, dto));
     }
 
     [Fact]
