@@ -1,5 +1,4 @@
-﻿using SuperAbp.Exam.QuestionManagement.Questions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,5 +45,7 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionRepos
             int skipCount = 0,
             int maxResultCount = int.MaxValue,
             CancellationToken cancellationToken = default);
+
+        Task<bool> TitleExistsAsync(string title, CancellationToken cancellationToken = default);
     }
 }

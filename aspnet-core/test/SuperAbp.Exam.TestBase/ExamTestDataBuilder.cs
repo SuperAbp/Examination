@@ -20,8 +20,7 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
 
         using (currentTenant.Change(context?.TenantId))
         {
-            QuestionRepo repository = new(testData.QuestionRepository1Id, testData.QuestionRepository1Title);
-            await questionRepoRepository.InsertAsync(repository);
+            await questionRepoRepository.InsertManyAsync([new(testData.QuestionRepository1Id, testData.QuestionRepository1Title), new(testData.QuestionRepository2Id, testData.QuestionRepository2Title)]);
 
             Question question = new(testData.Question1Id, testData.QuestionRepository1Id, QuestionType.SingleSelect,
                 testData.Question1Content);

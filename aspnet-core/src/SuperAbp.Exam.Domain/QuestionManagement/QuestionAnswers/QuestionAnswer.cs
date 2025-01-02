@@ -13,7 +13,7 @@ public class QuestionAnswer : FullAuditedEntity<Guid>
     { }
 
     [SetsRequiredMembers]
-    public QuestionAnswer(Guid id, Guid questionId, string content, bool right) : base(id)
+    protected internal QuestionAnswer(Guid id, Guid questionId, string content, bool right) : base(id)
     {
         Right = right;
         Content = content;

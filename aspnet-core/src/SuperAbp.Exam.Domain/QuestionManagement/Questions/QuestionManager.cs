@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Services;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions;
 
-public class QuestionManager : DomainService
+public class QuestionManager(IQuestionRepository questionRepository) : DomainService
 {
-    public QuestionManager(IQuestionRepository questionRepository)
-    {
-        QuestionRepository = questionRepository;
-    }
+    protected IQuestionRepository QuestionRepository { get; } = questionRepository;
 
-    protected IQuestionRepository QuestionRepository { get; }
-
-    public virtual async Task<Question> CreateAsync(Guid id, Guid questionRepositoryId, QuestionType questionType, string content)
+    public virtual async Task<Question> CreateAsync(Guid questionRepositoryId, QuestionType questionType, string content)
     {
         await CheckContentAsync(content);
 

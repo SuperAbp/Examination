@@ -80,9 +80,9 @@ public abstract class QuestionAnswerAdminAppServiceTests<TStartupModule> : ExamA
     [Fact]
     public async Task Should_Delete()
     {
-        await _questionAnswerAppService.DeleteAsync(_testData.Question1Id);
+        await _questionAnswerAppService.DeleteAsync(_testData.Answer1Id);
         await Should.ThrowAsync<EntityNotFoundException>(
             async () =>
-                await _questionAnswerAppService.GetEditorAsync(_testData.Question1Id));
+                await _questionAnswerAppService.GetEditorAsync(_testData.Answer1Id));
     }
 }

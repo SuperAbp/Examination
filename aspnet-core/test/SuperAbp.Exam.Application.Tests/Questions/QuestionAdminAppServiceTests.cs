@@ -84,6 +84,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
             await _questionAppService.UpdateAsync(_testData.Question1Id, dto);
             GetQuestionForEditorOutput question = await _questionAppService.GetEditorAsync(_testData.Question1Id);
             question.ShouldNotBeNull();
+            question.QuestionRepositoryId.ShouldBe(dto.QuestionRepositoryId);
             question.Content.ShouldBe(dto.Content);
             question.Analysis.ShouldBe(dto.Analysis);
         });

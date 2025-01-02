@@ -10,10 +10,10 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionRepos;
 public class QuestionRepo : FullAuditedAggregateRoot<Guid>
 {
     protected QuestionRepo()
-    { }
+    { Title = String.Empty; }
 
     [SetsRequiredMembers]
-    public QuestionRepo(Guid id, string title) : base(id)
+    protected internal QuestionRepo(Guid id, string title) : base(id)
     {
         Title = title;
     }
@@ -21,7 +21,7 @@ public class QuestionRepo : FullAuditedAggregateRoot<Guid>
     /// <summary>
     /// 标题
     /// </summary>
-    public required string Title { get; set; }
+    public string Title { get; internal set; }
 
     /// <summary>
     /// 备注

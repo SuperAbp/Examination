@@ -3,7 +3,9 @@ using Volo.Abp.EntityFrameworkCore;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionAnswers
 {
@@ -24,6 +26,11 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionAnswers
         public async Task<List<QuestionAnswer>> GetListAsync(Guid questionId)
         {
             return await GetListAsync(a => a.QuestionId == questionId);
+        }
+
+        public async Task<bool> ContentExistsAsync(string content, CancellationToken cancellationToken = default)
+        {
+            return await (await GetDbSetAsync()).AnyAsync(x => x.Content == content, GetCancellationToken(cancellationToken));
         }
     }
 }

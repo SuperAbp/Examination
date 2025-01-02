@@ -11,6 +11,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
 {
     [Authorize(ExamPermissions.QuestionRepositories.Default)]
     public class QuestionRepoAdminAppService(
+        QuestionRepositoryManager questionRepoManager,
         IQuestionRepoRepository questionRepoRepository,
         IQuestionRepository questionRepository)
         : ExamAppService, IQuestionRepoAdminAppService
@@ -65,11 +66,10 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
         [Authorize(ExamPermissions.QuestionRepositories.Create)]
         public virtual async Task<QuestionRepoListDto> CreateAsync(QuestionRepoCreateDto input)
         {
-            QuestionRepo repository = new QuestionRepo(GuidGenerator.Create(), input.Title)
-            {
-                Remark = input.Remark
-            };
-            repository = await questionRepoRepository.InsertAsync(repository, true);
+            QuestionRepo repository = await questionRepoManager.CreateAsync(input.Title);
+            repository.Remark = input.Remark;
+
+            repository = await questionRepoRepository.InsertAsync(repository);
             return ObjectMapper.Map<QuestionRepo, QuestionRepoListDto>(repository);
         }
 
@@ -77,7 +77,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
         public virtual async Task<QuestionRepoListDto> UpdateAsync(Guid id, QuestionRepoUpdateDto input)
         {
             QuestionRepo repository = await questionRepoRepository.GetAsync(id);
-            repository.Title = input.Title;
+            await questionRepoManager.SetTitleAsync(repository, input.Title);
             repository.Remark = input.Remark;
             repository = await questionRepoRepository.UpdateAsync(repository);
             return ObjectMapper.Map<QuestionRepo, QuestionRepoListDto>(repository);

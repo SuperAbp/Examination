@@ -15,4 +15,5 @@ public class ExamTestData : ISingletonDependency
     public Guid QuestionRepository1Id = Guid.NewGuid();
     public Guid QuestionRepository2Id = Guid.NewGuid();
     public string QuestionRepository1Title = "Question Repository1的Title";
+    public string QuestionRepository2Title = "Question Repository2的Title";
 }

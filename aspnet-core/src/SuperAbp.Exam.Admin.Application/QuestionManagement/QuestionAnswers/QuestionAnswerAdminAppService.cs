@@ -11,7 +11,7 @@ using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers
 {
     [Authorize(ExamPermissions.QuestionAnswers.Default)]
-    public class QuestionAnswerAdminAppService(IQuestionAnswerRepository questionAnswerRepository)
+    public class QuestionAnswerAdminAppService(QuestionAnswerManager questionAnswerManager, IQuestionAnswerRepository questionAnswerRepository)
         : ExamAppService, IQuestionAnswerAdminAppService
     {
         public virtual async Task<PagedResultDto<QuestionAnswerListDto>> GetListAsync(GetQuestionAnswersInput input)
@@ -43,11 +43,9 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers
         [Authorize(ExamPermissions.QuestionAnswers.Create)]
         public virtual async Task<QuestionAnswerListDto> CreateAsync(QuestionAnswerCreateDto input)
         {
-            QuestionAnswer answer = new QuestionAnswer(GuidGenerator.Create(), input.QuestionId, input.Content, input.Right)
-            {
-                Analysis = input.Analysis,
-                Sort = input.Sort
-            };
+            QuestionAnswer answer = await questionAnswerManager.CreateAsync(input.QuestionId, input.Content, input.Right);
+            answer.Analysis = input.Analysis;
+            answer.Sort = input.Sort;
 
             answer = await questionAnswerRepository.InsertAsync(answer, true);
             return ObjectMapper.Map<QuestionAnswer, QuestionAnswerListDto>(answer);

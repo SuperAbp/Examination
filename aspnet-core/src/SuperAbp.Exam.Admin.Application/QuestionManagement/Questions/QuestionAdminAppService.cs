@@ -15,6 +15,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
     [Authorize(ExamPermissions.Questions.Default)]
     public class QuestionAdminAppService(
         QuestionManager questionManager,
+        QuestionAnswerManager questionAnswerManager,
         IQuestionRepository questionRepository,
         IQuestionRepoRepository questionRepoRepository,
         IQuestionAnswerRepository questionAnswerRepository,
@@ -71,17 +72,15 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             List<QuestionAnswer> answers = [];
             foreach (QuestionImportModel item in items)
             {
-                Question question = await questionManager.CreateAsync(GuidGenerator.Create(),
-                    input.QuestionRepositoryId, input.QuestionType, item.Title);
+                Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, input.QuestionType, item.Title);
                 question.Analysis = item.Analysis;
 
                 for (int i = 0; i < item.Options.Count; i++)
                 {
                     QuestionImportModel.Option option = item.Options[i];
-                    QuestionAnswer questionAnswer = new(GuidGenerator.Create(), question.Id, option.Content, item.Answers.Contains(i))
-                    {
-                        Analysis = option.Analysis
-                    };
+                    QuestionAnswer questionAnswer =
+                        await questionAnswerManager.CreateAsync(question.Id, option.Content, item.Answers.Contains(i));
+                    questionAnswer.Analysis = option.Analysis;
 
                     answers.Add(questionAnswer);
                 }
@@ -95,8 +94,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         [Authorize(ExamPermissions.Questions.Create)]
         public virtual async Task<QuestionListDto> CreateAsync(QuestionCreateDto input)
         {
-            Question question = await questionManager.CreateAsync(GuidGenerator.Create(), input.QuestionRepositoryId,
-                input.QuestionType, input.Content);
+            Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, input.QuestionType, input.Content);
             question.Analysis = input.Analysis;
             question = await questionRepository.InsertAsync(question);
             return ObjectMapper.Map<Question, QuestionListDto>(question);

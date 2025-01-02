@@ -59,5 +59,11 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionRepos
                  .PageBy(skipCount, maxResultCount)
                  .ToListAsync(GetCancellationToken(cancellationToken));
         }
+
+        public async Task<bool> TitleExistsAsync(string title, CancellationToken cancellationToken = default)
+        {
+            var dbSet = await GetDbSetAsync();
+            return await dbSet.AnyAsync(x => x.Title == title, GetCancellationToken(cancellationToken));
+        }
     }
 }

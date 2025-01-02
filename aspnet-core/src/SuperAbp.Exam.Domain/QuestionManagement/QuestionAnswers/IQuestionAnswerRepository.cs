@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 
@@ -16,5 +17,7 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers
         /// <param name="questionId">问题Id</param>
         /// <returns></returns>
         Task<List<QuestionAnswer>> GetListAsync(Guid questionId);
+
+        Task<bool> ContentExistsAsync(string content, CancellationToken cancellationToken = default);
     }
 }
