@@ -49,7 +49,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         [Authorize(ExamPermissions.Exams.Create)]
         public virtual async Task<ExamListDto> CreateAsync(ExamCreateDto input)
         {
-            Examination examination = new Examination(GuidGenerator.Create(), input.PaperId, input.Name, input.Score, input.PassingScore, input.TotalTime)
+            Examination examination = new(GuidGenerator.Create(), input.PaperId, input.Name, input.Score, input.PassingScore, input.TotalTime)
             {
                 Description = input.Description
             };
@@ -65,6 +65,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             examination.PaperId = input.PaperId;
             examination.Name = input.Name;
             examination.Score = input.Score;
+            examination.PassingScore = input.PassingScore;
             examination.TotalTime = input.TotalTime;
             examination.Description = input.Description;
             examination.SetTime(input.StartTime, input.EndTime);

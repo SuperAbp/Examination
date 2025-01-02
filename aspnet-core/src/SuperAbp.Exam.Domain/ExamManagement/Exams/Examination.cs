@@ -11,7 +11,7 @@ namespace SuperAbp.Exam.ExamManagement.Exams;
 public class Examination : FullAuditedAggregateRoot<Guid>
 {
     protected Examination()
-    { }
+    { Name = String.Empty; }
 
     [SetsRequiredMembers]
     public Examination(Guid id, Guid paperId, string name, decimal score, decimal passingScore, int totalTime) : base(id)
@@ -26,7 +26,7 @@ public class Examination : FullAuditedAggregateRoot<Guid>
     /// <summary>
     /// 名称
     /// </summary>
-    public required string Name { get; set; }
+    public string Name { get; set; }
 
     /// <summary>
     /// 描述

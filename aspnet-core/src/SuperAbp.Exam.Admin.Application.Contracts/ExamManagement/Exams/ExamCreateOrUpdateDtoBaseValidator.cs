@@ -27,11 +27,11 @@ public class ExamCreateOrUpdateDtoBaseValidator : AbstractValidator<ExamCreateOr
         When(q => q.StartTime.HasValue && q.EndTime.HasValue, () =>
         {
             RuleFor(q => q.StartTime)
-                .GreaterThan(q => q.EndTime)
+                .LessThan(q => q.EndTime)
                 .When(q => q.StartTime.HasValue);
 
             RuleFor(q => q.EndTime)
-                .LessThan(q => q.StartTime)
+                .GreaterThan(q => q.StartTime)
                 .When(q => q.EndTime.HasValue);
         });
     }

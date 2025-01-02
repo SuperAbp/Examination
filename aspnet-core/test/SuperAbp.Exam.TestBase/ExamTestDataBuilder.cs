@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.Exam.QuestionManagement.Questions;
@@ -12,6 +14,8 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     IQuestionRepository questionRepository,
     IQuestionRepoRepository questionRepoRepository,
     IQuestionAnswerRepository questionAnswerRepository,
+    IExamRepository examRepository,
+    IPaperRepository paperRepository,
     ExamTestData testData) : IDataSeedContributor, ITransientDependency
 {
     public async Task SeedAsync(DataSeedContext context)
@@ -48,6 +52,17 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 new QuestionAnswer(testData.Answer222Id, testData.Question12Id, testData.Answer222Content, true),
                 new QuestionAnswer(testData.Answer223Id, testData.Question12Id, testData.Answer223Content, false),
                 new QuestionAnswer(testData.Answer224Id, testData.Question12Id, testData.Answer224Content, false)]);
+
+            await paperRepository.InsertManyAsync([
+                new Paper(testData.Paper1Id, testData.Paper1Name, 100),
+                new Paper(testData.Paper2Id, testData.Paper2Name, 100),
+            ]);
+            await examRepository.InsertManyAsync([
+                new Examination(testData.Examination11Id, testData.Paper1Id, testData.Examination11Name, 100, 60, 60),
+                new Examination(testData.Examination12Id, testData.Paper1Id, testData.Examination12Name, 100, 60, 60),
+                new Examination(testData.Examination21Id, testData.Paper2Id, testData.Examination21Name, 100, 60, 60),
+                new Examination(testData.Examination22Id, testData.Paper2Id, testData.Examination22Name, 100, 60, 60),
+                ]);
         }
     }
 }

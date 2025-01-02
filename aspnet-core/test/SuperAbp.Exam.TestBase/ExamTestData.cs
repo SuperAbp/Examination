@@ -52,4 +52,22 @@ public class ExamTestData : ISingletonDependency
     public Guid QuestionRepository2Id = Guid.NewGuid();
     public string QuestionRepository1Title = "Question Repository1的Title";
     public string QuestionRepository2Title = "Question Repository2的Title";
+
+    public Guid Paper1Id = Guid.NewGuid();
+    public string Paper1Name = "Paper1的Name";
+
+    public Guid Paper2Id = Guid.NewGuid();
+    public string Paper2Name = "Paper2的Name";
+
+    public Guid Examination11Id = Guid.NewGuid();
+    public string Examination11Name = "Examination11的Name";
+
+    public Guid Examination12Id = Guid.NewGuid();
+    public string Examination12Name = "Examination12的Name";
+
+    public Guid Examination21Id = Guid.NewGuid();
+    public string Examination21Name = "Examination21的Name";
+
+    public Guid Examination22Id = Guid.NewGuid();
+    public string Examination22Name = "Examination22的Name";
 }
