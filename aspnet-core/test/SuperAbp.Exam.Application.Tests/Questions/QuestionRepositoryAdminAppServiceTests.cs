@@ -37,6 +37,13 @@ public abstract class QuestionRepositoryAdminAppServiceTests<TStartupModule> : E
     }
 
     [Fact]
+    public async Task Should_Get()
+    {
+        QuestionRepoDetailDto result = await _questionRepoAppService.GetAsync(_testData.QuestionRepository1Id);
+        result.ShouldNotBeNull();
+    }
+
+    [Fact]
     public async Task Should_Create()
     {
         QuestionRepoCreateDto dto = new()
