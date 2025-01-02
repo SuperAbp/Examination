@@ -22,9 +22,10 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
         {
             await questionRepoRepository.InsertManyAsync([new(testData.QuestionRepository1Id, testData.QuestionRepository1Title), new(testData.QuestionRepository2Id, testData.QuestionRepository2Title)]);
 
-            Question question = new(testData.Question1Id, testData.QuestionRepository1Id, QuestionType.SingleSelect,
-                testData.Question1Content);
-            await questionRepository.InsertAsync(question);
+            await questionRepository.InsertManyAsync([
+                new(testData.Question1Id, testData.QuestionRepository1Id, QuestionType.SingleSelect, testData.Question1Content1),
+                new(testData.Question2Id, testData.QuestionRepository1Id, QuestionType.SingleSelect, testData.Question1Content2)
+                ]);
 
             await questionAnswerRepository.InsertManyAsync([
                 new QuestionAnswer(testData.Answer1Id, testData.Question1Id, "测试的选项1", false),

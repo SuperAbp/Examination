@@ -104,7 +104,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         public virtual async Task<QuestionListDto> UpdateAsync(Guid id, QuestionUpdateDto input)
         {
             Question question = await questionRepository.GetAsync(id);
-            question.Content = input.Content;
+            await questionManager.SetContentAsync(question, input.Content);
             question.Analysis = input.Analysis;
             question.QuestionRepositoryId = input.QuestionRepositoryId;
             question = await questionRepository.UpdateAsync(question);

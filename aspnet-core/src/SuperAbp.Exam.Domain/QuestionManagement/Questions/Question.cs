@@ -11,6 +11,7 @@ public class Question : FullAuditedAggregateRoot<Guid>
 {
     protected Question()
     {
+        Content = String.Empty;
     }
 
     [SetsRequiredMembers]
@@ -27,7 +28,7 @@ public class Question : FullAuditedAggregateRoot<Guid>
     /// <summary>
     /// 题干
     /// </summary>
-    public required string Content { get; set; }
+    public string Content { get; internal set; }
 
     /// <summary>
     /// 解析

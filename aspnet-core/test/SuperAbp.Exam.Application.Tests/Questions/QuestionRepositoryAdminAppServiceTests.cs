@@ -60,7 +60,7 @@ public abstract class QuestionRepositoryAdminAppServiceTests<TStartupModule> : E
     }
 
     [Fact]
-    public async Task Should_Create_Throw_QuestionRepoTitleAlreadyExistException()
+    public async Task Should_Create_Throw_Exist_Title()
     {
         QuestionRepoCreateDto dto = new()
         {
@@ -90,7 +90,7 @@ public abstract class QuestionRepositoryAdminAppServiceTests<TStartupModule> : E
     }
 
     [Fact]
-    public async Task Should_Update_Throw_QuestionRepoTitleAlreadyExistException()
+    public async Task Should_Update_Throw_Exist_Title()
     {
         await WithUnitOfWorkAsync(async () =>
         {

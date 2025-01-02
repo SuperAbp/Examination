@@ -9,6 +9,7 @@ using Xunit;
 using GetQuestionsInput = SuperAbp.Exam.Admin.QuestionManagement.Questions.GetQuestionsInput;
 using IQuestionAdminAppService = SuperAbp.Exam.Admin.QuestionManagement.Questions.IQuestionAdminAppService;
 using QuestionListDto = SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionListDto;
+using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 
 namespace SuperAbp.Exam.Questions;
 
@@ -57,13 +58,13 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
     }
 
     [Fact]
-    public async Task Should_Create_Exist()
+    public async Task Should_Create_Throw_Exists_Content()
     {
         QuestionCreateDto dto = new()
         {
             QuestionRepositoryId = _testData.QuestionRepository1Id,
             QuestionType = QuestionType.MultiSelect,
-            Content = _testData.Question1Content,
+            Content = _testData.Question1Content1,
             Analysis = "New_Analysis"
         };
         await Should.ThrowAsync<QuestionContentAlreadyExistException>(
@@ -88,6 +89,19 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
             question.Content.ShouldBe(dto.Content);
             question.Analysis.ShouldBe(dto.Analysis);
         });
+    }
+
+    [Fact]
+    public async Task Should_Update_Throw_Exists_Content()
+    {
+        QuestionUpdateDto dto = new()
+        {
+            QuestionRepositoryId = _testData.QuestionRepository1Id,
+            Content = _testData.Question1Content2,
+            Analysis = "Update_Analysis"
+        };
+        await Should.ThrowAsync<QuestionContentAlreadyExistException>(
+            async () => await _questionAppService.UpdateAsync(_testData.Question1Id, dto));
     }
 
     [Fact]

@@ -7,7 +7,8 @@ public class ExamTestData : ISingletonDependency
 {
     public Guid Question1Id = Guid.NewGuid();
     public Guid Question2Id = Guid.NewGuid();
-    public string Question1Content = "Question1的Content";
+    public string Question1Content1 = "Question1的Content";
+    public string Question1Content2 = "Question2的Content";
     public Guid Answer1Id = Guid.NewGuid();
     public Guid Answer2Id = Guid.NewGuid();
     public Guid Answer3Id = Guid.NewGuid();
