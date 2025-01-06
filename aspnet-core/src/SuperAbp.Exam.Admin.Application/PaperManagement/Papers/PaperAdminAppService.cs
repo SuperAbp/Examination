@@ -55,7 +55,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
                 Description = input.Description
             };
 
-            paper = await paperRepository.InsertAsync(paper, true);
+            paper = await paperRepository.InsertAsync(paper);
             return ObjectMapper.Map<Paper, PaperListDto>(paper);
         }
 

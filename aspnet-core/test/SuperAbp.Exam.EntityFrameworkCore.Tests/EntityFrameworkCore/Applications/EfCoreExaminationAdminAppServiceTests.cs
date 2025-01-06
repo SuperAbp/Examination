@@ -1,4 +1,4 @@
-﻿using SuperAbp.Exam.Questions;
+﻿using SuperAbp.Exam.Exams;
 using Xunit;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.Applications;

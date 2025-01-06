@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using Shouldly;
 using SuperAbp.Exam.Admin.ExamManagement.Exams;
 using System.Threading.Tasks;
@@ -8,9 +7,9 @@ using Volo.Abp.Domain.Entities;
 using Volo.Abp.Modularity;
 using Xunit;
 
-namespace SuperAbp.Exam.Questions;
+namespace SuperAbp.Exam.Exams;
 
-public class ExaminationAdminAppServiceTests<TStartupModule> : ExamApplicationTestBase<TStartupModule>
+public abstract class ExaminationAdminAppServiceTests<TStartupModule> : ExamApplicationTestBase<TStartupModule>
     where TStartupModule : IAbpModule
 {
     private readonly ExamTestData _testData;
