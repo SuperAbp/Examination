@@ -12,20 +12,12 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionAnswers
     /// <summary>
     /// 答案
     /// </summary>
-    public class QuestionAnswerRepository : EfCoreRepository<ExamDbContext, QuestionAnswer, Guid>, IQuestionAnswerRepository
+    public class QuestionAnswerRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
+        : EfCoreRepository<ExamDbContext, QuestionAnswer, Guid>(dbContextProvider), IQuestionAnswerRepository
     {
-        /// <summary>
-        /// .ctor
-        ///</summary>
-        public QuestionAnswerRepository(
-            IDbContextProvider<ExamDbContext> dbContextProvider)
-            : base(dbContextProvider)
+        public async Task<List<QuestionAnswer>> GetListAsync(Guid questionId, CancellationToken cancellationToken = default)
         {
-        }
-
-        public async Task<List<QuestionAnswer>> GetListAsync(Guid questionId)
-        {
-            return await GetListAsync(a => a.QuestionId == questionId);
+            return await GetListAsync(a => a.QuestionId == questionId, cancellationToken: cancellationToken);
         }
 
         public async Task<bool> ContentExistsAsync(Guid questionId, string content, CancellationToken cancellationToken = default)

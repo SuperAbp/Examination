@@ -76,7 +76,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
                 JudgeCount = input.JudgeCount,
                 JudgeScore = input.JudgeScore
             };
-            repository = await examRepoRepository.InsertAsync(repository, true);
+            repository = await examRepoRepository.InsertAsync(repository);
             return ObjectMapper.Map<PaperRepo, PaperRepoListDto>(repository);
         }
 

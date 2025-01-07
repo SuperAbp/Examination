@@ -16,23 +16,26 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// 数量
     /// </summary>
     /// <param name="questionRepositoryId">题库Id</param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<int> GetCountAsync(Guid questionRepositoryId);
+    Task<int> GetCountAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 数量
     /// </summary>
     /// <param name="questionRepositoryId">题库Id</param>
     /// <param name="questionType">问题类型</param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType);
+    Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 题型
     /// </summary>
     /// <param name="questionRepositoryId"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId);
+    Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 列表

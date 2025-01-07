@@ -10,10 +10,12 @@ namespace SuperAbp.Exam.PaperManagement.Papers;
 public class Paper : FullAuditedAggregateRoot<Guid>
 {
     protected Paper()
-    { }
+    {
+        Name = String.Empty;
+    }
 
     [SetsRequiredMembers]
-    public Paper(Guid id, string name, decimal score) : base(id)
+    protected internal Paper(Guid id, string name, decimal score) : base(id)
     {
         Name = name;
         Score = score;
@@ -22,7 +24,7 @@ public class Paper : FullAuditedAggregateRoot<Guid>
     /// <summary>
     /// 名称
     /// </summary>
-    public required string Name { get; set; }
+    public string Name { get; internal set; }
 
     /// <summary>
     /// 描述

@@ -15,8 +15,9 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers
         /// 列表
         /// </summary>
         /// <param name="questionId">问题Id</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<QuestionAnswer>> GetListAsync(Guid questionId);
+        Task<List<QuestionAnswer>> GetListAsync(Guid questionId, CancellationToken cancellationToken = default);
 
         Task<bool> ContentExistsAsync(Guid questionId, string content, CancellationToken cancellationToken = default);
     }

@@ -37,7 +37,7 @@ public class TrainingAppService : ExamAppService, ITrainingAppService
 
     public async Task<TrainingListDto> CreateAsync(TrainingCreateDto input)
     {
-        if (!await _questionRepoRepository.AnyAsync(input.QuestionRepositoryId))
+        if (!await _questionRepoRepository.IdExistsAsync(input.QuestionRepositoryId))
         {
             throw new UserFriendlyException("题库不存在");
         }

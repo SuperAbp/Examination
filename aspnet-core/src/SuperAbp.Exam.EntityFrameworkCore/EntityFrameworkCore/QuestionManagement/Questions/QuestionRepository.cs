@@ -14,38 +14,30 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.Questions;
 /// <summary>
 /// 问题
 /// </summary>
-public class QuestionRepository : EfCoreRepository<ExamDbContext, Question, Guid>, IQuestionRepository
+public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
+    : EfCoreRepository<ExamDbContext, Question, Guid>(dbContextProvider), IQuestionRepository
 {
-    /// <summary>
-    /// .ctor
-    ///</summary>
-    public QuestionRepository(
-        IDbContextProvider<ExamDbContext> dbContextProvider)
-        : base(dbContextProvider)
-    {
-    }
-
-    public async Task<int> GetCountAsync(Guid questionRepositoryId)
+    public async Task<int> GetCountAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {
         return await (await GetDbSetAsync())
             .Where(r => r.QuestionRepositoryId == questionRepositoryId)
-            .CountAsync();
+            .CountAsync(cancellationToken);
     }
 
-    public async Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType)
+    public async Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType, CancellationToken cancellationToken = default)
     {
         return await (await GetDbSetAsync())
             .Where(r => r.QuestionRepositoryId == questionRepositoryId && r.QuestionType == questionType)
-            .CountAsync();
+            .CountAsync(cancellationToken);
     }
 
-    public async Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId)
+    public async Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {
         var dbSet = await GetDbSetAsync();
         return await dbSet.Where(q => q.QuestionRepositoryId == questionRepositoryId)
             .GroupBy(q => q.QuestionType)
             .Select(q => q.Key)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<List<Question>> GetListAsync(string? sorting = null,

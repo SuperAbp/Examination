@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.PaperManagement.PaperRepos;
@@ -13,7 +12,7 @@ using SuperAbp.Exam.PaperManagement.Papers;
 namespace SuperAbp.Exam.Admin.PaperManagement.Papers
 {
     [Authorize(ExamPermissions.Papers.Default)]
-    public class PaperAdminAppService(IPaperRepository paperRepository, IPaperRepoRepository paperRepoRepository)
+    public class PaperAdminAppService(IPaperRepository paperRepository, IPaperRepoRepository paperRepoRepository, PaperManager paperManager)
         : ExamAppService, IPaperAdminAppService
     {
         public virtual async Task<PagedResultDto<PaperListDto>> GetListAsync(GetPapersInput input)
@@ -45,15 +44,10 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         [Authorize(ExamPermissions.Papers.Create)]
         public virtual async Task<PaperListDto> CreateAsync(PaperCreateDto input)
         {
-            if (await paperRepository.ExistsByNameAsync(input.Name.Trim()))
-            {
-                throw new UserFriendlyException(L["ExamExists"]);
-            }
-
-            Paper paper = new Paper(GuidGenerator.Create(), input.Name, input.Score)
-            {
-                Description = input.Description
-            };
+            Paper paper = await paperManager.CreateAsync(input.Name, input.Score);
+            paper.Description = input.Description;
+            // TODO: Set total question count.
+            paper.TotalQuestionCount = 0;
 
             paper = await paperRepository.InsertAsync(paper);
             return ObjectMapper.Map<Paper, PaperListDto>(paper);
@@ -63,7 +57,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         public virtual async Task<PaperListDto> UpdateAsync(Guid id, PaperUpdateDto input)
         {
             Paper paper = await paperRepository.GetAsync(id);
-            paper.Name = input.Name;
+            await paperManager.SetNameAsync(paper, input.Name);
             paper.Score = input.Score;
             paper.Description = input.Description;
             paper = await paperRepository.UpdateAsync(paper);

@@ -8,17 +8,9 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.Exams
     /// <summary>
     /// 考试
     /// </summary>
-    public class ExamRepository : EfCoreRepository<ExamDbContext, Examination, Guid>, IExamRepository
+    public class ExamRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
+        : EfCoreRepository<ExamDbContext, Examination, Guid>(dbContextProvider), IExamRepository
     {
-        /// <summary>
-        /// .ctor
-        ///</summary>
-        public ExamRepository(
-            IDbContextProvider<ExamDbContext> dbContextProvider)
-            : base(dbContextProvider)
-        {
-        }
-
         // TODO:编写仓储代码
     }
 }

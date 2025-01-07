@@ -1,6 +1,7 @@
-﻿using Shouldly;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Shouldly;
 using SuperAbp.Exam.Admin.PaperManagement.Papers;
+using SuperAbp.Exam.PaperManagement.Papers;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Modularity;
@@ -52,6 +53,19 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
     }
 
     [Fact]
+    public async Task Should_Create_Throw_Exists_Content()
+    {
+        PaperCreateDto dto = new()
+        {
+            Name = _testData.Paper1Name,
+            Description = "New_Description",
+            Score = 100
+        };
+        await Should.ThrowAsync<PaperNameAlreadyExistException>(
+            async () => await _paperAdminAppService.CreateAsync(dto));
+    }
+
+    [Fact]
     public async Task Should_Update()
     {
         PaperUpdateDto dto = new()
@@ -66,6 +80,19 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
         question.Name.ShouldBe(dto.Name);
         question.Description.ShouldBe(dto.Description);
         question.Score.ShouldBe(dto.Score);
+    }
+
+    [Fact]
+    public async Task Should_Update_Throw_Exists_Content()
+    {
+        PaperUpdateDto dto = new()
+        {
+            Name = _testData.Paper2Name,
+            Description = "Update_Description",
+            Score = int.MaxValue
+        };
+        await Should.ThrowAsync<PaperNameAlreadyExistException>(
+            async () => await _paperAdminAppService.UpdateAsync(_testData.Paper1Id, dto));
     }
 
     [Fact]

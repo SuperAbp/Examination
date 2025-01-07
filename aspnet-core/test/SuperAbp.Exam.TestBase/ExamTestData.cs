@@ -70,4 +70,8 @@ public class ExamTestData : ISingletonDependency
 
     public Guid Examination22Id = Guid.NewGuid();
     public string Examination22Name = "Examination22的Name";
+
+    public Guid PaperRepository1Id = Guid.NewGuid();
+
+    public Guid PaperRepository2Id = Guid.NewGuid();
 }

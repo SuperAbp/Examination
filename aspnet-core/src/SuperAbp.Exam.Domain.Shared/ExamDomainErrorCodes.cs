@@ -19,4 +19,9 @@ public static class ExamDomainErrorCodes
     {
         public const string ContentAlreadyExists = "Exam:Question:0001";
     }
+
+    public static class Papers
+    {
+        public const string NameAlreadyExists = "Exam:Paper:0001";
+    }
 }

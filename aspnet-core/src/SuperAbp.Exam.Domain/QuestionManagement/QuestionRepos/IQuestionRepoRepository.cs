@@ -11,14 +11,13 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionRepos
     /// </summary>
     public interface IQuestionRepoRepository : IRepository<QuestionRepo, Guid>
     {
-        Task<bool> AnyAsync(Guid id);
-
         /// <summary>
         /// 获取标题
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string?> FindTitleAsync(Guid id);
+        Task<string?> FindTitleAsync(Guid id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 数量
@@ -45,6 +44,8 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionRepos
             int skipCount = 0,
             int maxResultCount = int.MaxValue,
             CancellationToken cancellationToken = default);
+
+        Task<bool> IdExistsAsync(Guid id, CancellationToken cancellationToken = default);
 
         Task<bool> TitleExistsAsync(string title, CancellationToken cancellationToken = default);
     }

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.PaperManagement.PaperRepos;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
@@ -16,6 +17,7 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     IQuestionAnswerRepository questionAnswerRepository,
     IExamRepository examRepository,
     IPaperRepository paperRepository,
+    IPaperRepoRepository paperRepoRepository,
     ExamTestData testData) : IDataSeedContributor, ITransientDependency
 {
     public async Task SeedAsync(DataSeedContext context)
@@ -57,6 +59,32 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 new Paper(testData.Paper1Id, testData.Paper1Name, 100),
                 new Paper(testData.Paper2Id, testData.Paper2Name, 100),
             ]);
+
+            await paperRepoRepository.InsertManyAsync([
+                new PaperRepo(testData.PaperRepository1Id, testData.Paper1Id, testData.QuestionRepository1Id)
+                {
+                    SingleCount = 1,
+                    SingleScore = 1,
+                    MultiCount = 1,
+                    MultiScore = 1,
+                    JudgeCount = 1,
+                    JudgeScore = 1,
+                    BlankCount = 1,
+                    BlankScore = 1
+                },
+                new PaperRepo(testData.PaperRepository2Id, testData.Paper1Id, testData.QuestionRepository1Id)
+                {
+                    SingleCount = 1,
+                    SingleScore = 1,
+                    MultiCount = 1,
+                    MultiScore = 1,
+                    JudgeCount = 1,
+                    JudgeScore = 1,
+                    BlankCount = 1,
+                    BlankScore = 1
+                },
+            ]);
+
             await examRepository.InsertManyAsync([
                 new Examination(testData.Examination11Id, testData.Paper1Id, testData.Examination11Name, 100, 60, 60),
                 new Examination(testData.Examination12Id, testData.Paper1Id, testData.Examination12Name, 100, 60, 60),
