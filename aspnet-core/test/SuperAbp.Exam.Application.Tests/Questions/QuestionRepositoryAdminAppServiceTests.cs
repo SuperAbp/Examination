@@ -1,5 +1,4 @@
-﻿using System;
-using Shouldly;
+﻿using Shouldly;
 using System.Threading.Tasks;
 using SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos;
 using Volo.Abp.Application.Dtos;
@@ -7,6 +6,9 @@ using Volo.Abp.Domain.Entities;
 using Volo.Abp.Modularity;
 using Xunit;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
+using GetQuestionReposInput = SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos.GetQuestionReposInput;
+using QuestionRepoDetailDto = SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos.QuestionRepoDetailDto;
+using QuestionRepoListDto = SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos.QuestionRepoListDto;
 
 namespace SuperAbp.Exam.Questions;
 

@@ -1,14 +1,14 @@
 ﻿using System;
 using Shouldly;
 using SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers;
-using SuperAbp.Exam.Admin.QuestionManagement.Questions;
-using SuperAbp.Exam.QuestionManagement.Questions;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Modularity;
 using Xunit;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using Volo.Abp.Validation;
+using QuestionAnswerListDto = SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto;
 
 namespace SuperAbp.Exam.Questions;
 
@@ -29,6 +29,13 @@ public abstract class QuestionAnswerAdminAppServiceTests<TStartupModule> : ExamA
     {
         PagedResultDto<QuestionAnswerListDto> result = await _questionAnswerAppService.GetListAsync(new GetQuestionAnswersInput { QuestionId = _testData.Question11Id });
         result.Items.Count.ShouldBeGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task Should_Get_List_Throw_Not_Validation()
+    {
+        await Should.ThrowAsync<AbpValidationException>(
+            async () => await _questionAnswerAppService.GetListAsync(new GetQuestionAnswersInput()));
     }
 
     [Fact]

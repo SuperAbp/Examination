@@ -1,10 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.UserExamQuestions;
+using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.PaperManagement.PaperRepos;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.Exam.QuestionManagement.Questions;
+using SuperAbp.Exam.TrainingManagement;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.MultiTenancy;
@@ -18,6 +22,9 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     IExamRepository examRepository,
     IPaperRepository paperRepository,
     IPaperRepoRepository paperRepoRepository,
+    IUserExamRepository userExamRepository,
+    IUserExamQuestionRepository userExamQuestionRepository,
+    ITrainingRepository trainingRepository,
     ExamTestData testData) : IDataSeedContributor, ITransientDependency
 {
     public async Task SeedAsync(DataSeedContext context)
@@ -91,6 +98,27 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 new Examination(testData.Examination21Id, testData.Paper2Id, testData.Examination21Name, 100, 60, 60),
                 new Examination(testData.Examination22Id, testData.Paper2Id, testData.Examination22Name, 100, 60, 60),
                 ]);
+
+            await userExamRepository.InsertManyAsync([
+                new UserExam(testData.UserExam11Id, testData.Examination11Id, testData.UserId) { Finished = true },
+                new UserExam(testData.UserExam12Id, testData.Examination12Id, testData.UserId) { Finished = true },
+                new UserExam(testData.UserExam21Id, testData.Examination21Id, testData.UserId) { Finished = true },
+                new UserExam(testData.UserExam22Id, testData.Examination22Id, testData.UserId) { Finished = true }
+            ]);
+
+            await userExamQuestionRepository.InsertManyAsync([
+                new UserExamQuestion(testData.UserExamQuestion11Id, testData.UserExam11Id, testData.Question11Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion12Id, testData.UserExam11Id, testData.Question12Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion21Id, testData.UserExam21Id, testData.Question11Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion22Id, testData.UserExam21Id, testData.Question12Id, 100)
+            ]);
+
+            await trainingRepository.InsertManyAsync([
+                new Training(testData.Training1Id, testData.UserId, testData.QuestionRepository1Id,
+                    testData.Question11Id, false),
+                new Training(testData.Training2Id, testData.UserId, testData.QuestionRepository1Id,
+                    testData.Question11Id, false),
+            ]);
         }
     }
 }

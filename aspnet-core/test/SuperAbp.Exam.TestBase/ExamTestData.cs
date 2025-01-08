@@ -5,6 +5,8 @@ namespace SuperAbp.Exam;
 
 public class ExamTestData : ISingletonDependency
 {
+    public Guid UserId = new Guid("2e701e62-0953-4dd3-910b-dc6cc93ccb0d");
+
     public Guid Question11Id = Guid.NewGuid();
     public Guid Question12Id = Guid.NewGuid();
     public Guid Question21Id = Guid.NewGuid();
@@ -74,4 +76,19 @@ public class ExamTestData : ISingletonDependency
     public Guid PaperRepository1Id = Guid.NewGuid();
 
     public Guid PaperRepository2Id = Guid.NewGuid();
+
+    public Guid UserExam11Id = Guid.NewGuid();
+    public Guid UserExam12Id = Guid.NewGuid();
+
+    public Guid UserExam21Id = Guid.NewGuid();
+    public Guid UserExam22Id = Guid.NewGuid();
+
+    public Guid UserExamQuestion11Id = Guid.NewGuid();
+    public Guid UserExamQuestion12Id = Guid.NewGuid();
+
+    public Guid UserExamQuestion21Id = Guid.NewGuid();
+    public Guid UserExamQuestion22Id = Guid.NewGuid();
+
+    public Guid Training1Id = Guid.NewGuid();
+    public Guid Training2Id = Guid.NewGuid();
 }

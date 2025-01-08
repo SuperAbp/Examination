@@ -49,7 +49,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
         public virtual async Task<UserExamQuestionListDto> CreateAsync(UserExamQuestionCreateDto input)
         {
             // TODO:Get question score.
-            UserExamQuestion entity = new(GuidGenerator.Create(), input.UserExamId, input.QuestionId, 0);
+            UserExamQuestion entity = new(GuidGenerator.Create(), input.UserExamId, input.QuestionId, 0)
+            {
+                Answers = input.Answers
+            };
 
             entity = await userExamQuestionRepository.InsertAsync(entity);
             return ObjectMapper.Map<UserExamQuestion, UserExamQuestionListDto>(entity);

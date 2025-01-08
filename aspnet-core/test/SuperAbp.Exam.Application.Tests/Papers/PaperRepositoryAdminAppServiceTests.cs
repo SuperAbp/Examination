@@ -5,6 +5,8 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Modularity;
 using Xunit;
 using Volo.Abp.Domain.Entities;
+using SuperAbp.Exam.PaperManagement.Papers;
+using Volo.Abp.Validation;
 
 namespace SuperAbp.Exam.Papers;
 
@@ -25,6 +27,13 @@ public abstract class PaperRepositoryAdminAppServiceTests<TStartupModule> : Exam
     {
         PagedResultDto<PaperRepoListDto> result = await _paperRepoAdminAppService.GetListAsync(new GetPaperReposInput() { PaperId = _testData.Paper1Id });
         result.Items.Count.ShouldBeGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task Should_Get_List_Throw_Not_Validation()
+    {
+        await Should.ThrowAsync<AbpValidationException>(
+            async () => await _paperRepoAdminAppService.GetListAsync(new GetPaperReposInput()));
     }
 
     [Fact]

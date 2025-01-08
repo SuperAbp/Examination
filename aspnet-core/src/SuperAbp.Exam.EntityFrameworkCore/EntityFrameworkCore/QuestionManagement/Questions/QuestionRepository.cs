@@ -61,12 +61,20 @@ public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvi
     public async Task<List<Question>> GetRandomListAsync(int maxResultCount = Int32.MaxValue, Guid? questionRepositoryId = null,
         QuestionType? questionType = null, CancellationToken cancellationToken = default)
     {
-        var queryable = await GetQueryableAsync();
+        IQueryable<Question> queryable = (await GetQueryableAsync())
+            .WhereIf(questionRepositoryId.HasValue, p => p.QuestionRepositoryId == questionRepositoryId.Value)
+            .WhereIf(questionType.HasValue, p => p.QuestionType == questionType.Value);
+        ExamDbContext dbContext = await GetDbContextAsync();
+        if (dbContext.Database.ProviderName?.ToLower().Contains("sqlserver") ?? false)
+        {
+            return await queryable
+                .OrderBy(q => Guid.NewGuid())
+                .Take(maxResultCount)
+                .ToListAsync(cancellationToken: cancellationToken);
+        }
 
         return await queryable
-            .WhereIf(questionRepositoryId.HasValue, p => p.QuestionRepositoryId == questionRepositoryId.Value)
-            .WhereIf(questionType.HasValue, p => p.QuestionType == questionType.Value)
-            .OrderBy(q => Guid.NewGuid())
+            .OrderBy(q => EF.Functions.Random())
             .Take(maxResultCount)
             .ToListAsync(cancellationToken: cancellationToken);
     }

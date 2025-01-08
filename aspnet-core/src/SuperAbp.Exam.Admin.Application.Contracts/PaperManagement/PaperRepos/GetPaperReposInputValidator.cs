@@ -3,13 +3,13 @@ using FluentValidation;
 using Microsoft.Extensions.Localization;
 using SuperAbp.Exam.Localization;
 
-namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers;
+namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos;
 
-public class GetQuestionAnswersInputValidator : AbstractValidator<GetQuestionAnswersInput>
+public class GetPaperReposInputValidator : AbstractValidator<GetPaperReposInput>
 {
-    public GetQuestionAnswersInputValidator(IStringLocalizer<ExamResource> local)
+    public GetPaperReposInputValidator(IStringLocalizer<ExamResource> local)
     {
-        RuleFor(q => q.QuestionId)
+        RuleFor(q => q.PaperId)
             .NotNull()
             .NotEmpty()
             .WithMessage(local["The {0} field is required.", "{PropertyName}"])

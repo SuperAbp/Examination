@@ -11,22 +11,15 @@ using Volo.Abp.Users;
 namespace SuperAbp.Exam.TrainingManagement;
 
 [Authorize]
-public class TrainingAppService : ExamAppService, ITrainingAppService
+public class TrainingAppService(
+    ITrainingRepository trainingRepository,
+    IQuestionRepoRepository questionRepoRepository,
+    IQuestionRepository questionRepository)
+    : ExamAppService, ITrainingAppService
 {
-    private readonly ITrainingRepository _trainingRepository;
-    private readonly IQuestionRepoRepository _questionRepoRepository;
-    private readonly IQuestionRepository _questionRepository;
-
-    public TrainingAppService(ITrainingRepository trainingRepository, IQuestionRepoRepository questionRepoRepository, IQuestionRepository questionRepository)
-    {
-        _trainingRepository = trainingRepository;
-        _questionRepoRepository = questionRepoRepository;
-        _questionRepository = questionRepository;
-    }
-
     public async Task<ListResultDto<TrainingListDto>> GetListAsync(GetTrainsInput input)
     {
-        List<Training> trains = await _trainingRepository
+        List<Training> trains = await trainingRepository
             .GetListAsync(t => t.QuestionRepositoryId == input.QuestionRepositoryId
                                && t.UserId == CurrentUser.GetId());
 
@@ -37,28 +30,28 @@ public class TrainingAppService : ExamAppService, ITrainingAppService
 
     public async Task<TrainingListDto> CreateAsync(TrainingCreateDto input)
     {
-        if (!await _questionRepoRepository.IdExistsAsync(input.QuestionRepositoryId))
+        if (!await questionRepoRepository.IdExistsAsync(input.QuestionRepositoryId))
         {
             throw new UserFriendlyException("题库不存在");
         }
-        if (!await _questionRepository.AnyAsync(input.QuestionRepositoryId, input.QuestionId))
+        if (!await questionRepository.AnyAsync(input.QuestionRepositoryId, input.QuestionId))
         {
             throw new UserFriendlyException("题目不存在");
         }
 
-        if (await _trainingRepository.AnyQuestionAsync(input.QuestionId))
+        if (await trainingRepository.AnyQuestionAsync(input.QuestionId))
         {
             throw new UserFriendlyException("请勿重复答题");
         }
         Training training = new(GuidGenerator.Create(), CurrentUser.GetId(), input.QuestionRepositoryId, input.QuestionId, input.Right);
-        await _trainingRepository.InsertAsync(training);
+        await trainingRepository.InsertAsync(training);
         return ObjectMapper.Map<Training, TrainingListDto>(training);
     }
 
     public async Task SetIsRightAsync(Guid id, bool right)
     {
-        var training = await _trainingRepository.GetAsync(id);
+        var training = await trainingRepository.GetAsync(id);
         training.Right = right;
-        await _trainingRepository.UpdateAsync(training);
+        await trainingRepository.UpdateAsync(training);
     }
 }

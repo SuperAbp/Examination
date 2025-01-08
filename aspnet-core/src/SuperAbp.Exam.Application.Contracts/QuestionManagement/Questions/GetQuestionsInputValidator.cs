@@ -1,15 +1,15 @@
-﻿using System;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.Extensions.Localization;
 using SuperAbp.Exam.Localization;
+using System;
 
-namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers;
+namespace SuperAbp.Exam.QuestionManagement.Questions;
 
-public class GetQuestionAnswersInputValidator : AbstractValidator<GetQuestionAnswersInput>
+public class GetQuestionsInputValidator : AbstractValidator<GetQuestionsInput>
 {
-    public GetQuestionAnswersInputValidator(IStringLocalizer<ExamResource> local)
+    public GetQuestionsInputValidator(IStringLocalizer<ExamResource> local)
     {
-        RuleFor(q => q.QuestionId)
+        RuleFor(q => q.QuestionRepositoryId)
             .NotNull()
             .NotEmpty()
             .WithMessage(local["The {0} field is required.", "{PropertyName}"])
