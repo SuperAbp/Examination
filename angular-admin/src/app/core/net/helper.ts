@@ -1,4 +1,5 @@
-import { HttpHeaders, HttpResponseBase } from '@angular/common/http';
+import { LocalizationParam } from '@abp/ng.core';
+import { HttpErrorResponse, HttpHeaders, HttpResponseBase } from '@angular/common/http';
 import { Injector, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
@@ -27,6 +28,51 @@ export const CODEMESSAGE: { [key: number]: string } = {
   503: '服务不可用，服务器暂时过载或维护。',
   504: '网关超时。'
 };
+export const DEFAULT_ERROR_MESSAGES = {
+  defaultError: {
+    title: 'An error has occurred!',
+    details: 'Error detail not sent by server.'
+  },
+  defaultError401: {
+    title: 'You are not authenticated!',
+    details: 'You should be authenticated (sign in) in order to perform this operation.'
+  },
+  defaultError403: {
+    title: 'You are not authorized!',
+    details: 'You are not allowed to perform this operation.'
+  },
+  defaultError404: {
+    title: 'Resource not found!',
+    details: 'The resource requested could not found on the server.'
+  },
+  defaultError500: {
+    title: 'Internal server error',
+    details: 'Error detail not sent by server.'
+  }
+};
+
+export const DEFAULT_ERROR_LOCALIZATIONS = {
+  defaultError: {
+    title: 'AbpUi::DefaultErrorMessage',
+    details: 'AbpUi::DefaultErrorMessageDetail'
+  },
+  defaultError401: {
+    title: 'AbpUi::DefaultErrorMessage401',
+    details: 'AbpUi::DefaultErrorMessage401Detail'
+  },
+  defaultError403: {
+    title: 'AbpUi::DefaultErrorMessage403',
+    details: 'AbpUi::DefaultErrorMessage403Detail'
+  },
+  defaultError404: {
+    title: 'AbpUi::DefaultErrorMessage404',
+    details: 'AbpUi::DefaultErrorMessage404Detail'
+  },
+  defaultError500: {
+    title: 'AbpUi::500Message',
+    details: 'AbpUi::DefaultErrorMessage'
+  }
+};
 
 export function goTo(injector: Injector, url: string): void {
   setTimeout(() => injector.get(Router).navigateByUrl(url));
@@ -51,7 +97,35 @@ export function checkStatus(injector: Injector, ev: HttpResponseBase): void {
   if ((ev.status >= 200 && ev.status < 300) || ev.status === 401) {
     return;
   }
-
+  if (ev instanceof HttpErrorResponse && ev.headers.get('_AbpErrorFormat')) {
+    const { message, title } = getErrorFromRequestBody(ev?.error?.error);
+    injector.get(NzNotificationService).error(title.toString(), message.toString());
+    return;
+  }
   const errortext = CODEMESSAGE[ev.status] || ev.statusText;
   injector.get(NzNotificationService).error(`请求错误 ${ev.status}: ${ev.url}`, errortext);
+}
+
+export function getErrorFromRequestBody(body: { details?: string; message?: string } | undefined) {
+  let message: LocalizationParam;
+  let title: LocalizationParam;
+
+  if (body.details) {
+    message = body.details;
+    title = body.message;
+  } else if (body.message) {
+    title = {
+      key: DEFAULT_ERROR_LOCALIZATIONS.defaultError.title,
+      defaultValue: DEFAULT_ERROR_MESSAGES.defaultError.title
+    };
+    message = body.message;
+  } else {
+    message = {
+      key: DEFAULT_ERROR_LOCALIZATIONS.defaultError.title,
+      defaultValue: DEFAULT_ERROR_MESSAGES.defaultError.title
+    };
+    title = '';
+  }
+
+  return { message, title };
 }

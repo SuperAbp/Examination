@@ -19,5 +19,10 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
             var queryable = await GetQueryableAsync();
             return await queryable.AnyAsync(ue => ue.ExamId == examId && ue.UserId == userId, cancellationToken);
         }
+
+        public async Task<bool> UnfinishedExistsAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            return await (await GetDbSetAsync()).AnyAsync(x => x.UserId == userId && !x.Finished, cancellationToken);
+        }
     }
 }

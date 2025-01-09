@@ -42,29 +42,6 @@ namespace SuperAbp.Exam.Admin.Controllers
         }
 
         /// <summary>
-        /// 创建
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<PaperRepoListDto> CreateAsync(PaperRepoCreateDto input)
-        {
-            return await _examRepoAppService.CreateAsync(input);
-        }
-
-        /// <summary>
-        /// 编辑
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpPatch("{id}")]
-        public async Task<PaperRepoListDto> UpdateAsync(Guid id, PaperRepoUpdateDto input)
-        {
-            return await _examRepoAppService.UpdateAsync(id, input);
-        }
-
-        /// <summary>
         /// 删除
         /// </summary>
         /// <param name="id">Id</param>

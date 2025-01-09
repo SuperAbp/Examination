@@ -47,62 +47,6 @@ public abstract class PaperRepositoryAdminAppServiceTests<TStartupModule> : Exam
     }
 
     [Fact]
-    public async Task Should_Create()
-    {
-        PaperRepoCreateDto input = new()
-        {
-            PaperId = _testData.Paper1Id,
-            QuestionRepositoryId = _testData.QuestionRepository1Id,
-            SingleCount = 1,
-            SingleScore = 1,
-            MultiCount = 1,
-            MultiScore = 1,
-            JudgeCount = 1,
-            JudgeScore = 1,
-            BlankCount = 1,
-            BlankScore = 1
-        };
-        PaperRepoListDto dto = await _paperRepoAdminAppService.CreateAsync(input);
-        PaperRepo paperRepo = await _paperRepoRepository.GetAsync(dto.Id);
-        paperRepo.ShouldNotBeNull();
-        paperRepo.SingleCount.ShouldBe(input.SingleCount);
-        paperRepo.SingleScore.ShouldBe(input.SingleScore);
-        paperRepo.MultiCount.ShouldBe(input.MultiCount);
-        paperRepo.MultiScore.ShouldBe(input.MultiScore);
-        paperRepo.JudgeCount.ShouldBe(input.JudgeCount);
-        paperRepo.JudgeScore.ShouldBe(input.JudgeScore);
-        paperRepo.BlankCount.ShouldBe(input.BlankCount);
-        paperRepo.BlankScore.ShouldBe(input.BlankScore);
-    }
-
-    [Fact]
-    public async Task Should_Update()
-    {
-        PaperRepoUpdateDto input = new()
-        {
-            SingleCount = int.MaxValue,
-            SingleScore = decimal.MaxValue,
-            MultiCount = int.MaxValue,
-            MultiScore = decimal.MaxValue,
-            JudgeCount = int.MaxValue,
-            JudgeScore = decimal.MaxValue,
-            BlankCount = int.MaxValue,
-            BlankScore = decimal.MaxValue
-        };
-        await _paperRepoAdminAppService.UpdateAsync(_testData.PaperRepository1Id, input);
-        PaperRepo paperRepo = await _paperRepoRepository.GetAsync(_testData.PaperRepository1Id);
-        paperRepo.ShouldNotBeNull();
-        paperRepo.SingleCount.ShouldBe(input.SingleCount);
-        paperRepo.SingleScore.ShouldBe(input.SingleScore);
-        paperRepo.MultiCount.ShouldBe(input.MultiCount);
-        paperRepo.MultiScore.ShouldBe(input.MultiScore);
-        paperRepo.JudgeCount.ShouldBe(input.JudgeCount);
-        paperRepo.JudgeScore.ShouldBe(input.JudgeScore);
-        paperRepo.BlankCount.ShouldBe(input.BlankCount);
-        paperRepo.BlankScore.ShouldBe(input.BlankScore);
-    }
-
-    [Fact]
     public async Task Should_Delete()
     {
         await _paperRepoAdminAppService.DeleteAsync(_testData.PaperRepository1Id);

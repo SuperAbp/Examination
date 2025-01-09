@@ -2,9 +2,6 @@
 
 public static class ExamDomainErrorCodes
 {
-    public static string ExistsUnfinishedExams = "Exam:000001";
-    public static string OutOfExamTime = "Exam:000002";
-
     public static class Questions
     {
         public const string ContentAlreadyExists = "Exam:Question:0001";
@@ -23,5 +20,15 @@ public static class ExamDomainErrorCodes
     public static class Papers
     {
         public const string NameAlreadyExists = "Exam:Paper:0001";
+    }
+
+    public static class UserExams
+    {
+        public const string UnfinishedAlreadyExists = "Exam:UserExams:0001";
+    }
+
+    public static class Exams
+    {
+        public const string OutOfExamTime = "Exam:Exams:0001";
     }
 }

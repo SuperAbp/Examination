@@ -50,7 +50,7 @@ public class PaperRepoRepository(IDbContextProvider<ExamDbContext> dbContextProv
         await DeleteAsync(er => er.PaperId == paperId && er.QuestionRepositoryId == questionRepositoryId, cancellationToken: cancellationToken);
     }
 
-    public async Task DeleteByExamIdAsync(Guid paperId, CancellationToken cancellationToken = default)
+    public async Task DeleteByPaperIdAsync(Guid paperId, CancellationToken cancellationToken = default)
     {
         await DeleteAsync(er => er.PaperId == paperId, cancellationToken: cancellationToken);
     }

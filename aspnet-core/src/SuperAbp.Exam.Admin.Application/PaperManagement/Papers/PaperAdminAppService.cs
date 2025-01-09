@@ -8,6 +8,8 @@ using Volo.Abp.Application.Dtos;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.PaperManagement.PaperRepos;
 using SuperAbp.Exam.PaperManagement.Papers;
+using static SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateDto;
+using static SuperAbp.Exam.Admin.PaperManagement.Papers.PaperUpdateDto;
 
 namespace SuperAbp.Exam.Admin.PaperManagement.Papers
 {
@@ -47,10 +49,26 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
             Paper paper = await paperManager.CreateAsync(input.Name, input.Score);
             paper.Description = input.Description;
             // TODO: Set total question count.
-            paper.TotalQuestionCount = 0;
-
+            paper.TotalQuestionCount = input.Repositories.Sum(p => p.SingleCount + p.MultiCount + p.JudgeCount + p.BlankCount) ?? 0;
             paper = await paperRepository.InsertAsync(paper);
+            await CreatePaperRepoAsync(paper.Id, input.Repositories);
             return ObjectMapper.Map<Paper, PaperListDto>(paper);
+        }
+
+        protected virtual async Task CreatePaperRepoAsync(Guid paperId, PaperCreatePaperRepoDto[] dtos)
+        {
+            PaperRepo[] paperRepos = dtos.Select(input => new PaperRepo(GuidGenerator.Create(), paperId, input.QuestionRepositoryId)
+            {
+                BlankCount = input.BlankCount,
+                BlankScore = input.BlankScore,
+                SingleCount = input.SingleCount,
+                SingleScore = input.SingleScore,
+                MultiCount = input.MultiCount,
+                MultiScore = input.MultiScore,
+                JudgeCount = input.JudgeCount,
+                JudgeScore = input.JudgeScore
+            }).ToArray();
+            await paperRepoRepository.InsertManyAsync(paperRepos);
         }
 
         [Authorize(ExamPermissions.Papers.Update)]
@@ -61,13 +79,31 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
             paper.Score = input.Score;
             paper.Description = input.Description;
             paper = await paperRepository.UpdateAsync(paper);
+            await UpdatePaperRepoAsync(id, input.Repositories);
             return ObjectMapper.Map<Paper, PaperListDto>(paper);
+        }
+
+        protected virtual async Task UpdatePaperRepoAsync(Guid paperId, PaperUpdatePaperRepoDto[] dtos)
+        {
+            await paperRepoRepository.DeleteByPaperIdAsync(paperId);
+            PaperRepo[] paperRepos = dtos.Select(input => new PaperRepo(GuidGenerator.Create(), paperId, input.QuestionRepositoryId)
+            {
+                BlankCount = input.BlankCount,
+                BlankScore = input.BlankScore,
+                SingleCount = input.SingleCount,
+                SingleScore = input.SingleScore,
+                MultiCount = input.MultiCount,
+                MultiScore = input.MultiScore,
+                JudgeCount = input.JudgeCount,
+                JudgeScore = input.JudgeScore
+            }).ToArray();
+            await paperRepoRepository.InsertManyAsync(paperRepos);
         }
 
         [Authorize(ExamPermissions.Papers.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
-            await paperRepoRepository.DeleteByExamIdAsync(id);
+            await paperRepoRepository.DeleteByPaperIdAsync(id);
             await paperRepository.DeleteAsync(id);
         }
 

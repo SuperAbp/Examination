@@ -24,6 +24,6 @@ namespace SuperAbp.Exam.PaperManagement.PaperRepos
 
         Task DeleteAsync(Guid paperId, Guid questionRepositoryId, CancellationToken cancellationToken = default);
 
-        Task DeleteByExamIdAsync(Guid paperId, CancellationToken cancellationToken = default);
+        Task DeleteByPaperIdAsync(Guid paperId, CancellationToken cancellationToken = default);
     }
 }

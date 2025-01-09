@@ -82,11 +82,11 @@ public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvi
     public async Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId, CancellationToken cancellationToken = default)
     {
         var dbSet = await GetDbSetAsync();
-        return await dbSet.AnyAsync(q => q.QuestionRepositoryId == questionRepositoryId && q.Id == questionId, GetCancellationToken(cancellationToken));
+        return await dbSet.AnyAsync(q => q.QuestionRepositoryId == questionRepositoryId && q.Id == questionId, cancellationToken);
     }
 
     public async Task<bool> ContentExistsAsync(string content, CancellationToken cancellationToken = default)
     {
-        return await (await GetDbSetAsync()).AnyAsync(x => x.Content == content, GetCancellationToken(cancellationToken));
+        return await (await GetDbSetAsync()).AnyAsync(x => x.Content == content, cancellationToken);
     }
 }

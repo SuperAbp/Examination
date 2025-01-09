@@ -61,16 +61,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public virtual async Task<UserExamListDto> CreateAsync(UserExamCreateDto input)
         {
-            if (await userExamRepository.AnyAsync(ue => ue.UserId == CurrentUser.GetId() && !ue.Finished))
-            {
-                throw new BusinessException(ExamDomainErrorCodes.ExistsUnfinishedExams);
-            }
-            Examination exam = await examRepository.GetAsync(input.ExamId);
-            if (exam.StartTime > DateTime.Now || exam.EndTime < DateTime.Now)
-            {
-                throw new BusinessException(ExamDomainErrorCodes.OutOfExamTime);
-            }
-            UserExam userExam = new(GuidGenerator.Create(), input.ExamId, CurrentUser.GetId());
+            UserExam userExam = await userExamManager.CreateAsync(input.ExamId, CurrentUser.GetId());
             await userExamManager.CreateQuestionsAsync(userExam.Id, input.ExamId);
             await userExamRepository.InsertAsync(userExam);
             return ObjectMapper.Map<UserExam, UserExamListDto>(userExam);

@@ -62,40 +62,6 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
             return ObjectMapper.Map<PaperRepo, GetPaperRepoForEditorOutput>(entity);
         }
 
-        [Authorize(ExamPermissions.PaperRepos.Create)]
-        public virtual async Task<PaperRepoListDto> CreateAsync(PaperRepoCreateDto input)
-        {
-            PaperRepo repository = new PaperRepo(GuidGenerator.Create(), input.PaperId, input.QuestionRepositoryId)
-            {
-                BlankCount = input.BlankCount,
-                BlankScore = input.BlankScore,
-                SingleCount = input.SingleCount,
-                SingleScore = input.SingleScore,
-                MultiCount = input.MultiCount,
-                MultiScore = input.MultiScore,
-                JudgeCount = input.JudgeCount,
-                JudgeScore = input.JudgeScore
-            };
-            repository = await examRepoRepository.InsertAsync(repository);
-            return ObjectMapper.Map<PaperRepo, PaperRepoListDto>(repository);
-        }
-
-        [Authorize(ExamPermissions.PaperRepos.Update)]
-        public virtual async Task<PaperRepoListDto> UpdateAsync(Guid id, PaperRepoUpdateDto input)
-        {
-            var repository = await examRepoRepository.GetAsync(id);
-            repository.BlankCount = input.BlankCount;
-            repository.BlankScore = input.BlankScore;
-            repository.SingleCount = input.SingleCount;
-            repository.SingleScore = input.SingleScore;
-            repository.MultiCount = input.MultiCount;
-            repository.MultiScore = input.MultiScore;
-            repository.JudgeCount = input.JudgeCount;
-            repository.JudgeScore = input.JudgeScore;
-            repository = await examRepoRepository.UpdateAsync(repository);
-            return ObjectMapper.Map<PaperRepo, PaperRepoListDto>(repository);
-        }
-
         [Authorize(ExamPermissions.PaperRepos.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
