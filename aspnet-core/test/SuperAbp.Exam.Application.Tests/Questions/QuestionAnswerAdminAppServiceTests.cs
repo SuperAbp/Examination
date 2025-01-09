@@ -17,11 +17,13 @@ public abstract class QuestionAnswerAdminAppServiceTests<TStartupModule> : ExamA
 {
     private readonly ExamTestData _testData;
     private readonly IQuestionAnswerAdminAppService _questionAnswerAppService;
+    private readonly IQuestionAnswerRepository _questionAnswerRepository;
 
     protected QuestionAnswerAdminAppServiceTests()
     {
         _testData = GetRequiredService<ExamTestData>();
         _questionAnswerAppService = GetRequiredService<IQuestionAnswerAdminAppService>();
+        _questionAnswerRepository = GetRequiredService<IQuestionAnswerRepository>();
     }
 
     [Fact]
@@ -48,19 +50,18 @@ public abstract class QuestionAnswerAdminAppServiceTests<TStartupModule> : ExamA
     [Fact]
     public async Task Should_Create()
     {
-        QuestionAnswerCreateDto dto = new()
+        QuestionAnswerCreateDto input = new()
         {
             QuestionId = _testData.Question11Id,
             Content = "New_Content",
             Analysis = "New_Analysis",
             Sort = 1
         };
-        QuestionAnswerListDto questionDto = await _questionAnswerAppService.CreateAsync(dto);
-
-        GetQuestionAnswerForEditorOutput question = await _questionAnswerAppService.GetEditorAsync(questionDto.Id);
-        question.ShouldNotBeNull();
-        question.Content.ShouldBe(dto.Content);
-        question.Analysis.ShouldBe(dto.Analysis);
+        QuestionAnswerListDto dto = await _questionAnswerAppService.CreateAsync(input);
+        QuestionAnswer questionAnswer = await _questionAnswerRepository.GetAsync(dto.Id);
+        questionAnswer.ShouldNotBeNull();
+        questionAnswer.Content.ShouldBe(input.Content);
+        questionAnswer.Analysis.ShouldBe(input.Analysis);
     }
 
     [Fact]
@@ -80,20 +81,20 @@ public abstract class QuestionAnswerAdminAppServiceTests<TStartupModule> : ExamA
     [Fact]
     public async Task Should_Update()
     {
-        QuestionAnswerUpdateDto dto = new()
+        QuestionAnswerUpdateDto input = new()
         {
             Content = "Update_Content",
             Analysis = "Update_Analysis",
             Sort = Int32.MaxValue - 1,
             Right = false
         };
-        await _questionAnswerAppService.UpdateAsync(_testData.Answer111Id, dto);
-        GetQuestionAnswerForEditorOutput question = await _questionAnswerAppService.GetEditorAsync(_testData.Answer111Id);
-        question.ShouldNotBeNull();
-        question.Content.ShouldBe(dto.Content);
-        question.Analysis.ShouldBe(dto.Analysis);
-        question.Sort.ShouldBe(dto.Sort);
-        question.Right.ShouldBe(dto.Right);
+        await _questionAnswerAppService.UpdateAsync(_testData.Answer111Id, input);
+        QuestionAnswer questionAnswer = await _questionAnswerRepository.GetAsync(_testData.Answer111Id);
+        questionAnswer.ShouldNotBeNull();
+        questionAnswer.Content.ShouldBe(input.Content);
+        questionAnswer.Analysis.ShouldBe(input.Analysis);
+        questionAnswer.Sort.ShouldBe(input.Sort);
+        questionAnswer.Right.ShouldBe(input.Right);
     }
 
     [Fact]

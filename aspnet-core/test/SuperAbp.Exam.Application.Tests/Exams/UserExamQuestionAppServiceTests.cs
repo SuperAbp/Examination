@@ -14,11 +14,13 @@ public abstract class UserExamQuestionAppServiceTests<TStartupModule> : ExamAppl
 {
     private readonly ExamTestData _testData;
     private readonly IUserExamQuestionAppService _userExamQuestionAppService;
+    private readonly IUserExamQuestionRepository _userExamQuestionRepository;
 
     protected UserExamQuestionAppServiceTests()
     {
         _testData = GetRequiredService<ExamTestData>();
         _userExamQuestionAppService = GetRequiredService<IUserExamQuestionAppService>();
+        _userExamQuestionRepository = GetRequiredService<IUserExamQuestionRepository>();
     }
 
     [Fact]
@@ -45,19 +47,19 @@ public abstract class UserExamQuestionAppServiceTests<TStartupModule> : ExamAppl
     [Fact]
     public async Task Should_Create()
     {
-        var input = new UserExamQuestionCreateDto
+        UserExamQuestionCreateDto input = new()
         {
             QuestionId = _testData.Question11Id,
             UserExamId = _testData.UserExam11Id,
             Answers = "Sample Answer"
         };
 
-        UserExamQuestionListDto result = await _userExamQuestionAppService.CreateAsync(input);
-        GetUserExamQuestionForEditorOutput examination = await _userExamQuestionAppService.GetEditorAsync(result.Id);
-        examination.ShouldNotBeNull();
-        examination.QuestionId.ShouldBe(input.QuestionId);
-        examination.UserExamId.ShouldBe(input.UserExamId);
-        examination.Answers.ShouldBe(input.Answers);
+        UserExamQuestionListDto dto = await _userExamQuestionAppService.CreateAsync(input);
+        UserExamQuestion userExamQuestion = await _userExamQuestionRepository.GetAsync(dto.Id);
+        userExamQuestion.ShouldNotBeNull();
+        userExamQuestion.QuestionId.ShouldBe(input.QuestionId);
+        userExamQuestion.UserExamId.ShouldBe(input.UserExamId);
+        userExamQuestion.Answers.ShouldBe(input.Answers);
     }
 
     [Fact]
@@ -69,9 +71,9 @@ public abstract class UserExamQuestionAppServiceTests<TStartupModule> : ExamAppl
         };
 
         await _userExamQuestionAppService.AnswerAsync(_testData.UserExamQuestion11Id, input);
-        GetUserExamQuestionForEditorOutput examination = await _userExamQuestionAppService.GetEditorAsync(_testData.UserExamQuestion11Id);
-        examination.ShouldNotBeNull();
-        examination.Answers.ShouldBe(input.Answers);
+        UserExamQuestion userExamQuestion = await _userExamQuestionRepository.GetAsync(_testData.UserExamQuestion11Id);
+        userExamQuestion.ShouldNotBeNull();
+        userExamQuestion.Answers.ShouldBe(input.Answers);
     }
 
     [Fact]

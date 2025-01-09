@@ -17,11 +17,13 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
 {
     private readonly ExamTestData _testData;
     private readonly IQuestionAdminAppService _questionAppService;
+    private readonly IQuestionRepository _questionRepository;
 
     protected QuestionAdminAppServiceTests()
     {
         _testData = GetRequiredService<ExamTestData>();
         _questionAppService = GetRequiredService<IQuestionAdminAppService>();
+        _questionRepository = GetRequiredService<IQuestionRepository>();
     }
 
     [Fact]
@@ -41,25 +43,25 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
     [Fact]
     public async Task Should_Create()
     {
-        QuestionCreateDto dto = new()
+        QuestionCreateDto input = new()
         {
             QuestionRepositoryId = _testData.QuestionRepository1Id,
             QuestionType = QuestionType.MultiSelect,
             Content = "New_Content",
             Analysis = "New_Analysis"
         };
-        QuestionListDto questionDto = await _questionAppService.CreateAsync(dto);
-        GetQuestionForEditorOutput question = await _questionAppService.GetEditorAsync(questionDto.Id);
+        QuestionListDto dto = await _questionAppService.CreateAsync(input);
+        Question question = await _questionRepository.GetAsync(dto.Id);
         question.ShouldNotBeNull();
-        question.Content.ShouldBe(dto.Content);
-        question.QuestionRepositoryId.ShouldBe(dto.QuestionRepositoryId);
-        question.Analysis.ShouldBe(dto.Analysis);
+        question.Content.ShouldBe(input.Content);
+        question.QuestionRepositoryId.ShouldBe(input.QuestionRepositoryId);
+        question.Analysis.ShouldBe(input.Analysis);
     }
 
     [Fact]
     public async Task Should_Create_Throw_Exists_Content()
     {
-        QuestionCreateDto dto = new()
+        QuestionCreateDto input = new()
         {
             QuestionRepositoryId = _testData.QuestionRepository1Id,
             QuestionType = QuestionType.MultiSelect,
@@ -67,37 +69,37 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
             Analysis = "New_Analysis"
         };
         await Should.ThrowAsync<QuestionContentAlreadyExistException>(
-            async () => await _questionAppService.CreateAsync(dto));
+            async () => await _questionAppService.CreateAsync(input));
     }
 
     [Fact]
     public async Task Should_Update()
     {
-        QuestionUpdateDto dto = new()
+        QuestionUpdateDto input = new()
         {
             QuestionRepositoryId = _testData.QuestionRepository2Id,
             Content = "Update_Content",
             Analysis = "Update_Analysis"
         };
-        await _questionAppService.UpdateAsync(_testData.Question11Id, dto);
-        GetQuestionForEditorOutput question = await _questionAppService.GetEditorAsync(_testData.Question11Id);
+        await _questionAppService.UpdateAsync(_testData.Question11Id, input);
+        Question question = await _questionRepository.GetAsync(_testData.Question11Id);
         question.ShouldNotBeNull();
-        question.QuestionRepositoryId.ShouldBe(dto.QuestionRepositoryId);
-        question.Content.ShouldBe(dto.Content);
-        question.Analysis.ShouldBe(dto.Analysis);
+        question.QuestionRepositoryId.ShouldBe(input.QuestionRepositoryId);
+        question.Content.ShouldBe(input.Content);
+        question.Analysis.ShouldBe(input.Analysis);
     }
 
     [Fact]
     public async Task Should_Update_Throw_Exists_Content()
     {
-        QuestionUpdateDto dto = new()
+        QuestionUpdateDto input = new()
         {
             QuestionRepositoryId = _testData.QuestionRepository1Id,
             Content = _testData.Question12Content2,
             Analysis = "Update_Analysis"
         };
         await Should.ThrowAsync<QuestionContentAlreadyExistException>(
-            async () => await _questionAppService.UpdateAsync(_testData.Question11Id, dto));
+            async () => await _questionAppService.UpdateAsync(_testData.Question11Id, input));
     }
 
     [Fact]

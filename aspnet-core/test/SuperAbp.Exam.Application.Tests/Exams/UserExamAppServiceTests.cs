@@ -13,11 +13,13 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
 {
     private readonly ExamTestData _testData;
     private readonly IUserExamAppService _userExamAppService;
+    private readonly IUserExamRepository _userExamRepository;
 
     protected UserExamAppServiceTests()
     {
         _testData = GetRequiredService<ExamTestData>();
         _userExamAppService = GetRequiredService<IUserExamAppService>();
+        _userExamRepository = GetRequiredService<IUserExamRepository>();
     }
 
     // TODO: SQLite cannot apply aggregate operator 'Max' on expressions of type 'decimal'
@@ -38,11 +40,11 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
     [Fact]
     public async Task Should_Get_Unfinished()
     {
-        UserExamCreateDto dto = new()
+        UserExamCreateDto input = new()
         {
             ExamId = _testData.Examination11Id
         };
-        await _userExamAppService.CreateAsync(dto);
+        await _userExamAppService.CreateAsync(input);
         Guid? result = await _userExamAppService.GetUnfinishedAsync();
         result.ShouldNotBeNull();
     }
@@ -50,14 +52,13 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
     [Fact]
     public async Task Should_Create()
     {
-        UserExamCreateDto dto = new()
+        UserExamCreateDto input = new()
         {
             ExamId = _testData.Examination11Id
         };
-        UserExamListDto repoDto = await _userExamAppService.CreateAsync(dto);
-
-        UserExamDetailDto question = await _userExamAppService.GetAsync(repoDto.Id);
-        question.ShouldNotBeNull();
-        question.ExamId.ShouldBe(dto.ExamId);
+        UserExamListDto repoDto = await _userExamAppService.CreateAsync(input);
+        UserExam userExam = await _userExamRepository.GetAsync(repoDto.Id);
+        userExam.ShouldNotBeNull();
+        userExam.ExamId.ShouldBe(input.ExamId);
     }
 }

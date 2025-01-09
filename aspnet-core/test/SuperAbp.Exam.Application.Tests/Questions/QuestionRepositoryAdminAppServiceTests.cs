@@ -17,11 +17,13 @@ public abstract class QuestionRepositoryAdminAppServiceTests<TStartupModule> : E
 {
     private readonly ExamTestData _testData;
     private readonly IQuestionRepoAdminAppService _questionRepoAppService;
+    private readonly IQuestionRepoRepository _questionRepoRepository;
 
     protected QuestionRepositoryAdminAppServiceTests()
     {
         _testData = GetRequiredService<ExamTestData>();
         _questionRepoAppService = GetRequiredService<IQuestionRepoAdminAppService>();
+        _questionRepoRepository = GetRequiredService<IQuestionRepoRepository>();
     }
 
     [Fact]
@@ -48,17 +50,17 @@ public abstract class QuestionRepositoryAdminAppServiceTests<TStartupModule> : E
     [Fact]
     public async Task Should_Create()
     {
-        QuestionRepoCreateDto dto = new()
+        QuestionRepoCreateDto input = new()
         {
             Title = "New_Title",
             Remark = "New_Remark"
         };
-        QuestionRepoListDto repoDto = await _questionRepoAppService.CreateAsync(dto);
+        QuestionRepoListDto dto = await _questionRepoAppService.CreateAsync(input);
 
-        GetQuestionRepoForEditorOutput question = await _questionRepoAppService.GetEditorAsync(repoDto.Id);
-        question.ShouldNotBeNull();
-        question.Title.ShouldBe(dto.Title);
-        question.Remark.ShouldBe(dto.Remark);
+        QuestionRepo questionRepo = await _questionRepoRepository.GetAsync(dto.Id);
+        questionRepo.ShouldNotBeNull();
+        questionRepo.Title.ShouldBe(input.Title);
+        questionRepo.Remark.ShouldBe(input.Remark);
     }
 
     [Fact]
@@ -76,16 +78,16 @@ public abstract class QuestionRepositoryAdminAppServiceTests<TStartupModule> : E
     [Fact]
     public async Task Should_Update()
     {
-        QuestionRepoUpdateDto dto = new()
+        QuestionRepoUpdateDto input = new()
         {
             Title = "Update_Title",
             Remark = "Update_Remark"
         };
-        await _questionRepoAppService.UpdateAsync(_testData.QuestionRepository1Id, dto);
-        GetQuestionRepoForEditorOutput question = await _questionRepoAppService.GetEditorAsync(_testData.QuestionRepository1Id);
-        question.ShouldNotBeNull();
-        question.Title.ShouldBe(dto.Title);
-        question.Remark.ShouldBe(dto.Remark);
+        await _questionRepoAppService.UpdateAsync(_testData.QuestionRepository1Id, input);
+        QuestionRepo questionRepo = await _questionRepoRepository.GetAsync(_testData.QuestionRepository1Id);
+        questionRepo.ShouldNotBeNull();
+        questionRepo.Title.ShouldBe(input.Title);
+        questionRepo.Remark.ShouldBe(input.Remark);
     }
 
     [Fact]
