@@ -47,7 +47,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers
             answer.Analysis = input.Analysis;
             answer.Sort = input.Sort;
 
-            answer = await questionAnswerRepository.InsertAsync(answer, true);
+            answer = await questionAnswerRepository.InsertAsync(answer);
             return ObjectMapper.Map<QuestionAnswer, QuestionAnswerListDto>(answer);
         }
 

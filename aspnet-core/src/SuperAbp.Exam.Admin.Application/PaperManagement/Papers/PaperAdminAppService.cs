@@ -48,7 +48,6 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         {
             Paper paper = await paperManager.CreateAsync(input.Name, input.Score);
             paper.Description = input.Description;
-            // TODO: Set total question count.
             paper.TotalQuestionCount = input.Repositories.Sum(p => p.SingleCount + p.MultiCount + p.JudgeCount + p.BlankCount) ?? 0;
             paper = await paperRepository.InsertAsync(paper);
             await CreatePaperRepoAsync(paper.Id, input.Repositories);

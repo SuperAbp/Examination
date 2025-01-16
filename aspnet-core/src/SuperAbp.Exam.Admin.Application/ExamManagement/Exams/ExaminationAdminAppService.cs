@@ -54,7 +54,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
                 Description = input.Description
             };
             examination.SetTime(input.StartTime, input.EndTime);
-            examination = await examRepository.InsertAsync(examination, true);
+            examination = await examRepository.InsertAsync(examination);
             return ObjectMapper.Map<Examination, ExamListDto>(examination);
         }
 
