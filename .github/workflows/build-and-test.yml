@@ -1,0 +1,24 @@
+name: "build and test"
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@master
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Build Backgroud
+      run: dotnet build
+      working-directory: ./aspnet-core
+      shell: pwsh
+
+    - name: Test Backgroud
+      run: dotnet test --no-build --no-restore
+      working-directory: ./aspnet-core
+      shell: pwsh
