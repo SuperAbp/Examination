@@ -12,9 +12,9 @@ public class GetQuestionsInput : PagedAndSortedResultRequestDto
     /// <summary>
     /// 题干
     /// </summary>
-    public string Content { get; set; }
+    public string? Content { get; set; }
 
     public QuestionType? QuestionType { get; set; }
 
-    public Guid[] QuestionRepositoryIds { get; set; } = Array.Empty<Guid>();
+    public Guid[] QuestionRepositoryIds { get; set; } = [];
 }

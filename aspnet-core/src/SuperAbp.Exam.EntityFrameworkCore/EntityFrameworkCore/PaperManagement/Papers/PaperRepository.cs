@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SuperAbp.Exam.PaperManagement.Papers;
@@ -10,19 +11,11 @@ namespace SuperAbp.Exam.EntityFrameworkCore.PaperManagement.Papers;
 /// <summary>
 /// 考试
 /// </summary>
-public class PaperRepository : EfCoreRepository<ExamDbContext, Paper, Guid>, IPaperRepository
+public class PaperRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
+    : EfCoreRepository<ExamDbContext, Paper, Guid>(dbContextProvider), IPaperRepository
 {
-    /// <summary>
-    /// .ctor
-    ///</summary>
-    public PaperRepository(
-        IDbContextProvider<ExamDbContext> dbContextProvider)
-        : base(dbContextProvider)
+    public async Task<bool> NameExistsAsync(string name, CancellationToken cancellationToken = default)
     {
-    }
-        
-    public async Task<bool> ExistsByNameAsync(string name)
-    {
-        return await (await GetQueryableAsync()).AnyAsync(e => e.Name == name);
+        return await (await GetQueryableAsync()).AnyAsync(e => e.Name == name, cancellationToken);
     }
 }

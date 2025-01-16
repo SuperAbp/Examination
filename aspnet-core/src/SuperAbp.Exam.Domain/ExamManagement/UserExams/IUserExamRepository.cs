@@ -15,7 +15,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         /// </summary>
         /// <param name="examId"></param>
         /// <param name="userId"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<bool> AnyByExamIdAndUserIdAsync(Guid examId, Guid userId);
+        Task<bool> AnyByExamIdAndUserIdAsync(Guid examId, Guid userId, CancellationToken cancellationToken = default);
+
+        Task<bool> UnfinishedExistsAsync(Guid userId, CancellationToken cancellationToken = default);
     }
 }

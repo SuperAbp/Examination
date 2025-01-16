@@ -10,11 +10,11 @@ namespace SuperAbp.Exam.Admin.Controllers
     /// 考试题库
     /// </summary>
     [Route("api/paper-repository")]
-    public class PaperRepoController : ExamController, IPaperRepoAppService
+    public class PaperRepoController : ExamController, IPaperRepoAdminAppService
     {
-        private readonly IPaperRepoAppService _examRepoAppService;
+        private readonly IPaperRepoAdminAppService _examRepoAppService;
 
-        public PaperRepoController(IPaperRepoAppService examRepoAppService)
+        public PaperRepoController(IPaperRepoAdminAppService examRepoAppService)
         {
             _examRepoAppService = examRepoAppService;
         }
@@ -39,29 +39,6 @@ namespace SuperAbp.Exam.Admin.Controllers
         public virtual async Task<GetPaperRepoForEditorOutput> GetEditorAsync(Guid id)
         {
             return await _examRepoAppService.GetEditorAsync(id);
-        }
-
-        /// <summary>
-        /// 创建
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<PaperRepoListDto> CreateAsync(PaperRepoCreateDto input)
-        {
-            return await _examRepoAppService.CreateAsync(input);
-        }
-
-        /// <summary>
-        /// 编辑
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpPatch("{id}")]
-        public async Task<PaperRepoListDto> UpdateAsync(Guid id, PaperRepoUpdateDto input)
-        {
-            return await _examRepoAppService.UpdateAsync(id, input);
         }
 
         /// <summary>

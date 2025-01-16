@@ -10,11 +10,11 @@ namespace SuperAbp.Exam.Admin.Controllers
     /// 考试
     /// </summary>
     [Route("api/paper")]
-    public class PaperController : ExamController, IPaperAppService
+    public class PaperController : ExamController, IPaperAdminAppService
     {
-        private readonly IPaperAppService _paperAppService;
+        private readonly IPaperAdminAppService _paperAppService;
 
-        public PaperController(IPaperAppService paperAppService)
+        public PaperController(IPaperAdminAppService paperAppService)
         {
             _paperAppService = paperAppService;
         }

@@ -8,7 +8,7 @@ namespace SuperAbp.Exam.ExamManagement.Exams
     /// </summary>
     public class ExamListDto : EntityDto<Guid>
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public decimal Score { get; set; }
         public decimal PassingScore { get; set; }
         public int TotalTime { get; set; }

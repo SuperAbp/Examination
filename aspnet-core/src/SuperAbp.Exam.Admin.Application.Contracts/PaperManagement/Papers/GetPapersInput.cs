@@ -7,6 +7,6 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
     /// </summary>
     public class GetPapersInput : PagedAndSortedResultRequestDto
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 }

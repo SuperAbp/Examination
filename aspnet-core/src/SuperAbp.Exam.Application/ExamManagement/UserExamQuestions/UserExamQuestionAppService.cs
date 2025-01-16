@@ -1,56 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Volo.Abp;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.Domain.Repositories;
 
 namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
 {
-    /// <summary>
-    /// 用户考题管理
-    /// </summary>
-    public class UserExamQuestionAppService : ExamAppService, IUserExamQuestionAppService
+    public class UserExamQuestionAppService(IUserExamQuestionRepository userExamQuestionRepository)
+        : ExamAppService, IUserExamQuestionAppService
     {
-        private readonly IUserExamQuestionRepository _userExamQuestionRepository;
-
-        /// <summary>
-        /// .ctor
-        /// </summary>
-        /// <param name="userExamQuestionRepository"></param>
-        public UserExamQuestionAppService(
-            IUserExamQuestionRepository userExamQuestionRepository)
-        {
-            _userExamQuestionRepository = userExamQuestionRepository;
-        }
-
-        /// <summary>
-        /// 详情
-        /// </summary>
-        /// <param name="id">主键</param>
-        /// <returns></returns>
         public virtual async Task<UserExamQuestionDetailDto> GetAsync(Guid id)
         {
-            UserExamQuestion entity = await _userExamQuestionRepository.GetAsync(id);
+            UserExamQuestion entity = await userExamQuestionRepository.GetAsync(id);
 
             return ObjectMapper.Map<UserExamQuestion, UserExamQuestionDetailDto>(entity);
         }
 
-        /// <summary>
-        /// 列表
-        /// </summary>
-        /// <param name="input">查询条件</param>
-        /// <returns>结果</returns>
         public virtual async Task<PagedResultDto<UserExamQuestionListDto>> GetListAsync(GetUserExamQuestionsInput input)
         {
             await NormalizeMaxResultCountAsync(input);
 
-            var entities = await _userExamQuestionRepository.GetListAsync(input.Sorting, input.SkipCount,
-                input.MaxResultCount, input.UserExamId);
-            var dtos = entities.Select(q => new UserExamQuestionListDto()
+            List<UserExamQuestionWithDetail> entities = await userExamQuestionRepository
+                .GetListAsync(input.Sorting, input.SkipCount, input.MaxResultCount, input.UserExamId);
+            List<UserExamQuestionListDto> dtos = entities.Select(q => new UserExamQuestionListDto()
             {
                 Id = q.Id,
                 Answers = q.Answers,
@@ -67,52 +39,36 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
             return new PagedResultDto<UserExamQuestionListDto>(0, dtos);
         }
 
-        /// <summary>
-        /// 获取修改
-        /// </summary>
-        /// <param name="id">主键</param>
-        /// <returns></returns>
         public virtual async Task<GetUserExamQuestionForEditorOutput> GetEditorAsync(Guid id)
         {
-            UserExamQuestion entity = await _userExamQuestionRepository.GetAsync(id);
+            UserExamQuestion entity = await userExamQuestionRepository.GetAsync(id);
 
             return ObjectMapper.Map<UserExamQuestion, GetUserExamQuestionForEditorOutput>(entity);
         }
 
-        /// <summary>
-        /// 创建
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
         public virtual async Task<UserExamQuestionListDto> CreateAsync(UserExamQuestionCreateDto input)
         {
-            var entity = ObjectMapper.Map<UserExamQuestionCreateDto, UserExamQuestion>(input);
-            entity = await _userExamQuestionRepository.InsertAsync(entity, true);
+            // TODO:Get question score.
+            UserExamQuestion entity = new(GuidGenerator.Create(), input.UserExamId, input.QuestionId, 0)
+            {
+                Answers = input.Answers
+            };
+
+            entity = await userExamQuestionRepository.InsertAsync(entity);
             return ObjectMapper.Map<UserExamQuestion, UserExamQuestionListDto>(entity);
         }
 
-        /// <summary>
-        /// 编辑
-        /// </summary>
-        /// <param name="id">主键</param>
-        /// <param name="input"></param>
-        /// <returns></returns>
         public virtual async Task<UserExamQuestionListDto> AnswerAsync(Guid id, UserExamQuestionAnswerDto input)
         {
-            UserExamQuestion entity = await _userExamQuestionRepository.GetAsync(id);
+            UserExamQuestion entity = await userExamQuestionRepository.GetAsync(id);
             entity.Answers = input.Answers;
-            entity = await _userExamQuestionRepository.UpdateAsync(entity);
+            entity = await userExamQuestionRepository.UpdateAsync(entity);
             return ObjectMapper.Map<UserExamQuestion, UserExamQuestionListDto>(entity);
         }
 
-        /// <summary>
-        /// 删除
-        /// </summary>
-        /// <param name="id">主键</param>
-        /// <returns></returns>
         public virtual async Task DeleteAsync(Guid id)
         {
-            await _userExamQuestionRepository.DeleteAsync(s => s.Id == id);
+            await userExamQuestionRepository.DeleteAsync(id);
         }
 
         /// <summary>

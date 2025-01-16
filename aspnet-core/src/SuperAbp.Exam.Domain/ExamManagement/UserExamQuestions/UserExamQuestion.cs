@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Volo.Abp.Domain.Entities;
 
 namespace SuperAbp.Exam.ExamManagement.UserExamQuestions;
@@ -8,6 +9,9 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions;
 /// </summary>
 public class UserExamQuestion : Entity<Guid>
 {
+    protected UserExamQuestion()
+    { }
+
     public UserExamQuestion(Guid id, Guid userExamId, Guid questionId, decimal questionScore) : base(id)
     {
         UserExamId = userExamId;
@@ -24,7 +28,7 @@ public class UserExamQuestion : Entity<Guid>
     /// <summary>
     /// 答案
     /// </summary>
-    public string Answers { get; set; }
+    public string? Answers { get; set; }
 
     /// <summary>
     /// 正确

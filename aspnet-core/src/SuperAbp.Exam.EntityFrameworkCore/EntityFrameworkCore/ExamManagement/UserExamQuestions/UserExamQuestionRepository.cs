@@ -12,22 +12,11 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
 {
-    /// <summary>
-    /// 用户考题
-    /// </summary>
-    public class UserExamQuestionRepository : EfCoreRepository<ExamDbContext, UserExamQuestion, Guid>, IUserExamQuestionRepository
+    public class UserExamQuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
+        : EfCoreRepository<ExamDbContext, UserExamQuestion, Guid>(dbContextProvider), IUserExamQuestionRepository
     {
-        /// <summary>
-        /// .ctor
-        ///</summary>
-        public UserExamQuestionRepository(
-            IDbContextProvider<ExamDbContext> dbContextProvider)
-            : base(dbContextProvider)
-        {
-        }
-
         // TODO:编写仓储代码
-        public async Task<List<UserExamQuestionWithDetail>> GetListAsync(string sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
+        public async Task<List<UserExamQuestionWithDetail>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
             Guid? userExamId = null, CancellationToken cancellationToken = default)
         {
             var dbContext = await GetDbContextAsync();

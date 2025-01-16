@@ -14,32 +14,24 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionRepos
     /// <summary>
     /// 题库
     /// </summary>
-    public class QuestionRepoRepository : EfCoreRepository<ExamDbContext, QuestionRepo, Guid>, IQuestionRepoRepository
+    public class QuestionRepoRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
+        : EfCoreRepository<ExamDbContext, QuestionRepo, Guid>(dbContextProvider), IQuestionRepoRepository
     {
-        /// <summary>
-        /// .ctor
-        ///</summary>
-        public QuestionRepoRepository(
-            IDbContextProvider<ExamDbContext> dbContextProvider)
-            : base(dbContextProvider)
-        {
-        }
-
-        public async Task<bool> AnyAsync(Guid id)
+        public async Task<bool> IdExistsAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var dbSet = await GetDbSetAsync();
-            return await dbSet.AnyAsync(r => r.Id == id);
+            return await dbSet.AnyAsync(r => r.Id == id, cancellationToken);
         }
 
-        public async Task<string> FindTitleAsync(Guid id)
+        public async Task<string?> FindTitleAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await (await GetDbSetAsync())
                 .Where(r => r.Id == id)
                 .Select(r => r.Title)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<int> GetCountAsync(string title = null, CancellationToken cancellationToken = default)
+        public async Task<int> GetCountAsync(string? title = null, CancellationToken cancellationToken = default)
         {
             return await (await GetQueryableAsync())
                 .WhereIf(!string.IsNullOrWhiteSpace(title), user => user.Title.Contains(title))
@@ -47,8 +39,8 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionRepos
         }
 
         public async Task<List<QuestionRepo>> GetListAsync(
-            string title = null,
-            string sorting = null,
+            string? title = null,
+            string? sorting = null,
             int skipCount = 0,
             int maxResultCount = Int32.MaxValue,
             CancellationToken cancellationToken = default)
@@ -58,6 +50,12 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionRepos
                  .OrderBy(sorting.IsNullOrWhiteSpace() ? nameof(QuestionRepo.CreationTime) : sorting)
                  .PageBy(skipCount, maxResultCount)
                  .ToListAsync(GetCancellationToken(cancellationToken));
+        }
+
+        public async Task<bool> TitleExistsAsync(string title, CancellationToken cancellationToken = default)
+        {
+            var dbSet = await GetDbSetAsync();
+            return await dbSet.AnyAsync(x => x.Title == title, GetCancellationToken(cancellationToken));
         }
     }
 }

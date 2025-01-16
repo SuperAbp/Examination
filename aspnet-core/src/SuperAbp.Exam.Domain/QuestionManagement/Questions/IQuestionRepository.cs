@@ -16,23 +16,26 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// 数量
     /// </summary>
     /// <param name="questionRepositoryId">题库Id</param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<int> GetCountAsync(Guid questionRepositoryId);
+    Task<int> GetCountAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 数量
     /// </summary>
     /// <param name="questionRepositoryId">题库Id</param>
     /// <param name="questionType">问题类型</param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType);
+    Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 题型
     /// </summary>
     /// <param name="questionRepositoryId"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId);
+    Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 列表
@@ -45,7 +48,7 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<List<Question>> GetListAsync(
-        string sorting = null,
+        string? sorting = null,
         int skipCount = 0,
         int maxResultCount = int.MaxValue,
         Guid? questionRepositoryId = null,
@@ -71,6 +74,9 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// </summary>
     /// <param name="questionRepositoryId"></param>
     /// <param name="questionId"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId);
+    Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId, CancellationToken cancellationToken = default);
+
+    Task<bool> ContentExistsAsync(string content, CancellationToken cancellationToken = default);
 }

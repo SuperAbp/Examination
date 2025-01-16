@@ -14,7 +14,7 @@ using Volo.Abp.TenantManagement;
 namespace SuperAbp.Exam.Admin;
 
 [DependsOn(
-    typeof(ExamApplicationContractsModule),
+    typeof(ExamApplicationAdminContractsModule),
     typeof(AbpAccountHttpApiModule),
     typeof(AbpIdentityHttpApiModule),
     typeof(AbpPermissionManagementHttpApiModule),

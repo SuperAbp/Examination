@@ -5,6 +5,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>SuperAbp.Exam</RootNamespace>
+	  <Nullable>enable</Nullable>
   </PropertyGroup>
 
 
@@ -15,6 +16,11 @@
 
   <ItemGroup>
     <Folder Include="TrainingManagement\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
   </ItemGroup>
 
 </Project>

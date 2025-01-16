@@ -1,11 +1,11 @@
-﻿using SuperAbp.Exam.EntityFrameworkCore;
-using Volo.Abp.Modularity;
+﻿using Volo.Abp.Modularity;
 
 namespace SuperAbp.Exam;
 
 [DependsOn(
-    typeof(ExamEntityFrameworkCoreTestModule)
-    )]
+    typeof(ExamDomainModule),
+    typeof(ExamTestBaseModule)
+)]
 public class ExamDomainTestModule : AbpModule
 {
 

@@ -10,6 +10,15 @@ namespace SuperAbp.Exam.PaperManagement.PaperRepos
     /// </summary>
     public class PaperRepo : Entity<Guid>, IHasCreationTime, ISoftDelete
     {
+        protected PaperRepo()
+        { }
+
+        public PaperRepo(Guid id, Guid paperId, Guid questionRepositoryId) : base(id)
+        {
+            PaperId = paperId;
+            QuestionRepositoryId = questionRepositoryId;
+        }
+
         /// <summary>
         /// 试卷Id
         /// </summary>
@@ -66,6 +75,7 @@ namespace SuperAbp.Exam.PaperManagement.PaperRepos
         public decimal? BlankScore { get; set; }
 
         public DateTime CreationTime { get; set; }
+
         public bool IsDeleted { get; set; }
     }
 }

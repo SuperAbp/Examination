@@ -75,9 +75,8 @@ export class PaperManagementRepositoryComponent implements OnInit {
   private fb = inject(FormBuilder);
   private localizationService = inject(LocalizationService);
   private messageService = inject(NzMessageService);
-  private repositoryService = inject(PaperRepoService);
+  private paperRepositoryService = inject(PaperRepoService);
   private questionRepositoryService = inject(QuestionRepoService);
-  private readonly paperRepositoryService = inject(PaperRepoService);
 
   get repositories() {
     return this.paperForm.get('repositories') as FormArray;
@@ -108,7 +107,7 @@ export class PaperManagementRepositoryComponent implements OnInit {
   }
   getList() {
     this.loading = true;
-    this.repositoryService
+    this.paperRepositoryService
       .getList(this.params)
       .pipe(tap(() => (this.loading = false)))
       .subscribe(response => {

@@ -14,41 +14,33 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.Questions;
 /// <summary>
 /// 问题
 /// </summary>
-public class QuestionRepository : EfCoreRepository<ExamDbContext, Question, Guid>, IQuestionRepository
+public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
+    : EfCoreRepository<ExamDbContext, Question, Guid>(dbContextProvider), IQuestionRepository
 {
-    /// <summary>
-    /// .ctor
-    ///</summary>
-    public QuestionRepository(
-        IDbContextProvider<ExamDbContext> dbContextProvider)
-        : base(dbContextProvider)
-    {
-    }
-
-    public async Task<int> GetCountAsync(Guid questionRepositoryId)
+    public async Task<int> GetCountAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {
         return await (await GetDbSetAsync())
             .Where(r => r.QuestionRepositoryId == questionRepositoryId)
-            .CountAsync();
+            .CountAsync(cancellationToken);
     }
 
-    public async Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType)
+    public async Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType, CancellationToken cancellationToken = default)
     {
         return await (await GetDbSetAsync())
             .Where(r => r.QuestionRepositoryId == questionRepositoryId && r.QuestionType == questionType)
-            .CountAsync();
+            .CountAsync(cancellationToken);
     }
 
-    public async Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId)
+    public async Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {
         var dbSet = await GetDbSetAsync();
         return await dbSet.Where(q => q.QuestionRepositoryId == questionRepositoryId)
             .GroupBy(q => q.QuestionType)
             .Select(q => q.Key)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Question>> GetListAsync(string sorting = null,
+    public async Task<List<Question>> GetListAsync(string? sorting = null,
         int skipCount = 0,
         int maxResultCount = int.MaxValue,
         Guid? questionRepositoryId = null,
@@ -69,19 +61,32 @@ public class QuestionRepository : EfCoreRepository<ExamDbContext, Question, Guid
     public async Task<List<Question>> GetRandomListAsync(int maxResultCount = Int32.MaxValue, Guid? questionRepositoryId = null,
         QuestionType? questionType = null, CancellationToken cancellationToken = default)
     {
-        var queryable = await GetQueryableAsync();
+        IQueryable<Question> queryable = (await GetQueryableAsync())
+            .WhereIf(questionRepositoryId.HasValue, p => p.QuestionRepositoryId == questionRepositoryId.Value)
+            .WhereIf(questionType.HasValue, p => p.QuestionType == questionType.Value);
+        ExamDbContext dbContext = await GetDbContextAsync();
+        if (dbContext.Database.ProviderName?.ToLower().Contains("sqlserver") ?? false)
+        {
+            return await queryable
+                .OrderBy(q => Guid.NewGuid())
+                .Take(maxResultCount)
+                .ToListAsync(cancellationToken: cancellationToken);
+        }
 
         return await queryable
-            .WhereIf(questionRepositoryId.HasValue, p => p.QuestionRepositoryId == questionRepositoryId.Value)
-            .WhereIf(questionType.HasValue, p => p.QuestionType == questionType.Value)
-            .OrderBy(q => Guid.NewGuid())
+            .OrderBy(q => EF.Functions.Random())
             .Take(maxResultCount)
             .ToListAsync(cancellationToken: cancellationToken);
     }
 
-    public async Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId)
+    public async Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId, CancellationToken cancellationToken = default)
     {
         var dbSet = await GetDbSetAsync();
-        return await dbSet.AnyAsync(q => q.QuestionRepositoryId == questionRepositoryId && q.Id == questionId);
+        return await dbSet.AnyAsync(q => q.QuestionRepositoryId == questionRepositoryId && q.Id == questionId, cancellationToken);
+    }
+
+    public async Task<bool> ContentExistsAsync(string content, CancellationToken cancellationToken = default)
+    {
+        return await (await GetDbSetAsync()).AnyAsync(x => x.Content == content, cancellationToken);
     }
 }

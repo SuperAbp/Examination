@@ -7,6 +7,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
     /// </summary>
     public class UserExamQuestionAnswerDto
     {
-        public string Answers { get; set; }
+        public string? Answers { get; set; }
     }
 }

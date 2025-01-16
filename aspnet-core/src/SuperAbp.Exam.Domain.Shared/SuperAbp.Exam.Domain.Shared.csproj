@@ -6,6 +6,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>SuperAbp.Exam</RootNamespace>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+	  <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

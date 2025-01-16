@@ -14,31 +14,23 @@ namespace SuperAbp.Exam.EntityFrameworkCore.PaperManagement.PaperRepos;
 /// <summary>
 /// 考试题库
 /// </summary>
-public class PaperRepoRepository : EfCoreRepository<ExamDbContext, PaperRepo, Guid>, IPaperRepoRepository
+public class PaperRepoRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
+    : EfCoreRepository<ExamDbContext, PaperRepo, Guid>(dbContextProvider), IPaperRepoRepository
 {
-    /// <summary>
-    /// .ctor
-    ///</summary>
-    public PaperRepoRepository(
-        IDbContextProvider<ExamDbContext> dbContextProvider)
-        : base(dbContextProvider)
-    {
-    }
-
-    public async Task<PaperRepo> GetAsync(Guid paperId, Guid questionRepositoryId)
+    public async Task<PaperRepo> GetAsync(Guid paperId, Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {
         return await GetAsync(er => er.PaperId == paperId
-                              && er.QuestionRepositoryId == questionRepositoryId);
+                              && er.QuestionRepositoryId == questionRepositoryId, cancellationToken: cancellationToken);
     }
 
-    public async Task<PaperRepo> FindAsync(Guid paperId, Guid questionRepositoryId)
+    public async Task<PaperRepo?> FindAsync(Guid paperId, Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {
         return await FindAsync(er => er.PaperId == paperId
-                                     && er.QuestionRepositoryId == questionRepositoryId);
+                                     && er.QuestionRepositoryId == questionRepositoryId, cancellationToken: cancellationToken);
     }
 
     public async Task<List<PaperRepo>> GetListAsync(
-        string sorting = null,
+        string? sorting = null,
         int skipCount = 0,
         int maxResultCount = int.MaxValue,
         Guid? paperId = null,
@@ -53,13 +45,13 @@ public class PaperRepoRepository : EfCoreRepository<ExamDbContext, PaperRepo, Gu
              .ToListAsync(cancellationToken: cancellationToken);
     }
 
-    public async Task DeleteAsync(Guid paperId, Guid questionRepositoryId)
+    public async Task DeleteAsync(Guid paperId, Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {
-        await DeleteAsync(er => er.PaperId == paperId && er.QuestionRepositoryId == questionRepositoryId);
+        await DeleteAsync(er => er.PaperId == paperId && er.QuestionRepositoryId == questionRepositoryId, cancellationToken: cancellationToken);
     }
 
-    public async Task DeleteByExamIdAsync(Guid paperId)
+    public async Task DeleteByPaperIdAsync(Guid paperId, CancellationToken cancellationToken = default)
     {
-        await DeleteAsync(er => er.PaperId == paperId);
+        await DeleteAsync(er => er.PaperId == paperId, cancellationToken: cancellationToken);
     }
 }

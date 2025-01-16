@@ -113,25 +113,15 @@ export class PaperManagementPaperEditComponent implements OnInit {
     }
     this.isConfirmLoading = true;
 
-    var dynamicPara = {};
     if (this.paperId) {
       this.paperService
         .update(this.paperId, {
           ...this.paper,
-          ...this.form.value,
-          ...dynamicPara
+          ...this.form.value
         })
         .pipe(
           tap(() => {
-            this.paperRepositoryComponent
-              .save(this.paperId)
-              .pipe(
-                tap(() => {
-                  this.goback();
-                }),
-                finalize(() => (this.isConfirmLoading = false))
-              )
-              .subscribe();
+            this.goback();
           }),
           finalize(() => (this.isConfirmLoading = false))
         )
@@ -139,20 +129,11 @@ export class PaperManagementPaperEditComponent implements OnInit {
     } else {
       this.paperService
         .create({
-          ...this.form.value,
-          ...dynamicPara
+          ...this.form.value
         })
         .pipe(
-          tap(res => {
-            this.paperRepositoryComponent
-              .save(res.id)
-              .pipe(
-                tap(() => {
-                  this.goback();
-                }),
-                finalize(() => (this.isConfirmLoading = false))
-              )
-              .subscribe();
+          tap(() => {
+            this.goback();
           }),
           finalize(() => (this.isConfirmLoading = false))
         )

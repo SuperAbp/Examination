@@ -1,22 +1,18 @@
-﻿using SuperAbp.Exam.QuestionManagement.Questions;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SuperAbp.Exam.TrainingManagement;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
+using System.Threading;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.TrainingManagement;
 
-public class TrainingRepository : EfCoreRepository<ExamDbContext, Training, Guid>, ITrainingRepository
+public class TrainingRepository(IDbContextProvider<ExamDbContext> dbContextProvider) : EfCoreRepository<ExamDbContext, Training, Guid>(dbContextProvider), ITrainingRepository
 {
-    public TrainingRepository(IDbContextProvider<ExamDbContext> dbContextProvider) : base(dbContextProvider)
-    {
-    }
-
-    public async Task<bool> AnyQuestionAsync(Guid questionId)
+    public async Task<bool> AnyQuestionAsync(Guid questionId, CancellationToken cancellationToken = default)
     {
         var dbContext = await GetDbSetAsync();
-        return await dbContext.AnyAsync(t => t.QuestionId == questionId);
+        return await dbContext.AnyAsync(t => t.QuestionId == questionId, cancellationToken);
     }
 }

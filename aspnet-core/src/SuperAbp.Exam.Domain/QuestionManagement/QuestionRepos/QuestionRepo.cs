@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SuperAbp.Exam.QuestionManagement.QuestionRepos;
@@ -12,11 +9,11 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionRepos;
 /// </summary>
 public class QuestionRepo : FullAuditedAggregateRoot<Guid>
 {
-    public QuestionRepo()
-    {
-    }
+    protected QuestionRepo()
+    { Title = String.Empty; }
 
-    public QuestionRepo(Guid id, string title) : base(id)
+    [SetsRequiredMembers]
+    protected internal QuestionRepo(Guid id, string title) : base(id)
     {
         Title = title;
     }
@@ -24,10 +21,10 @@ public class QuestionRepo : FullAuditedAggregateRoot<Guid>
     /// <summary>
     /// 标题
     /// </summary>
-    public string Title { get; set; }
+    public string Title { get; internal set; }
 
     /// <summary>
     /// 备注
     /// </summary>
-    public string Remark { get; set; }
+    public string? Remark { get; set; }
 }

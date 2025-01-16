@@ -20,7 +20,7 @@ public class UserExamQuestionWithDetail
 
     public string Answers { get; set; }
 
-    public List<QuestionAnswer> QuestionAnswers { get; set; } = new List<QuestionAnswer>();
+    public List<QuestionAnswer> QuestionAnswers { get; set; } = [];
 
     public class QuestionAnswer
     {

@@ -9,10 +9,14 @@ namespace SuperAbp.Exam.ExamManagement.UserExams;
 /// </summary>
 public class UserExam : AggregateRoot<Guid>, IHasCreationTime
 {
+    protected UserExam()
+    {
+    }
+
     public UserExam(Guid id, Guid examId, Guid userId) : base(id)
     {
-        ExamId = examId;
         UserId = userId;
+        ExamId = examId;
     }
 
     public Guid UserId { get; protected set; }

@@ -42,7 +42,7 @@ namespace SuperAbp.Exam.Admin;
     typeof(AbpCachingStackExchangeRedisModule),
     typeof(AbpDistributedLockingModule),
     typeof(AbpAspNetCoreMvcUiMultiTenancyModule),
-    typeof(ExamApplicationModule),
+    typeof(ExamApplicationAdminModule),
     typeof(ExamEntityFrameworkCoreModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule)
@@ -116,10 +116,10 @@ public class ExamHttpApiHostModule : AbpModule
                 options.FileSets.ReplaceEmbeddedByPhysical<ExamDomainModule>(
                     Path.Combine(hostingEnvironment.ContentRootPath,
                         $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Domain"));
-                options.FileSets.ReplaceEmbeddedByPhysical<ExamApplicationContractsModule>(
+                options.FileSets.ReplaceEmbeddedByPhysical<ExamApplicationAdminContractsModule>(
                     Path.Combine(hostingEnvironment.ContentRootPath,
                         $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Admin.Application.Contracts"));
-                options.FileSets.ReplaceEmbeddedByPhysical<ExamApplicationModule>(
+                options.FileSets.ReplaceEmbeddedByPhysical<ExamApplicationAdminModule>(
                     Path.Combine(hostingEnvironment.ContentRootPath,
                         $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Admin.Application"));
             });
