@@ -2,7 +2,8 @@ import { CoreModule, LocalizationService } from '@abp/ng.core';
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaperRepoService, QuestionRepoService } from '@proxy/admin/controllers';
-import { GetPaperReposInput, PaperRepoCreateDto, PaperRepoListDto } from '@proxy/admin/paper-management/paper-repos';
+import { GetPaperReposInput, PaperRepoListDto } from '@proxy/admin/paper-management/paper-repos';
+import { PaperCreateOrUpdatePaperRepoDto } from '@proxy/admin/paper-management/papers';
 import { QuestionRepoListDto } from '@proxy/admin/question-management/question-repos';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -17,7 +18,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { forkJoin, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-export interface PaperRepoCreateTemp extends PaperRepoCreateDto {
+export interface PaperRepoCreateTemp extends PaperCreateOrUpdatePaperRepoDto {
   id?: string;
   questionRepository: string;
   singleTotalCount: number;
@@ -69,7 +70,6 @@ export class PaperManagementRepositoryComponent implements OnInit {
   currentQuestionRepositoryId;
   repositoryItems: QuestionRepoListDto[];
   params: GetPaperReposInput;
-  removeRepositoryIds: any[] = [];
   repositoryTemps: PaperRepoCreateTemp[] = [];
 
   private fb = inject(FormBuilder);
@@ -145,7 +145,6 @@ export class PaperManagementRepositoryComponent implements OnInit {
     let item = this.repositoryItems.find(i => i.id == this.currentQuestionRepositoryId);
     this.add({
       questionRepositoryId: item.id,
-      paperId: this.paperId,
       questionRepository: item.title,
       singleTotalCount: item.singleCount,
       multiTotalCount: item.multiCount,
@@ -185,52 +184,23 @@ export class PaperManagementRepositoryComponent implements OnInit {
     });
   }
   delete(index: number, item: PaperRepoCreateTemp) {
-    if (item.id) {
-      this.removeRepositoryIds.push(item.id);
-    }
-    this.repositories.removeAt(index);
-    this.repositoryTemps.splice(index, 1);
+    this.paperRepositoryService.delete(item.id).subscribe(() => {
+      this.repositories.removeAt(index);
+      this.repositoryTemps.splice(index, 1);
+      this.changeScore(null);
+    });
   }
 
-  save(paperId) {
-    var services: Array<Observable<any>> = [];
-    this.repositories.controls.forEach(repository => {
-      var value = repository.value;
-      if (value.id) {
-        services.push(
-          this.paperRepositoryService.update(value.id, {
-            paperId: paperId,
-            ...value
-          })
-        );
-      } else {
-        services.push(
-          this.paperRepositoryService.create({
-            paperId: paperId,
-            ...value
-          })
-        );
-      }
-    });
-    if (this.removeRepositoryIds.length > 0) {
-      this.removeRepositoryIds.forEach(id => {
-        services.push(this.paperRepositoryService.delete(id));
-      });
-    }
-    return forkJoin(services);
-  }
   changeScore(e) {
-    if (e) {
-      let totalScore = 0;
-      this.repositories.controls.forEach(c => {
-        totalScore +=
-          c.get('singleCount').value * c.get('singleScore').value +
-          c.get('judgeCount').value * c.get('judgeScore').value +
-          c.get('multiCount').value * c.get('multiScore').value +
-          c.get('blankCount').value * c.get('blankScore').value;
-      });
-      this.totalScoreChange.emit(totalScore);
-    }
+    let totalScore = 0;
+    this.repositories.controls.forEach(c => {
+      totalScore +=
+        c.get('singleCount').value * c.get('singleScore').value +
+        c.get('judgeCount').value * c.get('judgeScore').value +
+        c.get('multiCount').value * c.get('multiScore').value +
+        c.get('blankCount').value * c.get('blankScore').value;
+    });
+    this.totalScoreChange.emit(totalScore);
   }
 
   resetParameters(): GetPaperReposInput {

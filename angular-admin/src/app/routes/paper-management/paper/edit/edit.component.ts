@@ -99,7 +99,7 @@ export class PaperManagementPaperEditComponent implements OnInit {
       name: [this.paper.name || '', [Validators.required]],
       description: [this.paper.description || ''],
       score: [this.paper.score || 0],
-      repositories: this.fb.array([])
+      repositories: this.fb.array([], [Validators.required])
     });
   }
 

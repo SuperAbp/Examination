@@ -8,6 +8,7 @@ export interface GetQuestionAnswersInput extends PagedAndSortedResultRequestDto 
 }
 
 export interface QuestionAnswerCreateDto extends QuestionAnswerCreateOrUpdateDtoBase {
+  questionId?: string;
 }
 
 export interface QuestionAnswerCreateOrUpdateDtoBase {
@@ -15,7 +16,6 @@ export interface QuestionAnswerCreateOrUpdateDtoBase {
   content?: string;
   analysis?: string;
   sort: number;
-  questionId?: string;
 }
 
 export interface QuestionAnswerListDto extends EntityDto<string> {

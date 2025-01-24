@@ -7,11 +7,6 @@ export interface GetPaperReposInput extends PagedAndSortedResultRequestDto {
   paperId?: string;
 }
 
-export interface PaperRepoCreateDto extends PaperRepoCreateOrUpdateDtoBase {
-  paperId?: string;
-  questionRepositoryId?: string;
-}
-
 export interface PaperRepoCreateOrUpdateDtoBase {
   singleCount?: number;
   singleScore?: number;
@@ -34,7 +29,4 @@ export interface PaperRepoListDto extends EntityDto<string> {
   judgeScore?: number;
   blankCount?: number;
   blankScore?: number;
-}
-
-export interface PaperRepoUpdateDto extends PaperRepoCreateOrUpdateDtoBase {
 }

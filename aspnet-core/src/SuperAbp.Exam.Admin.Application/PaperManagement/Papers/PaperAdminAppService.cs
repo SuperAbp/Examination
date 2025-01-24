@@ -46,28 +46,12 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         [Authorize(ExamPermissions.Papers.Create)]
         public virtual async Task<PaperListDto> CreateAsync(PaperCreateDto input)
         {
-            Paper paper = await paperManager.CreateAsync(input.Name, input.Score);
+            Paper paper = await paperManager.CreateAsync(input.Name, GetTotalScore(input.Repositories));
             paper.Description = input.Description;
             paper.TotalQuestionCount = input.Repositories.Sum(p => p.SingleCount + p.MultiCount + p.JudgeCount + p.BlankCount) ?? 0;
             paper = await paperRepository.InsertAsync(paper);
-            await CreatePaperRepoAsync(paper.Id, input.Repositories);
+            await CreateOrUpdatePaperRepoAsync(paper.Id, input.Repositories);
             return ObjectMapper.Map<Paper, PaperListDto>(paper);
-        }
-
-        protected virtual async Task CreatePaperRepoAsync(Guid paperId, PaperCreatePaperRepoDto[] dtos)
-        {
-            PaperRepo[] paperRepos = dtos.Select(input => new PaperRepo(GuidGenerator.Create(), paperId, input.QuestionRepositoryId)
-            {
-                BlankCount = input.BlankCount,
-                BlankScore = input.BlankScore,
-                SingleCount = input.SingleCount,
-                SingleScore = input.SingleScore,
-                MultiCount = input.MultiCount,
-                MultiScore = input.MultiScore,
-                JudgeCount = input.JudgeCount,
-                JudgeScore = input.JudgeScore
-            }).ToArray();
-            await paperRepoRepository.InsertManyAsync(paperRepos);
         }
 
         [Authorize(ExamPermissions.Papers.Update)]
@@ -75,28 +59,58 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         {
             Paper paper = await paperRepository.GetAsync(id);
             await paperManager.SetNameAsync(paper, input.Name);
-            paper.Score = input.Score;
+            paper.Score = GetTotalScore(input.Repositories);
             paper.Description = input.Description;
             paper = await paperRepository.UpdateAsync(paper);
-            await UpdatePaperRepoAsync(id, input.Repositories);
+            await CreateOrUpdatePaperRepoAsync(id, input.Repositories);
             return ObjectMapper.Map<Paper, PaperListDto>(paper);
         }
 
-        protected virtual async Task UpdatePaperRepoAsync(Guid paperId, PaperUpdatePaperRepoDto[] dtos)
+        protected virtual decimal GetTotalScore(PaperCreateOrUpdatePaperRepoDto[] dtos)
         {
-            await paperRepoRepository.DeleteByPaperIdAsync(paperId);
-            PaperRepo[] paperRepos = dtos.Select(input => new PaperRepo(GuidGenerator.Create(), paperId, input.QuestionRepositoryId)
+            return dtos.Sum(r => (r.SingleScore ?? 0) * (r.SingleCount ?? 0)
+                                 + (r.MultiScore ?? 0) * (r.MultiCount ?? 0)
+                                 + (r.JudgeScore ?? 0) * (r.JudgeCount ?? 0)
+                                 + (r.BlankScore ?? 0) * (r.BlankCount ?? 0));
+        }
+
+        protected virtual async Task CreateOrUpdatePaperRepoAsync(Guid paperId, PaperCreateOrUpdatePaperRepoDto[] dtos)
+        {
+            List<PaperRepo> paperRepos = await paperRepoRepository.GetListAsync(paperId: paperId);
+            List<PaperRepo> newPaperRepos = [];
+            List<PaperRepo> updatePaperRepos = [];
+            foreach (PaperCreateOrUpdatePaperRepoDto dto in dtos)
             {
-                BlankCount = input.BlankCount,
-                BlankScore = input.BlankScore,
-                SingleCount = input.SingleCount,
-                SingleScore = input.SingleScore,
-                MultiCount = input.MultiCount,
-                MultiScore = input.MultiScore,
-                JudgeCount = input.JudgeCount,
-                JudgeScore = input.JudgeScore
-            }).ToArray();
-            await paperRepoRepository.InsertManyAsync(paperRepos);
+                if (dto.Id.HasValue)
+                {
+                    PaperRepo questionAnswer = paperRepos.Single(a => a.Id == dto.Id.Value);
+                    questionAnswer.BlankCount = dto.BlankCount;
+                    questionAnswer.BlankScore = dto.BlankScore;
+                    questionAnswer.SingleCount = dto.SingleCount;
+                    questionAnswer.SingleScore = dto.SingleScore;
+                    questionAnswer.MultiCount = dto.MultiCount;
+                    questionAnswer.MultiScore = dto.MultiScore;
+                    questionAnswer.JudgeCount = dto.JudgeCount;
+                    questionAnswer.JudgeScore = dto.JudgeScore;
+                    updatePaperRepos.Add(questionAnswer);
+                }
+                else
+                {
+                    newPaperRepos.Add(new PaperRepo(GuidGenerator.Create(), paperId, dto.QuestionRepositoryId)
+                    {
+                        BlankCount = dto.BlankCount,
+                        BlankScore = dto.BlankScore,
+                        SingleCount = dto.SingleCount,
+                        SingleScore = dto.SingleScore,
+                        MultiCount = dto.MultiCount,
+                        MultiScore = dto.MultiScore,
+                        JudgeCount = dto.JudgeCount,
+                        JudgeScore = dto.JudgeScore
+                    });
+                }
+            }
+            await paperRepoRepository.InsertManyAsync(newPaperRepos);
+            await paperRepoRepository.UpdateManyAsync(updatePaperRepos);
         }
 
         [Authorize(ExamPermissions.Papers.Delete)]

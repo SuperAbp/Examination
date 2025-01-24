@@ -46,9 +46,9 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
     [Fact]
     public async Task Should_Create()
     {
-        PaperCreateDto.PaperCreatePaperRepoDto[] repositories =
+        PaperCreateOrUpdatePaperRepoDto[] repositories =
         [
-            new PaperCreateDto.PaperCreatePaperRepoDto()
+            new PaperCreateOrUpdatePaperRepoDto()
             {
                 QuestionRepositoryId = _testData.QuestionRepository1Id,
                 SingleCount = 1,
@@ -81,9 +81,9 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
     [Fact]
     public async Task Should_Create_Throw_Exists_Content()
     {
-        PaperCreateDto.PaperCreatePaperRepoDto[] repositories =
+        PaperCreateOrUpdatePaperRepoDto[] repositories =
         [
-            new PaperCreateDto.PaperCreatePaperRepoDto()
+            new PaperCreateOrUpdatePaperRepoDto()
             {
                 QuestionRepositoryId = _testData.QuestionRepository1Id,
                 SingleCount = 1,
@@ -129,7 +129,7 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
             Description = "New_Description",
             Score = 0,
             Repositories = [
-                new PaperCreateDto.PaperCreatePaperRepoDto()
+                new PaperCreateOrUpdatePaperRepoDto()
                 {
                     QuestionRepositoryId = _testData.QuestionRepository1Id,
                     SingleCount = 1,
@@ -150,9 +150,9 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
     [Fact]
     public async Task Should_Update()
     {
-        PaperUpdateDto.PaperUpdatePaperRepoDto[] repositories =
+        PaperCreateOrUpdatePaperRepoDto[] repositories =
         [
-            new PaperUpdateDto.PaperUpdatePaperRepoDto()
+            new PaperCreateOrUpdatePaperRepoDto()
             {
                 QuestionRepositoryId = _testData.QuestionRepository1Id,
                 SingleCount = 1,
@@ -164,7 +164,7 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
                 BlankCount = 1,
                 BlankScore = 1
             },
-            new PaperUpdateDto.PaperUpdatePaperRepoDto()
+            new PaperCreateOrUpdatePaperRepoDto()
             {
                 QuestionRepositoryId = _testData.QuestionRepository2Id,
                 SingleCount = 1,
@@ -216,7 +216,7 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
             Description = "New_Description",
             Score = 0,
             Repositories = [
-                new PaperUpdateDto.PaperUpdatePaperRepoDto()
+                new PaperCreateOrUpdatePaperRepoDto()
                 {
                     QuestionRepositoryId = _testData.QuestionRepository1Id,
                     SingleCount = 1,
@@ -237,9 +237,9 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
     [Fact]
     public async Task Should_Update_Throw_Exists_Content()
     {
-        PaperUpdateDto.PaperUpdatePaperRepoDto[] repositories =
+        PaperCreateOrUpdatePaperRepoDto[] repositories =
         [
-            new PaperUpdateDto.PaperUpdatePaperRepoDto()
+            new PaperCreateOrUpdatePaperRepoDto()
             {
                 QuestionRepositoryId = _testData.QuestionRepository1Id,
                 SingleCount = 1,
@@ -251,7 +251,7 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
                 BlankCount = 1,
                 BlankScore = 1
             },
-            new PaperUpdateDto.PaperUpdatePaperRepoDto()
+            new PaperCreateOrUpdatePaperRepoDto()
             {
                 QuestionRepositoryId = _testData.QuestionRepository2Id,
                 SingleCount = 1,

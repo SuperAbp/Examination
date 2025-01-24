@@ -32,8 +32,6 @@ namespace SuperAbp.Exam.Admin.PaperManagement
             CreateMap<PaperRepositoryDetail, PaperRepoListDto>();
             CreateMap<PaperRepo, PaperRepoDetailDto>();
             CreateMap<PaperRepoCreateOrUpdateDtoBase, PaperRepo>();
-            CreateMap<PaperRepoCreateDto, PaperRepo>();
-            CreateMap<PaperRepoUpdateDto, PaperRepo>();
 
             #endregion 考试题库
         }

@@ -8,4 +8,5 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
 public class QuestionCreateDto : QuestionCreateOrUpdateDtoBase
 {
     public QuestionType QuestionType { get; set; }
+    public QuestionCreateOrUpdateAnswerDto[] Options { get; set; } = [];
 }

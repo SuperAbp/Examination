@@ -1,5 +1,4 @@
-﻿using System;
-using Volo.Abp;
+﻿using Volo.Abp;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions;
 

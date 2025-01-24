@@ -131,14 +131,11 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
     this.isConfirmLoading = true;
 
     if (this.questionId) {
-      let services = this.getAnswerSaveService();
-      services.push(
-        this.questionService.update(this.questionId, {
+      this.questionService
+        .update(this.questionId, {
           ...this.question,
           ...this.form.value
         })
-      );
-      forkJoin(services)
         .pipe(
           tap(() => {
             this.goback();
@@ -152,17 +149,10 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
           ...this.form.value
         })
         .pipe(
-          tap(res => {
-            this.questionId = res.id;
-            forkJoin(this.getAnswerSaveService())
-              .pipe(
-                tap(() => {
-                  this.goback();
-                }),
-                finalize(() => (this.isConfirmLoading = false))
-              )
-              .subscribe();
-          })
+          tap(() => {
+            this.goback();
+          }),
+          finalize(() => (this.isConfirmLoading = false))
         )
         .subscribe();
     }
