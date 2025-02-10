@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
@@ -65,6 +67,13 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             await userExamManager.CreateQuestionsAsync(userExam.Id, input.ExamId);
             await userExamRepository.InsertAsync(userExam);
             return ObjectMapper.Map<UserExam, UserExamListDto>(userExam);
+        }
+
+        public virtual async Task FinishedAsync(Guid id)
+        {
+            UserExam userExam = await userExamRepository.GetAsync(id);
+            userExam.Finished = true;
+            await userExamRepository.UpdateAsync(userExam);
         }
 
         private async Task NormalizeMaxResultCountAsync(PagedAndSortedResultRequestDto input)

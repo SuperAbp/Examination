@@ -44,7 +44,7 @@ else
         <GridCol Span="4">
             <QuestionNumber 
                 CurrentId="_questionIds[_questionIndex]"
-                Ids="_questionIds"
+                Numbers="_questions"
                 SuccessIds="GetSuccessIds()"
                 ErrorIds="GetErrorIds()"
                 OnChanged="ShowQuestionAsync"></QuestionNumber>
@@ -57,7 +57,7 @@ else
                     </span>
                     <Divider Type="DirectionVHType.Vertical" />题库训练
                 </TitleTemplate>
-                <Body>
+                <ChildContent>
                 @if (loadingQuestion)
                 {
                     <Spin/>
@@ -113,7 +113,7 @@ else
                         {
                             <Button OnClick="PrevAsync">上一题</Button>
                         }
-                        @if (_questionIndex >= _questionIds.Count - 1)
+                        @if (_questionIndex >= _questions.Count - 1)
                         {
                             <Button OnClick="NextAsync" Disabled>下一题</Button>
                         }
@@ -124,7 +124,7 @@ else
 
                     </div>
                 }
-                </Body>
+                </ChildContent>
             </Card>
         </GridCol>
     </GridRow>
@@ -134,7 +134,6 @@ else
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using SuperAbp.Exam.TrainingManagement
 @using SuperAbp.Exam.Blazor.Model
-@using NUglify.Helpers
 @using Volo.Abp.AspNetCore.Components.Notifications
 @inject NavigationManager Navigation
 @inject IQuestionAppService QuestionAppService
@@ -153,7 +152,8 @@ else
 
     bool loading = true;
     bool loadingQuestion = false;
-    IReadOnlyList<Guid> _questionIds = Array.Empty<Guid>();
+    List<QuestionNumberVo> _questions = [];
+    Guid[] _questionIds = [];
     IReadOnlyList<QuestionAnswerViewModel> _questionAnswers = Array.Empty<QuestionAnswerViewModel>();
     IReadOnlyList<TrainingListDto> _trains = Array.Empty<TrainingListDto>();
     readonly Dictionary<Guid, Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>> _cacheQuestions = new();
@@ -163,15 +163,31 @@ else
     int _questionIndex = 0;
     protected override async Task OnInitializedAsync()
     {
-        var result = await QuestionAppService.GetIdsAsync(new GetQuestionsInput()
+        var result = await QuestionAppService.GetListAsync(new GetQuestionsInput()
         {
             QuestionRepositoryId = QuestionRepositoryId, 
                 QuestionType =CurrentQuestionType.HasValue && Enum.IsDefined(typeof(QuestionType), CurrentQuestionType.Value)
                 ? (QuestionType)CurrentQuestionType.Value
                 : null
         });
-        _questionIds = result.Items;
-        if (_questionIds.Count <= 0)
+        foreach (QuestionType type in result.Items
+                     .GroupBy(q=>q.QuestionType).Select(q=>q.Key).Distinct())
+        {
+            QuestionNumberVo vo = new QuestionNumberVo()
+            {
+                QuestionType = type,
+                Questions = result.Items.Where(q => q.QuestionType == type)
+                    .Select(q=>new QuestionNumberVo.QuestionIndex()
+                    {
+                        QuestionId = q.Id
+                    }).ToArray()
+            };
+            vo.TotalScore = vo.Questions.Sum(q => q.QuestionScore ?? 0);
+            _questions.Add(vo);
+        }
+
+        _questionIds = _questions.SelectMany(q => q.Questions.Select(i => i.QuestionId)).ToArray();
+        if (_questions.Count <= 0)
         {
             GoDetail();
             return;
@@ -186,7 +202,7 @@ else
             maxIndex = _trains.Count > 0 
                 ? _trains.Max(t => _questionIds.ToList().IndexOf(t.QuestionId))
                 : 0;
-            if (maxIndex >= _questionIds.Count || maxIndex < 0)
+            if (maxIndex >= _questions.Count || maxIndex < 0)
             {
                 maxIndex = 0;
             }
@@ -209,9 +225,9 @@ else
     }
     public async Task NextAsync()
     {
-        if (_questionIndex >= _questionIds.Count)
+        if (_questionIndex >= _questions.Count)
         {
-            _questionIndex = _questionIds.Count - 1;
+            _questionIndex = _questions.Count - 1;
             return;
 
         }

@@ -9,6 +9,7 @@
 @using Volo.Abp.AspNetCore.Components.Notifications
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.ExamManagement.Exams
+@using Volo.Abp.Application.Dtos
 
 <style>
     .question-content .title {
@@ -18,9 +19,9 @@
         .question-content .title .number {
             font-weight: bold;
         }
+
     .question-content .chooses {
         width: 100%;
-        
     }
 
     .chooses .choose-item {
@@ -59,37 +60,39 @@
 }
 else
 {
-
     <GridRow Gutter="16">
         <GridCol Span="4">
-            @*<QuestionNumber CurrentId="_questionIds[_questionIndex]"
-                            Ids="_questionIds"></QuestionNumber>*@
+            <Affix OffsetTop="10">
+                <QuestionNumber CurrentId="_questions[0].Questions[0].QuestionId"
+                                Numbers="_questions"></QuestionNumber>
+            </Affix>
         </GridCol>
         <GridCol Span="16">
             <Card class="question-content">
-                <Body>
-                @if (loadingQuestion)
-                {
-                    <Spin/>
-                }
-                else
-                {
-                    var questionTypes = _examQuestions.GroupBy(q => q.QuestionType).Select(q => new
+                <ChildContent>
+                    @if (loadingQuestion)
                     {
-                        QuestionType = q.Key,
-                        Count = q.Count()
-                    });
-                    foreach (var questionType in questionTypes)
-                    {                            
-                        var currentQuestions = _examQuestions.Where(q => q.QuestionType == questionType.QuestionType).ToArray();
-                            <h2>@L["QuestionType:"+questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q=>q.QuestionScore))分）</h2>
-                        for (int i = 1; i <= currentQuestions.Length; i++)
+                        <Spin />
+                    }
+                    else
+                    {
+                        var questionTypes = _examQuestions.GroupBy(q => q.QuestionType).Select(q => new
                         {
-                                var examQuestion = _examQuestions[i - 1];
-                                <h2 class="title">
+                            QuestionType = q.Key,
+                            Count = q.Count()
+                        });
+                        int index = 0;
+                        foreach (var questionType in questionTypes)
+                        {
+                            var currentQuestions = _examQuestions.Where(q => q.QuestionType == questionType.QuestionType).ToArray();
+                            <h2>@chineseNumber[index++]、@L["QuestionType:" + questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q => q.QuestionScore))分）</h2>
+                            for (int i = 1; i <= currentQuestions.Length; i++)
+                            {
+                                var examQuestion = currentQuestions[i - 1];
+                                <h3 class="title">
                                     <span class="number">@i</span>
-                                    <span>【@L["QuestionType:"+examQuestion.QuestionType]】@examQuestion.Question</span>
-                                </h2>
+                                    <span>@examQuestion.Question</span>
+                                </h3>
                                 @switch (examQuestion.QuestionType)
                                 {
                                     case QuestionType.SingleSelect:
@@ -111,49 +114,24 @@ else
                                                Answered="@examQuestion.Answers"
                                                Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
                                                ShowAnalysis="false"
+                                               ShowConfirm="false"
                                                OnSubmit="@SubmitAsync"></Blank>
                                         break;
                                 }
+                            }
                         }
                     }
-                   @* for (int i = 1; i <= _examQuestions.Count; i++)
-                    {
-                        var examQuestion = _examQuestions[i - 1];
-                            <h2 class="title">
-                                <span class="number">@i</span>
-                                <span>【@L["QuestionType:"+examQuestion.QuestionType]】@examQuestion.Question</span>
-                            </h2>
-                            @switch (examQuestion.QuestionType)
-                            {
-                                case QuestionType.SingleSelect:
-                                case QuestionType.Judge:
-                                    <SingleSelect QuestionId="examQuestion.QuestionId"
-                                                  Answered="@examQuestion.Answers"
-                                                  Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
-                                                  OnSubmit="@SubmitAsync"></SingleSelect>
-                                    break;
-                                case QuestionType.MultiSelect:
-                                    <MultiSelect QuestionId="examQuestion.QuestionId"
-                                                 Answered="@examQuestion.Answers"
-                                                 Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
-                                                 ShowAnalysis="false"
-                                                 OnSelect="@SelectAsync"></MultiSelect>
-                                    break;
-                                case QuestionType.FillInTheBlanks:
-                                    <Blank QuestionId="examQuestion.QuestionId"
-                                           Answered="@examQuestion.Answers"
-                                           Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
-                                           ShowAnalysis="false"
-                                           OnSubmit="@SubmitAsync"></Blank>
-                                    break;
-                            }
-                    }*@
-                }
-                </Body>
+                </ChildContent>
             </Card>
         </GridCol>
         <GridCol Span="4">
-            <div style="background-color: #fff">3</div>
+            <Affix OffsetTop="10">
+            <Card style="text-align: center;">
+                <ChildContent>
+                    <Button Type="@ButtonType.Primary" OnClick="SubmitPaperAsync" style="width:100%">提交试卷</Button>
+                </ChildContent>
+            </Card>
+            </Affix>
         </GridCol>
     </GridRow>
 }
@@ -169,38 +147,60 @@ else
 
     bool loading = true;
     bool loadingQuestion = false;
+    string[] chineseNumber = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
 
     ExamDetailDto _exam;
     IReadOnlyList<UserExamQuestionListDto> _examQuestions = Array.Empty<UserExamQuestionListDto>();
-    IReadOnlyList<Guid> _questionIds = Array.Empty<Guid>();
+    List<QuestionNumberVo> _questions =[];
 
     protected override async Task OnInitializedAsync()
     {
         var userExam = await UserExamAppService.GetAsync(Id);
         _exam = await ExaminationAppService.GetAsync(userExam.ExamId);
-        var dto = await UserExamQuestionAppService.GetListAsync(new GetUserExamQuestionsInput() { UserExamId = Id });
+        PagedResultDto<UserExamQuestionListDto> dto = await UserExamQuestionAppService.GetListAsync(new GetUserExamQuestionsInput() { UserExamId = Id });
         _examQuestions = dto.Items;
-        _questionIds = dto.Items.Select(q=>q.QuestionId).ToArray();
+
+        foreach (QuestionType type in dto.Items
+                     .GroupBy(q=>q.QuestionType).Select(q=>q.Key).Distinct())
+        {
+            QuestionNumberVo vo = new QuestionNumberVo()
+            {
+                QuestionType = type,
+                Questions = dto.Items.Where(q => q.QuestionType == type)
+                    .Select(q=>new QuestionNumberVo.QuestionIndex()
+                    {
+                        QuestionId = q.QuestionId,
+                        QuestionScore = q.QuestionScore
+                    }).ToArray()
+            };
+            vo.TotalScore = vo.Questions.Sum(q => q.QuestionScore ?? 0);
+            _questions.Add(vo);
+        }
         loading = false;
     }
     protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamQuestionListDto.QuestionAnswerListDto> answers)
     {
         return answers
             .Select(qa => new QuestionAnswerViewModel
-            {
-                Id = qa.Id,
-                Content = qa.Content,
-                Right = false
-            }).ToArray();
+                {
+                    Id = qa.Id,
+                    Content = qa.Content,
+                    Right = false
+                }).ToArray();
     }
     public virtual async Task SubmitAsync(QuestionAnswerItem item)
     {
-        await AnswerAnswer(item.QuestionId, item.Answer);
+        await Answer(item.QuestionId, item.Answer);
+    }
+
+    public virtual async Task SubmitPaperAsync()
+    {
+        await UserExamAppService.FinishedAsync(Id);
     }
 
     public virtual async Task SelectAsync(QuestionAnswerSelectEventArgs item)
     {
-        await AnswerAnswer(item.QuestionId, item.Answer);
+        await Answer(item.QuestionId, item.Answer);
     }
 
     /// <summary>
@@ -209,14 +209,14 @@ else
     /// <param name="questionId">题目Id</param>
     /// <param name="answer">答案</param>
     /// <returns></returns>
-    protected async Task AnswerAnswer(Guid questionId, string answer)
+    protected async Task Answer(Guid questionId, string answer)
     {
         var examQuestionId = _examQuestions.First(q => q.QuestionId == questionId).Id;
 
         await UserExamQuestionAppService.AnswerAsync(examQuestionId, new UserExamQuestionAnswerDto()
-        {
-            Answers = answer
-        });
+            {
+                Answers = answer
+            });
     }
     protected virtual void GoDetail()
     {
