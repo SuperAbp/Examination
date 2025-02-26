@@ -62,6 +62,8 @@
     "QuestionType:ShortAnswerQuestions": "简答",
     "SaveSuccessfully": "保存成功",
     "DeletedSuccessfully": "删除成功",
+    "TotalScore{0}": "共{0}分",
+    "TotalQuestionCount{0}": "共{0}题",
     "Least {0} options.": "至少{0}个选项。",
     "Only one answer.": "只有一个正确答案。",
     "Least one answer.": "至少有一个正确答案。",

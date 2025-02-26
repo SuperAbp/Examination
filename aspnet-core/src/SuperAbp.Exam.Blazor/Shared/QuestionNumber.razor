@@ -12,7 +12,12 @@
                     <h4>
                         <span>@L["QuestionType:" + numbers.QuestionType]</span>
                     </h4>
-                    <span>共@(numbers.Questions.Count)题/共@((numbers.TotalScore??0).ToString("####"))分</span>
+                    <span>@L["TotalQuestionCount{0}:" + numbers.Questions.Count]
+                    @if(numbers.TotalScore is > 0)
+                    {
+                        <span>/@L["TotalScore{0}:" + numbers.TotalScore.Value]</span>
+                    }
+                    </span>
                 </Flex>
                 @foreach (QuestionNumberVo.QuestionIndex question in numbers.Questions)
                 {
