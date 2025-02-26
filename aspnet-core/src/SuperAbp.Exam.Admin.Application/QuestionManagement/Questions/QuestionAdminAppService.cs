@@ -9,6 +9,8 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using SuperAbp.Exam.PaperManagement.PaperRepos;
+using static SuperAbp.Exam.Admin.PaperManagement.Papers.PaperUpdateDto;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 {
@@ -94,9 +96,12 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         [Authorize(ExamPermissions.Questions.Create)]
         public virtual async Task<QuestionListDto> CreateAsync(QuestionCreateDto input)
         {
+            ValidationRightCountAsync(input.QuestionType, input.Options.Count(a => a.Right));
+
             Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, input.QuestionType, input.Content);
             question.Analysis = input.Analysis;
             question = await questionRepository.InsertAsync(question);
+            await CreateOrUpdateAnswerAsync(question.Id, input.Options);
             return ObjectMapper.Map<Question, QuestionListDto>(question);
         }
 
@@ -104,16 +109,63 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         public virtual async Task<QuestionListDto> UpdateAsync(Guid id, QuestionUpdateDto input)
         {
             Question question = await questionRepository.GetAsync(id);
+            ValidationRightCountAsync(question.QuestionType, input.Options.Count(a => a.Right));
+
             await questionManager.SetContentAsync(question, input.Content);
             question.Analysis = input.Analysis;
             question.QuestionRepositoryId = input.QuestionRepositoryId;
             question = await questionRepository.UpdateAsync(question);
+            await CreateOrUpdateAnswerAsync(question.Id, input.Options);
             return ObjectMapper.Map<Question, QuestionListDto>(question);
+        }
+
+        private static void ValidationRightCountAsync(QuestionType questionType, int count)
+        {
+            if (!(questionType switch
+            {
+                QuestionType.Judge => count == 1,
+                QuestionType.SingleSelect => count == 1,
+                QuestionType.MultiSelect => count > 1,
+                _ => true
+            }))
+            {
+                throw new QuestionAnswerRightCountException();
+            }
+        }
+
+        protected virtual async Task CreateOrUpdateAnswerAsync(Guid questionId, QuestionCreateOrUpdateAnswerDto[] answers)
+        {
+            List<QuestionAnswer> questionAnswers = await questionAnswerRepository.GetListAsync(questionId);
+            List<QuestionAnswer> newQuestionAnswers = [];
+            List<QuestionAnswer> updateQuestionAnswers = [];
+            foreach (QuestionCreateOrUpdateAnswerDto answer in answers)
+            {
+                if (answer.Id.HasValue)
+                {
+                    QuestionAnswer questionAnswer = questionAnswers.Single(a => a.Id == answer.Id.Value);
+                    await questionAnswerManager.SetContentAsync(questionAnswer, answer.Content);
+                    questionAnswer.Right = answer.Right;
+                    questionAnswer.Analysis = answer.Analysis;
+                    questionAnswer.Sort = answer.Sort;
+                    updateQuestionAnswers.Add(questionAnswer);
+                }
+                else
+                {
+                    QuestionAnswer questionAnswer = await questionAnswerManager.CreateAsync(questionId, answer.Content, answer.Right);
+                    questionAnswer.Sort = answer.Sort;
+                    questionAnswer.Analysis = answer.Analysis;
+                    questionAnswers.Add(questionAnswer);
+                    newQuestionAnswers.Add(questionAnswer);
+                }
+            }
+            await questionAnswerRepository.InsertManyAsync(newQuestionAnswers);
+            await questionAnswerRepository.UpdateManyAsync(updateQuestionAnswers);
         }
 
         [Authorize(ExamPermissions.Questions.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
+            await questionAnswerRepository.DeleteByQuestionIdAsync(id);
             await questionRepository.DeleteAsync(id);
         }
 

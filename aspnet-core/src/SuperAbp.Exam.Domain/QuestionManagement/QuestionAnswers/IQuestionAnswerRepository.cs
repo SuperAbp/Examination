@@ -20,5 +20,7 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers
         Task<List<QuestionAnswer>> GetListAsync(Guid questionId, CancellationToken cancellationToken = default);
 
         Task<bool> ContentExistsAsync(Guid questionId, string content, CancellationToken cancellationToken = default);
+
+        Task DeleteByQuestionIdAsync(Guid questionId, CancellationToken cancellationToken = default);
     }
 }

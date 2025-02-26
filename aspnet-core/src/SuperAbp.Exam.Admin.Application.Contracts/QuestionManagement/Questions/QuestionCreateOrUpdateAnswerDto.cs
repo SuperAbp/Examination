@@ -1,12 +1,14 @@
-﻿using SuperAbp.Exam.QuestionManagement.Questions;
-using System;
+﻿using System;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
 
-public class QuestionCreateOrUpdateDtoBase
+public class QuestionCreateOrUpdateAnswerDto
 {
+    public Guid? Id { get; set; }
+    public bool Right { get; set; }
+
     /// <summary>
-    /// 题干
+    /// 内容
     /// </summary>
     public required string Content { get; set; }
 
@@ -16,7 +18,7 @@ public class QuestionCreateOrUpdateDtoBase
     public string? Analysis { get; set; }
 
     /// <summary>
-    /// 所属题库
+    /// 排序
     /// </summary>
-    public Guid QuestionRepositoryId { get; set; }
+    public int Sort { get; set; }
 }

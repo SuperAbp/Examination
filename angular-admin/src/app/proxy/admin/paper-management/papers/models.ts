@@ -8,6 +8,7 @@ export interface GetPapersInput extends PagedAndSortedResultRequestDto {
 }
 
 export interface PaperCreateDto extends PaperCreateOrUpdateDtoBase {
+  repositories: PaperCreateOrUpdatePaperRepoDto[];
 }
 
 export interface PaperCreateOrUpdateDtoBase {
@@ -16,10 +17,24 @@ export interface PaperCreateOrUpdateDtoBase {
   score: number;
 }
 
+export interface PaperCreateOrUpdatePaperRepoDto {
+  id?: string;
+  questionRepositoryId?: string;
+  singleCount?: number;
+  singleScore?: number;
+  multiCount?: number;
+  multiScore?: number;
+  judgeCount?: number;
+  judgeScore?: number;
+  blankCount?: number;
+  blankScore?: number;
+}
+
 export interface PaperListDto extends EntityDto<string> {
   name?: string;
   score: number;
 }
 
 export interface PaperUpdateDto extends PaperCreateOrUpdateDtoBase {
+  repositories: PaperCreateOrUpdatePaperRepoDto[];
 }

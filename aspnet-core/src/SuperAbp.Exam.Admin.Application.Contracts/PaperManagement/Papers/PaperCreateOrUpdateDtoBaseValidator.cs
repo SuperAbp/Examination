@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Linq;
+using FluentValidation;
 using Microsoft.Extensions.Localization;
 using SuperAbp.Exam.Localization;
 
@@ -12,7 +13,14 @@ public class PaperCreateOrUpdateDtoBaseValidator : AbstractValidator<PaperCreate
             .NotNull()
             .NotEmpty()
             .WithMessage(local["The {0} field is required.", "{PropertyName}"]);
+
         RuleFor(q => q.Score)
-            .GreaterThanOrEqualTo(0);
+            .Must((a, score) => score == a.Repositories.Sum(r => r.SingleScore * r.SingleCount + r.MultiScore * r.MultiCount + r.JudgeScore * r.JudgeCount + r.BlankScore * r.BlankCount))
+            .WithMessage(local["The field {0} is invalid.", "{PropertyName}"]);
+
+        RuleFor(q => q.Repositories)
+            .NotNull()
+            .NotEmpty()
+            .WithMessage(local["The {0} field is required.", "{PropertyName}"]);
     }
 }

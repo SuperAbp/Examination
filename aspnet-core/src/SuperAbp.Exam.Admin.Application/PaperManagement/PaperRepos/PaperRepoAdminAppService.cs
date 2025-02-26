@@ -5,6 +5,7 @@ using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.PaperManagement.PaperRepos;
+using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using Volo.Abp.Application.Dtos;
@@ -13,7 +14,8 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
 {
     [Authorize(ExamPermissions.PaperRepos.Default)]
     public class PaperRepoAdminAppService(
-        IPaperRepoRepository examRepoRepository,
+        IPaperRepository paperRepository,
+        IPaperRepoRepository paperRepoRepository,
         IQuestionRepoRepository questionRepoRepository)
         : ExamAppService, IPaperRepoAdminAppService
     {
@@ -21,7 +23,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
         {
             await NormalizeMaxResultCountAsync(input);
 
-            var examRepoQueryable = await examRepoRepository.GetQueryableAsync();
+            var examRepoQueryable = await paperRepoRepository.GetQueryableAsync();
 
             examRepoQueryable = examRepoQueryable.Where(e => e.PaperId == input.PaperId);
 
@@ -57,7 +59,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
 
         public virtual async Task<GetPaperRepoForEditorOutput> GetEditorAsync(Guid id)
         {
-            PaperRepo entity = await examRepoRepository.GetAsync(id);
+            PaperRepo entity = await paperRepoRepository.GetAsync(id);
 
             return ObjectMapper.Map<PaperRepo, GetPaperRepoForEditorOutput>(entity);
         }
@@ -65,7 +67,16 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
         [Authorize(ExamPermissions.PaperRepos.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
-            await examRepoRepository.DeleteAsync(id);
+            PaperRepo paperRepo = await paperRepoRepository.GetAsync(id);
+            await paperRepoRepository.DeleteAsync(paperRepo);
+
+            Paper paper = await paperRepository.GetAsync(paperRepo.PaperId);
+            paper.Score = paper.Score - (paperRepo.SingleScore ?? 0) * (paperRepo.SingleCount ?? 0)
+                          + (paperRepo.MultiScore ?? 0) * (paperRepo.MultiCount ?? 0)
+                          + (paperRepo.JudgeScore ?? 0) * (paperRepo.JudgeCount ?? 0)
+                          + (paperRepo.BlankScore ?? 0) * (paperRepo.BlankCount ?? 0);
+            paper.TotalQuestionCount = paper.TotalQuestionCount - (paperRepo.SingleCount ?? 0) + (paperRepo.MultiCount ?? 0) + (paperRepo.JudgeCount ?? 0) + (paperRepo.BlankCount ?? 0);
+            await paperRepository.UpdateAsync(paper);
         }
 
         /// <summary>

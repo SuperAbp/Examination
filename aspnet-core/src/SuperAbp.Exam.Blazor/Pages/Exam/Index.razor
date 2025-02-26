@@ -68,7 +68,7 @@
             .GetListAsync(new GetExamsInput()
                 { SkipCount = (pageIndex - 1) * pageSize, MaxResultCount = pageSize, Sorting = sorting });
         Exams = result.Items;
-        TotalCount = (int)result.TotalCount;        
+        TotalCount = (int)result.TotalCount;
         this.Loading = false;
 
     }

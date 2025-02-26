@@ -24,5 +24,10 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionAnswers
         {
             return await (await GetDbSetAsync()).AnyAsync(x => x.QuestionId == questionId && x.Content == content, GetCancellationToken(cancellationToken));
         }
+
+        public async Task DeleteByQuestionIdAsync(Guid questionId, CancellationToken cancellationToken = default)
+        {
+            await DeleteAsync(er => er.QuestionId == questionId, cancellationToken: cancellationToken);
+        }
     }
 }
