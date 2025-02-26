@@ -13,43 +13,43 @@
 
 <style>
     .question-content .title {
-        font-size: 18px;
+    font-size: 18px;
     }
 
-        .question-content .title .number {
-            font-weight: bold;
-        }
+    .question-content .title .number {
+    font-weight: bold;
+    }
 
     .question-content .chooses {
-        width: 100%;
+    width: 100%;
     }
 
     .chooses .choose-item {
-        width: 100%;
-        padding: 9px 20px 9px 5px;
-        -ms-border-radius: 4px;
-        border-radius: 4px;
-        border: 1px solid #d9d9d9;
-        margin-bottom: 10px;
+    width: 100%;
+    padding: 9px 20px 9px 5px;
+    -ms-border-radius: 4px;
+    border-radius: 4px;
+    border: 1px solid #d9d9d9;
+    margin-bottom: 10px;
     }
 
     .chooses .ant-radio {
-        display: none;
+    display: none;
     }
 
     .ant-radio-wrapper-checked {
-        border: 1px solid #409eff !important;
+    border: 1px solid #409eff !important;
     }
 
     .chooses .choose-item .tag {
-        width: 10px;
-        font-weight: bold;
-        color: #1890ff;
+    width: 10px;
+    font-weight: bold;
+    color: #1890ff;
     }
 
     .chooses .choose-item .content {
-        color: #000;
-        margin-left: 5px;
+    color: #000;
+    margin-left: 5px;
     }
 </style>
 @if (loading)
@@ -64,7 +64,7 @@ else
         <GridCol Span="4">
             <Affix OffsetTop="10">
                 <QuestionNumber CurrentId="_questions[0].Questions[0].QuestionId"
-                                Numbers="_questions"></QuestionNumber>
+                Numbers="_questions"></QuestionNumber>
             </Affix>
         </GridCol>
         <GridCol Span="16">
@@ -80,17 +80,18 @@ else
                         {
                             QuestionType = q.Key,
                             Count = q.Count()
-                        });
-                        int index = 0;
-                        foreach (var questionType in questionTypes)
+                        }).ToArray();
+                        int number = 1;
+                        for (int i = 0; i < questionTypes.Length; i++)
                         {
+                            var questionType = questionTypes[i];
+
                             var currentQuestions = _examQuestions.Where(q => q.QuestionType == questionType.QuestionType).ToArray();
-                            <h2>@chineseNumber[index++]、@L["QuestionType:" + questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q => q.QuestionScore))分）</h2>
-                            for (int i = 1; i <= currentQuestions.Length; i++)
+                            <h2>@chineseNumber[i]、@L["QuestionType:" + questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q => q.QuestionScore))分）</h2>
+                            foreach (UserExamQuestionListDto examQuestion in currentQuestions)
                             {
-                                var examQuestion = currentQuestions[i - 1];
                                 <h3 class="title">
-                                    <span class="number">@i</span>
+                                    <span class="number">@(number++)</span>
                                     <span>@examQuestion.Question</span>
                                 </h3>
                                 @switch (examQuestion.QuestionType)

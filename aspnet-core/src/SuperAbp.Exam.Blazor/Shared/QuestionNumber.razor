@@ -4,28 +4,31 @@
 ﻿<Card>
     <ChildContent>
         <Space Direction="DirectionVHType.Vertical" Style="width: 100%;">
-        @foreach (QuestionNumberVo numbers in Numbers)
-        {
-            int i = 0;
-            <SpaceItem Style="width: 100%;">
-                <Flex Justify="space-between" Align="center">
-                    <h4>
-                        <span>@L["QuestionType:" + numbers.QuestionType]</span>
-                    </h4>
-                    <span>@L["TotalQuestionCount{0}:" + numbers.Questions.Count]
-                    @if(numbers.TotalScore is > 0)
+            @{
+                int i = 1;
+            foreach (QuestionNumberVo numbers in Numbers)
+            {
+                <SpaceItem Style="width: 100%;">
+                    <Flex Justify="space-between" Align="center">
+                        <h4>
+                            <span>@L["QuestionType:" + numbers.QuestionType]</span>
+                        </h4>
+                        <span>@L["TotalQuestionCount{0}", numbers.Questions.Count]
+                            @if (numbers.TotalScore is > 0)
+                            {
+                                <span>/@L["TotalScore{0}", numbers.TotalScore.Value]</span>
+                            }
+                        </span>
+                    </Flex>
+                    @foreach (QuestionNumberVo.QuestionIndex question in numbers.Questions)
                     {
-                        <span>/@L["TotalScore{0}:" + numbers.TotalScore.Value]</span>
+                        string color = GetNumberColor(question.QuestionId);
+                        int currentIndex = i++;
+                        <Tag Color="@color" OnClick="async () => await ClickAsync(question.QuestionId)">@currentIndex</Tag>
                     }
-                    </span>
-                </Flex>
-                @foreach (QuestionNumberVo.QuestionIndex question in numbers.Questions)
-                {
-                    string color = GetNumberColor(question.QuestionId);
-                    <Tag Color="@color" OnClick="async () => await ClickAsync(question.QuestionId)">@(i++)</Tag>
-                }
-            </SpaceItem>
-        }
+                </SpaceItem>
+            }
+            }
         </Space>
     </ChildContent>
 </Card>

@@ -134,6 +134,7 @@ else
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using SuperAbp.Exam.TrainingManagement
 @using SuperAbp.Exam.Blazor.Model
+@using Volo.Abp.Application.Dtos
 @using Volo.Abp.AspNetCore.Components.Notifications
 @inject NavigationManager Navigation
 @inject IQuestionAppService QuestionAppService
@@ -163,7 +164,7 @@ else
     int _questionIndex = 0;
     protected override async Task OnInitializedAsync()
     {
-        var result = await QuestionAppService.GetListAsync(new GetQuestionsInput()
+        PagedResultDto<QuestionListDto> result = await QuestionAppService.GetListAsync(new GetQuestionsInput()
         {
             QuestionRepositoryId = QuestionRepositoryId, 
                 QuestionType =CurrentQuestionType.HasValue && Enum.IsDefined(typeof(QuestionType), CurrentQuestionType.Value)
@@ -171,7 +172,7 @@ else
                 : null
         });
         foreach (QuestionType type in result.Items
-                     .GroupBy(q=>q.QuestionType).Select(q=>q.Key).Distinct())
+                     .GroupBy(q=>q.QuestionType).Select(q=>q.Key).Distinct().OrderBy(q=>q))
         {
             QuestionNumberVo vo = new QuestionNumberVo()
             {
