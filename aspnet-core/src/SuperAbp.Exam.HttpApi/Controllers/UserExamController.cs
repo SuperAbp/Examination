@@ -27,7 +27,7 @@ namespace SuperAbp.Exam.Controllers
         [HttpGet("unfinished")]
         public async Task<Guid?> GetUnfinishedAsync()
         {
-           return await _userExamAppService.GetUnfinishedAsync();
+            return await _userExamAppService.GetUnfinishedAsync();
         }
 
         /// <summary>
@@ -63,5 +63,15 @@ namespace SuperAbp.Exam.Controllers
             return await _userExamAppService.CreateAsync(input);
         }
 
+        /// <summary>
+        /// 完成考试
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPatch("{id}")]
+        public async Task FinishedAsync(Guid id)
+        {
+            await _userExamAppService.FinishedAsync(id);
+        }
     }
 }

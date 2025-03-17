@@ -106,4 +106,9 @@ public class UserExamManager(
                 questionType: questionType, maxResultCount: count);
         }
     }
+
+    public async Task<List<UserExamQuestionWithDetail>> GetQuestionsAsync(Guid userExamId)
+    {
+        return await userExamQuestionRepository.GetListAsync(userExamId: userExamId);
+    }
 }

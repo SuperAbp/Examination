@@ -1,23 +1,49 @@
-﻿﻿<Card>
-    <div class="content">
-        <div>
-            @for (int i = 0; i < Ids.Count; i++)
-            {
-                var tempIndex = i;
-                var id = Ids[tempIndex];
-                var color = GetNumberColor(id);
-                <Tag Color="@color" OnClick="async () => await ClickAsync(id)">@(tempIndex + 1)</Tag>
+﻿@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.Questions
+﻿<Card>
+    <ChildContent>
+        <Space Direction="DirectionVHType.Vertical" Style="width: 100%;">
+            @{
+                int i = 1;
+                foreach (QuestionNumberVo numbers in Numbers)
+                {
+                    <SpaceItem Style="width: 100%;">
+                        <Flex Justify="space-between" Align="center">
+                            <h4>
+                                <span>@L["QuestionType:" + numbers.QuestionType]</span>
+                            </h4>
+                            <span>@L["TotalQuestionCount{0}", numbers.Questions.Count]
+                                @if (numbers.TotalScore is > 0)
+                                {
+                                    <span>/@L["TotalScore{0}", numbers.TotalScore.Value]</span>
+                                }
+                            </span>
+                        </Flex>
+                        <Space Size="@(("0", "8"))" Wrap>
+                        @foreach (QuestionNumberVo.QuestionIndex question in numbers.Questions)
+                        {
+                            string color = GetNumberColor(question.QuestionId);
+                            int currentIndex = i++;
+                            <SpaceItem>
+                                <Tag Color="@color" Style="cursor: pointer;" OnClick="async () => await ClickAsync(question.QuestionId)">@currentIndex</Tag>
+                            </SpaceItem>
+                        }
+                        </Space>
+                    </SpaceItem>
+                }
             }
-        </div>
-    </div>
+        </Space>
+    </ChildContent>
 </Card>
+@inject IStringLocalizer<ExamResource> L
 @code {
     [Parameter]
     public Guid CurrentId { get; set; }
     [Parameter]
     public EventCallback<Guid> CurrentIdChanged { get; set; }
     [Parameter]
-    public IReadOnlyList<Guid> Ids { get; set; }
+    public IReadOnlyList<QuestionNumberVo> Numbers { get; set; }
     [Parameter]
     public IReadOnlyList<Guid> SuccessIds { get; set; } = Array.Empty<Guid>();
     [Parameter]

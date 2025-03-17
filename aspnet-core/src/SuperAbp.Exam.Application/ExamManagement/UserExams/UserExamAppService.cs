@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using SuperAbp.Exam.ExamManagement.UserExamQuestions;
+using SuperAbp.Exam.PaperManagement.Papers;
+using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
@@ -16,7 +21,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     public class UserExamAppService(
         IUserExamRepository userExamRepository,
         UserExamManager userExamManager,
-        IExamRepository examRepository)
+        IExamRepository examRepository,
+        IQuestionRepository questionRepository,
+        IQuestionAnswerRepository questionAnswerRepository,
+        IUserExamQuestionRepository userExamQuestionRepository)
         : ExamAppService, IUserExamAppService
     {
         public async Task<Guid?> GetUnfinishedAsync()
@@ -65,6 +73,38 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             await userExamManager.CreateQuestionsAsync(userExam.Id, input.ExamId);
             await userExamRepository.InsertAsync(userExam);
             return ObjectMapper.Map<UserExam, UserExamListDto>(userExam);
+        }
+
+        public virtual async Task FinishedAsync(Guid id)
+        {
+            UserExam userExam = await userExamRepository.GetAsync(id);
+            userExam.Finished = true;
+            await userExamRepository.UpdateAsync(userExam);
+
+            List<UserExamQuestionWithDetail> userExamQuestions = await userExamQuestionRepository.GetListAsync(userExamId: id);
+            decimal totalScore = 0;
+            foreach (UserExamQuestionWithDetail item in userExamQuestions)
+            {
+                Question question = await questionRepository.GetAsync(item.QuestionId);
+                List<QuestionAnswer> questionAnswers = await questionAnswerRepository.GetListAsync(item.QuestionId);
+                if ((question.QuestionType == QuestionType.SingleSelect || question.QuestionType == QuestionType.Judge)
+                    && item.Answers == (questionAnswers.SingleOrDefault(a => a.Right)?.Id.ToString() ?? ""))
+                {
+                    totalScore += item.QuestionScore;
+                }
+                else if (question.QuestionType == QuestionType.MultiSelect
+                        && (new HashSet<string>(item.Answers.Split(ExamConsts.Splitter)).SetEquals(questionAnswers.Where(a => a.Right).Select(a => a.Id.ToString()))))
+                {
+                    totalScore += item.QuestionScore;
+                }
+                else if (question.QuestionType == QuestionType.FillInTheBlanks)
+                {
+                    // TODO:一空多项，多空多项，无序
+                }
+            }
+
+            userExam.TotalScore = totalScore;
+            await userExamRepository.UpdateAsync(userExam);
         }
 
         private async Task NormalizeMaxResultCountAsync(PagedAndSortedResultRequestDto input)
