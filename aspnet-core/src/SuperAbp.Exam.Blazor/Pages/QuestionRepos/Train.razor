@@ -2,33 +2,33 @@
 
 <style>
     .question-content .title {
-        font-size: 18px;
+    font-size: 18px;
     }
 
     .question-content .title .number {
-        font-weight: bold;
+    font-weight: bold;
     }
     .question-content .chooses {
-        width: 100%;
+    width: 100%;
     }
 
     .bottom {
-        margin-top: 10px;
-        display: flex;
-        -o-justify-content: space-between;
-        -webkit-justify-content: space-between;
-        justify-content: space-between;
+    margin-top: 10px;
+    display: flex;
+    -o-justify-content: space-between;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
     }
 
     .analysis {
-        margin-top: 10px;
-        margin-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     }
 
     .ant-tag.current {
-        color: #389e0d;
-        background: #f6ffed;
-        border-color: #b7eb8f;
+    color: #389e0d;
+    background: #f6ffed;
+    border-color: #b7eb8f;
     }
 
 </style>
@@ -43,11 +43,11 @@ else
     <GridRow Gutter="16">
         <GridCol Span="4">
             <QuestionNumber 
-                CurrentId="_questionIds[_questionIndex]"
-                Numbers="_questions"
-                SuccessIds="GetSuccessIds()"
-                ErrorIds="GetErrorIds()"
-                OnChanged="ShowQuestionAsync"></QuestionNumber>
+            CurrentId="_questionIds[_questionIndex]"
+            Numbers="_questions"
+            SuccessIds="GetSuccessIds()"
+            ErrorIds="GetErrorIds()"
+            OnChanged="ShowQuestionAsync"></QuestionNumber>
         </GridCol>
         <GridCol Span="20">
             <Card class="question-content">
@@ -58,72 +58,82 @@ else
                     <Divider Type="DirectionVHType.Vertical" />题库训练
                 </TitleTemplate>
                 <ChildContent>
-                @if (loadingQuestion)
-                {
-                    <Spin/>
-                }
-                else
-                {
-                    @if (_question != null)
+                    @if (loadingQuestion)
                     {
-                        <h2 class="title">
-                            <span class="number">@(_questionIndex + 1)</span>
-                            <span>@_question.Content</span>
-                        </h2>
-                        @switch(_question.QuestionType)
-                        {
-                            case QuestionType.SingleSelect:
-                            case QuestionType.Judge:
-                                <SingleSelect QuestionId="_question.Id"
-                                              Answers="_questionAnswers"
-                                              SelectedQuestionAnswers="_selectedQuestionAnswers"
-                                              ShowAnalysis="_showAnalysis"
-                                              OnSubmit="@SubmitAsync"></SingleSelect>
-                                break;
-                            case QuestionType.MultiSelect:
-                                <MultiSelect QuestionId="_question.Id"
-                                             Answers="_questionAnswers"
-                                             SelectedQuestionAnswers="_selectedQuestionAnswers"
-                                             ShowAnalysis="_showAnalysis"
-                                             OnSubmit="@SubmitAsync"></MultiSelect>
-                                break;
-                            case QuestionType.FillInTheBlanks:
-                                <Blank QuestionId="_question.Id"
-                                       Answers="_questionAnswers"
-                                       SelectedQuestionAnswers="_selectedQuestionAnswers"
-                                       ShowAnalysis="_showAnalysis"
-                                       OnSubmit="@SubmitAsync"></Blank>
-                                break;
-                        }
+                        <Spin/>
                     }
-                    @if (_showAnalysis && !String.IsNullOrEmpty(_question?.Analysis))
+                    else
                     {
-                        <div class="analysis">
-                            <Card Title="题目解析">
-                                @_question.Analysis
-                            </Card>
+                        @if (_question != null)
+                        {
+                            <h2 class="title">
+                                <span class="number">@(_questionIndex + 1)</span>
+                                <span>@_question.Content</span>
+                            </h2>
+                            @switch(_question.QuestionType)
+                            {
+                                case QuestionType.SingleSelect:
+                                case QuestionType.Judge:
+                                    <SingleSelect QuestionId="_question.Id"
+                                    Answers="_questionAnswers"
+                                    SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                    ShowAnalysis="_showAnalysis"
+                                    OnSubmit="@SubmitAsync"></SingleSelect>
+                                    break;
+                                case QuestionType.MultiSelect:
+                                    <MultiSelect QuestionId="_question.Id"
+                                    Answers="_questionAnswers"
+                                    SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                    ShowAnalysis="_showAnalysis"
+                                    OnSubmit="@SubmitAsync"></MultiSelect>
+                                    break;
+                                case QuestionType.FillInTheBlanks:
+                                    <Blank QuestionId="_question.Id"
+                                    Answers="_questionAnswers"
+                                    SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                    ShowAnalysis="_showAnalysis"
+                                    OnSubmit="@SubmitAsync"></Blank>
+                                    break;
+                            }
+                        }
+                        @if (_showAnalysis && !String.IsNullOrEmpty(_question?.Analysis))
+                        {
+                            <div class="analysis">
+                                <Card Title="题目解析">
+                                    @_question.Analysis
+                                </Card>
+                            </div>
+                        }
+                        <div class="bottom">
+                            @if (_questionIndex <= 0)
+                            {
+                                <Button OnClick="PrevAsync" Disabled Icon="@IconType.Outline.ArrowLeft">上一题</Button>
+                            }
+                            else
+                            {
+                                <Button OnClick="PrevAsync" Icon="@IconType.Outline.ArrowLeft">上一题</Button>
+                            }
+                            <Icon Type="star" Theme="Outline" />
+                            @if (favorite)
+                            {
+                                <Button Icon="@IconType.Fill.Star" OnClick="@(async () => await FavoriteAsync(false))"></Button>
+                            }
+                            else
+                            {
+                                <Button Icon="@IconType.Outline.Star" OnClick="@(async () => await FavoriteAsync(true))"></Button>
+                            }
+
+                            @if (_questionIndex >= _questions.Count - 1)
+                            {
+                                <Button OnClick="NextAsync" Disabled Icon="@IconType.Outline.ArrowRight">下一题</Button>
+                            }
+                            else
+                            {
+                                <Button OnClick="NextAsync" Icon="@IconType.Outline.ArrowRight">下一题</Button>
+                            }
+
                         </div>
                     }
-                    <div class="bottom">
-                        @if (_questionIndex <= 0)
-                        {
-                            <Button OnClick="PrevAsync" Disabled>上一题</Button>
-                        }
-                        else
-                        {
-                            <Button OnClick="PrevAsync">上一题</Button>
-                        }
-                        @if (_questionIndex >= _questions.Count - 1)
-                        {
-                            <Button OnClick="NextAsync" Disabled>下一题</Button>
-                        }
-                        else
-                        {
-                            <Button OnClick="NextAsync">下一题</Button>
-                        }
-
-                    </div>
-                }
                 </ChildContent>
             </Card>
         </GridCol>
@@ -134,12 +144,14 @@ else
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using SuperAbp.Exam.TrainingManagement
 @using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.Favorites
 @using Volo.Abp.Application.Dtos
 @using Volo.Abp.AspNetCore.Components.Notifications
 @inject NavigationManager Navigation
 @inject IQuestionAppService QuestionAppService
 @inject IQuestionAnswerAppService QuestionAnswerAppService
 @inject ITrainingAppService TrainingAppService
+@inject IFavoriteAppService FavoriteAppService
 @inject IUiNotificationService UiNotificationService
 @code {
     [Parameter]
@@ -151,6 +163,7 @@ else
     [SupplyParameterFromQuery(Name = "QuestionType")]
     public int? CurrentQuestionType { get; set; }
 
+    bool favorite = false;
     bool loading = true;
     bool loadingQuestion = false;
     List<QuestionNumberVo> _questions = [];
@@ -254,7 +267,7 @@ else
         _questionIndex = _questionIds.ToList().IndexOf(id);
         loadingQuestion = true;
         _showAnalysis = false;
-        
+
         await LoadQuestionAsync(id);
         if (TrainType is 1 || _selectedQuestionAnswers.Any(a => a.QuestionId == id))
         {
@@ -288,7 +301,7 @@ else
             _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>(_question, _questionAnswers));
         }
     }
-    
+
 
     public async Task SubmitAsync(QuestionAnswerItem item)
     {
@@ -311,6 +324,17 @@ else
         _selectedQuestionAnswers.Add(item);
     }
 
+    private async Task FavoriteAsync(bool status)
+    {
+        if (status)
+        {
+            await FavoriteAppService.CreateAsync(_question.Id);
+        }
+        else
+        {
+            await FavoriteAppService.DeleteAsync(_question.Id);
+        }
+    }
     private void GoDetail()
     {
         Navigation.NavigateTo($"/repository/{QuestionRepositoryId}");

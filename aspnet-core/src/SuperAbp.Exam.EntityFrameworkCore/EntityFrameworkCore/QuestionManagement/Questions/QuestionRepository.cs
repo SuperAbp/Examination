@@ -11,9 +11,6 @@ using System.Threading;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.Questions;
 
-/// <summary>
-/// 问题
-/// </summary>
 public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
     : EfCoreRepository<ExamDbContext, Question, Guid>(dbContextProvider), IQuestionRepository
 {
