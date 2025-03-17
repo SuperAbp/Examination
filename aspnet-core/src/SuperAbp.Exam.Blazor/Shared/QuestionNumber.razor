@@ -6,28 +6,32 @@
         <Space Direction="DirectionVHType.Vertical" Style="width: 100%;">
             @{
                 int i = 1;
-            foreach (QuestionNumberVo numbers in Numbers)
-            {
-                <SpaceItem Style="width: 100%;">
-                    <Flex Justify="space-between" Align="center">
-                        <h4>
-                            <span>@L["QuestionType:" + numbers.QuestionType]</span>
-                        </h4>
-                        <span>@L["TotalQuestionCount{0}", numbers.Questions.Count]
-                            @if (numbers.TotalScore is > 0)
-                            {
-                                <span>/@L["TotalScore{0}", numbers.TotalScore.Value]</span>
-                            }
-                        </span>
-                    </Flex>
-                    @foreach (QuestionNumberVo.QuestionIndex question in numbers.Questions)
-                    {
-                        string color = GetNumberColor(question.QuestionId);
-                        int currentIndex = i++;
-                        <Tag Color="@color" OnClick="async () => await ClickAsync(question.QuestionId)">@currentIndex</Tag>
-                    }
-                </SpaceItem>
-            }
+                foreach (QuestionNumberVo numbers in Numbers)
+                {
+                    <SpaceItem Style="width: 100%;">
+                        <Flex Justify="space-between" Align="center">
+                            <h4>
+                                <span>@L["QuestionType:" + numbers.QuestionType]</span>
+                            </h4>
+                            <span>@L["TotalQuestionCount{0}", numbers.Questions.Count]
+                                @if (numbers.TotalScore is > 0)
+                                {
+                                    <span>/@L["TotalScore{0}", numbers.TotalScore.Value]</span>
+                                }
+                            </span>
+                        </Flex>
+                        <Space Size="@(("0", "8"))" Wrap>
+                        @foreach (QuestionNumberVo.QuestionIndex question in numbers.Questions)
+                        {
+                            string color = GetNumberColor(question.QuestionId);
+                            int currentIndex = i++;
+                            <SpaceItem>
+                                <Tag Color="@color" Style="cursor: pointer;" OnClick="async () => await ClickAsync(question.QuestionId)">@currentIndex</Tag>
+                            </SpaceItem>
+                        }
+                        </Space>
+                    </SpaceItem>
+                }
             }
         </Space>
     </ChildContent>
