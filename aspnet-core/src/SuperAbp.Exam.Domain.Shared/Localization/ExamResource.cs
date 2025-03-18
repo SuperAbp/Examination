@@ -1,4 +1,5 @@
-﻿using Volo.Abp.Localization;
+﻿using System;
+using Volo.Abp.Localization;
 
 namespace SuperAbp.Exam.Localization;
 
@@ -6,4 +7,5 @@ namespace SuperAbp.Exam.Localization;
 public class ExamResource
 {
 
+   
 }

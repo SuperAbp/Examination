@@ -1,29 +1,23 @@
 ﻿using System;
-using Volo.Abp.Application.Dtos;
 
-namespace SuperAbp.Exam.ExamManagement.UserExams
+namespace SuperAbp.Exam.ExamManagement.UserExams;
+
+public class UserExamListDto
 {
+    public Guid ExamId { get; set; }
+
     /// <summary>
-    /// 列表
+    /// 总分
     /// </summary>
-    public class UserExamListDto: EntityDto<Guid>
-    {
-        public Guid ExamId { get; set; }
+    public decimal TotalScore { get; set; }
 
-        /// <summary>
-        /// 考试名称
-        /// </summary>
-        public string ExamName { get; set; }
-        /// <summary>
-        /// 次数
-        /// </summary>
-        public int Count { get; set; }
+    /// <summary>
+    /// 考试名称
+    /// </summary>
+    public string ExamName { get; set; }
 
-        /// <summary>
-        /// 最高分
-        /// </summary>
-        public decimal MaxScore { get; set; }
-
-        public DateTime LastTime { get; set; }
-    }
+    /// <summary>
+    /// 时长
+    /// </summary>
+    public long Minutes { get; set; }
 }

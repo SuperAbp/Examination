@@ -9,20 +9,13 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     public class UserExamWithExam
     {
         public Guid ExamId { get; set; }
-        /// <summary>
-        /// 考试名称
-        /// </summary>
         public string ExamName { get; set; }
-        /// <summary>
-        /// 次数
-        /// </summary>
-        public int Count { get; set; }
 
         /// <summary>
-        /// 最高分
+        /// 总分
         /// </summary>
-        public decimal MaxScore { get; set; }
+        public decimal TotalScore { get; set; }
 
-        public DateTime LastTime { get; set; }
+        public DateTime CreationTime { get; set; }
     }
 }

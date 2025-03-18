@@ -31,10 +31,17 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         Task<PagedResultDto<UserExamListDto>> GetListAsync(GetUserExamsInput input);
 
         /// <summary>
+        /// 分组列表
+        /// </summary>
+        /// <param name="input">查询条件</param>
+        /// <returns>结果</returns>
+        Task<PagedResultDto<UserExamGroupListDto>> GetGroupListAsync(PagedAndSortedResultRequestDto input);
+
+        /// <summary>
         /// 创建
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<UserExamListDto> CreateAsync(UserExamCreateDto input);
+        Task<UserExamGroupListDto> CreateAsync(UserExamCreateDto input);
     }
 }

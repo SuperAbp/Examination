@@ -47,10 +47,17 @@ namespace SuperAbp.Exam.Controllers
         /// <param name="input">查询条件</param>
         /// <returns>结果</returns>
         [HttpGet]
-        public virtual async Task<PagedResultDto<UserExamListDto>> GetListAsync(GetUserExamsInput input)
-        {
-            return await _userExamAppService.GetListAsync(input);
-        }
+        public virtual async Task<PagedResultDto<UserExamListDto>> GetListAsync(GetUserExamsInput input) =>
+            await _userExamAppService.GetListAsync(input);
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        /// <param name="input">查询条件</param>
+        /// <returns>结果</returns>
+        [HttpGet("group")]
+        public virtual async Task<PagedResultDto<UserExamGroupListDto>> GetGroupListAsync(PagedAndSortedResultRequestDto input) 
+            => await _userExamAppService.GetGroupListAsync(input);
 
         /// <summary>
         /// 创建
@@ -58,7 +65,7 @@ namespace SuperAbp.Exam.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost]
-        public virtual async Task<UserExamListDto> CreateAsync(UserExamCreateDto input)
+        public virtual async Task<UserExamGroupListDto> CreateAsync(UserExamCreateDto input)
         {
             return await _userExamAppService.CreateAsync(input);
         }

@@ -1,7 +1,7 @@
 ﻿@page "/my/exam"
 
 <Card Title="考试记录">
-    <Table TItem="UserExamListDto"
+    <Table TItem="UserExamGroupListDto"
            DataSource="@UserExams"
            Total="TotalCount"
            Loading="Loading"
@@ -13,6 +13,13 @@
         <PropertyColumn Property="c=>c.Count" Title="@L["ExamCount"]" />
         <PropertyColumn Property="c=>c.MaxScore" Title="@L["MaxScore"]" />
         <PropertyColumn Property="c=>c.LastTime" Title="@L["LastTime"]" />
+        <ActionColumn Title="@L["Action"]">
+            <Space>
+                <SpaceItem>
+                    <Button Type="@ButtonType.Primary" OnClick="()=>ShowDetails(context.ExamId, context.ExamName)">@L["ShowDetails"]</Button>
+                </SpaceItem>
+            </Space>
+        </ActionColumn>
     </Table>
 </Card>
 
@@ -22,8 +29,9 @@
 @using SuperAbp.Exam.Localization
 @inject IStringLocalizer<ExamResource> L
 @inject IUserExamAppService UserExamAppService
+@inject ModalService ModalService
 @code {
-    IReadOnlyList<UserExamListDto> UserExams;
+    IReadOnlyList<UserExamGroupListDto> UserExams;
 
     int CurrentPage = 1;
     int PageSize = 10;
@@ -38,9 +46,17 @@
     protected async Task GetListAsync(int pageIndex, int pageSize, string sorting = null)
     {
         this.Loading = true;
-        var result = await UserExamAppService.GetListAsync(new GetUserExamsInput() { SkipCount = 0, MaxResultCount = PageSize });
+        var result = await UserExamAppService.GetGroupListAsync(new GetUserExamsInput() { SkipCount = 0, MaxResultCount = PageSize });
         UserExams = result.Items;
         TotalCount = (int)result.TotalCount;
         this.Loading = false;
+    }
+    private async Task ShowDetails(Guid id, string examName)
+    {
+        await ModalService.CreateModalAsync<ExamList, Guid>(new ModalOptions()
+        {
+                Title = examName,
+                Width = 1200
+        }, id);
     }
 }

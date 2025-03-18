@@ -1,0 +1,47 @@
+﻿@using AntDesign.TableModels
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.ExamManagement.UserExams
+@using SuperAbp.Exam.Localization
+@inherits FeedbackComponent<Guid>
+
+<Table TItem="UserExamListDto"
+       DataSource="@UserExams"
+       Total="TotalCount"
+       Loading="Loading"
+       @bind-PageIndex="CurrentPage"
+       @bind-PageSize="PageSize"
+       OnChange="Change">
+    <Selection Key="@(context.ExamId.ToString())" />
+    <PropertyColumn Property="c=>c.ExamName" Title="@L["ExamName"]" />
+    <PropertyColumn Property="c=>c.TotalScore" Title="@L["TotalScore"]" />
+</Table>
+
+@inject IStringLocalizer<ExamResource> L
+@inject IUserExamAppService UserExamAppService
+@code {
+    private Guid examId;
+    IReadOnlyList<UserExamListDto> UserExams;
+
+    int CurrentPage = 1;
+    int PageSize = 10;
+    int TotalCount = 0;
+    bool Loading = true;
+
+    protected override void OnInitialized()
+    {
+        examId = base.Options;
+    }
+    public async Task Change(QueryModel model)
+    {
+        await GetListAsync(model.PageIndex, model.PageSize);
+    }
+    protected async Task GetListAsync(int pageIndex, int pageSize, string sorting = null)
+    {
+        this.Loading = true;
+        var result =  await UserExamAppService.GetListAsync(new GetUserExamsInput() { ExamId = examId });
+        UserExams = result.Items;
+        TotalCount = (int)result.TotalCount;
+        Loading = false;
+    }    
+
+}
