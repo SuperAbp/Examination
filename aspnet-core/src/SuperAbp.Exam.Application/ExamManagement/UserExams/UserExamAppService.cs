@@ -81,9 +81,9 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             userExam.Finished = true;
             await userExamRepository.UpdateAsync(userExam);
 
-            List<UserExamQuestionWithDetail> userExamQuestions = await userExamQuestionRepository.GetListAsync(userExamId: id);
+            List<UserExamQuestionWithDetails> userExamQuestions = await userExamQuestionRepository.GetListAsync(userExamId: id);
             decimal totalScore = 0;
-            foreach (UserExamQuestionWithDetail item in userExamQuestions)
+            foreach (UserExamQuestionWithDetails item in userExamQuestions)
             {
                 Question question = await questionRepository.GetAsync(item.QuestionId);
                 List<QuestionAnswer> questionAnswers = await questionAnswerRepository.GetListAsync(item.QuestionId);

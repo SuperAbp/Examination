@@ -59,10 +59,16 @@ public class ExamMenuContributor : IMenuContributor
                 icon: IconType.Outline.Home
             ));
             context.Menu.Items.Add(new ApplicationMenuItem(
+                ExamMenus.MyExam,
+                l["Menu:MyFavorite"],
+                "/My/Favorite",
+                icon: IconType.Outline.Star
+            ));
+            context.Menu.Items.Add(new ApplicationMenuItem(
                 ExamMenus.QuestionRepository,
                 l["Menu:QuestionRepository"],
                 "/Repository",
-                icon: IconType.Outline.Home
+                icon: IconType.Outline.History
             ));
         }
     }

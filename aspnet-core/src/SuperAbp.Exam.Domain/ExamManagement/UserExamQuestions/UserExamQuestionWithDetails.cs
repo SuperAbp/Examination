@@ -4,7 +4,7 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 
 namespace SuperAbp.Exam.ExamManagement.UserExamQuestions;
 
-public class UserExamQuestionWithDetail
+public class UserExamQuestionWithDetails
 {
     public Guid Id { get; set; }
 

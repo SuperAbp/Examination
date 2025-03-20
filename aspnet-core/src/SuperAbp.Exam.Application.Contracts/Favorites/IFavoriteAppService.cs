@@ -11,13 +11,13 @@ public interface IFavoriteAppService : IApplicationService
     /// 列表
     /// </summary>
     /// <returns>结果</returns>
-    Task<ListResultDto<FavoriteListDto>> GetListAsync();
+    Task<PagedResultDto<FavoriteListDto>> GetListAsync(GetFavoritesInput input);
 
     /// <summary>
     /// 数量
     /// </summary>
     /// <returns>结果</returns>
-    Task<int> GetCountAsync();
+    Task<long> GetCountAsync();
 
     /// <summary>
     /// 详情

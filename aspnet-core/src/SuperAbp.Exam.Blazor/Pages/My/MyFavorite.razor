@@ -1,0 +1,42 @@
+﻿@page "/my/favorite"
+@using AntDesign.TableModels
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Favorites
+@using SuperAbp.Exam.Localization
+
+<Card Title="考试记录">
+    <Table TItem="FavoriteListDto"
+           DataSource="@_favorites"
+           Total="_totalCount"
+           Loading="_loading"
+           @bind-PageIndex="_currentPage"
+           @bind-PageSize="_pageSize"
+           OnChange="Change">
+        <Selection Key="@(context.ExamId.ToString())" />
+        <PropertyColumn Property="c=>c.QuestionName" Title="@L["ExamName"]" />
+        <PropertyColumn Property="c=>c.Count" Title="@L["ExamCount"]" />
+    </Table>
+</Card>
+
+@inject IStringLocalizer<ExamResource> L
+@inject IFavoriteAppService FavoriteAppService
+@code {
+    IReadOnlyList<FavoriteListDto> _favorites;
+    int _currentPage = 1;
+    int _pageSize = 10;
+    int _totalCount = 0;
+    bool _loading = true;
+
+    public async Task OnChange(QueryModel model)
+    {
+        await GetListAsync(model.PageIndex, model.PageSize);
+    }
+    protected async Task GetListAsync(int pageIndex, int pageSize, string sorting = null)
+    {
+        _loading = true;
+        var result = await FavoriteAppService.GetListAsync(new () { SkipCount = 0, MaxResultCount = _pageSize });
+        _favorites = result.Items;
+        _totalCount = (int)result.TotalCount;
+        _loading = false;
+    }
+}

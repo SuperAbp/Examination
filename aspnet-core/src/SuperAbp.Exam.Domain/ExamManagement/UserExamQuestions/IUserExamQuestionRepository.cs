@@ -20,7 +20,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
         /// <param name="userExamId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<UserExamQuestionWithDetail>> GetListAsync(
+        Task<List<UserExamQuestionWithDetails>> GetListAsync(
             string? sorting = null,
             int skipCount = 0,
             int maxResultCount = int.MaxValue,

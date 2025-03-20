@@ -9,28 +9,38 @@ using Volo.Abp.EntityFrameworkCore;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
+using Polly;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.Favorites;
 
 public class FavoriteRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
     : EfCoreRepository<ExamDbContext, Favorite, Guid>(dbContextProvider), IFavoriteRepository
 {
-    public async Task<List<Favorite>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
+    public async Task<List<FavoriteWithDetails>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
         Guid? creatorId = null, CancellationToken cancellationToken = default)
     {
-        var queryable = await GetQueryableAsync();
-        return await queryable
-        .WhereIf(creatorId.HasValue, p => p.CreatorId == creatorId.Value)
-        .OrderBy(string.IsNullOrWhiteSpace(sorting) ? QuestionConsts.DefaultSorting : sorting)
-        .PageBy(skipCount, maxResultCount)
-        .ToListAsync(cancellationToken: cancellationToken);
+        ExamDbContext dbContext = await GetDbContextAsync();
+
+        IQueryable<Favorite> queryable = (await GetQueryableAsync()).WhereIf(creatorId.HasValue, p => p.CreatorId == creatorId.Value);
+        IQueryable<Question> questionQueryable = dbContext.Set<Question>().AsQueryable();
+        var query = (from favorite in queryable
+                     join question in questionQueryable on favorite.QuestionId equals question.Id
+                     select new FavoriteWithDetails()
+                     {
+                         Id = favorite.Id,
+                         QuestionName = question.Content,
+                         CreationTime = favorite.CreationTime
+                     })
+            .OrderBy(string.IsNullOrWhiteSpace(sorting) ? QuestionConsts.DefaultSorting : sorting)
+            .PageBy(skipCount, maxResultCount);
+        return await query.ToListAsync(cancellationToken: cancellationToken);
     }
 
-    public async Task<int> CountAsync(Guid creatorId, CancellationToken cancellationToken = default)
+    public async Task<long> CountAsync(Guid creatorId, CancellationToken cancellationToken = default)
     {
         return await (await GetDbSetAsync())
             .Where(r => r.CreatorId == creatorId)
-            .CountAsync(cancellationToken);
+            .LongCountAsync(cancellationToken);
     }
 
     public async Task<bool> ExistsAsync(Guid creatorId, Guid questionId, CancellationToken cancellationToken = default)

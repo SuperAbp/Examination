@@ -37,7 +37,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 
             var queryable = from q in questionQueryable
                             join r in (await questionRepoRepository.GetQueryableAsync()) on q.QuestionRepositoryId equals r.Id
-                            select new QuestionRepositoryDetail
+                            select new QuestionRepositoryWithDetails
                             {
                                 Id = q.Id,
                                 QuestionRepository = r.Title,
@@ -53,7 +53,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
                 .OrderBy(input.Sorting ?? QuestionConsts.DefaultSorting)
                 .PageBy(input));
 
-            var dtos = ObjectMapper.Map<List<QuestionRepositoryDetail>, List<QuestionListDto>>(entities);
+            var dtos = ObjectMapper.Map<List<QuestionRepositoryWithDetails>, List<QuestionListDto>>(entities);
 
             return new PagedResultDto<QuestionListDto>(totalCount, dtos);
         }

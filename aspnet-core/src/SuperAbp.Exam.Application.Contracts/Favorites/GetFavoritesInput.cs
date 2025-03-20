@@ -1,5 +1,7 @@
-﻿namespace SuperAbp.Exam.Favorites;
+﻿using Volo.Abp.Application.Dtos;
 
-public class GetFavoritesInput
+namespace SuperAbp.Exam.Favorites;
+
+public class GetFavoritesInput : PagedAndSortedResultRequestDto
 {
 }

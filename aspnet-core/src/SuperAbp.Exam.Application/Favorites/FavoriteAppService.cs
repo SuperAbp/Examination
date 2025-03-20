@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuperAbp.Exam.ExamManagement.UserExams;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -8,14 +9,16 @@ namespace SuperAbp.Exam.Favorites;
 
 public class FavoriteAppService(IFavoriteRepository favoriteRepository) : ExamAppService, IFavoriteAppService
 {
-    public async Task<ListResultDto<FavoriteListDto>> GetListAsync()
+    public async Task<PagedResultDto<FavoriteListDto>> GetListAsync(GetFavoritesInput input)
     {
-        List<Favorite> favorites = await favoriteRepository.GetListAsync(creatorId: CurrentUser.GetId());
-        List<FavoriteListDto> dtos = ObjectMapper.Map<List<Favorite>, List<FavoriteListDto>>(favorites);
-        return new ListResultDto<FavoriteListDto>(dtos);
+        List<FavoriteWithDetails> favorites = await favoriteRepository.GetListAsync(input.Sorting ?? FavoriteConsts.DefaultSorting, input.SkipCount,
+            input.MaxResultCount, creatorId: CurrentUser.GetId());
+        long totalCount = await favoriteRepository.CountAsync(CurrentUser.GetId());
+        List<FavoriteListDto> dtos = ObjectMapper.Map<List<FavoriteWithDetails>, List<FavoriteListDto>>(favorites);
+        return new PagedResultDto<FavoriteListDto>(totalCount, dtos);
     }
 
-    public async Task<int> GetCountAsync()
+    public async Task<long> GetCountAsync()
     {
         return await favoriteRepository.CountAsync(CurrentUser.GetId());
     }
