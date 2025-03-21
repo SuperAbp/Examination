@@ -28,6 +28,7 @@ public class FavoriteRepository(IDbContextProvider<ExamDbContext> dbContextProvi
                      {
                          Id = favorite.Id,
                          QuestionName = question.Content,
+                         QuestionType = question.QuestionType,
                          CreationTime = favorite.CreationTime
                      })
             .OrderBy(string.IsNullOrWhiteSpace(sorting) ? QuestionConsts.DefaultSorting : sorting)

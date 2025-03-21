@@ -11,7 +11,7 @@
     <MenuItem Key="@elementId" RouterLink="@url" Disabled="@MenuItem.IsDisabled">
         @if (!MenuItem.Icon.IsNullOrWhiteSpace())
         {
-            <AntDesign.Icon Type="@MenuItem.Icon" Theme="outline"></AntDesign.Icon>
+            <Icon Type="@MenuItem.Icon" Theme="IconThemeType.Outline"></Icon>
         }
         <span>@MenuItem.DisplayName</span>
     </MenuItem>
@@ -33,7 +33,7 @@ else
         return @<span>
         @if (!MenuItem.Icon.IsNullOrWhiteSpace())
     {
-        <AntDesign.Icon Type="@MenuItem.Icon" Theme="outline"></AntDesign.Icon>
+        <Icon Type="@MenuItem.Icon" Theme="IconThemeType.Outline"></Icon>
     }
         <span>@menu.DisplayName</span>
     </span>;

@@ -53,9 +53,9 @@ else
             <Card class="question-content">
                 <TitleTemplate>
                     <span @onclick="GoDetail" style="cursor: pointer">
-                        <Icon Type="arrow-left" Theme="outline"/>返回
+                        <Icon Type="arrow-left" Theme="IconThemeType.Outline"/>返回
                     </span>
-                    <Divider Type="DirectionVHType.Vertical" />题库训练
+                    <Divider Type="DividerType.Vertical" />题库训练
                 </TitleTemplate>
                 <ChildContent>
                     @if (loadingQuestion)
@@ -115,12 +115,12 @@ else
                             }
                             @if (favorited)
                             {
-                                <Icon Type="star" Theme="Fill" Style="cursor: pointer;" OnClick="@(async () => await FavoriteAsync(false))"></Icon>
+                                <Icon Type="star" Theme="IconThemeType.Fill" Style="cursor: pointer;" OnClick="@(async () => await FavoriteAsync(false))"></Icon>
                                 @* <Button Icon="@IconType.Fill.Star" OnClick="@(async () => await FavoriteAsync(false))"></Button> *@
                             }
                             else
                             {
-                                <Icon Type="star" Theme="Outline" Style="cursor: pointer;" OnClick="@(async () => await FavoriteAsync(true))" />
+                                <Icon Type="star" Theme="IconThemeType.Outline" Style="cursor: pointer;" OnClick="@(async () => await FavoriteAsync(true))" />
                                 @* <Button Icon="@IconType.Outline.Star" OnClick="@(async () => await FavoriteAsync(true))"></Button> *@
                             }
 

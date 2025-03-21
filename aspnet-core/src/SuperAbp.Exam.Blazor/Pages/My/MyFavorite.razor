@@ -5,16 +5,18 @@
 @using SuperAbp.Exam.Localization
 
 <Card Title="考试记录">
+    <Button>开始练习</Button>
     <Table TItem="FavoriteListDto"
            DataSource="@_favorites"
            Total="_totalCount"
            Loading="_loading"
+           RowKey="x=>x.Id"
            @bind-PageIndex="_currentPage"
            @bind-PageSize="_pageSize"
            OnChange="Change">
-        <Selection Key="@(context.Id.ToString())" />
-        <PropertyColumn Property="c=>c.QuestionName" Title="@L["QuestionName"]" />
-        <PropertyColumn Property="c=>c.CreationTime" Title="@L["CreationTime"]" />
+        <PropertyColumn Property="c => c.QuestionName" Title="@L["QuestionName"]"/>
+        <PropertyColumn Property="c => c.QuestionType" Title="@L["QuestionType"]" />
+        <PropertyColumn Property="c => c.CreationTime" Title="@L["CreationTime"]"/>
     </Table>
 </Card>
 

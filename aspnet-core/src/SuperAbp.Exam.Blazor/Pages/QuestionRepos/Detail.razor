@@ -11,9 +11,9 @@
     <Card>
         <TitleTemplate>
             <span @onclick="GoDetail" style="cursor: pointer">
-                <Icon Type="arrow-left" Theme="outline" />返回
+                <Icon Type="arrow-left" Theme="IconThemeType.Outline" />返回
             </span>
-            <Divider Type="DirectionVHType.Vertical" />@_repository.Title
+            <Divider Type="DividerType.Vertical" />@_repository.Title
         </TitleTemplate>
         <ChildContent>
             @if (!_repository.Remark.IsNullOrWhiteSpace())
@@ -43,7 +43,6 @@
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.QuestionManagement.Questions
-@using Volo.Abp.Application.Dtos
 @inject IStringLocalizer<ExamResource> L
 @inject IQuestionRepoAppService QuestionRepoAppService
 @inject NavigationManager Navigation

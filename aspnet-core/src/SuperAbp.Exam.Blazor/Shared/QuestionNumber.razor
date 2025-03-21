@@ -3,13 +3,13 @@
 @using SuperAbp.Exam.QuestionManagement.Questions
 ﻿<Card>
     <ChildContent>
-        <Space Direction="DirectionVHType.Vertical" Style="width: 100%;">
+        <Space Direction="SpaceDirection.Vertical" Style="width: 100%;">
             @{
                 int i = 1;
                 foreach (QuestionNumberVo numbers in Numbers)
                 {
                     <SpaceItem Style="width: 100%;">
-                        <Flex Justify="space-between" Align="center">
+                        <Flex Justify="FlexJustify.SpaceBetween" Align="FlexAlign.Center">
                             <h4>
                                 <span>@L["QuestionType:" + numbers.QuestionType]</span>
                             </h4>

@@ -5,10 +5,10 @@
            DataSource="@_userExams"
            Total="_totalCount"
            Loading="_loading"
+           RowKey="x=>x.ExamId"
            @bind-PageIndex="_currentPage"
            @bind-PageSize="_pageSize"
            OnChange="Change">
-        <Selection Key="@(context.ExamId.ToString())"/>
         <PropertyColumn Property="c => c.ExamName" Title="@L["ExamName"]"/>
         <PropertyColumn Property="c => c.Count" Title="@L["ExamCount"]"/>
         <PropertyColumn Property="c => c.MaxScore" Title="@L["MaxScore"]"/>
