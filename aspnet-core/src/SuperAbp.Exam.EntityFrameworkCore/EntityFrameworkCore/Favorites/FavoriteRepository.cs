@@ -9,7 +9,6 @@ using Volo.Abp.EntityFrameworkCore;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
-using Polly;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.Favorites;
 
@@ -46,6 +45,6 @@ public class FavoriteRepository(IDbContextProvider<ExamDbContext> dbContextProvi
     public async Task<bool> ExistsAsync(Guid creatorId, Guid questionId, CancellationToken cancellationToken = default)
     {
         return await (await GetDbSetAsync())
-            .AnyAsync(r => r.CreatorId == creatorId, cancellationToken: cancellationToken);
+            .AnyAsync(r => r.CreatorId == creatorId && r.QuestionId == questionId, cancellationToken: cancellationToken);
     }
 }

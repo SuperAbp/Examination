@@ -12,9 +12,9 @@
            @bind-PageIndex="_currentPage"
            @bind-PageSize="_pageSize"
            OnChange="Change">
-        <Selection Key="@(context.ExamId.ToString())" />
-        <PropertyColumn Property="c=>c.QuestionName" Title="@L["ExamName"]" />
-        <PropertyColumn Property="c=>c.Count" Title="@L["ExamCount"]" />
+        <Selection Key="@(context.Id.ToString())" />
+        <PropertyColumn Property="c=>c.QuestionName" Title="@L["QuestionName"]" />
+        <PropertyColumn Property="c=>c.CreationTime" Title="@L["CreationTime"]" />
     </Table>
 </Card>
 
@@ -27,7 +27,7 @@
     int _totalCount = 0;
     bool _loading = true;
 
-    public async Task OnChange(QueryModel model)
+    public async Task Change(QueryModel model)
     {
         await GetListAsync(model.PageIndex, model.PageSize);
     }

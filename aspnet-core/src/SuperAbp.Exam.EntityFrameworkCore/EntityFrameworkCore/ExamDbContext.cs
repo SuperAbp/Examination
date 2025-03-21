@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.ExamManagement.UserExams;
+using SuperAbp.Exam.Favorites;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -80,6 +81,8 @@ public class ExamDbContext :
     public DbSet<UserExamQuestion> UerExamQuestions { get; set; }
 
     public DbSet<Training> Trains { get; set; }
+
+    public DbSet<Favorite> Favorites { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
@@ -181,6 +184,12 @@ public class ExamDbContext :
         builder.Entity<Training>(b =>
         {
             b.ToTable(ExamConsts.DbTablePrefix + "Training", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+        });
+
+        builder.Entity<Favorite>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "Favorites", ExamConsts.DbSchema);
             b.ConfigureByConvention();
         });
     }

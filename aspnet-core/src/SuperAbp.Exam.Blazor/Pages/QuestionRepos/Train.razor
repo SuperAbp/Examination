@@ -113,14 +113,15 @@ else
                             {
                                 <Button OnClick="PrevAsync" Icon="@IconType.Outline.ArrowLeft">上一题</Button>
                             }
-                            <Icon Type="star" Theme="Outline" />
-                            @if (favorite)
+                            @if (favorited)
                             {
-                                <Button Icon="@IconType.Fill.Star" OnClick="@(async () => await FavoriteAsync(false))"></Button>
+                                <Icon Type="star" Theme="Fill" Style="cursor: pointer;" OnClick="@(async () => await FavoriteAsync(false))"></Icon>
+                                @* <Button Icon="@IconType.Fill.Star" OnClick="@(async () => await FavoriteAsync(false))"></Button> *@
                             }
                             else
                             {
-                                <Button Icon="@IconType.Outline.Star" OnClick="@(async () => await FavoriteAsync(true))"></Button>
+                                <Icon Type="star" Theme="Outline" Style="cursor: pointer;" OnClick="@(async () => await FavoriteAsync(true))" />
+                                @* <Button Icon="@IconType.Outline.Star" OnClick="@(async () => await FavoriteAsync(true))"></Button> *@
                             }
 
                             @if (_questionIndex >= _questions.Count - 1)
@@ -163,7 +164,7 @@ else
     [SupplyParameterFromQuery(Name = "QuestionType")]
     public int? CurrentQuestionType { get; set; }
 
-    bool favorite = false;
+    bool favorited = false;
     bool loading = true;
     bool loadingQuestion = false;
     List<QuestionNumberVo> _questions = [];
@@ -267,7 +268,7 @@ else
         _questionIndex = _questionIds.ToList().IndexOf(id);
         loadingQuestion = true;
         _showAnalysis = false;
-
+        favorited = await FavoriteAppService.GetByQuestionIdAsync(id);
         await LoadQuestionAsync(id);
         if (TrainType is 1 || _selectedQuestionAnswers.Any(a => a.QuestionId == id))
         {
@@ -329,9 +330,11 @@ else
         if (status)
         {
             await FavoriteAppService.CreateAsync(_question.Id);
+            favorited = true;
         }
         else
         {
+            favorited = false;
             await FavoriteAppService.DeleteAsync(_question.Id);
         }
     }

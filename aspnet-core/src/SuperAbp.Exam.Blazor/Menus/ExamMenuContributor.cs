@@ -59,7 +59,7 @@ public class ExamMenuContributor : IMenuContributor
                 icon: IconType.Outline.Home
             ));
             context.Menu.Items.Add(new ApplicationMenuItem(
-                ExamMenus.MyExam,
+                ExamMenus.MyFavorite,
                 l["Menu:MyFavorite"],
                 "/My/Favorite",
                 icon: IconType.Outline.Star
