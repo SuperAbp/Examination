@@ -1,5 +1,4 @@
 ﻿using System;
-using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions;
 
@@ -15,5 +14,7 @@ public class GetQuestionsInput
 
     public QuestionType? QuestionType { get; set; }
 
-    public Guid QuestionRepositoryId { get; set; }
+    public bool IsFavorite { get; set; }
+
+    public Guid? QuestionRepositoryId { get; set; }
 }

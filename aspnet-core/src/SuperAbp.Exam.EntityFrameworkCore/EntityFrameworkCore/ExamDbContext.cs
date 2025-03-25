@@ -25,6 +25,7 @@ using SuperAbp.Exam.PaperManagement.PaperRepos;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.TrainingManagement;
 using PaperConsts = SuperAbp.Exam.PaperManagement.Papers.PaperConsts;
+using SmartEnum.EFCore;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -192,5 +193,11 @@ public class ExamDbContext :
             b.ToTable(ExamConsts.DbTablePrefix + "Favorites", ExamConsts.DbSchema);
             b.ConfigureByConvention();
         });
+    }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+        configurationBuilder.ConfigureSmartEnum();
     }
 }

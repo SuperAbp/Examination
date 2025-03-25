@@ -10,6 +10,8 @@ public class QuestionDetailDto : EntityDto<Guid>
 {
     public QuestionType QuestionType { get; set; }
 
+    public Guid QuestionRepositoryId { get; set; }
+
     /// <summary>
     /// 题干
     /// </summary>

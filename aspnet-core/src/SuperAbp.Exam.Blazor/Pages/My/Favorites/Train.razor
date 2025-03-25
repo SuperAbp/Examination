@@ -1,34 +1,36 @@
-﻿@page "/repository/{QuestionRepositoryId:guid}/training/{TrainType:int?}"
+﻿@page "/my/favorite/training"
+
 
 <style>
     .question-content .title {
-    font-size: 18px;
+        font-size: 18px;
     }
 
-    .question-content .title .number {
-    font-weight: bold;
-    }
+        .question-content .title .number {
+            font-weight: bold;
+        }
+
     .question-content .chooses {
-    width: 100%;
+        width: 100%;
     }
 
     .bottom {
-    margin-top: 10px;
-    display: flex;
-    -o-justify-content: space-between;
-    -webkit-justify-content: space-between;
-    justify-content: space-between;
+        margin-top: 10px;
+        display: flex;
+        -o-justify-content: space-between;
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
     }
 
     .analysis {
-    margin-top: 10px;
-    margin-bottom: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 
     .ant-tag.current {
-    color: #389e0d;
-    background: #f6ffed;
-    border-color: #b7eb8f;
+        color: #389e0d;
+        background: #f6ffed;
+        border-color: #b7eb8f;
     }
 
 </style>
@@ -42,8 +44,7 @@ else
 {
     <GridRow Gutter="16">
         <GridCol Span="4">
-            <QuestionNumber 
-            CurrentId="_questionIds[_questionIndex]"
+            <QuestionNumber CurrentId="_questionIds[_questionIndex]"
             Numbers="_questions"
             SuccessIds="GetSuccessIds()"
             ErrorIds="GetErrorIds()"
@@ -53,27 +54,28 @@ else
             <Card class="question-content">
                 <TitleTemplate>
                     <span @onclick="GoDetail" style="cursor: pointer">
-                        <Icon Type="arrow-left" Theme="IconThemeType.Outline"/>返回
+                        <Icon Type="arrow-left" Theme="IconThemeType.Outline" />返回
                     </span>
-                    <Divider Type="DividerType.Vertical" />题库训练
+                    <Divider Type="DividerType.Vertical" />我的收藏
                 </TitleTemplate>
                 <ChildContent>
                     @if (loadingQuestion)
                     {
-                        <Spin/>
+                        <Spin />
                     }
                     else
                     {
                         @if (_question != null)
                         {
                             <QuestionItem Number="_questionIndex + 1"
-                                          Question="_question"
-                                          QuestionAnswers="_questionAnswers"
-                                          ShowAnalysis="_showAnalysis"
-                                          SelectedQuestionAnswers="_selectedQuestionAnswers"
-                                          OnSubmit="@SubmitAsync"></QuestionItem>
+                            Question="_question"
+                            QuestionAnswers="_questionAnswers"
+                            ShowAnalysis="_showAnalysis"
+                            SelectedQuestionAnswers="_selectedQuestionAnswers"
+                            OnSubmit="@SubmitAsync"></QuestionItem>
+
                         }
-                        
+
                         <div class="bottom">
                             @if (_questionIndex <= 0)
                             {
@@ -86,10 +88,12 @@ else
                             @if (favorited)
                             {
                                 <Icon Type="star" Theme="IconThemeType.Fill" Style="cursor: pointer;" OnClick="@(async () => await FavoriteAsync(false))"></Icon>
+                                @* <Button Icon="@IconType.Fill.Star" OnClick="@(async () => await FavoriteAsync(false))"></Button> *@
                             }
                             else
                             {
                                 <Icon Type="star" Theme="IconThemeType.Outline" Style="cursor: pointer;" OnClick="@(async () => await FavoriteAsync(true))" />
+                                @* <Button Icon="@IconType.Outline.Star" OnClick="@(async () => await FavoriteAsync(true))"></Button> *@
                             }
 
                             @if (_questionIndex >= _questionIds.Length - 1)
@@ -108,62 +112,53 @@ else
         </GridCol>
     </GridRow>
 }
-
-@using SuperAbp.Exam.QuestionManagement.Questions
-@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
-@using SuperAbp.Exam.TrainingManagement
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Favorites
+@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using SuperAbp.Exam.TrainingManagement
 @using Volo.Abp.Application.Dtos
-@using Volo.Abp.AspNetCore.Components.Notifications
 @inject NavigationManager Navigation
 @inject IQuestionAppService QuestionAppService
 @inject IQuestionAnswerAppService QuestionAnswerAppService
 @inject ITrainingAppService TrainingAppService
 @inject IFavoriteAppService FavoriteAppService
-@inject IUiNotificationService UiNotificationService
 @code {
-    [Parameter]
-    public Guid QuestionRepositoryId { get; set; }
+
     [Parameter]
     public int? TrainType { get; set; }
-    [Parameter]
-    [SupplyParameterFromQuery(Name = "QuestionType")]
-    public int? CurrentQuestionType { get; set; }
 
     bool favorited = false;
     bool loading = true;
     bool loadingQuestion = false;
-    List<QuestionNumberVo> _questions = [];
     Guid[] _questionIds = [];
-    IReadOnlyList<QuestionAnswerViewModel> _questionAnswers = Array.Empty<QuestionAnswerViewModel>();
-    IReadOnlyList<TrainingListDto> _trains = Array.Empty<TrainingListDto>();
-    readonly Dictionary<Guid, Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>> _cacheQuestions = new();
-    readonly List<QuestionAnswerItem> _selectedQuestionAnswers = new();
-    QuestionDetailDto _question;
     bool _showAnalysis = false;
     int _questionIndex = 0;
+    List<QuestionNumberVo> _questions = [];
+    QuestionDetailDto _question;
+    readonly Dictionary<Guid, Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>> _cacheQuestions = new();
+    IReadOnlyList<QuestionAnswerViewModel> _questionAnswers = Array.Empty<QuestionAnswerViewModel>();
+    IReadOnlyList<TrainingListDto> _trains = Array.Empty<TrainingListDto>();
+    readonly List<QuestionAnswerItem> _selectedQuestionAnswers = new();
+
     protected override async Task OnInitializedAsync()
     {
         PagedResultDto<QuestionListDto> result = await QuestionAppService.GetListAsync(new GetQuestionsInput()
-        {
-            QuestionRepositoryId = QuestionRepositoryId, 
-                QuestionType =CurrentQuestionType.HasValue && Enum.IsDefined(typeof(QuestionType), CurrentQuestionType.Value)
-                ? (QuestionType)CurrentQuestionType.Value
-                : null
-        });
+            {
+                IsFavorite = true
+            });
         foreach (QuestionType type in result.Items
-                     .GroupBy(q=>q.QuestionType).Select(q=>q.Key).Distinct().OrderBy(q=>q))
+                     .GroupBy(q => q.QuestionType).Select(q => q.Key).Distinct().OrderBy(q => q))
         {
             QuestionNumberVo vo = new QuestionNumberVo()
-            {
-                QuestionType = type,
-                Questions = result.Items.Where(q => q.QuestionType == type)
-                    .Select(q=>new QuestionNumberVo.QuestionIndex()
-                    {
-                        QuestionId = q.Id
-                    }).ToArray()
-            };
+                {
+                    QuestionType = type,
+                    Questions = result.Items.Where(q => q.QuestionType == type)
+                        .Select(q => new QuestionNumberVo.QuestionIndex()
+                        {
+                            QuestionId = q.Id
+                        }).ToArray()
+                };
             vo.TotalScore = vo.Questions.Sum(q => q.QuestionScore ?? 0);
             _questions.Add(vo);
         }
@@ -178,10 +173,10 @@ else
         int maxIndex = 0;
         if (TrainType is null or 0)
         {
-            var trainResult = await TrainingAppService.GetListAsync(new GetTrainsInput() { TrainingSource = TrainingSource.QuestionRepository,  QuestionRepositoryId = QuestionRepositoryId });
+            var trainResult = await TrainingAppService.GetListAsync(new GetTrainsInput() { TrainingSource = TrainingSource.Favorite });
             _trains = trainResult.Items;
 
-            maxIndex = _trains.Count > 0 
+            maxIndex = _trains.Count > 0
                 ? _trains.Max(t => _questionIds.ToList().IndexOf(t.QuestionId))
                 : 0;
             if (maxIndex >= _questions.Count || maxIndex < 0)
@@ -192,7 +187,6 @@ else
         await ShowQuestionAsync(maxIndex);
         loading = false;
     }
-
     Guid[] GetSuccessIds()
     {
         return _trains.Where(a => a.Right).Select(a => a.QuestionId).Union(
@@ -225,7 +219,6 @@ else
         }
         await ShowQuestionAsync(_questionIndex - 1);
     }
-
     async Task ShowQuestionAsync(int index)
     {
         await ShowQuestionAsync(_questionIds[index]);
@@ -251,11 +244,11 @@ else
         {
             _question = _cacheQuestions[id].Item1;
             _questionAnswers = _cacheQuestions[id].Item2.Select(i => new QuestionAnswerViewModel
-            {
-                Id = i.Id,
-                Content = i.Content,
-                Right = i.Right
-            }).ToArray();
+                {
+                    Id = i.Id,
+                    Content = i.Content,
+                    Right = i.Right
+                }).ToArray();
         }
         else
         {
@@ -269,8 +262,6 @@ else
             _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>(_question, _questionAnswers));
         }
     }
-
-
     public async Task SubmitAsync(QuestionAnswerItem item)
     {
         _showAnalysis = true;
@@ -279,12 +270,12 @@ else
         if (training is null)
         {
             await TrainingAppService.CreateAsync(new TrainingCreateDto()
-            {
-                TrainingSource = TrainingSource.QuestionRepository,
-                QuestionRepositoryId = QuestionRepositoryId,
-                QuestionId = item.QuestionId,
-                Right = right
-            });
+                {
+                    TrainingSource = TrainingSource.Favorite,
+                    QuestionRepositoryId = _question.QuestionRepositoryId,
+                    QuestionId = item.QuestionId,
+                    Right = right
+                });
         }
         else
         {
@@ -292,7 +283,6 @@ else
         }
         _selectedQuestionAnswers.Add(item);
     }
-
     private async Task FavoriteAsync(bool status)
     {
         if (status)
@@ -308,6 +298,6 @@ else
     }
     private void GoDetail()
     {
-        Navigation.NavigateTo($"/repository/{QuestionRepositoryId}");
+        Navigation.NavigateTo($"/my/favorite");
     }
 }

@@ -96,7 +96,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         [Authorize(ExamPermissions.Questions.Create)]
         public virtual async Task<QuestionListDto> CreateAsync(QuestionCreateDto input)
         {
-            ValidationRightCountAsync(input.QuestionType, input.Options.Count(a => a.Right));
+            ValidationCorrectCountAsync(input.QuestionType, input.Options.Count(a => a.Right));
 
             Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, input.QuestionType, input.Content);
             question.Analysis = input.Analysis;
@@ -109,7 +109,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         public virtual async Task<QuestionListDto> UpdateAsync(Guid id, QuestionUpdateDto input)
         {
             Question question = await questionRepository.GetAsync(id);
-            ValidationRightCountAsync(question.QuestionType, input.Options.Count(a => a.Right));
+            ValidationCorrectCountAsync(question.QuestionType, input.Options.Count(a => a.Right));
 
             await questionManager.SetContentAsync(question, input.Content);
             question.Analysis = input.Analysis;
@@ -119,7 +119,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             return ObjectMapper.Map<Question, QuestionListDto>(question);
         }
 
-        private static void ValidationRightCountAsync(QuestionType questionType, int count)
+        private static void ValidationCorrectCountAsync(QuestionType questionType, int count)
         {
             if (!(questionType switch
             {
@@ -129,7 +129,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
                 _ => true
             }))
             {
-                throw new QuestionAnswerRightCountException();
+                throw new QuestionAnswerCorrectCountErrorException();
             }
         }
 

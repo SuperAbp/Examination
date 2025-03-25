@@ -5,7 +5,7 @@
 @using SuperAbp.Exam.Localization
 
 <Card Title="考试记录">
-    <Button>开始练习</Button>
+    <Button OnClick="BeganAsync">开始练习</Button>
     <Table TItem="FavoriteListDto"
     DataSource="@_favorites"
     Total="_totalCount"
@@ -48,6 +48,11 @@
         _favorites = result.Items;
         _totalCount = (int)result.TotalCount;
         _loading = false;
+    }
+    private async Task BeganAsync()
+    {
+        Navigation.NavigateTo($"/my/favorite/training");
+        await Task.CompletedTask;
     }
     private async Task BeganAsync(Guid id)
     {        

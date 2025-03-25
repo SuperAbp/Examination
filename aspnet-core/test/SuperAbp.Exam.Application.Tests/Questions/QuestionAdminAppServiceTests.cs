@@ -48,7 +48,8 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
             QuestionRepositoryId = _testData.QuestionRepository1Id,
             QuestionType = QuestionType.MultiSelect,
             Content = "New_Content",
-            Analysis = "New_Analysis"
+            Analysis = "New_Analysis",
+            Options = [new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content1" }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content2", Right = true }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content3", Right = true }]
         };
         QuestionListDto dto = await _questionAppService.CreateAsync(input);
         Question question = await _questionRepository.GetAsync(dto.Id);
@@ -59,6 +60,20 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
     }
 
     [Fact]
+    public async Task Should_Create_Throw_Correct_Count_Error()
+    {
+        QuestionCreateDto input = new()
+        {
+            QuestionRepositoryId = _testData.QuestionRepository1Id,
+            QuestionType = QuestionType.MultiSelect,
+            Content = "New_Content",
+            Analysis = "New_Analysis"
+        };
+        await Should.ThrowAsync<QuestionAnswerCorrectCountErrorException>(
+            async () => await _questionAppService.CreateAsync(input));
+    }
+
+    [Fact]
     public async Task Should_Create_Throw_Exists_Content()
     {
         QuestionCreateDto input = new()
@@ -66,7 +81,8 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
             QuestionRepositoryId = _testData.QuestionRepository1Id,
             QuestionType = QuestionType.MultiSelect,
             Content = _testData.Question11Content1,
-            Analysis = "New_Analysis"
+            Analysis = "New_Analysis",
+            Options = [new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content1" }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content2", Right = true }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content3", Right = true }]
         };
         await Should.ThrowAsync<QuestionContentAlreadyExistException>(
             async () => await _questionAppService.CreateAsync(input));
@@ -79,7 +95,8 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
         {
             QuestionRepositoryId = _testData.QuestionRepository2Id,
             Content = "Update_Content",
-            Analysis = "Update_Analysis"
+            Analysis = "Update_Analysis",
+            Options = [new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content1" }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content2", Right = true }]
         };
         await _questionAppService.UpdateAsync(_testData.Question11Id, input);
         Question question = await _questionRepository.GetAsync(_testData.Question11Id);
@@ -96,7 +113,8 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
         {
             QuestionRepositoryId = _testData.QuestionRepository1Id,
             Content = _testData.Question12Content2,
-            Analysis = "Update_Analysis"
+            Analysis = "Update_Analysis",
+            Options = [new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content1" }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content2", Right = true }]
         };
         await Should.ThrowAsync<QuestionContentAlreadyExistException>(
             async () => await _questionAppService.UpdateAsync(_testData.Question11Id, input));
