@@ -7,20 +7,28 @@
 <Card Title="考试记录">
     <Button>开始练习</Button>
     <Table TItem="FavoriteListDto"
-           DataSource="@_favorites"
-           Total="_totalCount"
-           Loading="_loading"
-           RowKey="x=>x.Id"
-           @bind-PageIndex="_currentPage"
-           @bind-PageSize="_pageSize"
-           OnChange="Change">
+    DataSource="@_favorites"
+    Total="_totalCount"
+    Loading="_loading"
+    RowKey="x=>x.Id"
+    @bind-PageIndex="_currentPage"
+    @bind-PageSize="_pageSize"
+    OnChange="Change">
         <PropertyColumn Property="c => c.QuestionName" Title="@L["QuestionName"]"/>
         <PropertyColumn Property="c => c.QuestionType" Title="@L["QuestionType"]" />
         <PropertyColumn Property="c => c.CreationTime" Title="@L["CreationTime"]"/>
+        <ActionColumn Title="@L["Action"]">
+            <Space>
+                <SpaceItem>
+                    <Button Type="@ButtonType.Primary" OnClick="()=>BeganAsync(context.Id)">@L["BeganTraining"]</Button>
+                </SpaceItem>
+            </Space>
+        </ActionColumn>
     </Table>
 </Card>
 
 @inject IStringLocalizer<ExamResource> L
+@inject NavigationManager Navigation
 @inject IFavoriteAppService FavoriteAppService
 @code {
     IReadOnlyList<FavoriteListDto> _favorites;
@@ -40,5 +48,10 @@
         _favorites = result.Items;
         _totalCount = (int)result.TotalCount;
         _loading = false;
+    }
+    private async Task BeganAsync(Guid id)
+    {        
+        Navigation.NavigateTo($"/my/favorite/training");
+        await Task.CompletedTask;
     }
 }

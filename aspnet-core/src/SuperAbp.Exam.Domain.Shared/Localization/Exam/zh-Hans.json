@@ -2,8 +2,9 @@
   "culture": "zh-Hans",
   "texts": {
     "Menu:Home": "首页",
+    "Menu:My": "我的",
     "Menu:MyExam": "我的考试",
-    "Menu": "我的收藏",
+    "Menu:MyFavorite": "我的收藏",
     "Menu:OnlineExam": "在线考试",
     "Menu:QuestionRepository": "题库",
     "MyExam": "我的考试",

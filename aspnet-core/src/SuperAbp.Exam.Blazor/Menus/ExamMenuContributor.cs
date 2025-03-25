@@ -52,13 +52,15 @@ public class ExamMenuContributor : IMenuContributor
                 "/Exam",
                 icon: IconType.Outline.Home
             ));
-            context.Menu.Items.Add(new ApplicationMenuItem(
+            var identityMenuItem = new ApplicationMenuItem(ExamMenus.My, l["Menu:My"], icon: IconType.Outline.User);
+            context.Menu.Items.Add(identityMenuItem);
+            identityMenuItem.Items.Add(new ApplicationMenuItem(
                 ExamMenus.MyExam,
                 l["Menu:MyExam"],
                 "/My/Exam",
                 icon: IconType.Outline.Home
             ));
-            context.Menu.Items.Add(new ApplicationMenuItem(
+            identityMenuItem.Items.Add(new ApplicationMenuItem(
                 ExamMenus.MyFavorite,
                 l["Menu:MyFavorite"],
                 "/My/Favorite",
