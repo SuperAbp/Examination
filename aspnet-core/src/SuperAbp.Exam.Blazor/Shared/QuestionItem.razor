@@ -1,0 +1,60 @@
+﻿<h2 class="title">
+    <span class="number">@Number</span>
+    <span>@Question.Content</span>
+</h2>
+@switch (Question.QuestionType)
+{
+    case QuestionType.SingleSelect:
+    case QuestionType.Judge:
+        <SingleSelect QuestionId="Question.Id"
+                      Answers="QuestionAnswers"
+                      SelectedQuestionAnswers="SelectedQuestionAnswers"
+                      ShowAnalysis="ShowAnalysis"
+                      OnSubmit="@SubmitAsync"></SingleSelect>
+        break;
+    case QuestionType.MultiSelect:
+        <MultiSelect QuestionId="Question.Id"
+                     Answers="QuestionAnswers"
+                     SelectedQuestionAnswers="SelectedQuestionAnswers"
+                     ShowAnalysis="ShowAnalysis"
+                     OnSubmit="@SubmitAsync"></MultiSelect>
+        break;
+    case QuestionType.FillInTheBlanks:
+        <Blank QuestionId="Question.Id"
+               Answers="QuestionAnswers"
+               SelectedQuestionAnswers="SelectedQuestionAnswers"
+               ShowAnalysis="ShowAnalysis"
+               OnSubmit="@SubmitAsync"></Blank>
+        break;
+}
+@if (ShowAnalysis && !String.IsNullOrEmpty(Question.Analysis))
+{
+    <div class="analysis">
+        <Card Title="题目解析">
+            @Question.Analysis
+        </Card>
+    </div>
+}
+
+@using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.Blazor.Pages
+@using SuperAbp.Exam.QuestionManagement.Questions
+@code {
+    [Parameter]
+    public int Number { get; set; }
+    [Parameter]
+    public bool ShowAnalysis { get; set; }
+    [Parameter]
+    public QuestionDetailDto Question { get; set; }
+    [Parameter]
+    public IReadOnlyList<QuestionAnswerViewModel> QuestionAnswers { get; set; }
+    [Parameter]
+    public List<QuestionAnswerItem> SelectedQuestionAnswers { get; set; }
+    [Parameter]
+    public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
+
+    public async Task SubmitAsync(QuestionAnswerItem item)
+    {
+        await OnSubmit.InvokeAsync(item);
+    }
+}

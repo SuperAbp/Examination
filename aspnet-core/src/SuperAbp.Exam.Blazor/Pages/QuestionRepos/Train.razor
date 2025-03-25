@@ -66,44 +66,14 @@ else
                     {
                         @if (_question != null)
                         {
-                            <h2 class="title">
-                                <span class="number">@(_questionIndex + 1)</span>
-                                <span>@_question.Content</span>
-                            </h2>
-                            @switch(_question.QuestionType)
-                            {
-                                case QuestionType.SingleSelect:
-                                case QuestionType.Judge:
-                                    <SingleSelect QuestionId="_question.Id"
-                                    Answers="_questionAnswers"
-                                    SelectedQuestionAnswers="_selectedQuestionAnswers"
-                                    ShowAnalysis="_showAnalysis"
-                                    OnSubmit="@SubmitAsync"></SingleSelect>
-                                    break;
-                                case QuestionType.MultiSelect:
-                                    <MultiSelect QuestionId="_question.Id"
-                                    Answers="_questionAnswers"
-                                    SelectedQuestionAnswers="_selectedQuestionAnswers"
-                                    ShowAnalysis="_showAnalysis"
-                                    OnSubmit="@SubmitAsync"></MultiSelect>
-                                    break;
-                                case QuestionType.FillInTheBlanks:
-                                    <Blank QuestionId="_question.Id"
-                                    Answers="_questionAnswers"
-                                    SelectedQuestionAnswers="_selectedQuestionAnswers"
-                                    ShowAnalysis="_showAnalysis"
-                                    OnSubmit="@SubmitAsync"></Blank>
-                                    break;
-                            }
+                            <QuestionItem Number="_questionIndex + 1"
+                                          Question="_question"
+                                          QuestionAnswers="_questionAnswers"
+                                          ShowAnalysis="_showAnalysis"
+                                          SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                          OnSubmit="@SubmitAsync"></QuestionItem>
                         }
-                        @if (_showAnalysis && !String.IsNullOrEmpty(_question?.Analysis))
-                        {
-                            <div class="analysis">
-                                <Card Title="题目解析">
-                                    @_question.Analysis
-                                </Card>
-                            </div>
-                        }
+                        
                         <div class="bottom">
                             @if (_questionIndex <= 0)
                             {
@@ -116,12 +86,10 @@ else
                             @if (favorited)
                             {
                                 <Icon Type="star" Theme="IconThemeType.Fill" Style="cursor: pointer;" OnClick="@(async () => await FavoriteAsync(false))"></Icon>
-                                @* <Button Icon="@IconType.Fill.Star" OnClick="@(async () => await FavoriteAsync(false))"></Button> *@
                             }
                             else
                             {
                                 <Icon Type="star" Theme="IconThemeType.Outline" Style="cursor: pointer;" OnClick="@(async () => await FavoriteAsync(true))" />
-                                @* <Button Icon="@IconType.Outline.Star" OnClick="@(async () => await FavoriteAsync(true))"></Button> *@
                             }
 
                             @if (_questionIndex >= _questions.Count - 1)
