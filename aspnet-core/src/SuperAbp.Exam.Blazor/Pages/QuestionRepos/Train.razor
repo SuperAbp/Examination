@@ -1,37 +1,5 @@
 ﻿@page "/repository/{QuestionRepositoryId:guid}/training/{TrainType:int?}"
 
-<style>
-    .question-content .title {
-    font-size: 18px;
-    }
-
-    .question-content .title .number {
-    font-weight: bold;
-    }
-    .question-content .chooses {
-    width: 100%;
-    }
-
-    .bottom {
-    margin-top: 10px;
-    display: flex;
-    -o-justify-content: space-between;
-    -webkit-justify-content: space-between;
-    justify-content: space-between;
-    }
-
-    .analysis {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    }
-
-    .ant-tag.current {
-    color: #389e0d;
-    background: #f6ffed;
-    border-color: #b7eb8f;
-    }
-
-</style>
 @if (loading)
 {
     <div style=" text-align: center;margin: 50px 0;">
@@ -40,88 +8,16 @@
 }
 else
 {
-    <GridRow Gutter="16">
-        <GridCol Span="4">
-            <QuestionNumber 
-            CurrentId="_questionIds[_questionIndex]"
-            Numbers="_questions"
-            SuccessIds="GetSuccessIds()"
-            ErrorIds="GetErrorIds()"
-            OnChanged="ShowQuestionAsync"></QuestionNumber>
-        </GridCol>
-        <GridCol Span="20">
-            <Card class="question-content">
-                <TitleTemplate>
-                    <span @onclick="GoDetail" style="cursor: pointer">
-                        <Icon Type="arrow-left" Theme="IconThemeType.Outline"/>返回
-                    </span>
-                    <Divider Type="DividerType.Vertical" />题库训练
-                </TitleTemplate>
-                <ChildContent>
-                    @if (loadingQuestion)
-                    {
-                        <Spin/>
-                    }
-                    else
-                    {
-                        @if (_question != null)
-                        {
-                            <QuestionItem Number="_questionIndex + 1"
-                                          Question="_question"
-                                          QuestionAnswers="_questionAnswers"
-                                          ShowAnalysis="_showAnalysis"
-                                          SelectedQuestionAnswers="_selectedQuestionAnswers"
-                                          OnSubmit="@SubmitAsync"></QuestionItem>
-                        }
-                        
-                        <div class="bottom">
-                            @if (_questionIndex <= 0)
-                            {
-                                <Button OnClick="PrevAsync" Disabled Icon="@IconType.Outline.ArrowLeft">上一题</Button>
-                            }
-                            else
-                            {
-                                <Button OnClick="PrevAsync" Icon="@IconType.Outline.ArrowLeft">上一题</Button>
-                            }
-                            @if (favorited)
-                            {
-                                <Icon Type="star" Theme="IconThemeType.Fill" Style="cursor: pointer;" OnClick="@(async () => await FavoriteAsync(false))"></Icon>
-                            }
-                            else
-                            {
-                                <Icon Type="star" Theme="IconThemeType.Outline" Style="cursor: pointer;" OnClick="@(async () => await FavoriteAsync(true))" />
-                            }
-
-                            @if (_questionIndex >= _questionIds.Length - 1)
-                            {
-                                <Button OnClick="NextAsync" Disabled Icon="@IconType.Outline.ArrowRight">下一题</Button>
-                            }
-                            else
-                            {
-                                <Button OnClick="NextAsync" Icon="@IconType.Outline.ArrowRight">下一题</Button>
-                            }
-
-                        </div>
-                    }
-                </ChildContent>
-            </Card>
-        </GridCol>
-    </GridRow>
+    <SingleQuestion Title="题库训练"
+                TrainType="TrainType"
+                BackUrl="@($"/repository/{QuestionRepositoryId}")"
+                Questions="_questions"></SingleQuestion>
 }
 
 @using SuperAbp.Exam.QuestionManagement.Questions
-@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
-@using SuperAbp.Exam.TrainingManagement
 @using SuperAbp.Exam.Blazor.Model
-@using SuperAbp.Exam.Favorites
 @using Volo.Abp.Application.Dtos
-@using Volo.Abp.AspNetCore.Components.Notifications
-@inject NavigationManager Navigation
 @inject IQuestionAppService QuestionAppService
-@inject IQuestionAnswerAppService QuestionAnswerAppService
-@inject ITrainingAppService TrainingAppService
-@inject IFavoriteAppService FavoriteAppService
-@inject IUiNotificationService UiNotificationService
 @code {
     [Parameter]
     public Guid QuestionRepositoryId { get; set; }
@@ -131,18 +27,8 @@ else
     [SupplyParameterFromQuery(Name = "QuestionType")]
     public int? CurrentQuestionType { get; set; }
 
-    bool favorited = false;
     bool loading = true;
-    bool loadingQuestion = false;
     List<QuestionNumberVo> _questions = [];
-    Guid[] _questionIds = [];
-    IReadOnlyList<QuestionAnswerViewModel> _questionAnswers = Array.Empty<QuestionAnswerViewModel>();
-    IReadOnlyList<TrainingListDto> _trains = Array.Empty<TrainingListDto>();
-    readonly Dictionary<Guid, Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>> _cacheQuestions = new();
-    readonly List<QuestionAnswerItem> _selectedQuestionAnswers = new();
-    QuestionDetailDto _question;
-    bool _showAnalysis = false;
-    int _questionIndex = 0;
     protected override async Task OnInitializedAsync()
     {
         PagedResultDto<QuestionListDto> result = await QuestionAppService.GetListAsync(new GetQuestionsInput()
@@ -167,147 +53,6 @@ else
             vo.TotalScore = vo.Questions.Sum(q => q.QuestionScore ?? 0);
             _questions.Add(vo);
         }
-
-        _questionIds = _questions.SelectMany(q => q.Questions.Select(i => i.QuestionId)).ToArray();
-        if (_questions.Count <= 0)
-        {
-            GoDetail();
-            return;
-        }
-
-        int maxIndex = 0;
-        if (TrainType is null or 0)
-        {
-            var trainResult = await TrainingAppService.GetListAsync(new GetTrainsInput() { TrainingSource = TrainingSource.QuestionRepository,  QuestionRepositoryId = QuestionRepositoryId });
-            _trains = trainResult.Items;
-
-            maxIndex = _trains.Count > 0 
-                ? _trains.Max(t => _questionIds.ToList().IndexOf(t.QuestionId))
-                : 0;
-            if (maxIndex >= _questions.Count || maxIndex < 0)
-            {
-                maxIndex = 0;
-            }
-        }
-        await ShowQuestionAsync(maxIndex);
         loading = false;
-    }
-
-    Guid[] GetSuccessIds()
-    {
-        return _trains.Where(a => a.Right).Select(a => a.QuestionId).Union(
-            _selectedQuestionAnswers.Where(a => a.Right).Select(a => a.QuestionId))
-            .ToArray();
-    }
-    Guid[] GetErrorIds()
-    {
-        return _trains.Where(a => !a.Right).Select(a => a.QuestionId).Union(
-            _selectedQuestionAnswers.Where(a => !a.Right).Select(a => a.QuestionId))
-            .ToArray();
-    }
-    public async Task NextAsync()
-    {
-        if (_questionIndex >= _questions.Count)
-        {
-            _questionIndex = _questions.Count - 1;
-            return;
-
-        }
-
-        await ShowQuestionAsync(_questionIndex + 1);
-    }
-    public async Task PrevAsync()
-    {
-        if (_questionIndex < 0)
-        {
-            _questionIndex = 0;
-            return;
-        }
-        await ShowQuestionAsync(_questionIndex - 1);
-    }
-
-    async Task ShowQuestionAsync(int index)
-    {
-        await ShowQuestionAsync(_questionIds[index]);
-    }
-    public async Task ShowQuestionAsync(Guid id)
-    {
-        _questionIndex = _questionIds.ToList().IndexOf(id);
-        loadingQuestion = true;
-        _showAnalysis = false;
-        favorited = await FavoriteAppService.GetByQuestionIdAsync(id);
-        await LoadQuestionAsync(id);
-        if (TrainType is 1 || _selectedQuestionAnswers.Any(a => a.QuestionId == id))
-        {
-            _showAnalysis = true;
-        }
-
-        loadingQuestion = false;
-    }
-
-    private async Task LoadQuestionAsync(Guid id)
-    {
-        if (_cacheQuestions.ContainsKey(id))
-        {
-            _question = _cacheQuestions[id].Item1;
-            _questionAnswers = _cacheQuestions[id].Item2.Select(i => new QuestionAnswerViewModel
-            {
-                Id = i.Id,
-                Content = i.Content,
-                Right = i.Right
-            }).ToArray();
-        }
-        else
-        {
-            _question = await QuestionAppService.GetAsync(id);
-            _questionAnswers = (await QuestionAnswerAppService.GetListAsync(id)).Items.Select(i => new QuestionAnswerViewModel
-                {
-                    Id = i.Id,
-                    Content = i.Content,
-                    Right = i.Right
-                }).ToArray();
-            _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>(_question, _questionAnswers));
-        }
-    }
-
-
-    public async Task SubmitAsync(QuestionAnswerItem item)
-    {
-        _showAnalysis = true;
-        var right = item.Right;
-        var training = _trains.SingleOrDefault(t => t.QuestionId == item.QuestionId);
-        if (training is null)
-        {
-            await TrainingAppService.CreateAsync(new TrainingCreateDto()
-            {
-                TrainingSource = TrainingSource.QuestionRepository,
-                QuestionRepositoryId = QuestionRepositoryId,
-                QuestionId = item.QuestionId,
-                Right = right
-            });
-        }
-        else
-        {
-            await TrainingAppService.SetIsRightAsync(training.Id, right);
-        }
-        _selectedQuestionAnswers.Add(item);
-    }
-
-    private async Task FavoriteAsync(bool status)
-    {
-        if (status)
-        {
-            await FavoriteAppService.CreateAsync(_question.Id);
-            favorited = true;
-        }
-        else
-        {
-            favorited = false;
-            await FavoriteAppService.DeleteAsync(_question.Id);
-        }
-    }
-    private void GoDetail()
-    {
-        Navigation.NavigateTo($"/repository/{QuestionRepositoryId}");
     }
 }

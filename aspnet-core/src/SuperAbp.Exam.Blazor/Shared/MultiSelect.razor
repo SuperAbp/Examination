@@ -121,7 +121,7 @@
         }
         else
         {
-            var answerIds = selectedAnswer.Answer.Split(",");
+            var answerIds = selectedAnswer.Answer.Split(ExamConsts.Splitter);
             _selectedAnswerIds = answerIds.Select(a => new Guid(a)).ToList();
         }
     }
