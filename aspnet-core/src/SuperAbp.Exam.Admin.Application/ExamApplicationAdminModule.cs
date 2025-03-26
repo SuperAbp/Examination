@@ -37,14 +37,14 @@ public class ExamApplicationAdminModule : AbpModule
         });
         context.Services.AddTransient(factory =>
         {
-            Func<QuestionType, IQuestionAnalysis> accessor = key =>
+            Func<int, IQuestionAnalysis?> accessor = key =>
             {
-                return key switch
+                return QuestionType.FromValue(key).Name switch
                 {
-                    QuestionType.SingleSelect => factory.GetService<SelectAnalysis>(),
-                    QuestionType.MultiSelect => factory.GetService<SelectAnalysis>(),
-                    QuestionType.Judge => factory.GetService<JudgeAnalysis>(),
-                    QuestionType.FillInTheBlanks => factory.GetService<FillInTheBlanksAnalysis>(),
+                    nameof(QuestionType.SingleSelect) => factory.GetService<SelectAnalysis>(),
+                    nameof(QuestionType.MultiSelect) => factory.GetService<SelectAnalysis>(),
+                    nameof(QuestionType.Judge) => factory.GetService<JudgeAnalysis>(),
+                    nameof(QuestionType.FillInTheBlanks) => factory.GetService<FillInTheBlanksAnalysis>(),
                     _ => throw new ArgumentNullException($"Not Support key : {key}")
                 };
             };

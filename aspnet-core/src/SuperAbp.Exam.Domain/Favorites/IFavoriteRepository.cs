@@ -25,6 +25,7 @@ public interface IFavoriteRepository : IRepository<Favorite, Guid>
         int skipCount = 0,
         int maxResultCount = int.MaxValue,
         Guid? creatorId = null,
+        string? questionName = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -33,7 +34,7 @@ public interface IFavoriteRepository : IRepository<Favorite, Guid>
     /// <param name="creatorId">创建人Id</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<long> CountAsync(Guid creatorId, CancellationToken cancellationToken = default);
+    Task<long> CountAsync(Guid? creatorId, string? questionName = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 存在

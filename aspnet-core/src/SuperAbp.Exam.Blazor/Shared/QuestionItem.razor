@@ -2,24 +2,24 @@
     <span class="number">@Number</span>
     <span>@Question.Content</span>
 </h2>
-@switch (Question.QuestionType)
+@switch (QuestionType.FromValue(Question.QuestionType).Name)
 {
-    case QuestionType.SingleSelect:
-    case QuestionType.Judge:
+    case nameof(QuestionType.SingleSelect):
+    case nameof(QuestionType.Judge):
         <SingleSelect QuestionId="Question.Id"
                       Answers="QuestionAnswers"
                       SelectedQuestionAnswers="SelectedQuestionAnswers"
                       ShowAnalysis="ShowAnalysis"
                       OnSubmit="@SubmitAsync"></SingleSelect>
         break;
-    case QuestionType.MultiSelect:
+    case nameof(QuestionType.MultiSelect):
         <MultiSelect QuestionId="Question.Id"
                      Answers="QuestionAnswers"
                      SelectedQuestionAnswers="SelectedQuestionAnswers"
                      ShowAnalysis="ShowAnalysis"
                      OnSubmit="@SubmitAsync"></MultiSelect>
         break;
-    case QuestionType.FillInTheBlanks:
+    case nameof(QuestionType.FillInTheBlanks):
         <Blank QuestionId="Question.Id"
                Answers="QuestionAnswers"
                SelectedQuestionAnswers="SelectedQuestionAnswers"

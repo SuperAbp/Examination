@@ -10,7 +10,7 @@ public class QuestionImportDto
     /// </summary>
     public Guid QuestionRepositoryId { get; set; }
 
-    public QuestionType QuestionType { get; set; }
+    public int QuestionType { get; set; }
 
     public string Content { get; set; }
 }

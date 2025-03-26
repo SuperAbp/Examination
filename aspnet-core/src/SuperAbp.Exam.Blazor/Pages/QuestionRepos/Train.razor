@@ -34,11 +34,11 @@ else
         PagedResultDto<QuestionListDto> result = await QuestionAppService.GetListAsync(new GetQuestionsInput()
         {
             QuestionRepositoryId = QuestionRepositoryId, 
-                QuestionType =CurrentQuestionType.HasValue && Enum.IsDefined(typeof(QuestionType), CurrentQuestionType.Value)
-                ? (QuestionType)CurrentQuestionType.Value
+                QuestionType =CurrentQuestionType.HasValue && QuestionType.TryFromValue(CurrentQuestionType.Value, out _)
+                ? CurrentQuestionType.Value
                 : null
         });
-        foreach (QuestionType type in result.Items
+        foreach (int type in result.Items
                      .GroupBy(q=>q.QuestionType).Select(q=>q.Key).Distinct().OrderBy(q=>q))
         {
             QuestionNumberVo vo = new QuestionNumberVo()

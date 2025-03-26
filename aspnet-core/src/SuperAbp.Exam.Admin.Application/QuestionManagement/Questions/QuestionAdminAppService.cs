@@ -9,8 +9,6 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
-using SuperAbp.Exam.PaperManagement.PaperRepos;
-using static SuperAbp.Exam.Admin.PaperManagement.Papers.PaperUpdateDto;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 {
@@ -21,7 +19,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         IQuestionRepository questionRepository,
         IQuestionRepoRepository questionRepoRepository,
         IQuestionAnswerRepository questionAnswerRepository,
-        Func<QuestionType, IQuestionAnalysis> questionAnalysis)
+        Func<int, IQuestionAnalysis> questionAnalysis)
         : ExamAppService, IQuestionAdminAppService
     {
         public virtual async Task<PagedResultDto<QuestionListDto>> GetListAsync(GetQuestionsInput input)
@@ -74,7 +72,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             List<QuestionAnswer> answers = [];
             foreach (QuestionImportModel item in items)
             {
-                Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, input.QuestionType, item.Title);
+                Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, QuestionType.FromValue(input.QuestionType), item.Title);
                 question.Analysis = item.Analysis;
 
                 for (int i = 0; i < item.Options.Count; i++)
@@ -98,7 +96,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         {
             ValidationCorrectCountAsync(input.QuestionType, input.Options.Count(a => a.Right));
 
-            Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, input.QuestionType, input.Content);
+            Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, QuestionType.FromValue(input.QuestionType), input.Content);
             question.Analysis = input.Analysis;
             question = await questionRepository.InsertAsync(question);
             await CreateOrUpdateAnswerAsync(question.Id, input.Options);
@@ -109,7 +107,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         public virtual async Task<QuestionListDto> UpdateAsync(Guid id, QuestionUpdateDto input)
         {
             Question question = await questionRepository.GetAsync(id);
-            ValidationCorrectCountAsync(question.QuestionType, input.Options.Count(a => a.Right));
+            ValidationCorrectCountAsync(question.QuestionType.Value, input.Options.Count(a => a.Right));
 
             await questionManager.SetContentAsync(question, input.Content);
             question.Analysis = input.Analysis;
@@ -119,13 +117,13 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             return ObjectMapper.Map<Question, QuestionListDto>(question);
         }
 
-        private static void ValidationCorrectCountAsync(QuestionType questionType, int count)
+        private static void ValidationCorrectCountAsync(int questionType, int count)
         {
-            if (!(questionType switch
+            if (!(QuestionType.FromValue(questionType).Name switch
             {
-                QuestionType.Judge => count == 1,
-                QuestionType.SingleSelect => count == 1,
-                QuestionType.MultiSelect => count > 1,
+                nameof(QuestionType.Judge) => count == 1,
+                nameof(QuestionType.SingleSelect) => count == 1,
+                nameof(QuestionType.MultiSelect) => count > 1,
                 _ => true
             }))
             {

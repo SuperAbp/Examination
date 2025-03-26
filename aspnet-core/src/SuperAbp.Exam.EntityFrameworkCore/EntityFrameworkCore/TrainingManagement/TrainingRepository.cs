@@ -30,7 +30,7 @@ public class TrainingRepository(IDbContextProvider<ExamDbContext> dbContextProvi
         var queryable = await GetQueryableAsync();
 
         return await queryable
-            .WhereIf(trainingSource.HasValue, p => p.TrainingSource == trainingSource)
+            .WhereIf(trainingSource.HasValue, p => p.TrainingSource == trainingSource.Value)
             .WhereIf(questionRepositoryId.HasValue, p => p.QuestionRepositoryId == questionRepositoryId.Value)
             .WhereIf(userId.HasValue, p => p.UserId == userId.Value)
             .OrderBy(string.IsNullOrWhiteSpace(sorting) ? TrainingConsts.DefaultSorting : sorting)

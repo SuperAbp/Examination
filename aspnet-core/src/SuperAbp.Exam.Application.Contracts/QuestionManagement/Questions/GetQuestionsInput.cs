@@ -12,7 +12,7 @@ public class GetQuestionsInput
     /// </summary>
     public string? Content { get; set; }
 
-    public QuestionType? QuestionType { get; set; }
+    public int? QuestionType { get; set; }
 
     public bool IsFavorite { get; set; }
 

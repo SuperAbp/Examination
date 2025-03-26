@@ -16,31 +16,37 @@ public class FavoriteRepository(IDbContextProvider<ExamDbContext> dbContextProvi
     : EfCoreRepository<ExamDbContext, Favorite, Guid>(dbContextProvider), IFavoriteRepository
 {
     public async Task<List<FavoriteWithDetails>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
-        Guid? creatorId = null, CancellationToken cancellationToken = default)
+        Guid? creatorId = null, string? questionName = null, CancellationToken cancellationToken = default)
     {
-        ExamDbContext dbContext = await GetDbContextAsync();
-
-        IQueryable<Favorite> queryable = (await GetQueryableAsync()).WhereIf(creatorId.HasValue, p => p.CreatorId == creatorId.Value);
-        IQueryable<Question> questionQueryable = dbContext.Set<Question>().AsQueryable();
-        var query = (from favorite in queryable
-                     join question in questionQueryable on favorite.QuestionId equals question.Id
-                     select new FavoriteWithDetails()
-                     {
-                         Id = favorite.Id,
-                         QuestionName = question.Content,
-                         QuestionType = question.QuestionType,
-                         CreationTime = favorite.CreationTime
-                     })
+        var query = (await GetQueryableAsync(creatorId, questionName))
             .OrderBy(string.IsNullOrWhiteSpace(sorting) ? QuestionConsts.DefaultSorting : sorting)
             .PageBy(skipCount, maxResultCount);
         return await query.ToListAsync(cancellationToken: cancellationToken);
     }
 
-    public async Task<long> CountAsync(Guid creatorId, CancellationToken cancellationToken = default)
+    public async Task<long> CountAsync(Guid? creatorId, string? questionName = null, CancellationToken cancellationToken = default)
     {
-        return await (await GetDbSetAsync())
-            .Where(r => r.CreatorId == creatorId)
+        return await (await GetQueryableAsync(creatorId, questionName))
             .LongCountAsync(cancellationToken);
+    }
+
+    private async Task<IQueryable<FavoriteWithDetails>> GetQueryableAsync(Guid? creatorId, string? questionName = null)
+    {
+        ExamDbContext dbContext = await GetDbContextAsync();
+
+        IQueryable<Favorite> queryable = (await GetQueryableAsync())
+            .WhereIf(creatorId.HasValue, p => p.CreatorId == creatorId.Value);
+        IQueryable<Question> questionQueryable = dbContext.Set<Question>().AsQueryable();
+        return (from favorite in queryable
+                join question in questionQueryable on favorite.QuestionId equals question.Id
+                select new FavoriteWithDetails()
+                {
+                    Id = favorite.Id,
+                    QuestionName = question.Content,
+                    QuestionType = question.QuestionType,
+                    CreationTime = favorite.CreationTime
+                })
+                     .WhereIf(!questionName.IsNullOrWhiteSpace(), f => f.QuestionName.Contains(questionName));
     }
 
     public async Task<bool> ExistsAsync(Guid creatorId, Guid questionId, CancellationToken cancellationToken = default)

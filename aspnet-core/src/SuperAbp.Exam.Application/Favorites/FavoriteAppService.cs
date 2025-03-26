@@ -11,8 +11,8 @@ public class FavoriteAppService(IFavoriteRepository favoriteRepository) : ExamAp
     public async Task<PagedResultDto<FavoriteListDto>> GetListAsync(GetFavoritesInput input)
     {
         List<FavoriteWithDetails> favorites = await favoriteRepository.GetListAsync(input.Sorting ?? FavoriteConsts.DefaultSorting, input.SkipCount,
-            input.MaxResultCount, creatorId: CurrentUser.GetId());
-        long totalCount = await favoriteRepository.CountAsync(CurrentUser.GetId());
+            input.MaxResultCount, creatorId: CurrentUser.GetId(), input.QuestionName);
+        long totalCount = await favoriteRepository.CountAsync(CurrentUser.GetId(), input.QuestionName);
         List<FavoriteListDto> dtos = ObjectMapper.Map<List<FavoriteWithDetails>, List<FavoriteListDto>>(favorites);
         return new PagedResultDto<FavoriteListDto>(totalCount, dtos);
     }

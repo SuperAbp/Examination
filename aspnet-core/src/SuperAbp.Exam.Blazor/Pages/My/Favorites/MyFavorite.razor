@@ -5,8 +5,29 @@
 @using SuperAbp.Exam.Localization
 
 <Card Title="考试记录">
-    <Button OnClick="BeganAsync">开始练习</Button>
+    <Form style="margin-bottom: 16px;"
+        Layout="FormLayout.Inline"
+    Model="@input"
+    OnFinish="Search">
+        <FormItem>
+            <Input Placeholder="@L["QuestionName"]" @bind-Value="@context.QuestionName" />
+        </FormItem>
+        <FormItem>
+            <Input Placeholder="@L["QuestionType"]" @bind-Value="@context.QuestionType" />
+        </FormItem>
+        <FormItem>
+            <Button Type="ButtonType.Primary" HtmlType="submit">
+                @L["Search"]
+            </Button>
+            <Button OnClick="Reset">
+                @L["Reset"]
+            </Button>
+            <Button OnClick="BeganAsync">开始练习</Button>
+        </FormItem>
+    </Form>
+
     <Table TItem="FavoriteListDto"
+    @ref="Table"
     DataSource="@_favorites"
     Total="_totalCount"
     Loading="_loading"
@@ -14,9 +35,9 @@
     @bind-PageIndex="_currentPage"
     @bind-PageSize="_pageSize"
     OnChange="Change">
-        <PropertyColumn Property="c => c.QuestionName" Title="@L["QuestionName"]"/>
+        <PropertyColumn Property="c => c.QuestionName" Title="@L["QuestionName"]" />
         <PropertyColumn Property="c => c.QuestionType" Title="@L["QuestionType"]" />
-        <PropertyColumn Property="c => c.CreationTime" Title="@L["CreationTime"]"/>
+        <PropertyColumn Property="c => c.CreationTime" Title="@L["CreationTime"]" />
         <ActionColumn Title="@L["Action"]">
             <Space>
                 <SpaceItem>
@@ -31,12 +52,24 @@
 @inject NavigationManager Navigation
 @inject IFavoriteAppService FavoriteAppService
 @code {
+    Table<FavoriteListDto> Table;
     IReadOnlyList<FavoriteListDto> _favorites;
     int _currentPage = 1;
-    int _pageSize = 10;
+    int _pageSize = 3;
     int _totalCount = 0;
     bool _loading = true;
-
+    GetFavoritesInput input = new();
+    public void Search()
+    {
+        Table.ReloadData();
+    }
+    public void Reset()
+    {
+        input.QuestionType = null;
+        input.QuestionName = null;
+        Table.ResetData();
+        Table.ReloadData();
+    }
     public async Task Change(QueryModel model)
     {
         await GetListAsync(model.PageIndex, model.PageSize);
@@ -44,7 +77,9 @@
     protected async Task GetListAsync(int pageIndex, int pageSize, string sorting = null)
     {
         _loading = true;
-        var result = await FavoriteAppService.GetListAsync(new () { SkipCount = 0, MaxResultCount = _pageSize });
+        input.SkipCount = (pageIndex-1) * pageSize;
+        input.MaxResultCount = pageSize;
+        var result = await FavoriteAppService.GetListAsync(input);
         _favorites = result.Items;
         _totalCount = (int)result.TotalCount;
         _loading = false;
@@ -55,7 +90,7 @@
         await Task.CompletedTask;
     }
     private async Task BeganAsync(Guid id)
-    {        
+    {
         Navigation.NavigateTo($"/my/favorite/training");
         await Task.CompletedTask;
     }

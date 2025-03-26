@@ -8,7 +8,7 @@ namespace SuperAbp.Exam.QuestionManagement.Questions;
 /// </summary>
 public class QuestionDetailDto : EntityDto<Guid>
 {
-    public QuestionType QuestionType { get; set; }
+    public int QuestionType { get; set; }
 
     public Guid QuestionRepositoryId { get; set; }
 

@@ -46,7 +46,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
         QuestionCreateDto input = new()
         {
             QuestionRepositoryId = _testData.QuestionRepository1Id,
-            QuestionType = QuestionType.MultiSelect,
+            QuestionType = QuestionType.MultiSelect.Value,
             Content = "New_Content",
             Analysis = "New_Analysis",
             Options = [new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content1" }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content2", Right = true }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content3", Right = true }]
@@ -55,6 +55,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
         Question question = await _questionRepository.GetAsync(dto.Id);
         question.ShouldNotBeNull();
         question.Content.ShouldBe(input.Content);
+        question.QuestionType.ShouldBe(QuestionType.FromValue(input.QuestionType));
         question.QuestionRepositoryId.ShouldBe(input.QuestionRepositoryId);
         question.Analysis.ShouldBe(input.Analysis);
     }
@@ -65,7 +66,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
         QuestionCreateDto input = new()
         {
             QuestionRepositoryId = _testData.QuestionRepository1Id,
-            QuestionType = QuestionType.MultiSelect,
+            QuestionType = QuestionType.MultiSelect.Value,
             Content = "New_Content",
             Analysis = "New_Analysis"
         };
@@ -79,7 +80,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
         QuestionCreateDto input = new()
         {
             QuestionRepositoryId = _testData.QuestionRepository1Id,
-            QuestionType = QuestionType.MultiSelect,
+            QuestionType = QuestionType.MultiSelect.Value,
             Content = _testData.Question11Content1,
             Analysis = "New_Analysis",
             Options = [new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content1" }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content2", Right = true }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content3", Right = true }]
