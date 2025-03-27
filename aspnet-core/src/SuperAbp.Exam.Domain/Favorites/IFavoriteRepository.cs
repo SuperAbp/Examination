@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Volo.Abp.Domain.Repositories;
 using System.Collections.Generic;
+using SuperAbp.Exam.QuestionManagement.Questions;
 
 namespace SuperAbp.Exam.Favorites;
 
@@ -18,6 +19,7 @@ public interface IFavoriteRepository : IRepository<Favorite, Guid>
     /// <param name="skipCount"></param>
     /// <param name="maxResultCount"></param>
     /// <param name="creatorId">创建人Id</param>
+    /// <param name="questionContent">题干</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<List<FavoriteWithDetails>> GetListAsync(
@@ -25,16 +27,18 @@ public interface IFavoriteRepository : IRepository<Favorite, Guid>
         int skipCount = 0,
         int maxResultCount = int.MaxValue,
         Guid? creatorId = null,
-        string? questionName = null,
+        string? questionContent = null,
+        QuestionType? questionType = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 数量
     /// </summary>
     /// <param name="creatorId">创建人Id</param>
+    /// <param name="questionContent">题干</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<long> CountAsync(Guid? creatorId, string? questionName = null, CancellationToken cancellationToken = default);
+    Task<long> CountAsync(Guid? creatorId, string? questionContent = null, QuestionType? questionType = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 存在

@@ -3,17 +3,32 @@
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Favorites
 @using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using Volo.Abp.AspNetCore.Components.Notifications
 
-<Card Title="考试记录">
+<Card Title="@L["MyFavorite"]">
     <Form style="margin-bottom: 16px;"
-        Layout="FormLayout.Inline"
-    Model="@input"
+    Layout="FormLayout.Inline"
+    Model="@parameter"
     OnFinish="Search">
         <FormItem>
-            <Input Placeholder="@L["QuestionName"]" @bind-Value="@context.QuestionName" />
+            <Input Placeholder="@L["QuestionContent"]" @bind-Value="@context.QuestionContent" />
         </FormItem>
         <FormItem>
-            <Input Placeholder="@L["QuestionType"]" @bind-Value="@context.QuestionType" />
+            <Select 
+            @bind-Value="@context.QuestionType"
+            TItem="string"
+            TItemValue="int?"
+            AllowClear="true"
+            Placeholder="@L["QuestionType"]"
+            Style="width: 120px;">
+                <SelectOptions>
+                    @foreach (QuestionType item in QuestionType.List)
+                    {
+                        <SelectOption TItemValue="int?" TItem="string" Value="item.Value" Label="@(L["QuestionType:" + item.Value])" />
+                    }
+                </SelectOptions>
+            </Select>
         </FormItem>
         <FormItem>
             <Button Type="ButtonType.Primary" HtmlType="submit">
@@ -22,7 +37,7 @@
             <Button OnClick="Reset">
                 @L["Reset"]
             </Button>
-            <Button OnClick="BeganAsync">开始练习</Button>
+            <Button OnClick="StartAsync">@L["StartTraining"]</Button>
         </FormItem>
     </Form>
 
@@ -35,13 +50,13 @@
     @bind-PageIndex="_currentPage"
     @bind-PageSize="_pageSize"
     OnChange="Change">
-        <PropertyColumn Property="c => c.QuestionName" Title="@L["QuestionName"]" />
+        <PropertyColumn Property="c => c.QuestionContent" Title="@L["QuestionContent"]" />
         <PropertyColumn Property="c => c.QuestionType" Title="@L["QuestionType"]" />
         <PropertyColumn Property="c => c.CreationTime" Title="@L["CreationTime"]" />
         <ActionColumn Title="@L["Action"]">
             <Space>
                 <SpaceItem>
-                    <Button Type="@ButtonType.Primary" OnClick="()=>BeganAsync(context.Id)">@L["BeganTraining"]</Button>
+                    <Button Type="@ButtonType.Primary" OnClick="()=>StartAsync(context.Id)">@L["BeganTraining"]</Button>
                 </SpaceItem>
             </Space>
         </ActionColumn>
@@ -51,6 +66,7 @@
 @inject IStringLocalizer<ExamResource> L
 @inject NavigationManager Navigation
 @inject IFavoriteAppService FavoriteAppService
+@inject IUiNotificationService NotificationService
 @code {
     Table<FavoriteListDto> Table;
     IReadOnlyList<FavoriteListDto> _favorites;
@@ -58,15 +74,15 @@
     int _pageSize = 3;
     int _totalCount = 0;
     bool _loading = true;
-    GetFavoritesInput input = new();
+    GetFavoritesInput parameter = new();
     public void Search()
     {
         Table.ReloadData();
     }
     public void Reset()
     {
-        input.QuestionType = null;
-        input.QuestionName = null;
+        parameter.QuestionType = null;
+        parameter.QuestionContent = null;
         Table.ResetData();
         Table.ReloadData();
     }
@@ -77,21 +93,30 @@
     protected async Task GetListAsync(int pageIndex, int pageSize, string sorting = null)
     {
         _loading = true;
-        input.SkipCount = (pageIndex-1) * pageSize;
-        input.MaxResultCount = pageSize;
-        var result = await FavoriteAppService.GetListAsync(input);
+        parameter.SkipCount = (pageIndex - 1) * pageSize;
+        parameter.MaxResultCount = pageSize;
+        var result = await FavoriteAppService.GetListAsync(parameter);
         _favorites = result.Items;
         _totalCount = (int)result.TotalCount;
         _loading = false;
     }
-    private async Task BeganAsync()
+    private async Task StartAsync()
     {
-        Navigation.NavigateTo($"/my/favorite/training");
-        await Task.CompletedTask;
+        await StartAsync(null);
     }
-    private async Task BeganAsync(Guid id)
+    private async Task StartAsync(Guid? id)
     {
-        Navigation.NavigateTo($"/my/favorite/training");
+        if (_favorites.Count == 0)
+        {
+            await NotificationService.Error("暂未收藏此类型的题目");
+            return;
+        }
+        string url = $"/my/favorite/training";
+        if (parameter.QuestionType.HasValue)
+        {
+            url += "?questionType=" + parameter.QuestionType.Value;
+        }
+        Navigation.NavigateTo(url);
         await Task.CompletedTask;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuperAbp.Exam.QuestionManagement.Questions;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -10,9 +11,12 @@ public class FavoriteAppService(IFavoriteRepository favoriteRepository) : ExamAp
 {
     public async Task<PagedResultDto<FavoriteListDto>> GetListAsync(GetFavoritesInput input)
     {
-        List<FavoriteWithDetails> favorites = await favoriteRepository.GetListAsync(input.Sorting ?? FavoriteConsts.DefaultSorting, input.SkipCount,
-            input.MaxResultCount, creatorId: CurrentUser.GetId(), input.QuestionName);
-        long totalCount = await favoriteRepository.CountAsync(CurrentUser.GetId(), input.QuestionName);
+        QuestionType? questionType = input.QuestionType.HasValue ? QuestionType.FromValue(input.QuestionType.Value) : null;
+        List<FavoriteWithDetails> favorites = await favoriteRepository
+            .GetListAsync(input.Sorting ?? FavoriteConsts.DefaultSorting, input.SkipCount,
+                input.MaxResultCount, creatorId: CurrentUser.GetId(),
+                input.QuestionContent, questionType);
+        long totalCount = await favoriteRepository.CountAsync(CurrentUser.GetId(), input.QuestionContent, questionType);
         List<FavoriteListDto> dtos = ObjectMapper.Map<List<FavoriteWithDetails>, List<FavoriteListDto>>(favorites);
         return new PagedResultDto<FavoriteListDto>(totalCount, dtos);
     }

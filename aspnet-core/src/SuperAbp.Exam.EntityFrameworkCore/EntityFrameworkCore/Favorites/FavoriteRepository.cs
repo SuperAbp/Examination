@@ -16,21 +16,21 @@ public class FavoriteRepository(IDbContextProvider<ExamDbContext> dbContextProvi
     : EfCoreRepository<ExamDbContext, Favorite, Guid>(dbContextProvider), IFavoriteRepository
 {
     public async Task<List<FavoriteWithDetails>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
-        Guid? creatorId = null, string? questionName = null, CancellationToken cancellationToken = default)
+        Guid? creatorId = null, string? questionContent = null, QuestionType? questionType = null, CancellationToken cancellationToken = default)
     {
-        var query = (await GetQueryableAsync(creatorId, questionName))
+        var query = (await GetQueryableAsync(creatorId, questionContent, questionType))
             .OrderBy(string.IsNullOrWhiteSpace(sorting) ? QuestionConsts.DefaultSorting : sorting)
             .PageBy(skipCount, maxResultCount);
         return await query.ToListAsync(cancellationToken: cancellationToken);
     }
 
-    public async Task<long> CountAsync(Guid? creatorId, string? questionName = null, CancellationToken cancellationToken = default)
+    public async Task<long> CountAsync(Guid? creatorId, string? questionContent = null, QuestionType? questionType = null, CancellationToken cancellationToken = default)
     {
-        return await (await GetQueryableAsync(creatorId, questionName))
+        return await (await GetQueryableAsync(creatorId, questionContent, questionType))
             .LongCountAsync(cancellationToken);
     }
 
-    private async Task<IQueryable<FavoriteWithDetails>> GetQueryableAsync(Guid? creatorId, string? questionName = null)
+    private async Task<IQueryable<FavoriteWithDetails>> GetQueryableAsync(Guid? creatorId, string? questionContent = null, QuestionType? questionType = null)
     {
         ExamDbContext dbContext = await GetDbContextAsync();
 
@@ -42,11 +42,12 @@ public class FavoriteRepository(IDbContextProvider<ExamDbContext> dbContextProvi
                 select new FavoriteWithDetails()
                 {
                     Id = favorite.Id,
-                    QuestionName = question.Content,
+                    QuestionContent = question.Content,
                     QuestionType = question.QuestionType,
                     CreationTime = favorite.CreationTime
                 })
-                     .WhereIf(!questionName.IsNullOrWhiteSpace(), f => f.QuestionName.Contains(questionName));
+                .WhereIf(!questionContent.IsNullOrWhiteSpace(), f => f.QuestionContent.Contains(questionContent))
+                .WhereIf(questionType is not null, f => f.QuestionType == questionType);
     }
 
     public async Task<bool> ExistsAsync(Guid creatorId, Guid questionId, CancellationToken cancellationToken = default)

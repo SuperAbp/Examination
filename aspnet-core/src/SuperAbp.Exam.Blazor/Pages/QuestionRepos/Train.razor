@@ -8,15 +8,18 @@
 }
 else
 {
-    <SingleQuestion Title="题库训练"
+    <SingleQuestion Title="@L["QuestionRepository"]"
                 TrainType="TrainType"
                 BackUrl="@($"/repository/{QuestionRepositoryId}")"
                 Questions="_questions"></SingleQuestion>
 }
 
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using SuperAbp.Exam.Blazor.Model
 @using Volo.Abp.Application.Dtos
+@inject IStringLocalizer<ExamResource> L
 @inject IQuestionAppService QuestionAppService
 @code {
     [Parameter]
