@@ -16,5 +16,7 @@ public class GetQuestionsInput
 
     public bool IsFavorite { get; set; }
 
+    public Guid? QuestionId { get; set; }
+
     public Guid? QuestionRepositoryId { get; set; }
 }

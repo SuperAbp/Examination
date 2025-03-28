@@ -44,6 +44,6 @@ public class FavoriteAppService(IFavoriteRepository favoriteRepository) : ExamAp
 
     public async Task DeleteAsync(Guid questionId)
     {
-        await favoriteRepository.DeleteAsync(questionId);
+        await favoriteRepository.DeleteByQuestionIdAsync(questionId);
     }
 }

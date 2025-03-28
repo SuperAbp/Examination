@@ -42,6 +42,7 @@ public class FavoriteRepository(IDbContextProvider<ExamDbContext> dbContextProvi
                 select new FavoriteWithDetails()
                 {
                     Id = favorite.Id,
+                    QuestionId = question.Id,
                     QuestionContent = question.Content,
                     QuestionType = question.QuestionType,
                     CreationTime = favorite.CreationTime
@@ -54,5 +55,10 @@ public class FavoriteRepository(IDbContextProvider<ExamDbContext> dbContextProvi
     {
         return await (await GetDbSetAsync())
             .AnyAsync(r => r.CreatorId == creatorId && r.QuestionId == questionId, cancellationToken: cancellationToken);
+    }
+
+    public async Task DeleteByQuestionIdAsync(Guid questionId)
+    {
+        await DeleteAsync(f => f.QuestionId == questionId);
     }
 }

@@ -1,4 +1,4 @@
-﻿@page "/my/favorite/training"
+﻿@page "/my/favorite/training/{TrainType:int?}"
 
 @if (loading)
 {
@@ -9,15 +9,18 @@
 else
 {
     <SingleQuestion Title="@L["MyFavorite"]"
-                    TrainType="TrainType"
-                    BackUrl="/my/favorite"
-                    Questions="_questions"></SingleQuestion>
+    TrainType="TrainType"
+    BackUrl="/my/favorite"
+    Questions="_questions"></SingleQuestion>
 }
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using Volo.Abp.Application.Dtos
+@using Volo.Abp.AspNetCore.Components.Notifications
+
+@inject IUiNotificationService NotificationService
 @inject IStringLocalizer<ExamResource> L
 @inject IQuestionAppService QuestionAppService
 @code {
@@ -26,6 +29,9 @@ else
     [Parameter]
     [SupplyParameterFromQuery(Name = "QuestionType")]
     public int? CurrentQuestionType { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public Guid? QuestionId { get; set; }
 
     bool loading = true;
     List<QuestionNumberVo> _questions = [];
@@ -34,6 +40,7 @@ else
     {
         PagedResultDto<QuestionListDto> result = await QuestionAppService.GetListAsync(new GetQuestionsInput()
             {
+                QuestionId = QuestionId,
                 QuestionType = CurrentQuestionType,
                 IsFavorite = true
             });

@@ -1,27 +1,20 @@
 ﻿@page "/my/favorite"
-@using AntDesign.TableModels
-@using Microsoft.Extensions.Localization
-@using SuperAbp.Exam.Favorites
-@using SuperAbp.Exam.Localization
-@using SuperAbp.Exam.QuestionManagement.Questions
-@using Volo.Abp.AspNetCore.Components.Notifications
 
 <Card Title="@L["MyFavorite"]">
     <Form style="margin-bottom: 16px;"
-    Layout="FormLayout.Inline"
-    Model="@parameter"
-    OnFinish="Search">
+          Layout="FormLayout.Inline"
+          Model="@parameter"
+          OnFinish="Search">
         <FormItem>
             <Input Placeholder="@L["QuestionContent"]" @bind-Value="@context.QuestionContent" />
         </FormItem>
         <FormItem>
-            <Select 
-            @bind-Value="@context.QuestionType"
-            TItem="string"
-            TItemValue="int?"
-            AllowClear="true"
-            Placeholder="@L["QuestionType"]"
-            Style="width: 120px;">
+            <Select @bind-Value="@context.QuestionType"
+                    TItem="string"
+                    TItemValue="int?"
+                    AllowClear="true"
+                    Placeholder="@L["QuestionType"]"
+                    Style="width: 120px;">
                 <SelectOptions>
                     @foreach (QuestionType item in QuestionType.List)
                     {
@@ -42,27 +35,36 @@
     </Form>
 
     <Table TItem="FavoriteListDto"
-    @ref="Table"
-    DataSource="@_favorites"
-    Total="_totalCount"
-    Loading="_loading"
-    RowKey="x=>x.Id"
-    @bind-PageIndex="_currentPage"
-    @bind-PageSize="_pageSize"
-    OnChange="Change">
+           @ref="Table"
+           DataSource="@_favorites"
+           Total="_totalCount"
+           Loading="_loading"
+           RowKey="x=>x.Id"
+           @bind-PageIndex="_currentPage"
+           @bind-PageSize="_pageSize"
+           OnChange="Change">
         <PropertyColumn Property="c => c.QuestionContent" Title="@L["QuestionContent"]" />
-        <PropertyColumn Property="c => c.QuestionType" Title="@L["QuestionType"]" />
+        <PropertyColumn Property="c => c.QuestionType" Title="@L["QuestionType"]" >
+            @L["QuestionType:" + context.QuestionType]
+        </PropertyColumn>
         <PropertyColumn Property="c => c.CreationTime" Title="@L["CreationTime"]" />
         <ActionColumn Title="@L["Action"]">
             <Space>
                 <SpaceItem>
-                    <Button Type="@ButtonType.Primary" OnClick="()=>StartAsync(context.Id)">@L["BeganTraining"]</Button>
+                    <Button Type="@ButtonType.Primary" OnClick="()=>StartAsync(context.QuestionId)">@L["StartTraining"]</Button>
                 </SpaceItem>
             </Space>
         </ActionColumn>
     </Table>
 </Card>
 
+@using AntDesign.TableModels
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Favorites
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using System.Text
+@using Volo.Abp.AspNetCore.Components.Notifications
 @inject IStringLocalizer<ExamResource> L
 @inject NavigationManager Navigation
 @inject IFavoriteAppService FavoriteAppService
@@ -111,10 +113,19 @@
             await NotificationService.Error("暂未收藏此类型的题目");
             return;
         }
-        string url = $"/my/favorite/training";
+        List<string> parameters = [];
         if (parameter.QuestionType.HasValue)
         {
-            url += "?questionType=" + parameter.QuestionType.Value;
+            parameters.Add("questionType=" + parameter.QuestionType.Value);
+        }
+        if (id.HasValue)
+        {
+            parameters.Add("questionId=" + id.Value);
+        }
+        string url = "/my/favorite/training";
+        if (parameters.Count > 0)
+        {
+            url += $"?{String.Join('&', parameters)}";
         }
         Navigation.NavigateTo(url);
         await Task.CompletedTask;

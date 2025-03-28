@@ -48,4 +48,11 @@ public interface IFavoriteRepository : IRepository<Favorite, Guid>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<bool> ExistsAsync(Guid creatorId, Guid questionId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 删除
+    /// </summary>
+    /// <param name="questionId">题目Id</param>
+    /// <returns></returns>
+    Task DeleteByQuestionIdAsync(Guid questionId);
 }
