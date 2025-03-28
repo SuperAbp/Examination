@@ -39,10 +39,10 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionRepos
         }
 
         public async Task<List<QuestionRepo>> GetListAsync(
-            string? title = null,
             string? sorting = null,
             int skipCount = 0,
             int maxResultCount = Int32.MaxValue,
+            string? title = null,
             CancellationToken cancellationToken = default)
         {
             return await (await GetQueryableAsync())

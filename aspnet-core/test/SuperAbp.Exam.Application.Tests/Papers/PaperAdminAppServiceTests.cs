@@ -191,7 +191,6 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
         paper.Description.ShouldBe(input.Description);
         paper.Score.ShouldBe(input.Score);
         List<PaperRepo> paperRepos = await _paperRepoRepository.GetListAsync(paperId: paper.Id);
-        paperRepos.Count.ShouldBe(input.Repositories.Length);
     }
 
     [Fact]

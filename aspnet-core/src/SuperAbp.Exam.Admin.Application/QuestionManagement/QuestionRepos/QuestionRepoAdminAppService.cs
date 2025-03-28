@@ -40,8 +40,8 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos
             long totalCount = await questionRepoRepository.GetCountAsync(input.Title);
 
             var entities = await questionRepoRepository
-                .GetListAsync(input.Title, input.Sorting ?? QuestionRepoConsts.DefaultSorting, input.SkipCount,
-                    input.MaxResultCount);
+                .GetListAsync(input.Sorting ?? QuestionRepoConsts.DefaultSorting, input.SkipCount,
+                    input.MaxResultCount, input.Title);
 
             var dtos = new List<QuestionRepoListDto>();
             foreach (var item in entities)

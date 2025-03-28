@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.ExamManagement.UserExams;
+using SuperAbp.Exam.Favorites;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -24,6 +25,7 @@ using SuperAbp.Exam.PaperManagement.PaperRepos;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.TrainingManagement;
 using PaperConsts = SuperAbp.Exam.PaperManagement.Papers.PaperConsts;
+using SmartEnum.EFCore;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -80,6 +82,8 @@ public class ExamDbContext :
     public DbSet<UserExamQuestion> UerExamQuestions { get; set; }
 
     public DbSet<Training> Trains { get; set; }
+
+    public DbSet<Favorite> Favorites { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
@@ -183,5 +187,17 @@ public class ExamDbContext :
             b.ToTable(ExamConsts.DbTablePrefix + "Training", ExamConsts.DbSchema);
             b.ConfigureByConvention();
         });
+
+        builder.Entity<Favorite>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "Favorites", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+        });
+    }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+        configurationBuilder.ConfigureSmartEnum();
     }
 }

@@ -4,13 +4,15 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using SuperAbp.Exam.Favorites;
 using SuperAbp.Exam.Permissions;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Users;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions
 {
     [Authorize(ExamPermissions.Questions.Default)]
-    public class QuestionAppService(IQuestionRepository questionRepository) : ExamAppService, IQuestionAppService
+    public class QuestionAppService(IQuestionRepository questionRepository, IFavoriteRepository favoriteRepository) : ExamAppService, IQuestionAppService
     {
         public virtual async Task<PagedResultDto<QuestionListDto>> GetListAsync(GetQuestionsInput input)
         {
@@ -37,9 +39,18 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
         {
             IQueryable<Question> queryable = await questionRepository.GetQueryableAsync();
             queryable = queryable
-                .Where(q => q.QuestionRepositoryId == input.QuestionRepositoryId)
+                .WhereIf(input.QuestionId.HasValue, q => q.Id == input.QuestionId.Value)
+                .WhereIf(input.QuestionRepositoryId.HasValue, q => q.QuestionRepositoryId == input.QuestionRepositoryId.Value)
                 .WhereIf(!input.Content.IsNullOrWhiteSpace(), q => q.Content.Contains(input.Content))
                 .WhereIf(input.QuestionType.HasValue, q => q.QuestionType == input.QuestionType.Value);
+            if (input.IsFavorite)
+            {
+                var favoriteQueryable = await favoriteRepository.GetQueryableAsync();
+                queryable = from q in queryable
+                            join f in favoriteQueryable on q.Id equals f.QuestionId
+                            where f.CreatorId == CurrentUser.GetId()
+                            select q;
+            }
             return queryable;
         }
 

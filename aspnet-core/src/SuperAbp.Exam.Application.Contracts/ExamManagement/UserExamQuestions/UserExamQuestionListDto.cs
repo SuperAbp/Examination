@@ -13,7 +13,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
         public string Question { get; set; }
 
         public Guid QuestionId { get; set; }
-        public QuestionType QuestionType { get; set; }
+        public int QuestionType { get; set; }
         public decimal QuestionScore { get; set; }
         public string Answers { get; set; }
 

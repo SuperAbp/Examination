@@ -115,9 +115,9 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
 
             await trainingRepository.InsertManyAsync([
                 new Training(testData.Training1Id, testData.UserId, testData.QuestionRepository1Id,
-                    testData.Question11Id, false),
+                    testData.Question11Id, false, TrainingSource.QuestionRepository),
                 new Training(testData.Training2Id, testData.UserId, testData.QuestionRepository1Id,
-                    testData.Question11Id, false),
+                    testData.Question11Id, false, TrainingSource.QuestionRepository),
             ]);
         }
     }

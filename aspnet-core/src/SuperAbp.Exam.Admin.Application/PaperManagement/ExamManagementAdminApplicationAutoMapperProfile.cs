@@ -29,7 +29,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement
 
             CreateMap<PaperRepo, GetPaperRepoForEditorOutput>();
             CreateMap<PaperRepo, PaperRepoListDto>();
-            CreateMap<PaperRepositoryDetail, PaperRepoListDto>();
+            CreateMap<PaperRepositoryWithDetails, PaperRepoListDto>();
             CreateMap<PaperRepo, PaperRepoDetailDto>();
             CreateMap<PaperRepoCreateOrUpdateDtoBase, PaperRepo>();
 

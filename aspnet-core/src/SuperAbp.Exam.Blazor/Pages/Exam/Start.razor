@@ -94,23 +94,23 @@ else
                                     <span class="number">@(number++)</span>
                                     <span>@examQuestion.Question</span>
                                 </h3>
-                                @switch (examQuestion.QuestionType)
+                                @switch (QuestionType.FromValue(examQuestion.QuestionType).Name)
                                 {
-                                    case QuestionType.SingleSelect:
-                                    case QuestionType.Judge:
+                                    case nameof(QuestionType.SingleSelect):
+                                    case nameof(QuestionType.Judge):
                                         <SingleSelect QuestionId="examQuestion.QuestionId"
                                                       Answered="@examQuestion.Answers"
                                                       Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
                                                       OnSubmit="@SubmitAsync"></SingleSelect>
                                         break;
-                                    case QuestionType.MultiSelect:
+                                    case nameof(QuestionType.MultiSelect):
                                         <MultiSelect QuestionId="examQuestion.QuestionId"
                                                      Answered="@examQuestion.Answers"
                                                      Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
                                                      ShowAnalysis="false"
                                                      OnSelect="@SelectAsync"></MultiSelect>
                                         break;
-                                    case QuestionType.FillInTheBlanks:
+                                    case nameof(QuestionType.FillInTheBlanks):
                                         <Blank QuestionId="examQuestion.QuestionId"
                                                Answered="@examQuestion.Answers"
                                                Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"

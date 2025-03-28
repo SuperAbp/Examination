@@ -39,10 +39,10 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionRepos
         /// <param name="maxResultCount">最大</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<QuestionRepo>> GetListAsync(string? title = null,
-            string? sorting = null,
+        Task<List<QuestionRepo>> GetListAsync(string? sorting = null,
             int skipCount = 0,
             int maxResultCount = int.MaxValue,
+            string? title = null,
             CancellationToken cancellationToken = default);
 
         Task<bool> IdExistsAsync(Guid id, CancellationToken cancellationToken = default);

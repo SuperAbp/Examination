@@ -11,15 +11,9 @@ namespace SuperAbp.Exam.Controllers
     /// 用户考题
     /// </summary>
     [Route("api/userExamQuestion")]
-    public class UserExamQuestionController : ExamController, IUserExamQuestionAppService
+    public class UserExamQuestionController(IUserExamQuestionAppService userExamQuestionAppService)
+        : ExamController, IUserExamQuestionAppService
     {
-        private readonly IUserExamQuestionAppService _userExamQuestionAppService;
-
-        public UserExamQuestionController(IUserExamQuestionAppService userExamQuestionAppService)
-        {
-            _userExamQuestionAppService = userExamQuestionAppService;
-        }
-
         /// <summary>
         /// 详情
         /// </summary>
@@ -28,7 +22,7 @@ namespace SuperAbp.Exam.Controllers
         [HttpGet("{id}")]
         public virtual async Task<UserExamQuestionDetailDto> GetAsync(Guid id)
         {
-            return await _userExamQuestionAppService.GetAsync(id);
+            return await userExamQuestionAppService.GetAsync(id);
         }
 
         /// <summary>
@@ -39,7 +33,7 @@ namespace SuperAbp.Exam.Controllers
         [HttpGet]
         public virtual async Task<PagedResultDto<UserExamQuestionListDto>> GetListAsync(GetUserExamQuestionsInput input)
         {
-            return await _userExamQuestionAppService.GetListAsync(input);
+            return await userExamQuestionAppService.GetListAsync(input);
         }
 
         /// <summary>
@@ -50,7 +44,7 @@ namespace SuperAbp.Exam.Controllers
         [HttpGet("{id}/editor")]
         public virtual async Task<GetUserExamQuestionForEditorOutput> GetEditorAsync(Guid id)
         {
-            return await _userExamQuestionAppService.GetEditorAsync(id);
+            return await userExamQuestionAppService.GetEditorAsync(id);
         }
 
         /// <summary>
@@ -61,7 +55,7 @@ namespace SuperAbp.Exam.Controllers
         [HttpPost]
         public virtual async Task<UserExamQuestionListDto> CreateAsync(UserExamQuestionCreateDto input)
         {
-            return await _userExamQuestionAppService.CreateAsync(input);
+            return await userExamQuestionAppService.CreateAsync(input);
         }
 
         /// <summary>
@@ -73,7 +67,7 @@ namespace SuperAbp.Exam.Controllers
         [HttpPut("{id}")]
         public virtual async Task<UserExamQuestionListDto> AnswerAsync(Guid id, UserExamQuestionAnswerDto input)
         {
-            return await _userExamQuestionAppService.AnswerAsync(id, input);
+            return await userExamQuestionAppService.AnswerAsync(id, input);
         }
 
         /// <summary>
@@ -84,7 +78,7 @@ namespace SuperAbp.Exam.Controllers
         [HttpDelete("{id}")]
         public virtual async Task DeleteAsync(Guid id)
         {
-            await _userExamQuestionAppService.DeleteAsync(id);
+            await userExamQuestionAppService.DeleteAsync(id);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿@page "/exam"
-
 @if (UnfinishedUserExamId.HasValue && UnfinishedUserExamId.Value != new Guid())
 {
     <a href="/Exam/Start/@UnfinishedUserExamId.Value" style="display: block;margin-bottom: 20px;">
@@ -12,10 +11,10 @@
            DataSource="@Exams"
            Loading="Loading"
            Total="TotalCount"
+           RowKey="x=>x.Id"
            @bind-PageIndex="CurrentPage"
            @bind-PageSize="PageSize"
            OnChange="Change">
-        <Selection Key="@(context.Id.ToString())" />
         <PropertyColumn Property="c=>c.Name" Title="@L["Name"]" />
         <PropertyColumn Title="@L["Score"]" Field="@($"{context.Score}（{L["PassingScore"]}：{context.PassingScore}）")" />
         <PropertyColumn Property="c=>c.TotalTime" Title="@L["TotalTime"]" />
@@ -25,7 +24,7 @@
             {
                 <Space>
                     <SpaceItem>
-                        <Button Type="@ButtonType.Primary" OnClick="()=>BeganAsync(context.Id)">@L["BeganExam"]</Button>
+                        <Button Type="@ButtonType.Primary" OnClick="()=>StartAsync(context.Id)">@L["StartExam"]</Button>
                     </SpaceItem>
                 </Space>
             }
@@ -73,7 +72,7 @@
 
     }
 
-    private async Task BeganAsync(Guid id)
+    private async Task StartAsync(Guid id)
     {
         var dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = id });
         Navigation.NavigateTo($"/Exam/Start/{dto.Id}");

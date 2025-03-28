@@ -22,8 +22,8 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionRepos
             long totalCount = await questionRepoRepository.GetCountAsync(input.Title);
 
             List<QuestionRepo> entities = await questionRepoRepository
-                .GetListAsync(input.Title, input.Sorting ?? QuestionRepoConsts.DefaultSorting, input.SkipCount,
-                    input.MaxResultCount);
+                .GetListAsync(input.Sorting ?? QuestionRepoConsts.DefaultSorting, input.SkipCount,
+                    input.MaxResultCount, input.Title);
 
             List<QuestionRepoListDto> dtos = ObjectMapper.Map<List<QuestionRepo>, List<QuestionRepoListDto>>(entities);
             return new PagedResultDto<QuestionRepoListDto>(totalCount, dtos);

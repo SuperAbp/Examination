@@ -2,17 +2,17 @@
 
 <Card Title="考试记录">
     <Table TItem="UserExamListDto"
-           DataSource="@UserExams"
-           Total="TotalCount"
-           Loading="Loading"
-           @bind-PageIndex="CurrentPage"
-           @bind-PageSize="PageSize"
+           DataSource="@_userExams"
+           Total="_totalCount"
+           Loading="_loading"
+           RowKey="x=>x.ExamId"
+           @bind-PageIndex="_currentPage"
+           @bind-PageSize="_pageSize"
            OnChange="Change">
-        <Selection Key="@(context.ExamId.ToString())" />
-        <PropertyColumn Property="c=>c.ExamName" Title="@L["ExamName"]" />
-        <PropertyColumn Property="c=>c.Count" Title="@L["ExamCount"]" />
-        <PropertyColumn Property="c=>c.MaxScore" Title="@L["MaxScore"]" />
-        <PropertyColumn Property="c=>c.LastTime" Title="@L["LastTime"]" />
+        <PropertyColumn Property="c => c.ExamName" Title="@L["ExamName"]"/>
+        <PropertyColumn Property="c => c.Count" Title="@L["ExamCount"]"/>
+        <PropertyColumn Property="c => c.MaxScore" Title="@L["MaxScore"]"/>
+        <PropertyColumn Property="c => c.LastTime" Title="@L["LastTime"]"/>
     </Table>
 </Card>
 
@@ -23,12 +23,12 @@
 @inject IStringLocalizer<ExamResource> L
 @inject IUserExamAppService UserExamAppService
 @code {
-    IReadOnlyList<UserExamListDto> UserExams;
+    IReadOnlyList<UserExamListDto> _userExams;
 
-    int CurrentPage = 1;
-    int PageSize = 10;
-    int TotalCount = 0;
-    bool Loading = true;
+    int _currentPage = 1;
+    int _pageSize = 10;
+    int _totalCount = 0;
+    bool _loading = true;
 
     // TODO:展示考试列表。查看明细进入此考试的考试记录
     public async Task Change(QueryModel model)
@@ -37,10 +37,10 @@
     }
     protected async Task GetListAsync(int pageIndex, int pageSize, string sorting = null)
     {
-        this.Loading = true;
-        var result = await UserExamAppService.GetListAsync(new GetUserExamsInput() { SkipCount = 0, MaxResultCount = PageSize });
-        UserExams = result.Items;
-        TotalCount = (int)result.TotalCount;
-        this.Loading = false;
+        _loading = true;
+        var result = await UserExamAppService.GetListAsync(new GetUserExamsInput() { SkipCount = 0, MaxResultCount = _pageSize });
+        _userExams = result.Items;
+        _totalCount = (int)result.TotalCount;
+        _loading = false;
     }
 }

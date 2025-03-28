@@ -34,6 +34,7 @@ public abstract class TrainingAppServiceTests<TStartupModule> : ExamApplicationT
     {
         var input = new TrainingCreateDto
         {
+            TrainingSource = TrainingSource.QuestionRepository,
             QuestionRepositoryId = _testData.QuestionRepository1Id,
             QuestionId = _testData.Question12Id,
             Right = true

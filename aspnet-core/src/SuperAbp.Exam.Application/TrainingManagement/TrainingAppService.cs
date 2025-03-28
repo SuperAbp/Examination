@@ -20,8 +20,7 @@ public class TrainingAppService(
     public async Task<ListResultDto<TrainingListDto>> GetListAsync(GetTrainsInput input)
     {
         List<Training> trains = await trainingRepository
-            .GetListAsync(t => t.QuestionRepositoryId == input.QuestionRepositoryId
-                               && t.UserId == CurrentUser.GetId());
+            .GetListAsync(trainingSource: input.TrainingSource, questionRepositoryId: input.QuestionRepositoryId, userId: CurrentUser.GetId());
 
         List<TrainingListDto> dtos = ObjectMapper.Map<List<Training>, List<TrainingListDto>>(trains);
 
@@ -38,12 +37,11 @@ public class TrainingAppService(
         {
             throw new UserFriendlyException("题目不存在");
         }
-
-        if (await trainingRepository.AnyQuestionAsync(input.QuestionId))
+        if (await trainingRepository.AnyQuestionAsync(input.TrainingSource, input.QuestionId))
         {
             throw new UserFriendlyException("请勿重复答题");
         }
-        Training training = new(GuidGenerator.Create(), CurrentUser.GetId(), input.QuestionRepositoryId, input.QuestionId, input.Right);
+        Training training = new(GuidGenerator.Create(), CurrentUser.GetId(), input.QuestionRepositoryId, input.QuestionId, input.Right, input.TrainingSource);
         await trainingRepository.InsertAsync(training);
         return ObjectMapper.Map<Training, TrainingListDto>(training);
     }

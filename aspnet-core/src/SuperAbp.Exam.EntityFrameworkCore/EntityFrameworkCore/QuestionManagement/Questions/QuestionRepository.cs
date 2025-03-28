@@ -11,9 +11,6 @@ using System.Threading;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.Questions;
 
-/// <summary>
-/// 问题
-/// </summary>
 public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
     : EfCoreRepository<ExamDbContext, Question, Guid>(dbContextProvider), IQuestionRepository
 {
@@ -44,7 +41,7 @@ public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvi
         int skipCount = 0,
         int maxResultCount = int.MaxValue,
         Guid? questionRepositoryId = null,
-        QuestionType? questionType = null,
+        int? questionType = null,
         CancellationToken cancellationToken = default)
     {
         var queryable = await GetQueryableAsync();
@@ -59,7 +56,7 @@ public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvi
     }
 
     public async Task<List<Question>> GetRandomListAsync(int maxResultCount = Int32.MaxValue, Guid? questionRepositoryId = null,
-        QuestionType? questionType = null, CancellationToken cancellationToken = default)
+        int? questionType = null, CancellationToken cancellationToken = default)
     {
         IQueryable<Question> queryable = (await GetQueryableAsync())
             .WhereIf(questionRepositoryId.HasValue, p => p.QuestionRepositoryId == questionRepositoryId.Value)

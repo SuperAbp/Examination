@@ -107,7 +107,7 @@ public class UserExamManager(
         }
     }
 
-    public async Task<List<UserExamQuestionWithDetail>> GetQuestionsAsync(Guid userExamId)
+    public async Task<List<UserExamQuestionWithDetails>> GetQuestionsAsync(Guid userExamId)
     {
         return await userExamQuestionRepository.GetListAsync(userExamId: userExamId);
     }

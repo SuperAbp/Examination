@@ -30,7 +30,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
             var queryable =
                 from er in examRepoQueryable
                 join qr in (await questionRepoRepository.GetQueryableAsync()) on er.QuestionRepositoryId equals qr.Id
-                select new PaperRepositoryDetail
+                select new PaperRepositoryWithDetails
                 {
                     Id = er.Id,
                     QuestionRepository = qr.Title,
@@ -52,7 +52,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperRepos
                 .OrderBy(input.Sorting ?? PaperRepoConsts.DefaultSorting)
                 .PageBy(input));
 
-            var dtos = ObjectMapper.Map<List<PaperRepositoryDetail>, List<PaperRepoListDto>>(entities);
+            var dtos = ObjectMapper.Map<List<PaperRepositoryWithDetails>, List<PaperRepoListDto>>(entities);
 
             return new PagedResultDto<PaperRepoListDto>(totalCount, dtos);
         }

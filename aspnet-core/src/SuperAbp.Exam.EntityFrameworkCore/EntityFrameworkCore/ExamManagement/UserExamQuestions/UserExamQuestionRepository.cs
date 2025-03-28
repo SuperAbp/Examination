@@ -16,7 +16,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
         : EfCoreRepository<ExamDbContext, UserExamQuestion, Guid>(dbContextProvider), IUserExamQuestionRepository
     {
         // TODO:编写仓储代码
-        public async Task<List<UserExamQuestionWithDetail>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
+        public async Task<List<UserExamQuestionWithDetails>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
             Guid? userExamId = null, CancellationToken cancellationToken = default)
         {
             var dbContext = await GetDbContextAsync();
@@ -27,7 +27,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
             var questions = await (from e in examQuestionQueryable
                                    join q in questionQueryable on e.QuestionId equals q.Id
                                    join a in questionAnswerQueryable on q.Id equals a.QuestionId into questionAnswers
-                                   select new UserExamQuestionWithDetail()
+                                   select new UserExamQuestionWithDetails()
                                    {
                                        Id = e.Id,
                                        Answers = e.Answers,
@@ -36,7 +36,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
                                        QuestionScore = e.QuestionScore,
                                        QuestionType = q.QuestionType,
                                        QuestionAnswers = questionAnswers
-                                           .Select(qa => new UserExamQuestionWithDetail.QuestionAnswer()
+                                           .Select(qa => new UserExamQuestionWithDetails.QuestionAnswer()
                                            {
                                                Id = qa.Id,
                                                Content = qa.Content

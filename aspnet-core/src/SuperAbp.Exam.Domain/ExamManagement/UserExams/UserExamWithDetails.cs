@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
-    public class UserExamWithDetail
+    public class UserExamWithDetails
     {
         public string Exam { get; set; }
 

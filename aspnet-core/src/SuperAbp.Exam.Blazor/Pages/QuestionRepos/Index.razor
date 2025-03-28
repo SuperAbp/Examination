@@ -5,11 +5,11 @@
     <Table TItem="QuestionRepoListDto"
            DataSource="@Repositories"
            Loading="Loading"
-        Total="TotalCount"
-        @bind-PageIndex="CurrentPage"
-        @bind-PageSize="PageSize"
+           RowKey="x=>x.Id"
+            Total="TotalCount"
+            @bind-PageIndex="CurrentPage"
+            @bind-PageSize="PageSize"
         OnChange="Change">
-        <Selection Key="@(context.Id.ToString())" />
         <PropertyColumn Property="c=>c.Title" Title="@L["Title"]" />
         <PropertyColumn Property="c=>c.CreationTime" Title="@L["CreationTime"]" />
         <ActionColumn Title="@L["Action"]">

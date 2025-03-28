@@ -52,7 +52,7 @@ public interface IQuestionRepository : IRepository<Question, Guid>
         int skipCount = 0,
         int maxResultCount = int.MaxValue,
         Guid? questionRepositoryId = null,
-        QuestionType? questionType = null,
+        int? questionType = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -66,7 +66,7 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     Task<List<Question>> GetRandomListAsync(
         int maxResultCount = int.MaxValue,
         Guid? questionRepositoryId = null,
-        QuestionType? questionType = null,
+        int? questionType = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>

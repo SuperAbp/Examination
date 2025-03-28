@@ -2,7 +2,7 @@
 
 namespace SuperAbp.Exam.PaperManagement.PaperRepos;
 
-public class PaperRepositoryDetail
+public class PaperRepositoryWithDetails
 {
     public Guid Id { get; set; }
 

@@ -5,7 +5,7 @@ public static class ExamDomainErrorCodes
     public static class Questions
     {
         public const string ContentAlreadyExists = "Exam:Question:0001";
-        public const string RightCountError = "Exam:Question:0002";
+        public const string CorrectCountError = "Exam:Question:0002";
     }
 
     public static class QuestionRepositories

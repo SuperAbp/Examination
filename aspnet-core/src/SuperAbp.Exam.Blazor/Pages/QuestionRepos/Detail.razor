@@ -11,11 +11,11 @@
     <Card>
         <TitleTemplate>
             <span @onclick="GoDetail" style="cursor: pointer">
-                <Icon Type="arrow-left" Theme="outline" />返回
+                <Icon Type="arrow-left" Theme="IconThemeType.Outline" />返回
             </span>
-            <Divider Type="DirectionVHType.Vertical" />@_repository.Title
+            <Divider Type="DividerType.Vertical" />@_repository.Title
         </TitleTemplate>
-        <Body>
+        <ChildContent>
             @if (!_repository.Remark.IsNullOrWhiteSpace())
             {
                 <h3>简介：</h3>
@@ -36,14 +36,13 @@
                 <Button OnClick="() => StartTraining(0, (int)questionType)">@L["QuestionType:" + questionType]</Button>
             }
         }
-        </Body>
+        </ChildContent>
     </Card>
 }
 @using SuperAbp.Exam.QuestionManagement.QuestionRepos
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.QuestionManagement.Questions
-@using Volo.Abp.Application.Dtos
 @inject IStringLocalizer<ExamResource> L
 @inject IQuestionRepoAppService QuestionRepoAppService
 @inject NavigationManager Navigation

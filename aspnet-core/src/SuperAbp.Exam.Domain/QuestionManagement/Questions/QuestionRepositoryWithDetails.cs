@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions
 {
-    public class QuestionRepositoryDetail
+    public class QuestionRepositoryWithDetails
     {
         public Guid Id { get; set; }
 

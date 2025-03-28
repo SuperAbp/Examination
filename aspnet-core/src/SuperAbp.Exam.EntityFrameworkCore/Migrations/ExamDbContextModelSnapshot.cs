@@ -175,6 +175,26 @@ namespace SuperAbp.Exam.Migrations
                     b.ToTable("AppUserExam", (string)null);
                 });
 
+            modelBuilder.Entity("SuperAbp.Exam.Favorites.Favorite", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppFavorites", (string)null);
+                });
+
             modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperRepos.PaperRepo", b =>
                 {
                     b.Property<Guid>("Id")
@@ -512,6 +532,9 @@ namespace SuperAbp.Exam.Migrations
 
                     b.Property<bool>("Right")
                         .HasColumnType("bit");
+
+                    b.Property<int>("TrainingSource")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
