@@ -99,24 +99,24 @@ else
                                     case nameof(QuestionType.SingleSelect):
                                     case nameof(QuestionType.Judge):
                                         <SingleSelect QuestionId="examQuestion.QuestionId"
-                                                      Answered="@examQuestion.Answers"
-                                                      Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
-                                                      OnSubmit="@SubmitAsync"></SingleSelect>
+                                        Answered="@examQuestion.Answers"
+                                        Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                        OnSubmit="@SubmitAsync"></SingleSelect>
                                         break;
                                     case nameof(QuestionType.MultiSelect):
                                         <MultiSelect QuestionId="examQuestion.QuestionId"
-                                                     Answered="@examQuestion.Answers"
-                                                     Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
-                                                     ShowAnalysis="false"
-                                                     OnSelect="@SelectAsync"></MultiSelect>
+                                        Answered="@examQuestion.Answers"
+                                        Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                        ShowAnalysis="false"
+                                        OnSelect="@SelectAsync"></MultiSelect>
                                         break;
                                     case nameof(QuestionType.FillInTheBlanks):
                                         <Blank QuestionId="examQuestion.QuestionId"
-                                               Answered="@examQuestion.Answers"
-                                               Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
-                                               ShowAnalysis="false"
-                                               ShowConfirm="false"
-                                               OnSubmit="@SubmitAsync"></Blank>
+                                        Answered="@examQuestion.Answers"
+                                        Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                        ShowAnalysis="false"
+                                        ShowConfirm="false"
+                                        OnSubmit="@SubmitAsync"></Blank>
                                         break;
                                 }
                             }
@@ -127,11 +127,11 @@ else
         </GridCol>
         <GridCol Span="4">
             <Affix OffsetTop="10">
-            <Card style="text-align: center;">
-                <ChildContent>
-                    <Button Type="@ButtonType.Primary" OnClick="SubmitPaperAsync" style="width:100%">提交试卷</Button>
-                </ChildContent>
-            </Card>
+                <Card style="text-align: center;">
+                    <ChildContent>
+                        <Button AutoLoading Type="@ButtonType.Primary" OnClick="SubmitPaperAsync" style="width:100%">提交试卷</Button>
+                    </ChildContent>
+                </Card>
             </Affix>
         </GridCol>
     </GridRow>
@@ -197,6 +197,7 @@ else
     public virtual async Task SubmitPaperAsync()
     {
         await UserExamAppService.FinishedAsync(Id);
+        Navigation.NavigateTo("/exam/result");
     }
 
     public virtual async Task SelectAsync(QuestionAnswerSelectEventArgs item)
