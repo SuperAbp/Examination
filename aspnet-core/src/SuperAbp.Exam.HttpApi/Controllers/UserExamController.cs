@@ -68,7 +68,7 @@ namespace SuperAbp.Exam.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}/finished")]
         public async Task FinishedAsync(Guid id)
         {
             await _userExamAppService.FinishedAsync(id);

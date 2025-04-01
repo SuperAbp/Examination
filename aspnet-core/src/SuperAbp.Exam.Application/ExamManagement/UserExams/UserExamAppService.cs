@@ -85,6 +85,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             decimal totalScore = 0;
             foreach (UserExamQuestionWithDetails item in userExamQuestions)
             {
+                if (item.Answers is null)
+                {
+                    continue;
+                }
                 Question question = await questionRepository.GetAsync(item.QuestionId);
                 List<QuestionAnswer> questionAnswers = await questionAnswerRepository.GetListAsync(item.QuestionId);
                 if ((question.QuestionType == QuestionType.SingleSelect || question.QuestionType == QuestionType.Judge)
@@ -93,7 +97,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                     totalScore += item.QuestionScore;
                 }
                 else if (question.QuestionType == QuestionType.MultiSelect
-                        && (new HashSet<string>(item.Answers.Split(ExamConsts.Splitter)).SetEquals(questionAnswers.Where(a => a.Right).Select(a => a.Id.ToString()))))
+                    && (new HashSet<string>(item.Answers.Split(ExamConsts.Splitter)).SetEquals(questionAnswers.Where(a => a.Right).Select(a => a.Id.ToString()))))
                 {
                     totalScore += item.QuestionScore;
                 }
