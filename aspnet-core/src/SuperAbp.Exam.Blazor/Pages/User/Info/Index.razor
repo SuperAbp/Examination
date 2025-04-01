@@ -1,4 +1,4 @@
-﻿@page "/account/settings"
+﻿@page "/user/info"
 
 <GridContent>
     <div class="main__b__2">
@@ -18,7 +18,7 @@
             @switch (_selectKey)
             {
                 case "base":
-                     <BaseView />
+                     <InfoView />
                     break;
                 case "security":
                     <SecurityView />
@@ -33,6 +33,8 @@
         </div>
     </div>
 </GridContent>
+
+@using SuperAbp.Exam.Blazor.Pages.User.Info.Components
 @code {
     private readonly Dictionary<string, string> _menuMap = new Dictionary<string, string>
         {
