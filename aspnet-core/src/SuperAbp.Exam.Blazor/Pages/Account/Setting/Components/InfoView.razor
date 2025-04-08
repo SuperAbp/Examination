@@ -1,13 +1,13 @@
 ﻿<div class="baseView">
     <div class="left" style="min-width: 310px;">
         <Form 
-        Layout="@FormLayout.Vertical"
-        OnFinish="HandleFinish"
-              Model="@UserDto">            
+            Layout="@FormLayout.Vertical"
+            OnFinish="HandleFinish"
+            Model="@UserDto">            
             <FormItem Label="User Name">
                 <AntDesign.Input @bind-Value="@context.UserName" />
             </FormItem>
-            <Row>
+            <Row Gutter="16">
                 <AntDesign.Col Span="12">
                     <FormItem Label="User Name">
                         <AntDesign.Input @bind-Value="@context.Name" />
@@ -31,20 +31,5 @@
                 </Button>
             </FormItem>
         </Form>
-    </div>
-    <div class="right__b__1">
-        <div class="avatar_title">
-            Avatar
-        </div>
-        <div class="avatar">
-            <img src="" alt="avatar" />
-        </div>
-        <Upload ShowUploadList="false">
-            <div class="button_view">
-                <Button Icon="upload">
-                    Change avatar
-                </Button>
-            </div>
-        </Upload>
     </div>
 </div>

@@ -1,40 +1,37 @@
-﻿@page "/user/info"
+﻿@page "/account/setting"
+@using SuperAbp.Exam.Blazor.Pages.Account.Setting.Components
 
-<GridContent>
-    <div class="main__b__2">
-        <div class="leftMenu">
-            <Menu 
-                Mode="MenuMode.Inline" 
-                SelectedKeys="new []{_selectKey}" 
-                OnMenuItemClicked="SelectKey">
+<div class="main__b__2">
+<div class="leftMenu">
+            <Menu Mode="MenuMode.Inline"
+                  SelectedKeys="new []{_selectKey}"
+                  OnMenuItemClicked="SelectKey">
                 @foreach (var item in _menuMap)
                 {
                     <MenuItem Key="@item.Key">@item.Value</MenuItem>
                 }
             </Menu>
-        </div>
-        <div class="right__b__0">
+</div>
+<div class="right__b__0">
             <div class="title">@_menuMap[_selectKey]</div>
             @switch (_selectKey)
             {
                 case "base":
-                     <InfoView />
+                    <InfoView />
                     break;
                 case "security":
                     <SecurityView />
                     break;
                 case "binding":
-                    <BindingView />
+                    @* <BindingView /> *@
                     break;
                 case "notification":
-                    <NotificationView />
+                    @* <NotificationView /> *@
                     break;
             }
-        </div>
-    </div>
-</GridContent>
+</div>
+</div>
 
-@using SuperAbp.Exam.Blazor.Pages.User.Info.Components
 @code {
     private readonly Dictionary<string, string> _menuMap = new Dictionary<string, string>
         {
