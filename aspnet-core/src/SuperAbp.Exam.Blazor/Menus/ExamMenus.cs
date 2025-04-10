@@ -3,7 +3,6 @@
 public class ExamMenus
 {
     private const string Prefix = "Exam";
-    public const string AccountSetting = Prefix + ".AccountSetting";
     public const string Home = Prefix + ".Home";
     public const string Exam = Prefix + ".Exam";
     public const string My = Prefix + ".My";

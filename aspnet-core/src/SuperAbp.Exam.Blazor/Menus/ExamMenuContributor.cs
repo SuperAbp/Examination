@@ -78,7 +78,6 @@ public class ExamMenuContributor : IMenuContributor
     private Task ConfigureUserMenuAsync(MenuConfigurationContext context)
     {
         var accountStringLocalizer = context.GetLocalizer<AccountResource>();
-        var l = context.GetLocalizer<ExamResource>();
 
         var authServerUrl = _configuration["AuthServer:Authority"] ?? "";
 
@@ -90,11 +89,6 @@ public class ExamMenuContributor : IMenuContributor
             order: 1000,
             null).RequireAuthenticated());
 
-        context.Menu.AddItem(new ApplicationMenuItem(
-            ExamMenus.AccountSetting,
-            l["Menu:AccountSetting"],
-            "/account/setting",
-            icon: IconType.Outline.Setting));
         return Task.CompletedTask;
     }
 }
