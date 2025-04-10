@@ -1,0 +1,44 @@
+﻿@page "/account/setting"
+@using SuperAbp.Exam.Blazor.Pages.Account.Setting.Components
+
+<div class="main__b__2">
+<div class="leftMenu">
+            <Menu Mode="MenuMode.Inline"
+                  SelectedKeys="new []{_selectKey}"
+                  OnMenuItemClicked="SelectKey">
+                @foreach (var item in _menuMap)
+                {
+                    <MenuItem Key="@item.Key">@item.Value</MenuItem>
+                }
+            </Menu>
+</div>
+<div class="right__b__0">
+            <div class="title">@_menuMap[_selectKey]</div>
+            @switch (_selectKey)
+            {
+                case "base":
+                    <InfoView />
+                    break;
+                case "security":
+                    @* <SecurityView /> *@
+                    break;
+            }
+</div>
+</div>
+
+@code {
+    private readonly Dictionary<string, string> _menuMap = new Dictionary<string, string>
+        {
+            {"base", "Basic Settings"},
+            {"security", "Security Settings"},
+            {"binding", "Account Binding"},
+            {"notification", "New Message Notification"},
+        };
+
+    private string _selectKey = "base";
+
+    private void SelectKey(MenuItem item)
+    {
+        _selectKey = item.Key;
+    }
+}
