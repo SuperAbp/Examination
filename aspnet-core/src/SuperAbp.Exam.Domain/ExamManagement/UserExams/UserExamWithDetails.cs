@@ -4,7 +4,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 {
     public class UserExamWithDetails
     {
-        public string Exam { get; set; }
+        public Guid Id { get; set; }
+        public Guid ExamId { get; set; }
+
+        public string ExamName { get; set; }
 
         /// <summary>
         /// 总分
@@ -12,5 +15,12 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public decimal TotalScore { get; set; }
 
         public DateTime CreationTime { get; set; }
+
+        /// <summary>
+        /// 是否交卷
+        /// </summary>
+        public bool Finished { get; set; }
+
+        public DateTime? FinishedTime { get; set; }
     }
 }

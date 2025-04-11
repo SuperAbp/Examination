@@ -19,7 +19,7 @@
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
-        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="ShowAnalysis" />
+        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="@ShowAnalysis" />
         <br />
         <br />
     }
@@ -27,12 +27,14 @@
 @if (ShowAnalysis)
 {
     <div class="block">
-        <span class="title">答案：</span>
-        <div class="body">
-            @foreach (var item in Answers)
-            {
-                <div>@item.Content</div>
-            }
+        <div>
+            <span class="title">正确答案：</span>
+            <div class="body">
+                @foreach (var item in Answers)
+                {
+                    <div>@item.Content</div>
+                }
+            </div>
         </div>
     </div>
 }
@@ -43,8 +45,6 @@ else
         <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
     }
 }
-
-@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages
@@ -58,8 +58,6 @@ else
     [Parameter]
     public IReadOnlyList<QuestionAnswerViewModel> Answers { get; set; }
     [Parameter]
-    public List<QuestionAnswerItem> SelectedQuestionAnswers { get; set; }
-    [Parameter]
     public bool ShowAnalysis { get; set; }
 
     [Parameter] public bool ShowConfirm { get; set; } = true;
@@ -68,7 +66,7 @@ else
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 
-    string[] _answerItems = Array.Empty<string>();
+    string[] _answerItems = [];
 
 
     protected override void OnInitialized()
@@ -81,13 +79,6 @@ else
         {
             _answerItems = Answered.Split(ExamConsts.Splitter).ToArray();
         }
-        if (!ShowAnalysis) return;
-        var selectedAnswer = SelectedQuestionAnswers.Find(a => a.QuestionId == QuestionId);
-        if (selectedAnswer is null)
-        {
-            return;
-        }
-        _answerItems = selectedAnswer.Answer.Split("||");
     }
 
     private bool AnswersNullOrWhiteSpace()

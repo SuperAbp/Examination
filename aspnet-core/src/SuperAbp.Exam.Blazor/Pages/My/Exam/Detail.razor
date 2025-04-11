@@ -1,0 +1,119 @@
+﻿@page "/my/exam/{id:guid}"
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.ExamManagement.UserExamQuestions
+@using SuperAbp.Exam.ExamManagement.UserExams
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using Volo.Abp.Application.Dtos
+
+<Card class="question-content">
+    <ChildContent>
+        @if (loading)
+        {
+            <Spin />
+        }
+        else
+        {
+            var questionTypes = _examQuestions.GroupBy(q => q.QuestionType).Select(q => new
+            {
+                QuestionType = q.Key,
+                Count = q.Count()
+            }).ToArray();
+            int number = 1;
+            for (int i = 0; i < questionTypes.Length; i++)
+            {
+                var questionType = questionTypes[i];
+
+                var currentQuestions = _examQuestions.Where(q => q.QuestionType == questionType.QuestionType).ToArray();
+                <h2>@chineseNumber[i]、@L["QuestionType:" + questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q => q.QuestionScore))分）</h2>
+                foreach (UserExamQuestionListDto examQuestion in currentQuestions)
+                {
+                    <h3 class="title">
+                        <span class="number">@(number++)</span>
+                        <span>@examQuestion.Question</span>
+                    </h3>
+                    @switch (QuestionType.FromValue(examQuestion.QuestionType).Name)
+                    {
+                        case nameof(QuestionType.SingleSelect):
+                        case nameof(QuestionType.Judge):
+                            <SingleSelect QuestionId="examQuestion.QuestionId"
+                                          Answered="@examQuestion.Answers"
+                                          Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                          ShowAnalysis="true"></SingleSelect>
+                            break;
+                        case nameof(QuestionType.MultiSelect):
+                            <MultiSelect QuestionId="examQuestion.QuestionId"
+                                         Answered="@examQuestion.Answers"
+                                         Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                         ShowAnalysis="true"></MultiSelect>
+                            break;
+                        case nameof(QuestionType.FillInTheBlanks):
+                            <Blank QuestionId="examQuestion.QuestionId"
+                                   Answered="@examQuestion.Answers"
+                                   Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                   ShowAnalysis="true"
+                                   ShowConfirm="false"></Blank>
+                            break;
+                    }
+                    @if (!String.IsNullOrEmpty(examQuestion.QuestionAnalysis))
+                    {
+                        <div class="card">
+                            <Descriptions Column="1">
+                                <DescriptionsItem Title="你的答案"> @examQuestion.Answers</DescriptionsItem>
+                                <DescriptionsItem Title="题目解析">@examQuestion.QuestionAnalysis</DescriptionsItem>
+                            </Descriptions>
+                        </div>
+                    }
+                }
+            }
+        }
+    </ChildContent>
+</Card>
+
+
+@inject IStringLocalizer<ExamResource> L
+@inject IUserExamAppService UserExamAppService
+@inject IUserExamQuestionAppService UserExamQuestionAppService
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+
+    bool loading = false;
+    string[] chineseNumber = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+    IReadOnlyList<UserExamQuestionListDto> _examQuestions = Array.Empty<UserExamQuestionListDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userExam = await UserExamAppService.GetAsync(Id);
+        PagedResultDto<UserExamQuestionListDto> dto = await UserExamQuestionAppService.GetListAsync(new GetUserExamQuestionsInput() { UserExamId = Id });
+        _examQuestions = dto.Items;
+
+        foreach (QuestionType type in dto.Items
+                     .GroupBy(q => q.QuestionType).Select(q => q.Key).Distinct())
+        {
+            QuestionNumberVo vo = new()
+                {
+                    QuestionType = type,
+                    Questions = dto.Items.Where(q => q.QuestionType == type)
+                        .Select(q => new QuestionNumberVo.QuestionIndex()
+                        {
+                            QuestionId = q.QuestionId,
+                            QuestionScore = q.QuestionScore
+                        }).ToArray()
+                };
+            vo.TotalScore = vo.Questions.Sum(q => q.QuestionScore ?? 0);
+        }
+        loading = false;
+    }
+    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamQuestionListDto.QuestionAnswerListDto> answers)
+    {
+        return answers
+            .Select(qa => new QuestionAnswerViewModel
+            {
+                Id = qa.Id,
+                Content = qa.Content,
+                Right = qa.Right ?? false
+            }).ToArray();
+    }
+}

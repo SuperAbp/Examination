@@ -1,11 +1,11 @@
 ﻿﻿
 
 <style>
-    .chooses .disabled {
+    .multi-chooses .disabled {
         cursor: not-allowed;
     }
 
-    .chooses .choose-item {
+    .multi-chooses .choose-item {
         padding: 9px 20px 9px 5px;
         -ms-border-radius: 4px;
         border-radius: 4px;
@@ -13,17 +13,17 @@
         margin-bottom: 10px;
     }
 
-    .chooses .tag {
+    .multi-chooses .tag {
         width: 10px;
         font-weight: bold;
         color: #1890ff;
     }
 
-    .chooses .choose-item.primary {
+    .multi-chooses .choose-item.primary {
         border-color: #1890ff;
     }
 
-    .chooses .choose-item .body {
+    .multi-chooses .choose-item .body {
         padding: 0 8px;
         display: flex;
         -o-justify-content: space-between;
@@ -31,26 +31,26 @@
         justify-content: space-between;
     }
 
-    .chooses .choose-item .content {
+    .multi-chooses .choose-item .content {
         color: #000;
         margin-left: 5px;
     }
 
-    .chooses .choose-item .result {
+    .multi-chooses .choose-item .result {
         display: none;
     }
 
-        .chooses .choose-item .result.show {
+        .multi-chooses .choose-item .result.show {
             display: block;
         }
 
-        .chooses .choose-item .result span {
+        .multi-chooses .choose-item .result span {
             vert-align: middle;
             font-size: 1rem;
         }
 </style>
 
-<div class="chooses">
+<div class="multi-chooses">
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
@@ -78,11 +78,8 @@
         <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
     }
 }
-
-@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages
-@using Volo.Abp
 @using Volo.Abp.AspNetCore.Components.Notifications
 @inject IUiNotificationService UiNotificationService
 @code {
@@ -90,8 +87,6 @@
     public Guid QuestionId { get; set; }
     [Parameter]
     public IReadOnlyList<QuestionAnswerViewModel> Answers { get; set; }
-    [Parameter]
-    public List<QuestionAnswerItem> SelectedQuestionAnswers { get; set; }
     [Parameter]
     public bool ShowAnalysis { get; set; }
     [Parameter]
@@ -108,21 +103,6 @@
         if (!Answered.IsNullOrWhiteSpace())
         {
             _selectedAnswerIds = Answered.Split(ExamConsts.Splitter).Select(v => new Guid(v)).ToList();
-        }
-        if (!ShowAnalysis) return;
-
-        var selectedAnswer = SelectedQuestionAnswers.Find(a => a.QuestionId == QuestionId);
-        if (selectedAnswer is null)
-        {
-            _selectedAnswerIds = Answers
-                .Where(a => a.Right)
-                .Select(a => a.Id)
-                .ToList();
-        }
-        else
-        {
-            var answerIds = selectedAnswer.Answer.Split(ExamConsts.Splitter);
-            _selectedAnswerIds = answerIds.Select(a => new Guid(a)).ToList();
         }
     }
 
@@ -141,7 +121,7 @@
     }
     string GetResultClass(QuestionAnswerViewModel answer)
     {
-        List<string> classes = new List<string>() { "result" };
+        List<string> classes = ["result"];
         if (ShowAnalysis && answer.Right)
         {
             classes.Add("show");

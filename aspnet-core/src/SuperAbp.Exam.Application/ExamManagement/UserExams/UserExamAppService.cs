@@ -13,12 +13,14 @@ using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Timing;
 using Volo.Abp.Users;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
     [Authorize]
     public class UserExamAppService(
+        IClock clock,
         IUserExamRepository userExamRepository,
         UserExamManager userExamManager,
         IExamRepository examRepository,
@@ -44,26 +46,12 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         {
             await NormalizeMaxResultCountAsync(input);
 
-            IQueryable<UserExam> queryable = await userExamRepository.GetQueryableAsync();
-            IQueryable<Examination> examQueryable = await examRepository.GetQueryableAsync();
-            // TODO:性能较低，需要优化
-            IQueryable<UserExamWithExam> result = from ue in queryable
-                                                  join e in examQueryable on ue.ExamId equals e.Id
-                                                  group new { ue, e } by ue.ExamId into g
-                                                  select new UserExamWithExam
-                                                  {
-                                                      ExamId = g.Key,
-                                                      ExamName = g.Max(m => m.e.Name),
-                                                      Count = g.Count(),
-                                                      LastTime = g.Max(m => m.ue.CreationTime),
-                                                      MaxScore = g.Max(m => m.ue.TotalScore)
-                                                  };
-            int totalCount = await AsyncExecuter.CountAsync(result);
-            List<UserExamWithExam> entities = await AsyncExecuter.ToListAsync(result
-                .OrderBy(input.Sorting ?? UserExamConsts.DefaultSorting)
-                .PageBy(input));
+            int totalCount = await userExamRepository.GetCountAsync(CurrentUser.GetId());
+            List<UserExamWithDetails> entities = await userExamRepository.GetListAsync(
+                input.Sorting ?? UserExamConsts.DefaultSorting, input.SkipCount, input.MaxResultCount,
+                CurrentUser.GetId());
 
-            List<UserExamListDto> dtos = ObjectMapper.Map<List<UserExamWithExam>, List<UserExamListDto>>(entities);
+            List<UserExamListDto> dtos = ObjectMapper.Map<List<UserExamWithDetails>, List<UserExamListDto>>(entities);
             return new PagedResultDto<UserExamListDto>(totalCount, dtos);
         }
 
@@ -79,9 +67,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         {
             UserExam userExam = await userExamRepository.GetAsync(id);
             userExam.Finished = true;
+            userExam.FinishedTime = clock.Now;
             await userExamRepository.UpdateAsync(userExam);
 
             List<UserExamQuestionWithDetails> userExamQuestions = await userExamQuestionRepository.GetListAsync(userExamId: id);
+            List<UserExamQuestion> questions = [];
             decimal totalScore = 0;
             foreach (UserExamQuestionWithDetails item in userExamQuestions)
             {
@@ -89,23 +79,38 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 {
                     continue;
                 }
+
+                bool right = false;
+                decimal score = 0;
+                // TODO:更新UserExamQuestion的Right和Score
                 Question question = await questionRepository.GetAsync(item.QuestionId);
                 List<QuestionAnswer> questionAnswers = await questionAnswerRepository.GetListAsync(item.QuestionId);
                 if ((question.QuestionType == QuestionType.SingleSelect || question.QuestionType == QuestionType.Judge)
                     && item.Answers == (questionAnswers.SingleOrDefault(a => a.Right)?.Id.ToString() ?? ""))
                 {
                     totalScore += item.QuestionScore;
+                    score = item.QuestionScore;
+                    right = true;
                 }
                 else if (question.QuestionType == QuestionType.MultiSelect
                     && (new HashSet<string>(item.Answers.Split(ExamConsts.Splitter)).SetEquals(questionAnswers.Where(a => a.Right).Select(a => a.Id.ToString()))))
                 {
                     totalScore += item.QuestionScore;
+                    score = item.QuestionScore;
+                    right = true;
                 }
                 else if (question.QuestionType == QuestionType.FillInTheBlanks)
                 {
                     // TODO:一空多项，多空多项，无序
                 }
+
+                UserExamQuestion userExamQuestion = await userExamQuestionRepository.GetAsync(item.Id);
+                userExamQuestion.Right = right;
+                userExamQuestion.Score = score;
+                questions.Add(userExamQuestion);
             }
+
+            await userExamQuestionRepository.UpdateManyAsync(questions);
 
             userExam.TotalScore = totalScore;
             await userExamRepository.UpdateAsync(userExam);

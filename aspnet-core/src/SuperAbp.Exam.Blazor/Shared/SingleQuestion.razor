@@ -43,7 +43,7 @@ else
     <GridRow Gutter="16">
         <GridCol Span="4">
             <QuestionNumber CurrentId="_questionIds[_questionIndex]"
-                            Numbers="Questions"
+            Numbers="Questions"
             SuccessIds="GetSuccessIds()"
             ErrorIds="GetErrorIds()"
             OnChanged="ShowQuestionAsync"></QuestionNumber>
@@ -69,7 +69,7 @@ else
                             Question="_question"
                             QuestionAnswers="_questionAnswers"
                             ShowAnalysis="_showAnalysis"
-                            SelectedQuestionAnswers="_selectedQuestionAnswers"
+                                          Answered="@GetAnswered()"
                             OnSubmit="@SubmitAsync"></QuestionItem>
 
                         }
@@ -114,7 +114,6 @@ else
 @using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using SuperAbp.Exam.TrainingManagement
-@using Volo.Abp.Application.Dtos
 @inject NavigationManager Navigation
 @inject IQuestionAppService QuestionAppService
 @inject IQuestionAnswerAppService QuestionAnswerAppService
@@ -179,6 +178,11 @@ else
         return _trains.Where(a => !a.Right).Select(a => a.QuestionId).Union(
             _selectedQuestionAnswers.Where(a => !a.Right).Select(a => a.QuestionId))
             .ToArray();
+    }
+
+    protected string GetAnswered()
+    {
+        return string.Join(ExamConsts.Splitter, _selectedQuestionAnswers.Where(c => c.QuestionId == _question.Id).Select(c => c.Answer));
     }
     public async Task NextAsync()
     {

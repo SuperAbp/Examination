@@ -10,9 +10,19 @@
            @bind-PageSize="_pageSize"
            OnChange="Change">
         <PropertyColumn Property="c => c.ExamName" Title="@L["ExamName"]"/>
-        <PropertyColumn Property="c => c.Count" Title="@L["ExamCount"]"/>
-        <PropertyColumn Property="c => c.MaxScore" Title="@L["MaxScore"]"/>
-        <PropertyColumn Property="c => c.LastTime" Title="@L["LastTime"]"/>
+        <PropertyColumn Property="c => c.TotalScore" Title="@L["TotalScore"]" />
+        <PropertyColumn Property="c => c.CreationTime" Title="@L["StartedTime"]" />
+        <PropertyColumn Property="c => c.FinishedTime" Title="@L["FinishedTime"]" />
+        <ActionColumn Title="@L["Action"]">
+            @if (context.Finished)
+            {
+                <Space>
+                    <SpaceItem>
+                        <Button Type="@ButtonType.Primary" OnClick="()=>Detail(context.Id)">@L["Detail"]</Button>
+                    </SpaceItem>
+                </Space>
+            }
+        </ActionColumn>
     </Table>
 </Card>
 
@@ -21,6 +31,7 @@
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Localization
 @inject IStringLocalizer<ExamResource> L
+@inject NavigationManager Navigation
 @inject IUserExamAppService UserExamAppService
 @code {
     IReadOnlyList<UserExamListDto> _userExams;
@@ -30,7 +41,6 @@
     int _totalCount = 0;
     bool _loading = true;
 
-    // TODO:展示考试列表。查看明细进入此考试的考试记录
     public async Task Change(QueryModel model)
     {
         await GetListAsync(model.PageIndex, model.PageSize);
@@ -42,5 +52,10 @@
         _userExams = result.Items;
         _totalCount = (int)result.TotalCount;
         _loading = false;
+    }
+
+    protected void Detail(Guid id)
+    {
+        Navigation.NavigateTo($"/my/exam/{id}");
     }
 }
