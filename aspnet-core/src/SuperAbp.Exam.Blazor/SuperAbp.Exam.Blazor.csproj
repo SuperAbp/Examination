@@ -27,5 +27,24 @@
     <ProjectReference Include="..\..\src\SuperAbp.Exam.HttpApi.Client\SuperAbp.Exam.HttpApi.Client.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Watch Include="**\*.razor" />
+		<Watch Include="**\*.less" />
+	</ItemGroup>
 
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(ProjectDir)node_modules') ">
+	  <Exec Command="node --version" ContinueOnError="true">
+		  <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+	  </Exec>
+	  <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+	  <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+	  <Exec WorkingDirectory="$(ProjectDir)" Command="npm install" />
+  </Target>
+  <Target Name="DebugRunGulp" BeforeTargets="DebugEnsureNodeEnv" Condition=" '$(Configuration)' == 'Debug' And Exists('$(ProjectDir)node_modules') ">
+	  <Exec WorkingDirectory="$(ProjectDir)" Command="npm run gulp:pro" />
+  </Target>
+  <Target Name="PublishRunGulp" AfterTargets="ComputeFilesToPublish">
+	  <Exec WorkingDirectory="$(ProjectDir)" Command="npm install" />
+	  <Exec WorkingDirectory="$(ProjectDir)" Command="npm run gulp:pro" />
+  </Target>
 </Project>
