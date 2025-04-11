@@ -32,10 +32,6 @@
 		<Watch Include="**\*.less" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="wwwroot\css\" />
-	</ItemGroup>
-
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(ProjectDir)node_modules') ">
 	  <Exec Command="node --version" ContinueOnError="true">
 		  <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
