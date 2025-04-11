@@ -55,15 +55,19 @@
                                    ShowConfirm="false"></Blank>
                             break;
                     }
-                    @if (!String.IsNullOrEmpty(examQuestion.QuestionAnalysis))
-                    {
-                        <div class="card">
-                            <Descriptions Column="1">
-                                <DescriptionsItem Title="你的答案"> @examQuestion.Answers</DescriptionsItem>
+                    <div class="card">
+                        <Descriptions Column="1">
+                            <DescriptionsItem Title="你的答案">@examQuestion.Answers</DescriptionsItem>
+                            @if (examQuestion.QuestionType == QuestionType.FillInTheBlanks.Value)
+                            {
+                                <DescriptionsItem Title="正确答案">@(string.Join(ExamConsts.Splitter, examQuestion.QuestionAnswers.Select(a => a.Content)))</DescriptionsItem>
+                            }
+                            @if (!String.IsNullOrEmpty(examQuestion.QuestionAnalysis))
+                            {
                                 <DescriptionsItem Title="题目解析">@examQuestion.QuestionAnalysis</DescriptionsItem>
-                            </Descriptions>
-                        </div>
-                    }
+                            }
+                        </Descriptions>
+                    </div>
                 }
             }
         }
