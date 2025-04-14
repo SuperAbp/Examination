@@ -13,6 +13,17 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
 
         public Guid QuestionId { get; set; }
         public int QuestionType { get; set; }
+
+        /// <summary>
+        /// 正确
+        /// </summary>
+        public bool? Right { get; set; }
+
+        /// <summary>
+        /// 得分
+        /// </summary>
+        public decimal? Score { get; set; }
+
         public decimal QuestionScore { get; set; }
         public required string Answers { get; set; }
         public string? QuestionAnalysis { get; set; }

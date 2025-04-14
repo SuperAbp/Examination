@@ -35,6 +35,8 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
                               Id = e.Id,
                               Answers = e.Answers,
                               Finished = ue.Finished,
+                              Right = e.Right,
+                              Score = e.Score,
                               QuestionId = q.Id,
                               Question = q.Content,
                               QuestionAnalysis = q.Analysis,

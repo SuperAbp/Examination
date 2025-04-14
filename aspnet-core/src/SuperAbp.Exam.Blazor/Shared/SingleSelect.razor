@@ -48,27 +48,27 @@
          }
 
 </style>
-<RadioGroup class="chooses" @bind-Value="_selectedAnswerId" Size="InputSize.Large" TValue="Guid" OnChange="ValidateAsync" Disabled="ShowAnalysis">
-    @for (int i = 0; i < Answers.Count; i++)
-    {
-        var tempIndex = i;
-        var answer = Answers[tempIndex];
-        <Radio class="@GetBorderColor(answer)" Value="@answer.Id">
-            <div style="display: flex; -o-justify-content: space-between; -webkit-justify-content: space-between; justify-content: space-between;">
-                <div>
-                    <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
-                    <span class="content">@answer.Content</span>
-                </div>
-                @if (answer.Right)
-                {
-                    <div class="@GetResultClass(answer)">
-                        <Icon Type="check-circle" Theme="IconThemeType.TwoTone" TwotoneColor="#52c41a"/>
-                    </div>
-                }
-            </div>
-        </Radio>
-    }
-</RadioGroup>
+ <RadioGroup class="chooses" @bind-Value="_selectedAnswerId" Size="InputSize.Large" TValue="Guid" OnChange="ValidateAsync" Disabled="ShowAnalysis">
+     @for (int i = 0; i < Answers.Count; i++)
+     {
+         var tempIndex = i;
+         var answer = Answers[tempIndex];
+         <Radio class="@GetBorderColor(answer)" Value="@answer.Id">
+             <div style="display: flex; -o-justify-content: space-between; -webkit-justify-content: space-between; justify-content: space-between;">
+                 <div>
+                     <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
+                     <span class="content">@answer.Content</span>
+                 </div>
+                 @if (answer.Right)
+                 {
+                     <div class="@GetResultClass(answer)">
+                         <Icon Type="check-circle" Theme="IconThemeType.TwoTone" TwotoneColor="#52c41a"/>
+                     </div>
+                 }
+             </div>
+         </Radio>
+     }
+ </RadioGroup>
 
 @using SuperAbp.Exam.TrainingManagement
 @using SuperAbp.Exam.Blazor.Model

@@ -37,6 +37,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
                 if (entity.Finished)
                 {
                     dto.QuestionAnalysis = entity.QuestionAnalysis;
+                    dto.Right = entity.Right;
+                    dto.Score = entity.Score;
                 }
 
                 foreach (UserExamQuestionWithDetails.QuestionAnswer answer in entity.QuestionAnswers)

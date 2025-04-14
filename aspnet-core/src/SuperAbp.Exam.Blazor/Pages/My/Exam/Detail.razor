@@ -28,6 +28,9 @@
                 <h2>@chineseNumber[i]、@L["QuestionType:" + questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q => q.QuestionScore))分）</h2>
                 foreach (UserExamQuestionListDto examQuestion in currentQuestions)
                 {
+
+                    IReadOnlyList<QuestionAnswerViewModel> answers = ToQuestionAnswerViewModels(examQuestion.QuestionAnswers);
+                    string answer = GetUserAnswer(examQuestion.Answers, answers);
                     <h3 class="title">
                         <span class="number">@(number++)</span>
                         <span>@examQuestion.Question</span>
@@ -37,27 +40,45 @@
                         case nameof(QuestionType.SingleSelect):
                         case nameof(QuestionType.Judge):
                             <SingleSelect QuestionId="examQuestion.QuestionId"
-                                          Answered="@examQuestion.Answers"
-                                          Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
-                                          ShowAnalysis="true"></SingleSelect>
+                            Answered="@examQuestion.Answers"
+                            Answers="answers"
+                            ShowAnalysis="true"></SingleSelect>
                             break;
                         case nameof(QuestionType.MultiSelect):
                             <MultiSelect QuestionId="examQuestion.QuestionId"
-                                         Answered="@examQuestion.Answers"
-                                         Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
-                                         ShowAnalysis="true"></MultiSelect>
+                            Answered="@examQuestion.Answers"
+                            Answers="answers"
+                            ShowAnalysis="true"></MultiSelect>
                             break;
                         case nameof(QuestionType.FillInTheBlanks):
                             <Blank QuestionId="examQuestion.QuestionId"
-                                   Answered="@examQuestion.Answers"
-                                   Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
-                                   ShowAnalysis="true"
-                                   ShowConfirm="false"></Blank>
+                            Answered="@examQuestion.Answers"
+                            Answers="answers"
+                            ShowAnalysis="true"
+                            ShowConfirm="false"></Blank>
                             break;
                     }
                     <div class="card">
                         <Descriptions Column="1">
-                            <DescriptionsItem Title="你的答案">@examQuestion.Answers</DescriptionsItem>
+                            @if(examQuestion.Right.HasValue)
+                            {
+                                <div style="font-size:24px;margin-bottom: 5px;">
+                                @if (examQuestion.Right.Value)
+                                {
+                                    <Icon Type="check-circle" Style="color: green;" Theme="IconThemeType.Outline" />
+                                    <span>正确</span>
+                                }
+                                else
+                                {
+                                    <Icon Type="close-circle" Style="color: red;" Theme="IconThemeType.Outline" />
+                                    <span>错误</span>
+                                }
+                                </div>
+                            }
+                            @if (examQuestion.Score > 0)
+                            {
+                                <DescriptionsItem Title="得分">@examQuestion.Score</DescriptionsItem>
+                            }
                             @if (examQuestion.QuestionType == QuestionType.FillInTheBlanks.Value)
                             {
                                 <DescriptionsItem Title="正确答案">@(string.Join(ExamConsts.Splitter, examQuestion.QuestionAnswers.Select(a => a.Content)))</DescriptionsItem>
@@ -89,7 +110,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var userExam = await UserExamAppService.GetAsync(Id);
         PagedResultDto<UserExamQuestionListDto> dto = await UserExamQuestionAppService.GetListAsync(new GetUserExamQuestionsInput() { UserExamId = Id });
         _examQuestions = dto.Items;
 
@@ -119,5 +139,14 @@
                 Content = qa.Content,
                 Right = qa.Right ?? false
             }).ToArray();
+    }
+
+    protected string GetUserAnswer(string answerIds, IReadOnlyList<QuestionAnswerViewModel> answers)
+    {
+        return String.Join(",", answerIds
+            .Split(ExamConsts.Splitter)
+            .Select(a => answers.ToArray().FindIndex(b => b.Id.ToString() == a))
+            .Where(a => a > -1)
+            .Select(a => Convert.ToChar(65 + a)));
     }
 }

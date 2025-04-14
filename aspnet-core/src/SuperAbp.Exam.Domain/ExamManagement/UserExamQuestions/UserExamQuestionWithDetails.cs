@@ -13,6 +13,16 @@ public class UserExamQuestionWithDetails
     /// </summary>
     public bool Finished { get; set; }
 
+    /// <summary>
+    /// 正确
+    /// </summary>
+    public bool? Right { get; set; }
+
+    /// <summary>
+    /// 得分
+    /// </summary>
+    public decimal? Score { get; set; }
+
     public Guid QuestionId { get; set; }
     public required QuestionType QuestionType { get; set; }
 
