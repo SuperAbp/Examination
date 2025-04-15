@@ -1,4 +1,7 @@
 ﻿﻿<style>
+    .chooses{
+        width: 100%;
+    }
      .chooses .choose-item {
          width: 100%;
          padding: 9px 20px 9px 5px;
@@ -11,8 +14,6 @@
          .chooses .choose-item.primary {
              border-color: #1890ff;
          }
-
-
 
      .chooses .ant-radio {
          display: none;
@@ -47,36 +48,31 @@
          }
 
 </style>
-<RadioGroup class="chooses" @bind-Value="_selectedAnswerId" Size="InputSize.Large" TValue="Guid" OnChange="ValidateAsync" Disabled="ShowAnalysis">
-    @for (int i = 0; i < Answers.Count; i++)
-    {
-        var tempIndex = i;
-        var answer = Answers[tempIndex];
-
-        <Radio class="@GetBorderColor(answer)" Value="@answer.Id">
-            <div style="display: flex; -o-justify-content: space-between; -webkit-justify-content: space-between; justify-content: space-between;">
-                <div>
-                    <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
-                    <span class="content">@answer.Content</span>
-                </div>
-                @if (answer.Right)
-                {
-                    <div class="@GetResultClass(answer)">
-                        <Icon Type="check-circle" Theme="IconThemeType.TwoTone" TwotoneColor="#52c41a" />
-                        @*<span>答案</span>*@
-                    </div>
-                }
-            </div>
-        </Radio>
-    }
-</RadioGroup>
+ <RadioGroup class="chooses" @bind-Value="_selectedAnswerId" Size="InputSize.Large" TValue="Guid" OnChange="ValidateAsync" Disabled="ShowAnalysis">
+     @for (int i = 0; i < Answers.Count; i++)
+     {
+         var tempIndex = i;
+         var answer = Answers[tempIndex];
+         <Radio class="@GetBorderColor(answer)" Value="@answer.Id">
+             <div style="display: flex; -o-justify-content: space-between; -webkit-justify-content: space-between; justify-content: space-between;">
+                 <div>
+                     <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
+                     <span class="content">@answer.Content</span>
+                 </div>
+                 @if (answer.Right)
+                 {
+                     <div class="@GetResultClass(answer)">
+                         <Icon Type="check-circle" Theme="IconThemeType.TwoTone" TwotoneColor="#52c41a"/>
+                     </div>
+                 }
+             </div>
+         </Radio>
+     }
+ </RadioGroup>
 
 @using SuperAbp.Exam.TrainingManagement
-@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
-@using System.Diagnostics
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages
-@using Volo.Abp
 @using Volo.Abp.AspNetCore.Components.Notifications
 @inject IUiNotificationService UiNotificationService
 @inject ITrainingAppService TrainingAppService
@@ -86,34 +82,25 @@
     [Parameter]
     public IReadOnlyList<QuestionAnswerViewModel> Answers { get; set; }
     [Parameter]
-    public List<QuestionAnswerItem> SelectedQuestionAnswers { get; set; }
-    [Parameter]
     public bool ShowAnalysis { get; set; }
     [Parameter]
     public string Answered { get; set; }
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 
-    Guid _selectedAnswerId = new Guid();
+    Guid _selectedAnswerId = Guid.Empty;
 
     protected override void OnInitialized()
     {
-        _selectedAnswerId = new Guid();
+        _selectedAnswerId = Guid.Empty;
         if (!Answered.IsNullOrWhiteSpace())
         {
             _selectedAnswerId = new Guid(Answered);
         }
-        if (!ShowAnalysis) return;
-
-        var selectedAnswer = SelectedQuestionAnswers.Find(a => a.QuestionId == QuestionId);
-        var answer = selectedAnswer is null
-            ? Answers.Single(a => a.Right)
-            : Answers.First(a => a.Id == new Guid(selectedAnswer.Answer));
-        _selectedAnswerId = answer.Id;
     }
     public string GetBorderColor(QuestionAnswerViewModel answer)
     {
-        List<string> classes = new List<string>() { "choose-item" };
+        List<string> classes = ["choose-item"];
         if (_selectedAnswerId == answer.Id)
         {
             classes.Add("primary");
@@ -122,7 +109,7 @@
     }
     string GetResultClass(QuestionAnswerViewModel answer)
     {
-        List<string> classes = new List<string>() { "result" };
+        List<string> classes = ["result"];
         if (ShowAnalysis && answer.Right)
         {
             classes.Add("show");

@@ -8,21 +8,21 @@
     case nameof(QuestionType.Judge):
         <SingleSelect QuestionId="Question.Id"
                       Answers="QuestionAnswers"
-                      SelectedQuestionAnswers="SelectedQuestionAnswers"
+                      Answered="@Answered"
                       ShowAnalysis="ShowAnalysis"
                       OnSubmit="@SubmitAsync"></SingleSelect>
         break;
     case nameof(QuestionType.MultiSelect):
         <MultiSelect QuestionId="Question.Id"
                      Answers="QuestionAnswers"
-                     SelectedQuestionAnswers="SelectedQuestionAnswers"
+                     Answered="@Answered"
                      ShowAnalysis="ShowAnalysis"
                      OnSubmit="@SubmitAsync"></MultiSelect>
         break;
     case nameof(QuestionType.FillInTheBlanks):
         <Blank QuestionId="Question.Id"
                Answers="QuestionAnswers"
-               SelectedQuestionAnswers="SelectedQuestionAnswers"
+               Answered="@Answered"
                ShowAnalysis="ShowAnalysis"
                OnSubmit="@SubmitAsync"></Blank>
         break;
@@ -49,7 +49,7 @@
     [Parameter]
     public IReadOnlyList<QuestionAnswerViewModel> QuestionAnswers { get; set; }
     [Parameter]
-    public List<QuestionAnswerItem> SelectedQuestionAnswers { get; set; }
+    public string Answered { get; set; }
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 

@@ -164,7 +164,7 @@ public class ExamHttpApiHostModule : AbpModule
     private void ConfigureDistributedLocking(
         ServiceConfigurationContext context,
         IConfiguration configuration)
-    {
+    {        
         context.Services.AddSingleton<IDistributedLockProvider>(sp =>
         {
             var connection = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]!);

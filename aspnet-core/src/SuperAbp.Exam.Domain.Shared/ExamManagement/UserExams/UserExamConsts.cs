@@ -6,5 +6,5 @@ namespace SuperAbp.Exam.ExamManagement.UserExams;
 
 public class UserExamConsts
 {
-    public const string DefaultSorting = "LastTime DESC";
+    public const string DefaultSorting = "CreationTime DESC";
 }

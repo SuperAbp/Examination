@@ -19,16 +19,16 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionRepos
     {
         public async Task<bool> IdExistsAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var dbSet = await GetDbSetAsync();
-            return await dbSet.AnyAsync(r => r.Id == id, cancellationToken);
+            var dbSet = await GetQueryableAsync();
+            return await dbSet.AnyAsync(r => r.Id == id, GetCancellationToken(cancellationToken));
         }
 
         public async Task<string?> FindTitleAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await (await GetDbSetAsync())
+            return await (await GetQueryableAsync())
                 .Where(r => r.Id == id)
                 .Select(r => r.Title)
-                .FirstOrDefaultAsync(cancellationToken);
+                .FirstOrDefaultAsync(GetCancellationToken(cancellationToken));
         }
 
         public async Task<int> GetCountAsync(string? title = null, CancellationToken cancellationToken = default)
@@ -54,7 +54,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionRepos
 
         public async Task<bool> TitleExistsAsync(string title, CancellationToken cancellationToken = default)
         {
-            var dbSet = await GetDbSetAsync();
+            var dbSet = await GetQueryableAsync();
             return await dbSet.AnyAsync(x => x.Title == title, GetCancellationToken(cancellationToken));
         }
     }

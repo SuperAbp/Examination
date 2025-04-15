@@ -7,3 +7,6 @@
 /aspnet-core/src/SuperAbp.Exam.HttpApi.Host/yarn.lock
 .vshistory
 angular-admin/.vscode
+/aspnet-core/src/SuperAbp.Exam.Admin.HttpApi.Host/appsettings.Development.json
+/aspnet-core/src/SuperAbp.Exam.AuthServer/appsettings.Development.json
+/aspnet-core/src/SuperAbp.Exam.HttpApi.Host/appsettings.Development.json

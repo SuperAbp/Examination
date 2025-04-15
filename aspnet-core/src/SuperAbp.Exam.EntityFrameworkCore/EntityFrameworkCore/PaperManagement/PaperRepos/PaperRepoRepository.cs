@@ -20,13 +20,13 @@ public class PaperRepoRepository(IDbContextProvider<ExamDbContext> dbContextProv
     public async Task<PaperRepo> GetAsync(Guid paperId, Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {
         return await GetAsync(er => er.PaperId == paperId
-                              && er.QuestionRepositoryId == questionRepositoryId, cancellationToken: cancellationToken);
+                              && er.QuestionRepositoryId == questionRepositoryId, cancellationToken: GetCancellationToken(cancellationToken));
     }
 
     public async Task<PaperRepo?> FindAsync(Guid paperId, Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {
         return await FindAsync(er => er.PaperId == paperId
-                                     && er.QuestionRepositoryId == questionRepositoryId, cancellationToken: cancellationToken);
+                                     && er.QuestionRepositoryId == questionRepositoryId, cancellationToken: GetCancellationToken(cancellationToken));
     }
 
     public async Task<List<PaperRepo>> GetListAsync(
@@ -42,16 +42,16 @@ public class PaperRepoRepository(IDbContextProvider<ExamDbContext> dbContextProv
              .WhereIf(paperId.HasValue, p => p.PaperId == paperId.Value)
              .OrderBy(string.IsNullOrWhiteSpace(sorting) ? PaperRepoConsts.DefaultSorting : sorting)
              .PageBy(skipCount, maxResultCount)
-             .ToListAsync(cancellationToken: cancellationToken);
+             .ToListAsync(GetCancellationToken(cancellationToken));
     }
 
     public async Task DeleteAsync(Guid paperId, Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {
-        await DeleteAsync(er => er.PaperId == paperId && er.QuestionRepositoryId == questionRepositoryId, cancellationToken: cancellationToken);
+        await DeleteAsync(er => er.PaperId == paperId && er.QuestionRepositoryId == questionRepositoryId, cancellationToken: GetCancellationToken(cancellationToken));
     }
 
     public async Task DeleteByPaperIdAsync(Guid paperId, CancellationToken cancellationToken = default)
     {
-        await DeleteAsync(er => er.PaperId == paperId, cancellationToken: cancellationToken);
+        await DeleteAsync(er => er.PaperId == paperId, cancellationToken: GetCancellationToken(cancellationToken));
     }
 }

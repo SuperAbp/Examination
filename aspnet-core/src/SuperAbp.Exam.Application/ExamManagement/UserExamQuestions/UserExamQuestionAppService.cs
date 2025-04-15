@@ -22,20 +22,40 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
 
             List<UserExamQuestionWithDetails> entities = await userExamQuestionRepository
                 .GetListAsync(input.Sorting, input.SkipCount, input.MaxResultCount, input.UserExamId);
-            List<UserExamQuestionListDto> dtos = entities.Select(q => new UserExamQuestionListDto()
+            List<UserExamQuestionListDto> dtos = [];
+            foreach (UserExamQuestionWithDetails entity in entities)
             {
-                Id = q.Id,
-                Answers = q.Answers,
-                QuestionId = q.QuestionId,
-                Question = q.Question,
-                QuestionScore = q.QuestionScore,
-                QuestionType = q.QuestionType,
-                QuestionAnswers = q.QuestionAnswers.Select(qa => new UserExamQuestionListDto.QuestionAnswerListDto
+                UserExamQuestionListDto dto = new()
                 {
-                    Id = qa.Id,
-                    Content = qa.Content
-                }).ToList()
-            }).ToList();
+                    Id = entity.Id,
+                    Answers = entity.Answers ?? String.Empty,
+                    QuestionId = entity.QuestionId,
+                    Question = entity.Question,
+                    QuestionScore = entity.QuestionScore,
+                    QuestionType = entity.QuestionType
+                };
+                if (entity.Finished)
+                {
+                    dto.QuestionAnalysis = entity.QuestionAnalysis;
+                    dto.Right = entity.Right;
+                    dto.Score = entity.Score;
+                }
+
+                foreach (UserExamQuestionWithDetails.QuestionAnswer answer in entity.QuestionAnswers)
+                {
+                    UserExamQuestionListDto.QuestionAnswerListDto answerDto = new()
+                    {
+                        Id = answer.Id,
+                        Content = answer.Content,
+                    };
+                    if (entity.Finished)
+                    {
+                        answerDto.Right = answer.Right;
+                    }
+                    dto.QuestionAnswers.Add(answerDto);
+                }
+                dtos.Add(dto);
+            }
             return new PagedResultDto<UserExamQuestionListDto>(0, dtos);
         }
 

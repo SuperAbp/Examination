@@ -6,7 +6,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     /// <summary>
     /// 列表
     /// </summary>
-    public class UserExamListDto: EntityDto<Guid>
+    public class UserExamListDto : EntityDto<Guid>
     {
         public Guid ExamId { get; set; }
 
@@ -14,16 +14,19 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         /// 考试名称
         /// </summary>
         public string ExamName { get; set; }
-        /// <summary>
-        /// 次数
-        /// </summary>
-        public int Count { get; set; }
 
         /// <summary>
         /// 最高分
         /// </summary>
-        public decimal MaxScore { get; set; }
+        public decimal TotalScore { get; set; }
 
-        public DateTime LastTime { get; set; }
+        /// <summary>
+        /// 是否交卷
+        /// </summary>
+        public bool Finished { get; set; }
+
+        public DateTime? FinishedTime { get; set; }
+
+        public DateTime CreationTime { get; set; }
     }
 }

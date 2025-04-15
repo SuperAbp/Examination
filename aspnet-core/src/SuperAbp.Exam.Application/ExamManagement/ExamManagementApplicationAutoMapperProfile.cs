@@ -25,7 +25,7 @@ namespace SuperAbp.Exam.ExamManagement
             #region 用户考试
 
             CreateMap<UserExam, UserExamListDto>();
-            CreateMap<UserExamWithExam, UserExamListDto>();
+            CreateMap<UserExamWithDetails, UserExamListDto>();
             CreateMap<UserExam, UserExamDetailDto>();
             CreateMap<UserExamCreateDto, UserExam>();
 
