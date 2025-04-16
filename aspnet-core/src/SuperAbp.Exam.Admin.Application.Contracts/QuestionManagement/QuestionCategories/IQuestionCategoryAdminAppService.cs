@@ -1,42 +1,35 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 
-namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
+namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionCategories;
 
 /// <summary>
-/// 问题管理
+/// 题目类别
 /// </summary>
-public interface IQuestionAdminAppService : IApplicationService
+public interface IQuestionCategoryAdminAppService : IApplicationService
 {
     /// <summary>
     /// 列表
     /// </summary>
     /// <param name="input">查询条件</param>
     /// <returns>结果</returns>
-    Task<PagedResultDto<QuestionListDto>> GetListAsync(GetQuestionsInput input);
+    Task<PagedResultDto<QuestionCategoryListDto>> GetListAsync(GetQuestionCategoriesInput input);
 
     /// <summary>
     /// 获取修改
     /// </summary>
     /// <param name="id">主键</param>
     /// <returns></returns>
-    Task<GetQuestionForEditorOutput> GetEditorAsync(Guid id);
-
-    /// <summary>
-    /// 导入
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    Task ImportAsync(QuestionImportDto input);
+    Task<GetQuestionCategoryForEditorOutput> GetEditorAsync(Guid id);
 
     /// <summary>
     /// 创建
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    Task<QuestionListDto> CreateAsync(QuestionCreateDto input);
+    Task<Guid> CreateAsync(QuestionCategoryCreateDto input);
 
     /// <summary>
     /// 更新
@@ -44,7 +37,7 @@ public interface IQuestionAdminAppService : IApplicationService
     /// <param name="id">主键</param>
     /// <param name="input"></param>
     /// <returns></returns>
-    Task<QuestionListDto> UpdateAsync(Guid id, QuestionUpdateDto input);
+    Task UpdateAsync(Guid id, QuestionCategoryUpdateDto input);
 
     /// <summary>
     /// 删除

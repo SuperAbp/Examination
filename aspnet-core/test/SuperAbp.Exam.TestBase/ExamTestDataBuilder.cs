@@ -6,6 +6,7 @@ using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.PaperManagement.PaperRepos;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.QuestionCategories;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.TrainingManagement;
@@ -19,6 +20,7 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     IQuestionRepository questionRepository,
     IQuestionRepoRepository questionRepoRepository,
     IQuestionAnswerRepository questionAnswerRepository,
+    IQuestionCategoryRepository questionCategoryRepository,
     IExamRepository examRepository,
     IPaperRepository paperRepository,
     IPaperRepoRepository paperRepoRepository,
@@ -117,7 +119,13 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 new Training(testData.Training1Id, testData.UserId, testData.QuestionRepository1Id,
                     testData.Question11Id, false, TrainingSource.QuestionRepository),
                 new Training(testData.Training2Id, testData.UserId, testData.QuestionRepository1Id,
-                    testData.Question11Id, false, TrainingSource.QuestionRepository),
+                    testData.Question11Id, false, TrainingSource.QuestionRepository)
+            ]);
+
+            await questionCategoryRepository.InsertManyAsync([
+                new QuestionCategory(testData.QuestionCategory1Id, testData.QuestionCategory1Name),
+                new QuestionCategory(testData.QuestionCategory11Id, testData.QuestionCategory11Name, testData.QuestionCategory1Id),
+                new QuestionCategory(testData.QuestionCategory2Id, testData.QuestionCategory1Name)
             ]);
         }
     }

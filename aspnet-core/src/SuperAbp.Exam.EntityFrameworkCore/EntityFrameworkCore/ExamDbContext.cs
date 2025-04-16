@@ -26,6 +26,7 @@ using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.TrainingManagement;
 using PaperConsts = SuperAbp.Exam.PaperManagement.Papers.PaperConsts;
 using SmartEnum.EFCore;
+using SuperAbp.Exam.QuestionManagement.QuestionCategories;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -71,6 +72,7 @@ public class ExamDbContext :
     #endregion Entities from the modules
 
     public DbSet<Question> Questions { get; set; }
+    public DbSet<QuestionCategory> QuestionCategories { get; set; }
     public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
     public DbSet<QuestionRepo> QuestionRepositories { get; set; }
     public DbSet<Paper> Papers { get; set; }
@@ -115,6 +117,15 @@ public class ExamDbContext :
             b.Property(p => p.QuestionType).IsRequired();
             b.Property(p => p.Content).IsRequired().HasMaxLength(QuestionConsts.MaxContentLength);
             b.Property(p => p.Analysis).HasMaxLength(QuestionConsts.MaxAnalysisLength);
+        });
+
+        builder.Entity<QuestionCategory>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "QuestionCategories", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.ConfigureFullAudited();
+
+            b.Property(p => p.Name).IsRequired().HasMaxLength(QuestionCategoryConsts.MaxNameLength);
         });
 
         builder.Entity<QuestionAnswer>(b =>

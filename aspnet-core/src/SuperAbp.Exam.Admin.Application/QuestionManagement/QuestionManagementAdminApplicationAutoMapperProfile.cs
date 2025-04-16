@@ -2,8 +2,10 @@
 using SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using AutoMapper;
+using SuperAbp.Exam.Admin.QuestionManagement.QuestionCategories;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.QuestionCategories;
 using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement;
@@ -50,5 +52,12 @@ public class QuestionManagementAdminApplicationAutoMapperProfile : Profile
         CreateMap<QuestionRepoUpdateDto, QuestionRepo>();
 
         #endregion 题库
+
+        #region 题目分类
+
+        CreateMap<QuestionCategoryWithDetails, QuestionCategoryListDto>();
+        CreateMap<QuestionCategory, GetQuestionCategoryForEditorOutput>();
+
+        #endregion 题目分类
     }
 }

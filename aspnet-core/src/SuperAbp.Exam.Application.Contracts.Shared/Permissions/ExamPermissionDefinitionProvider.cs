@@ -1,6 +1,7 @@
 ﻿using SuperAbp.Exam.Localization;
 using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.Localization;
+using static SuperAbp.Exam.Permissions.ExamPermissions;
 
 namespace SuperAbp.Exam.Permissions;
 
@@ -16,6 +17,12 @@ public class ExamPermissionDefinitionProvider : PermissionDefinitionProvider
         questions.AddChild(ExamPermissions.Questions.Create, L("Permission:Create"));
         questions.AddChild(ExamPermissions.Questions.Update, L("Permission:Edit"));
         questions.AddChild(ExamPermissions.Questions.Delete, L("Permission:Delete"));
+
+        var questionCategories = myGroup.AddPermission(ExamPermissions.QuestionCategories.Default, L("Permission:QuestionCategories"));
+        questionCategories.AddChild(ExamPermissions.QuestionCategories.Management, L("Permission:Management"));
+        questionCategories.AddChild(ExamPermissions.QuestionCategories.Create, L("Permission:Create"));
+        questionCategories.AddChild(ExamPermissions.QuestionCategories.Update, L("Permission:Edit"));
+        questionCategories.AddChild(ExamPermissions.QuestionCategories.Delete, L("Permission:Delete"));
 
         var questionAnswers = myGroup.AddPermission(ExamPermissions.QuestionAnswers.Default, L("Permission:QuestionAnswers"));
         questionAnswers.AddChild(ExamPermissions.QuestionAnswers.Create, L("Permission:Create"));
