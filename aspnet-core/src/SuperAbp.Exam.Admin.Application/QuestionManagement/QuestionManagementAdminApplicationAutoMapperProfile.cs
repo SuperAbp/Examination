@@ -27,7 +27,6 @@ public class QuestionManagementAdminApplicationAutoMapperProfile : Profile
             .ForMember(s => s.QuestionType,
                 opt => opt.MapFrom(t => t.QuestionType.Value));
         CreateMap<Question, QuestionListDto>();
-        CreateMap<Question, QuestionDetailDto>();
         CreateMap<QuestionCreateDto, Question>();
         CreateMap<QuestionUpdateDto, Question>();
 
