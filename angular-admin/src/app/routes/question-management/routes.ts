@@ -1,11 +1,13 @@
 import { permissionGuard } from '@abp/ng.core';
 import { Routes } from '@angular/router';
 import { authJWTCanActivate } from '@delon/auth';
+
+import { QuestionManagementAnswerComponent } from './answer/answer.component';
+import { QuestionManagementCategoryComponent } from './category/category.component';
 import { QuestionManagementQuestionEditComponent } from './question/edit/edit.component';
+import { QuestionManagementQuestionImportComponent } from './question/import/import.component';
 import { QuestionManagementQuestionComponent } from './question/question.component';
 import { QuestionManagementRepositoryComponent } from './repository/repository.component';
-import { QuestionManagementAnswerComponent } from './answer/answer.component';
-import { QuestionManagementQuestionImportComponent } from './question/import/import.component';
 export const routes: Routes = [
   {
     path: 'repository',
@@ -47,5 +49,13 @@ export const routes: Routes = [
       requiredPolicy: 'Exam.Question.Import'
     }
   },
-  { path: 'answer', component: QuestionManagementAnswerComponent }
+  { path: 'answer', component: QuestionManagementAnswerComponent },
+  {
+    path: 'category',
+    component: QuestionManagementCategoryComponent,
+    canActivate: [authJWTCanActivate, permissionGuard],
+    data: {
+      requiredPolicy: 'Exam.QuestionCategory'
+    }
+  }
 ];

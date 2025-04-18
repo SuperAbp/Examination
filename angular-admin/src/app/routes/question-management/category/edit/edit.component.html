@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <div class="modal-title" *ngIf="form && !categoryId">{{ 'Exam::NewCategory' | abpLocalization }}</div>
+  <div class="modal-title" *ngIf="form && categoryId">{{ 'Exam::Edit' | abpLocalization }}</div>
+</div>
+<div class="modal-body">
+  <ng-template #loaderRef>
+    <nz-spin class="modal-spin"></nz-spin>
+  </ng-template>
+  <form *ngIf="form; else loaderRef" nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
+    <!-- <nz-row>
+      <nz-col nzLg="6" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzRequired>{{ '*::Name' | abpLocalization }}</nz-form-label>
+          <nz-form-control
+            nzHasFeedback
+            [nzValidatingTip]="'*::Validating' | abpLocalization"
+            [nzErrorTip]="nameErrorTpl"
+          >
+            <input formControlName="name" nz-input [placeholder]="'*::Placeholder' | abpLocalization: ('*::Name' | abpLocalization)"/>
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ '*::ThisFieldIsRequired.' | abpLocalization }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row> -->
+  </form>
+</div>
+<div class="modal-footer">
+  <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
+    {{ 'Exam::Submit' | abpLocalization }}
+  </button>
+</div>

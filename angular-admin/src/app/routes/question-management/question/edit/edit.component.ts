@@ -2,26 +2,26 @@ import { CoreModule, LocalizationService } from '@abp/ng.core';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Observable } from 'rxjs';
-import { finalize, tap } from 'rxjs/operators';
-import { QuestionManagementAnswerComponent } from '../../answer/answer.component';
-import { PageHeaderModule } from '@delon/abc/page-header';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
-import { SingleSelectComponent } from '../../answer/single-select.component';
-import { MultiSelectComponent } from '../../answer/multi-select.component';
-import { BlankComponent } from '../../answer/blank.component';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { JudgeComponent } from '../../answer/judge.component';
-import { GetQuestionForEditorOutput } from '@proxy/admin/question-management/questions';
-import { QuestionAnswerService, QuestionRepoService, QuestionService } from '@proxy/admin/controllers';
-import { QuestionType } from '@proxy/question-management/questions';
+import { PageHeaderModule } from '@delon/abc/page-header';
+import { OptionService, QuestionAnswerService, QuestionRepoService, QuestionService } from '@proxy/admin/controllers';
 import { QuestionRepoListDto } from '@proxy/admin/question-management/question-repos';
+import { GetQuestionForEditorOutput } from '@proxy/admin/question-management/questions';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { forkJoin, Observable } from 'rxjs';
+import { finalize, map, tap } from 'rxjs/operators';
+
+import { QuestionManagementAnswerComponent } from '../../answer/answer.component';
+import { BlankComponent } from '../../answer/blank.component';
+import { JudgeComponent } from '../../answer/judge.component';
+import { MultiSelectComponent } from '../../answer/multi-select.component';
+import { SingleSelectComponent } from '../../answer/single-select.component';
 
 @Component({
   selector: 'app-question-management-question-edit',
@@ -58,6 +58,8 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
   private questionService = inject(QuestionService);
   private questionRepoService = inject(QuestionRepoService);
   private answerService = inject(QuestionAnswerService);
+  private optionService = inject(OptionService);
+
   loading = false;
   isConfirmLoading = false;
   questionTypes: Array<{ label: string; value: number }> = [];
@@ -101,11 +103,19 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
       .getList({ skipCount: 0, maxResultCount: 100 })
       .pipe(
         tap(res => {
-          Object.keys(QuestionType)
-            .filter(k => !isNaN(Number(k)))
-            .map(key => {
-              this.questionTypes.push({ label: this.localizationService.instant('Exam::QuestionType:' + key), value: +key });
-            });
+          this.optionService
+            .getQuestionTypes()
+            .pipe(
+              map(res => {
+                Object.keys(res).forEach(key => {
+                  this.questionTypes.push({
+                    label: this.localizationService.instant(`Exam::QuestionType:${res[key].value}`),
+                    value: res[key].value
+                  });
+                });
+              })
+            )
+            .subscribe();
           this.questionRepositories = res.items;
 
           this.form = this.fb.group({

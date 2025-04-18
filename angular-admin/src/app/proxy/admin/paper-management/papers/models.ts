@@ -8,10 +8,10 @@ export interface GetPapersInput extends PagedAndSortedResultRequestDto {
 }
 
 export interface PaperCreateDto extends PaperCreateOrUpdateDtoBase {
-  repositories: PaperCreateOrUpdatePaperRepoDto[];
 }
 
 export interface PaperCreateOrUpdateDtoBase {
+  repositories: PaperCreateOrUpdatePaperRepoDto[];
   name?: string;
   description?: string;
   score: number;
@@ -36,5 +36,4 @@ export interface PaperListDto extends EntityDto<string> {
 }
 
 export interface PaperUpdateDto extends PaperCreateOrUpdateDtoBase {
-  repositories: PaperCreateOrUpdatePaperRepoDto[];
 }
