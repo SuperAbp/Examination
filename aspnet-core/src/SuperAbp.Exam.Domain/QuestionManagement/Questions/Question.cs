@@ -15,10 +15,11 @@ public class Question : FullAuditedAggregateRoot<Guid>
     }
 
     [SetsRequiredMembers]
-    protected internal Question(Guid id, Guid questionRepositoryId, QuestionType questionType, string content) :
+    protected internal Question(Guid id, Guid questionRepositoryId, Guid questionCategoryId, QuestionType questionType, string content) :
         base(id)
     {
         QuestionRepositoryId = questionRepositoryId;
+        QuestionCategoryId = questionCategoryId;
         QuestionType = questionType;
         Content = content;
     }
@@ -39,4 +40,9 @@ public class Question : FullAuditedAggregateRoot<Guid>
     /// 所属题库
     /// </summary>
     public Guid QuestionRepositoryId { get; set; }
+
+    /// <summary>
+    /// 所属分类
+    /// </summary>
+    public Guid QuestionCategoryId { get; set; }
 }

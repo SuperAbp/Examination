@@ -13,6 +13,11 @@ public class QuestionListDto : EntityDto<Guid>
     /// </summary>
     public required string QuestionRepository { get; set; }
 
+    /// <summary>
+    /// 分类
+    /// </summary>
+    public required string QuestionCategory { get; set; }
+
     public int QuestionType { get; set; }
 
     /// <summary>

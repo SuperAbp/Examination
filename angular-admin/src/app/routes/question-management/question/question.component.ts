@@ -59,7 +59,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
               map(res => {
                 const temp: SFSchemaEnumType[] = [];
                 Object.keys(res).forEach(key => {
-                  temp.push({ label: this.localizationService.instant(`Exam::QuestionType:${res[key].value}`), value: res[key].value });
+                  temp.push({ label: this.localizationService.instant(`Exam::QuestionType:${key}`), value: key });
                 });
                 return temp;
               })

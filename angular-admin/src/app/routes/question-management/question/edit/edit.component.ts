@@ -109,8 +109,8 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
               map(res => {
                 Object.keys(res).forEach(key => {
                   this.questionTypes.push({
-                    label: this.localizationService.instant(`Exam::QuestionType:${res[key].value}`),
-                    value: res[key].value
+                    label: this.localizationService.instant(`Exam::QuestionType:${key}`),
+                    value: +key
                   });
                 });
               })

@@ -124,6 +124,10 @@ export class StartupService {
                 link: '/question-management/repository'
               },
               {
+                text: '问题类别管理',
+                link: '/question-management/category'
+              },
+              {
                 text: '问题管理',
                 link: '/question-management/question'
               },

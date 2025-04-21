@@ -74,7 +74,7 @@ export class QuestionManagementCategoryEditComponent implements OnInit {
   buildForm() {
     this.form = this.fb.group({
       name: [this.category.name || '', [Validators.required]],
-      parentId: [this.category.parentId || null, [Validators.required]]
+      parentId: [this.category.parentId || null]
     });
   }
 
@@ -96,7 +96,6 @@ export class QuestionManagementCategoryEditComponent implements OnInit {
         })
         .pipe(
           tap(response => {
-            this.messageService.success(this.localizationService.instant('Exam::SaveSucceed'));
             this.modal.close(true);
           }),
           finalize(() => (this.isConfirmLoading = false))
@@ -109,7 +108,6 @@ export class QuestionManagementCategoryEditComponent implements OnInit {
         })
         .pipe(
           tap(response => {
-            this.messageService.success(this.localizationService.instant('Exam::SaveSucceed'));
             this.modal.close(true);
           }),
           finalize(() => (this.isConfirmLoading = false))

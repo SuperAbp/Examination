@@ -96,7 +96,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         {
             ValidationCorrectCountAsync(input.QuestionType, input.Options.Count(a => a.Right));
 
-            Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, QuestionType.FromValue(input.QuestionType), input.Content);
+            Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, input.QuestionCategoryId, QuestionType.FromValue(input.QuestionType), input.Content);
             question.Analysis = input.Analysis;
             question = await questionRepository.InsertAsync(question);
             await CreateOrUpdateAnswerAsync(question.Id, input.Options);
@@ -112,6 +112,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             await questionManager.SetContentAsync(question, input.Content);
             question.Analysis = input.Analysis;
             question.QuestionRepositoryId = input.QuestionRepositoryId;
+            question.QuestionCategoryId = input.QuestionCategoryId;
             question = await questionRepository.UpdateAsync(question);
             await CreateOrUpdateAnswerAsync(question.Id, input.Options);
             return ObjectMapper.Map<Question, QuestionListDto>(question);

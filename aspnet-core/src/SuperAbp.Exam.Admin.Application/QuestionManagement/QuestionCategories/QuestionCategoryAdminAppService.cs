@@ -31,7 +31,7 @@ public class QuestionCategoryAdminAppService(IQuestionCategoryRepository questio
         return ObjectMapper.Map<QuestionCategory, GetQuestionCategoryForEditorOutput>(category);
     }
 
-    [Authorize(ExamPermissions.Questions.Create)]
+    [Authorize(ExamPermissions.QuestionCategories.Create)]
     public async Task<Guid> CreateAsync(QuestionCategoryCreateDto input)
     {
         QuestionCategory category = new(GuidGenerator.Create(), input.Name, input.ParentId);
@@ -39,7 +39,7 @@ public class QuestionCategoryAdminAppService(IQuestionCategoryRepository questio
         return category.Id;
     }
 
-    [Authorize(ExamPermissions.Questions.Update)]
+    [Authorize(ExamPermissions.QuestionCategories.Update)]
     public async Task UpdateAsync(Guid id, QuestionCategoryUpdateDto input)
     {
         QuestionCategory category = await questionCategoryRepository.GetAsync(id);
@@ -48,7 +48,7 @@ public class QuestionCategoryAdminAppService(IQuestionCategoryRepository questio
         await questionCategoryRepository.UpdateAsync(category);
     }
 
-    [Authorize(ExamPermissions.Questions.Delete)]
+    [Authorize(ExamPermissions.QuestionCategories.Delete)]
     public async Task DeleteAsync(Guid id)
     {
         await questionCategoryRepository.DeleteAsync(id);

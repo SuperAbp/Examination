@@ -1,7 +1,7 @@
 <page-header [action]="phActionTpl">
   <ng-template #phActionTpl>
     <button (click)="add()" nz-button nzType="primary" *abpPermission="'Exam.QuestionCategory.Create'">
-      {{ 'Exam::NewCategory' | abpLocalization }}
+      {{ 'Exam::NewQuestionCategory' | abpLocalization }}
     </button>
   </ng-template>
 </page-header>
