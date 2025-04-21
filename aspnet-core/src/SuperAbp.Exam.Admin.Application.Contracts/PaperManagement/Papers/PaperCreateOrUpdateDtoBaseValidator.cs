@@ -15,10 +15,10 @@ public class PaperCreateOrUpdateDtoBaseValidator : AbstractValidator<PaperCreate
             .WithMessage(local["The {0} field is required.", "{PropertyName}"]);
 
         RuleFor(q => q.Score)
-            .Must((a, score) => score == a.Repositories.Sum(r => r.SingleScore * r.SingleCount + r.MultiScore * r.MultiCount + r.JudgeScore * r.JudgeCount + r.BlankScore * r.BlankCount))
+            .Must((a, score) => score == a.PaperQuestionRules.Sum(r => r.SingleScore * r.SingleCount + r.MultiScore * r.MultiCount + r.JudgeScore * r.JudgeCount + r.BlankScore * r.BlankCount))
             .WithMessage(local["The field {0} is invalid.", "{PropertyName}"]);
 
-        RuleFor(q => q.Repositories)
+        RuleFor(q => q.PaperQuestionRules)
             .NotNull()
             .NotEmpty()
             .WithMessage(local["The {0} field is required.", "{PropertyName}"]);

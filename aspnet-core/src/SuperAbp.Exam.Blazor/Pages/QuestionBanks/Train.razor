@@ -1,0 +1,61 @@
+﻿@page "/question-bank/{QuestionBankId:guid}/training/{TrainType:int?}"
+
+@if (loading)
+{
+    <div style=" text-align: center;margin: 50px 0;">
+        <Spin />
+    </div>
+}
+else
+{
+    <SingleQuestion Title="@L["QuestionBank"]"
+                TrainType="TrainType"
+                    BackUrl="@($"/question-bank/{QuestionBankId}")"
+                Questions="_questions"></SingleQuestion>
+}
+
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using SuperAbp.Exam.Blazor.Model
+@using Volo.Abp.Application.Dtos
+@inject IStringLocalizer<ExamResource> L
+@inject IQuestionAppService QuestionAppService
+@code {
+    [Parameter]
+    public Guid QuestionBankId { get; set; }
+    [Parameter]
+    public int? TrainType { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "QuestionType")]
+    public int? CurrentQuestionType { get; set; }
+
+    bool loading = true;
+    List<QuestionNumberVo> _questions = [];
+    protected override async Task OnInitializedAsync()
+    {
+        PagedResultDto<QuestionListDto> result = await QuestionAppService.GetListAsync(new GetQuestionsInput()
+        {
+            QuestionBankId = QuestionBankId, 
+                QuestionType =CurrentQuestionType.HasValue && QuestionType.TryFromValue(CurrentQuestionType.Value, out _)
+                ? CurrentQuestionType.Value
+                : null
+        });
+        foreach (int type in result.Items
+                     .GroupBy(q=>q.QuestionType).Select(q=>q.Key).Distinct().OrderBy(q=>q))
+        {
+            QuestionNumberVo vo = new QuestionNumberVo()
+            {
+                QuestionType = type,
+                Questions = result.Items.Where(q => q.QuestionType == type)
+                    .Select(q=>new QuestionNumberVo.QuestionIndex()
+                    {
+                        QuestionId = q.Id
+                    }).ToArray()
+            };
+            vo.TotalScore = vo.Questions.Sum(q => q.QuestionScore ?? 0);
+            _questions.Add(vo);
+        }
+        loading = false;
+    }
+}

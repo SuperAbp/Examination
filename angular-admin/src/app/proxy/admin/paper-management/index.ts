@@ -1,3 +1,3 @@
-import * as PaperRepos from './paper-repos';
+import * as PaperQuestionRules from './paper-question-rules';
 import * as Papers from './papers';
-export { PaperRepos, Papers };
+export { PaperQuestionRules, Papers };

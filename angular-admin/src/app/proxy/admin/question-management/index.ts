@@ -1,5 +1,5 @@
 import * as QuestionAnswers from './question-answers';
+import * as QuestionBanks from './question-banks';
 import * as QuestionCategories from './question-categories';
-import * as QuestionRepos from './question-repos';
 import * as Questions from './questions';
-export { QuestionAnswers, QuestionCategories, QuestionRepos, Questions };
+export { QuestionAnswers, QuestionBanks, QuestionCategories, Questions };

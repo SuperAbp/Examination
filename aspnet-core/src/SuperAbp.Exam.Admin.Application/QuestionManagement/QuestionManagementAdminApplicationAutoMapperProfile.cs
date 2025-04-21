@@ -1,12 +1,12 @@
-﻿using SuperAbp.Exam.Admin.QuestionManagement.QuestionRepos;
-using SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers;
+﻿using SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using AutoMapper;
+using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.Admin.QuestionManagement.QuestionCategories;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.QuestionCategories;
-using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement;
 
@@ -23,7 +23,7 @@ public class QuestionManagementAdminApplicationAutoMapperProfile : Profile
         #region 问题
 
         CreateMap<Question, GetQuestionForEditorOutput>();
-        CreateMap<QuestionRepositoryWithDetails, QuestionListDto>()
+        CreateMap<QuestionBankWithDetails, QuestionListDto>()
             .ForMember(s => s.QuestionType,
                 opt => opt.MapFrom(t => t.QuestionType.Value));
         CreateMap<Question, QuestionListDto>();
@@ -44,11 +44,11 @@ public class QuestionManagementAdminApplicationAutoMapperProfile : Profile
 
         #region 题库
 
-        CreateMap<QuestionRepo, GetQuestionRepoForEditorOutput>();
-        CreateMap<QuestionRepo, QuestionRepoListDto>();
-        CreateMap<QuestionRepo, QuestionRepoDetailDto>();
-        CreateMap<QuestionRepoCreateDto, QuestionRepo>();
-        CreateMap<QuestionRepoUpdateDto, QuestionRepo>();
+        CreateMap<QuestionBank, GetQuestionBankForEditorOutput>();
+        CreateMap<QuestionBank, QuestionBankListDto>();
+        CreateMap<QuestionBank, QuestionBankDetailDto>();
+        CreateMap<QuestionBankCreateDto, QuestionBank>();
+        CreateMap<QuestionBankUpdateDto, QuestionBank>();
 
         #endregion 题库
 

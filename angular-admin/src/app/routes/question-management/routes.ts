@@ -4,17 +4,17 @@ import { authJWTCanActivate } from '@delon/auth';
 
 import { QuestionManagementAnswerComponent } from './answer/answer.component';
 import { QuestionManagementCategoryComponent } from './category/category.component';
+import { QuestionManagementQuestionBankComponent } from './question-bank/question-bank.component';
 import { QuestionManagementQuestionEditComponent } from './question/edit/edit.component';
 import { QuestionManagementQuestionImportComponent } from './question/import/import.component';
 import { QuestionManagementQuestionComponent } from './question/question.component';
-import { QuestionManagementRepositoryComponent } from './repository/repository.component';
 export const routes: Routes = [
   {
-    path: 'repository',
-    component: QuestionManagementRepositoryComponent,
+    path: 'question-bank',
+    component: QuestionManagementQuestionBankComponent,
     canActivate: [authJWTCanActivate, permissionGuard],
     data: {
-      requiredPolicy: 'Exam.QuestionRepository'
+      requiredPolicy: 'Exam.QuestionBank'
     }
   },
   {

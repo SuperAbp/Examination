@@ -11,7 +11,7 @@ public class QuestionListDto : EntityDto<Guid>
     /// <summary>
     /// 题库
     /// </summary>
-    public required string QuestionRepository { get; set; }
+    public required string QuestionBank { get; set; }
 
     /// <summary>
     /// 分类

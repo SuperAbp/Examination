@@ -1,0 +1,190 @@
+<button nz-button nzType="primary" (click)="modalIsShow = !modalIsShow">{{ 'Exam::NewQuestionBank' | abpLocalization }}</button>
+@if (paperQuestionRuleTemps.length > 0) {
+  <ng-container [formGroup]="paperForm">
+    <nz-table
+      #editRowTable
+      nzBordered
+      formArrayName="paperQuestionRules"
+      [nzData]="paperQuestionRuleTemps"
+      nzTableLayout="fixed"
+      [nzFrontPagination]="false"
+      [nzShowPagination]="false"
+    >
+      <thead>
+        <tr>
+          <th>
+            <label> {{ 'Exam::QuestionBank' | abpLocalization }} </label>
+          </th>
+          <th>
+            <label> {{ 'Exam::SingleCount' | abpLocalization }} </label>
+          </th>
+          <th>
+            <label> {{ 'Exam::SingleScore' | abpLocalization }} </label>
+          </th>
+          <th>
+            <label> {{ 'Exam::JudgeCount' | abpLocalization }} </label>
+          </th>
+          <th>
+            <label> {{ 'Exam::JudgeScore' | abpLocalization }} </label>
+          </th>
+          <th>
+            <label> {{ 'Exam::MultiCount' | abpLocalization }} </label>
+          </th>
+          <th>
+            <label> {{ 'Exam::MultiScore' | abpLocalization }} </label>
+          </th>
+          <th>
+            <label> {{ 'Exam::BlankCount' | abpLocalization }} </label>
+          </th>
+          <th>
+            <label> {{ 'Exam::BlankScore' | abpLocalization }} </label>
+          </th>
+          <th nzWidth="80px">
+            <label> {{ 'Exam::Actions' | abpLocalization }} </label>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of paperQuestionRuleTemps; let i = index" [formGroupName]="i">
+          <td>{{ item.questionBank }}</td>
+          <td>
+            <nz-form-item>
+              <nz-form-control>
+                <nz-input-number
+                  formControlName="singleCount"
+                  [nzMin]="0"
+                  [nzMax]="item.singleTotalCount"
+                  [nzStep]="1"
+                  (ngModelChange)="changeScore($event)"
+                ></nz-input-number>
+                /{{ item.singleTotalCount }}
+              </nz-form-control>
+            </nz-form-item>
+          </td>
+          <td>
+            <nz-form-item>
+              <nz-form-control>
+                <nz-input-number
+                  formControlName="singleScore"
+                  [nzMin]="0"
+                  [nzStep]="1"
+                  (ngModelChange)="changeScore($event)"
+                ></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </td>
+          <td>
+            <nz-form-item>
+              <nz-form-control>
+                <nz-input-number
+                  formControlName="judgeCount"
+                  [nzMin]="0"
+                  [nzMax]="item.judgeTotalCount"
+                  [nzStep]="1"
+                  (ngModelChange)="changeScore($event)"
+                ></nz-input-number>
+                /{{ item.judgeTotalCount }}
+              </nz-form-control>
+            </nz-form-item>
+          </td>
+          <td>
+            <nz-form-item>
+              <nz-form-control>
+                <nz-input-number
+                  formControlName="judgeScore"
+                  [nzMin]="0"
+                  [nzStep]="1"
+                  (ngModelChange)="changeScore($event)"
+                ></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </td>
+          <td>
+            <nz-form-item>
+              <nz-form-control>
+                <nz-input-number
+                  formControlName="multiCount"
+                  [nzMin]="0"
+                  [nzMax]="item.multiTotalCount"
+                  [nzStep]="1"
+                  (ngModelChange)="changeScore($event)"
+                ></nz-input-number>
+                /{{ item.multiTotalCount }}
+              </nz-form-control>
+            </nz-form-item>
+          </td>
+          <td>
+            <nz-form-item>
+              <nz-form-control>
+                <nz-input-number
+                  formControlName="multiScore"
+                  [nzMin]="0"
+                  [nzStep]="1"
+                  (ngModelChange)="changeScore($event)"
+                ></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </td>
+          <td>
+            <nz-form-item>
+              <nz-form-control>
+                <nz-input-number
+                  formControlName="blankCount"
+                  [nzMin]="0"
+                  [nzMax]="item.multiTotalCount"
+                  [nzStep]="1"
+                  (ngModelChange)="changeScore($event)"
+                ></nz-input-number>
+                /{{ item.blankTotalCount }}
+              </nz-form-control>
+            </nz-form-item>
+          </td>
+          <td>
+            <nz-form-item>
+              <nz-form-control>
+                <nz-input-number
+                  formControlName="blankScore"
+                  [nzMin]="0"
+                  [nzStep]="1"
+                  (ngModelChange)="changeScore($event)"
+                ></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </td>
+
+          <td nzAlign="center">
+            <a
+              nz-popconfirm
+              [nzPopconfirmTitle]="'Exam::AreYouSure' | abpLocalization"
+              (nzOnConfirm)="delete(i, item)"
+              nz-tooltip
+              [nzTooltipTitle]="'Exam::Delete' | abpLocalization"
+            >
+              <i nz-icon nzType="delete" nzTheme="outline"></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </ng-container>
+}
+<nz-modal
+  [(nzVisible)]="modalIsShow"
+  [nzTitle]="'Exam::NewQuestionBank' | abpLocalization"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+  [nzOkLoading]="modalOkLoading"
+>
+  <ng-container *nzModalContent>
+    <nz-select
+      nzShowSearch
+      nzAllowClear
+      [(ngModel)]="currentQuestionRepositoryId"
+      [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::ExamRepository' | abpLocalization)"
+    >
+      @for (repository of repositoryItems; track $index) {
+        <nz-option [nzValue]="repository.id" [nzLabel]="repository.title"></nz-option>
+      }
+    </nz-select>
+  </ng-container>
+</nz-modal>

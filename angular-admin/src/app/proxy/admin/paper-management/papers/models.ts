@@ -11,15 +11,15 @@ export interface PaperCreateDto extends PaperCreateOrUpdateDtoBase {
 }
 
 export interface PaperCreateOrUpdateDtoBase {
-  repositories: PaperCreateOrUpdatePaperRepoDto[];
+  paperQuestionRules: PaperCreateOrUpdatePaperQuestionRuleDto[];
   name?: string;
   description?: string;
   score: number;
 }
 
-export interface PaperCreateOrUpdatePaperRepoDto {
+export interface PaperCreateOrUpdatePaperQuestionRuleDto {
   id?: string;
-  questionRepositoryId?: string;
+  questionBankId?: string;
   singleCount?: number;
   singleScore?: number;
   multiCount?: number;

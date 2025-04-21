@@ -17,21 +17,21 @@ public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvi
     public async Task<int> GetCountAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {
         return await (await GetDbSetAsync())
-            .Where(r => r.QuestionRepositoryId == questionRepositoryId)
+            .Where(r => r.QuestionBankId == questionRepositoryId)
             .CountAsync(cancellationToken);
     }
 
     public async Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType, CancellationToken cancellationToken = default)
     {
         return await (await GetDbSetAsync())
-            .Where(r => r.QuestionRepositoryId == questionRepositoryId && r.QuestionType == questionType)
+            .Where(r => r.QuestionBankId == questionRepositoryId && r.QuestionType == questionType)
             .CountAsync(cancellationToken);
     }
 
     public async Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {
         var dbSet = await GetDbSetAsync();
-        return await dbSet.Where(q => q.QuestionRepositoryId == questionRepositoryId)
+        return await dbSet.Where(q => q.QuestionBankId == questionRepositoryId)
             .GroupBy(q => q.QuestionType)
             .Select(q => q.Key)
             .ToListAsync(cancellationToken);
@@ -47,7 +47,7 @@ public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvi
         var queryable = await GetQueryableAsync();
 
         return await queryable
-            .WhereIf(questionRepositoryId.HasValue, p => p.QuestionRepositoryId == questionRepositoryId.Value)
+            .WhereIf(questionRepositoryId.HasValue, p => p.QuestionBankId == questionRepositoryId.Value)
             .WhereIf(questionType.HasValue, p => p.QuestionType == questionType.Value)
             .OrderBy(string.IsNullOrWhiteSpace(sorting) ? QuestionConsts.DefaultSorting : sorting)
             .OrderBy(q => Guid.NewGuid())
@@ -59,7 +59,7 @@ public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvi
         int? questionType = null, CancellationToken cancellationToken = default)
     {
         IQueryable<Question> queryable = (await GetQueryableAsync())
-            .WhereIf(questionRepositoryId.HasValue, p => p.QuestionRepositoryId == questionRepositoryId.Value)
+            .WhereIf(questionRepositoryId.HasValue, p => p.QuestionBankId == questionRepositoryId.Value)
             .WhereIf(questionType.HasValue, p => p.QuestionType == questionType.Value);
         ExamDbContext dbContext = await GetDbContextAsync();
         if (dbContext.Database.ProviderName?.ToLower().Contains("sqlserver") ?? false)
@@ -79,7 +79,7 @@ public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvi
     public async Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId, CancellationToken cancellationToken = default)
     {
         var dbSet = await GetDbSetAsync();
-        return await dbSet.AnyAsync(q => q.QuestionRepositoryId == questionRepositoryId && q.Id == questionId, cancellationToken);
+        return await dbSet.AnyAsync(q => q.QuestionBankId == questionRepositoryId && q.Id == questionId, cancellationToken);
     }
 
     public async Task<bool> ContentExistsAsync(string content, CancellationToken cancellationToken = default)

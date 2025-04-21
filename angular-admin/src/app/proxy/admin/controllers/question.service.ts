@@ -39,7 +39,7 @@ export class QuestionService {
     this.restService.request<any, PagedResultDto<QuestionListDto>>({
       method: 'GET',
       url: '/api/question-management/question',
-      params: { content: input.content, questionType: input.questionType, questionRepositoryIds: input.questionRepositoryIds, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+      params: { content: input.content, questionType: input.questionType, questionBankIds: input.questionBankIds, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName,...config });
   

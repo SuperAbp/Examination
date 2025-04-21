@@ -4,17 +4,15 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using Volo.Abp.Application.Dtos;
 using SuperAbp.Exam.Permissions;
-using SuperAbp.Exam.PaperManagement.PaperRepos;
 using SuperAbp.Exam.PaperManagement.Papers;
-using static SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateDto;
-using static SuperAbp.Exam.Admin.PaperManagement.Papers.PaperUpdateDto;
 
 namespace SuperAbp.Exam.Admin.PaperManagement.Papers
 {
     [Authorize(ExamPermissions.Papers.Default)]
-    public class PaperAdminAppService(IPaperRepository paperRepository, IPaperRepoRepository paperRepoRepository, PaperManager paperManager)
+    public class PaperAdminAppService(IPaperRepository paperRepository, IPaperQuestionRuleRepository paperQuestionRuleRepository, PaperManager paperManager)
         : ExamAppService, IPaperAdminAppService
     {
         public virtual async Task<PagedResultDto<PaperListDto>> GetListAsync(GetPapersInput input)
@@ -46,11 +44,11 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         [Authorize(ExamPermissions.Papers.Create)]
         public virtual async Task<PaperListDto> CreateAsync(PaperCreateDto input)
         {
-            Paper paper = await paperManager.CreateAsync(input.Name, GetTotalScore(input.Repositories));
+            Paper paper = await paperManager.CreateAsync(input.Name, GetTotalScore(input.PaperQuestionRules));
             paper.Description = input.Description;
-            paper.TotalQuestionCount = input.Repositories.Sum(p => p.SingleCount + p.MultiCount + p.JudgeCount + p.BlankCount) ?? 0;
+            paper.TotalQuestionCount = input.PaperQuestionRules.Sum(p => p.SingleCount + p.MultiCount + p.JudgeCount + p.BlankCount) ?? 0;
             paper = await paperRepository.InsertAsync(paper);
-            await CreateOrUpdatePaperRepoAsync(paper.Id, input.Repositories);
+            await CreateOrUpdatePaperQuestionRuleAsync(paper.Id, input.PaperQuestionRules);
             return ObjectMapper.Map<Paper, PaperListDto>(paper);
         }
 
@@ -59,14 +57,14 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         {
             Paper paper = await paperRepository.GetAsync(id);
             await paperManager.SetNameAsync(paper, input.Name);
-            paper.Score = GetTotalScore(input.Repositories);
+            paper.Score = GetTotalScore(input.PaperQuestionRules);
             paper.Description = input.Description;
             paper = await paperRepository.UpdateAsync(paper);
-            await CreateOrUpdatePaperRepoAsync(id, input.Repositories);
+            await CreateOrUpdatePaperQuestionRuleAsync(id, input.PaperQuestionRules);
             return ObjectMapper.Map<Paper, PaperListDto>(paper);
         }
 
-        protected virtual decimal GetTotalScore(PaperCreateOrUpdatePaperRepoDto[] dtos)
+        protected virtual decimal GetTotalScore(PaperCreateOrUpdatePaperQuestionRuleDto[] dtos)
         {
             return dtos.Sum(r => (r.SingleScore ?? 0) * (r.SingleCount ?? 0)
                                  + (r.MultiScore ?? 0) * (r.MultiCount ?? 0)
@@ -74,16 +72,16 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
                                  + (r.BlankScore ?? 0) * (r.BlankCount ?? 0));
         }
 
-        protected virtual async Task CreateOrUpdatePaperRepoAsync(Guid paperId, PaperCreateOrUpdatePaperRepoDto[] dtos)
+        protected virtual async Task CreateOrUpdatePaperQuestionRuleAsync(Guid paperId, PaperCreateOrUpdatePaperQuestionRuleDto[] dtos)
         {
-            List<PaperRepo> paperRepos = await paperRepoRepository.GetListAsync(paperId: paperId);
-            List<PaperRepo> newPaperRepos = [];
-            List<PaperRepo> updatePaperRepos = [];
-            foreach (PaperCreateOrUpdatePaperRepoDto dto in dtos)
+            List<PaperQuestionRule> paperQuestionRules = await paperQuestionRuleRepository.GetListAsync(paperId: paperId);
+            List<PaperQuestionRule> newPaperQuestionRules = [];
+            List<PaperQuestionRule> updatePaperQuestionRules = [];
+            foreach (PaperCreateOrUpdatePaperQuestionRuleDto dto in dtos)
             {
                 if (dto.Id.HasValue)
                 {
-                    PaperRepo questionAnswer = paperRepos.Single(a => a.Id == dto.Id.Value);
+                    PaperQuestionRule questionAnswer = paperQuestionRules.Single(a => a.Id == dto.Id.Value);
                     questionAnswer.BlankCount = dto.BlankCount;
                     questionAnswer.BlankScore = dto.BlankScore;
                     questionAnswer.SingleCount = dto.SingleCount;
@@ -92,11 +90,11 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
                     questionAnswer.MultiScore = dto.MultiScore;
                     questionAnswer.JudgeCount = dto.JudgeCount;
                     questionAnswer.JudgeScore = dto.JudgeScore;
-                    updatePaperRepos.Add(questionAnswer);
+                    updatePaperQuestionRules.Add(questionAnswer);
                 }
                 else
                 {
-                    newPaperRepos.Add(new PaperRepo(GuidGenerator.Create(), paperId, dto.QuestionRepositoryId)
+                    newPaperQuestionRules.Add(new PaperQuestionRule(GuidGenerator.Create(), paperId, dto.QuestionBankId)
                     {
                         BlankCount = dto.BlankCount,
                         BlankScore = dto.BlankScore,
@@ -109,14 +107,14 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
                     });
                 }
             }
-            await paperRepoRepository.InsertManyAsync(newPaperRepos);
-            await paperRepoRepository.UpdateManyAsync(updatePaperRepos);
+            await paperQuestionRuleRepository.InsertManyAsync(newPaperQuestionRules);
+            await paperQuestionRuleRepository.UpdateManyAsync(updatePaperQuestionRules);
         }
 
         [Authorize(ExamPermissions.Papers.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
-            await paperRepoRepository.DeleteByPaperIdAsync(id);
+            await paperQuestionRuleRepository.DeleteByPaperIdAsync(id);
             await paperRepository.DeleteAsync(id);
         }
 

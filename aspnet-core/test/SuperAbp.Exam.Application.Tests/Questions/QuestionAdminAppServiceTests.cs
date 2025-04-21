@@ -45,7 +45,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
     {
         QuestionCreateDto input = new()
         {
-            QuestionRepositoryId = _testData.QuestionRepository1Id,
+            QuestionBankId = _testData.QuestionBank1Id,
             QuestionType = QuestionType.MultiSelect.Value,
             Content = "New_Content",
             Analysis = "New_Analysis",
@@ -56,7 +56,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
         question.ShouldNotBeNull();
         question.Content.ShouldBe(input.Content);
         question.QuestionType.ShouldBe(QuestionType.FromValue(input.QuestionType));
-        question.QuestionRepositoryId.ShouldBe(input.QuestionRepositoryId);
+        question.QuestionBankId.ShouldBe(input.QuestionBankId);
         question.Analysis.ShouldBe(input.Analysis);
     }
 
@@ -65,7 +65,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
     {
         QuestionCreateDto input = new()
         {
-            QuestionRepositoryId = _testData.QuestionRepository1Id,
+            QuestionBankId = _testData.QuestionBank1Id,
             QuestionType = QuestionType.MultiSelect.Value,
             Content = "New_Content",
             Analysis = "New_Analysis"
@@ -79,7 +79,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
     {
         QuestionCreateDto input = new()
         {
-            QuestionRepositoryId = _testData.QuestionRepository1Id,
+            QuestionBankId = _testData.QuestionBank1Id,
             QuestionType = QuestionType.MultiSelect.Value,
             Content = _testData.Question11Content1,
             Analysis = "New_Analysis",
@@ -94,7 +94,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
     {
         QuestionUpdateDto input = new()
         {
-            QuestionRepositoryId = _testData.QuestionRepository2Id,
+            QuestionBankId = _testData.QuestionBank2Id,
             Content = "Update_Content",
             Analysis = "Update_Analysis",
             Options = [new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content1" }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content2", Right = true }]
@@ -102,7 +102,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
         await _questionAppService.UpdateAsync(_testData.Question11Id, input);
         Question question = await _questionRepository.GetAsync(_testData.Question11Id);
         question.ShouldNotBeNull();
-        question.QuestionRepositoryId.ShouldBe(input.QuestionRepositoryId);
+        question.QuestionBankId.ShouldBe(input.QuestionBankId);
         question.Content.ShouldBe(input.Content);
         question.Analysis.ShouldBe(input.Analysis);
     }
@@ -112,7 +112,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
     {
         QuestionUpdateDto input = new()
         {
-            QuestionRepositoryId = _testData.QuestionRepository1Id,
+            QuestionBankId = _testData.QuestionBank1Id,
             Content = _testData.Question12Content2,
             Analysis = "Update_Analysis",
             Options = [new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content1" }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content2", Right = true }]

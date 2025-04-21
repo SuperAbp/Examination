@@ -7,7 +7,7 @@ export interface GetQuestionForEditorOutput extends QuestionCreateOrUpdateDtoBas
 export interface GetQuestionsInput extends PagedAndSortedResultRequestDto {
   content?: string;
   questionType?: number;
-  questionRepositoryIds: string[];
+  questionBankIds: string[];
 }
 
 export interface QuestionCreateDto extends QuestionCreateOrUpdateDtoBase {
@@ -26,17 +26,19 @@ export interface QuestionCreateOrUpdateAnswerDto {
 export interface QuestionCreateOrUpdateDtoBase {
   content?: string;
   analysis?: string;
-  questionRepositoryId?: string;
+  questionBankId?: string;
+  questionCategoryId?: string;
 }
 
 export interface QuestionImportDto {
-  questionRepositoryId?: string;
+  questionBankId?: string;
   questionType: number;
   content?: string;
 }
 
 export interface QuestionListDto extends EntityDto<string> {
-  questionRepository?: string;
+  questionBank?: string;
+  questionCategory?: string;
   questionType: number;
   content?: string;
   analysis?: string;

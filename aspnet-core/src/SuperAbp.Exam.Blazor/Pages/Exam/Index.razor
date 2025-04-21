@@ -1,5 +1,5 @@
 ﻿@page "/exam"
-@if (UnfinishedUserExamId.HasValue && UnfinishedUserExamId.Value != new Guid())
+@if (UnfinishedUserExamId.HasValue && UnfinishedUserExamId.Value != Guid.Empty)
 {
     <a href="/Exam/Start/@UnfinishedUserExamId.Value" style="display: block;margin-bottom: 20px;">
     <Alert Message="存在未完成的考试，立即进入" Type="@AlertType.Warning" ShowIcon="true" />
@@ -75,6 +75,6 @@
     private async Task StartAsync(Guid id)
     {
         var dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = id });
-        Navigation.NavigateTo($"/Exam/Start/{dto.Id}");
+        Navigation.NavigateTo($"/exam/start/{dto.Id}");
     }
 }

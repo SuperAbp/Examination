@@ -8,11 +8,11 @@ public class QuestionManager(IQuestionRepository questionRepository) : DomainSer
 {
     protected IQuestionRepository QuestionRepository { get; } = questionRepository;
 
-    public virtual async Task<Question> CreateAsync(Guid questionRepositoryId, Guid questionCategoryId, QuestionType questionType, string content)
+    public virtual async Task<Question> CreateAsync(Guid questionBankId, QuestionType questionType, string content)
     {
         await CheckContentAsync(content);
 
-        return new Question(GuidGenerator.Create(), questionRepositoryId, questionCategoryId, questionType, content);
+        return new Question(GuidGenerator.Create(), questionBankId, questionType, content);
     }
 
     public virtual async Task SetContentAsync(Question question, string content)

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using SuperAbp.Exam.QuestionManagement.QuestionRepos;
+using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
@@ -13,14 +13,14 @@ namespace SuperAbp.Exam.TrainingManagement;
 [Authorize]
 public class TrainingAppService(
     ITrainingRepository trainingRepository,
-    IQuestionRepoRepository questionRepoRepository,
+    IQuestionBankRepository questionBankRepository,
     IQuestionRepository questionRepository)
     : ExamAppService, ITrainingAppService
 {
     public async Task<ListResultDto<TrainingListDto>> GetListAsync(GetTrainsInput input)
     {
         List<Training> trains = await trainingRepository
-            .GetListAsync(trainingSource: input.TrainingSource, questionRepositoryId: input.QuestionRepositoryId, userId: CurrentUser.GetId());
+            .GetListAsync(trainingSource: input.TrainingSource, questionRepositoryId: input.QuestionBankId, userId: CurrentUser.GetId());
 
         List<TrainingListDto> dtos = ObjectMapper.Map<List<Training>, List<TrainingListDto>>(trains);
 
@@ -29,11 +29,11 @@ public class TrainingAppService(
 
     public async Task<TrainingListDto> CreateAsync(TrainingCreateDto input)
     {
-        if (!await questionRepoRepository.IdExistsAsync(input.QuestionRepositoryId))
+        if (!await questionBankRepository.IdExistsAsync(input.QuestionBankId))
         {
             throw new UserFriendlyException("题库不存在");
         }
-        if (!await questionRepository.AnyAsync(input.QuestionRepositoryId, input.QuestionId))
+        if (!await questionRepository.AnyAsync(input.QuestionBankId, input.QuestionId))
         {
             throw new UserFriendlyException("题目不存在");
         }
@@ -41,7 +41,7 @@ public class TrainingAppService(
         {
             throw new UserFriendlyException("请勿重复答题");
         }
-        Training training = new(GuidGenerator.Create(), CurrentUser.GetId(), input.QuestionRepositoryId, input.QuestionId, input.Right, input.TrainingSource);
+        Training training = new(GuidGenerator.Create(), CurrentUser.GetId(), input.QuestionBankId, input.QuestionId, input.Right, input.TrainingSource);
         await trainingRepository.InsertAsync(training);
         return ObjectMapper.Map<Training, TrainingListDto>(training);
     }

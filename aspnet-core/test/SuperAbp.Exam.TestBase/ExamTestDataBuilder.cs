@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.ExamManagement.UserExams;
-using SuperAbp.Exam.PaperManagement.PaperRepos;
+using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.QuestionCategories;
-using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.TrainingManagement;
 using Volo.Abp.Data;
@@ -18,12 +18,12 @@ namespace SuperAbp.Exam;
 
 public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     IQuestionRepository questionRepository,
-    IQuestionRepoRepository questionRepoRepository,
+    IQuestionBankRepository questionBankRepository,
     IQuestionAnswerRepository questionAnswerRepository,
     IQuestionCategoryRepository questionCategoryRepository,
     IExamRepository examRepository,
     IPaperRepository paperRepository,
-    IPaperRepoRepository paperRepoRepository,
+    IPaperQuestionRuleRepository paperQuestionRuleRepository,
     IUserExamRepository userExamRepository,
     IUserExamQuestionRepository userExamQuestionRepository,
     ITrainingRepository trainingRepository,
@@ -35,15 +35,15 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
 
         using (currentTenant.Change(context?.TenantId))
         {
-            await questionRepoRepository.InsertManyAsync([
-                new QuestionRepo(testData.QuestionRepository1Id, testData.QuestionRepository1Title),
-                new QuestionRepo(testData.QuestionRepository2Id, testData.QuestionRepository2Title)]);
+            await questionBankRepository.InsertManyAsync([
+                new QuestionBank(testData.QuestionBank1Id, testData.QuestionBank1Title),
+                new QuestionBank(testData.QuestionBank2Id, testData.QuestionBank2Title)]);
 
             await questionRepository.InsertManyAsync([
-                new Question(testData.Question11Id, testData.QuestionRepository1Id, QuestionType.SingleSelect, testData.Question11Content1),
-                new Question(testData.Question12Id, testData.QuestionRepository1Id, QuestionType.SingleSelect, testData.Question12Content2),
-                new Question(testData.Question21Id, testData.QuestionRepository2Id, QuestionType.SingleSelect, testData.Question21Content1),
-                new Question(testData.Question22Id, testData.QuestionRepository2Id, QuestionType.SingleSelect, testData.Question22Content2),
+                new Question(testData.Question11Id, testData.QuestionBank1Id, QuestionType.SingleSelect, testData.Question11Content1),
+                new Question(testData.Question12Id, testData.QuestionBank1Id, QuestionType.SingleSelect, testData.Question12Content2),
+                new Question(testData.Question21Id, testData.QuestionBank2Id, QuestionType.SingleSelect, testData.Question21Content1),
+                new Question(testData.Question22Id, testData.QuestionBank2Id, QuestionType.SingleSelect, testData.Question22Content2),
                 ]);
 
             await questionAnswerRepository.InsertManyAsync([
@@ -69,8 +69,8 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 new Paper(testData.Paper2Id, testData.Paper2Name, 100),
             ]);
 
-            await paperRepoRepository.InsertManyAsync([
-                new PaperRepo(testData.PaperRepository1Id, testData.Paper1Id, testData.QuestionRepository1Id)
+            await paperQuestionRuleRepository.InsertManyAsync([
+                new PaperQuestionRule(testData.PaperQuestionRule1Id, testData.Paper1Id, testData.QuestionBank1Id)
                 {
                     SingleCount = 1,
                     SingleScore = 1,
@@ -81,7 +81,7 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                     BlankCount = 1,
                     BlankScore = 1
                 },
-                new PaperRepo(testData.PaperRepository2Id, testData.Paper1Id, testData.QuestionRepository1Id)
+                new PaperQuestionRule(testData.PaperQuestionRule2Id, testData.Paper1Id, testData.QuestionBank1Id)
                 {
                     SingleCount = 1,
                     SingleScore = 1,
@@ -116,10 +116,10 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
             ]);
 
             await trainingRepository.InsertManyAsync([
-                new Training(testData.Training1Id, testData.UserId, testData.QuestionRepository1Id,
-                    testData.Question11Id, false, TrainingSource.QuestionRepository),
-                new Training(testData.Training2Id, testData.UserId, testData.QuestionRepository1Id,
-                    testData.Question11Id, false, TrainingSource.QuestionRepository)
+                new Training(testData.Training1Id, testData.UserId, testData.QuestionBank1Id,
+                    testData.Question11Id, false, TrainingSource.QuestionBank),
+                new Training(testData.Training2Id, testData.UserId, testData.QuestionBank1Id,
+                    testData.Question11Id, false, TrainingSource.QuestionBank)
             ]);
 
             await questionCategoryRepository.InsertManyAsync([

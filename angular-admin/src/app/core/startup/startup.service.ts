@@ -121,7 +121,7 @@ export class StartupService {
             children: [
               {
                 text: '题库管理',
-                link: '/question-management/repository'
+                link: '/question-management/question-bank'
               },
               {
                 text: '问题类别管理',

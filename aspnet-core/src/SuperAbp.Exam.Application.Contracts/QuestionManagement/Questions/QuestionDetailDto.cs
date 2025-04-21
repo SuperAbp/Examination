@@ -10,7 +10,7 @@ public class QuestionDetailDto : EntityDto<Guid>
 {
     public int QuestionType { get; set; }
 
-    public Guid QuestionRepositoryId { get; set; }
+    public Guid QuestionBankId { get; set; }
 
     /// <summary>
     /// 题干

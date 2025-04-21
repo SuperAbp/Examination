@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
-using SuperAbp.Exam.PaperManagement.PaperRepos;
+using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp;
@@ -18,7 +18,7 @@ public class UserExamManager(
     IExamRepository examRepository,
     IQuestionRepository questionRepository,
     IPaperRepository paperRepository,
-    IPaperRepoRepository paperRepoRepository,
+    IPaperQuestionRuleRepository paperQuestionRuleRepository,
     IUserExamRepository userExamRepository,
     IUserExamQuestionRepository userExamQuestionRepository)
     : DomainService
@@ -72,28 +72,28 @@ public class UserExamManager(
                    ?? throw new UserFriendlyException("题库不存在");
         var paper = await paperRepository.FindAsync(exam.PaperId)
                     ?? throw new UserFriendlyException("试卷不存在");
-        var paperRepos = await paperRepoRepository.GetListAsync(paperId: paper.Id);
+        var paperRepos = await paperQuestionRuleRepository.GetListAsync(paperId: paper.Id);
         var examQuestions = new List<UserExamQuestion>();
         foreach (var paperRepo in paperRepos)
         {
             if (paperRepo.SingleCount is > 0)
             {
-                var questions = await GetRandomQuestions(paperRepo.QuestionRepositoryId, QuestionType.SingleSelect, paperRepo.SingleCount.Value);
+                var questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.SingleSelect, paperRepo.SingleCount.Value);
                 examQuestions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExamId, q.Id, paperRepo.SingleScore ?? 0)));
             }
             if (paperRepo.MultiCount is > 0)
             {
-                var questions = await GetRandomQuestions(paperRepo.QuestionRepositoryId, QuestionType.MultiSelect, paperRepo.MultiCount.Value);
+                var questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.MultiSelect, paperRepo.MultiCount.Value);
                 examQuestions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExamId, q.Id, paperRepo.MultiScore ?? 0)));
             }
             if (paperRepo.JudgeCount is > 0)
             {
-                var questions = await GetRandomQuestions(paperRepo.QuestionRepositoryId, QuestionType.Judge, paperRepo.JudgeCount.Value);
+                var questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.Judge, paperRepo.JudgeCount.Value);
                 examQuestions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExamId, q.Id, paperRepo.JudgeScore ?? 0)));
             }
             if (paperRepo.BlankCount is > 0)
             {
-                var questions = await GetRandomQuestions(paperRepo.QuestionRepositoryId, QuestionType.FillInTheBlanks, paperRepo.BlankCount.Value);
+                var questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.FillInTheBlanks, paperRepo.BlankCount.Value);
                 examQuestions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExamId, q.Id, paperRepo.BlankScore ?? 0)));
             }
         }

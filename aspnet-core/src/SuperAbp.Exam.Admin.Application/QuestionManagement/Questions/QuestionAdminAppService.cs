@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.Permissions;
-using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 {
@@ -17,7 +17,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         QuestionManager questionManager,
         QuestionAnswerManager questionAnswerManager,
         IQuestionRepository questionRepository,
-        IQuestionRepoRepository questionRepoRepository,
+        IQuestionBankRepository questionBankRepository,
         IQuestionAnswerRepository questionAnswerRepository,
         Func<int, IQuestionAnalysis> questionAnalysis)
         : ExamAppService, IQuestionAdminAppService
@@ -29,16 +29,16 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             var questionQueryable = await questionRepository.GetQueryableAsync();
 
             questionQueryable = questionQueryable
-                .WhereIf(input.QuestionRepositoryIds.Length > 0, q => input.QuestionRepositoryIds.Contains(q.QuestionRepositoryId))
+                .WhereIf(input.QuestionBankIds.Length > 0, q => input.QuestionBankIds.Contains(q.QuestionBankId))
                 .WhereIf(input.QuestionType.HasValue, q => q.QuestionType == input.QuestionType.Value)
                 .WhereIf(!input.Content.IsNullOrWhiteSpace(), q => q.Content.Contains(input.Content));
 
             var queryable = from q in questionQueryable
-                            join r in (await questionRepoRepository.GetQueryableAsync()) on q.QuestionRepositoryId equals r.Id
-                            select new QuestionRepositoryWithDetails
+                            join r in (await questionBankRepository.GetQueryableAsync()) on q.QuestionBankId equals r.Id
+                            select new QuestionBankWithDetails
                             {
                                 Id = q.Id,
-                                QuestionRepository = r.Title,
+                                QuestionBank = r.Title,
                                 Analysis = q.Analysis,
                                 Content = q.Content,
                                 QuestionType = q.QuestionType,
@@ -51,7 +51,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
                 .OrderBy(input.Sorting ?? QuestionConsts.DefaultSorting)
                 .PageBy(input));
 
-            var dtos = ObjectMapper.Map<List<QuestionRepositoryWithDetails>, List<QuestionListDto>>(entities);
+            var dtos = ObjectMapper.Map<List<QuestionBankWithDetails>, List<QuestionListDto>>(entities);
 
             return new PagedResultDto<QuestionListDto>(totalCount, dtos);
         }
@@ -72,7 +72,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             List<QuestionAnswer> answers = [];
             foreach (QuestionImportModel item in items)
             {
-                Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, QuestionType.FromValue(input.QuestionType), item.Title);
+                Question question = await questionManager.CreateAsync(input.QuestionBankId, QuestionType.FromValue(input.QuestionType), item.Title);
                 question.Analysis = item.Analysis;
 
                 for (int i = 0; i < item.Options.Count; i++)
@@ -96,7 +96,8 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         {
             ValidationCorrectCountAsync(input.QuestionType, input.Options.Count(a => a.Right));
 
-            Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, input.QuestionCategoryId, QuestionType.FromValue(input.QuestionType), input.Content);
+            Question question = await questionManager.CreateAsync(input.QuestionBankId, QuestionType.FromValue(input.QuestionType), input.Content);
+            question.QuestionCategoryId = input.QuestionCategoryId;
             question.Analysis = input.Analysis;
             question = await questionRepository.InsertAsync(question);
             await CreateOrUpdateAnswerAsync(question.Id, input.Options);
@@ -111,7 +112,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 
             await questionManager.SetContentAsync(question, input.Content);
             question.Analysis = input.Analysis;
-            question.QuestionRepositoryId = input.QuestionRepositoryId;
+            question.QuestionBankId = input.QuestionBankId;
             question.QuestionCategoryId = input.QuestionCategoryId;
             question = await questionRepository.UpdateAsync(question);
             await CreateOrUpdateAnswerAsync(question.Id, input.Options);

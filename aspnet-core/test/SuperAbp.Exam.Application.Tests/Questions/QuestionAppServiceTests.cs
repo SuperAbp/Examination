@@ -24,7 +24,7 @@ public abstract class QuestionAppServiceTests<TStartupModule> : ExamApplicationT
     [Fact]
     public async Task Should_Get_List()
     {
-        PagedResultDto<QuestionListDto> result = await _questionAppService.GetListAsync(new GetQuestionsInput() { QuestionRepositoryId = _testData.QuestionRepository1Id });
+        PagedResultDto<QuestionListDto> result = await _questionAppService.GetListAsync(new GetQuestionsInput() { QuestionBankId = _testData.QuestionBank1Id });
         result.Items.Count.ShouldBeGreaterThan(0);
     }
 
@@ -38,7 +38,7 @@ public abstract class QuestionAppServiceTests<TStartupModule> : ExamApplicationT
     [Fact]
     public async Task Should_Get_Ids()
     {
-        ListResultDto<Guid> result = await _questionAppService.GetIdsAsync(new GetQuestionsInput() { QuestionRepositoryId = _testData.QuestionRepository1Id });
+        ListResultDto<Guid> result = await _questionAppService.GetIdsAsync(new GetQuestionsInput() { QuestionBankId = _testData.QuestionBank1Id });
         result.Items.Count.ShouldBeGreaterThan(0);
     }
 

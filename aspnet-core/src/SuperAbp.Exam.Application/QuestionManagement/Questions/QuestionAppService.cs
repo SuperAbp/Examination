@@ -40,7 +40,7 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
             IQueryable<Question> queryable = await questionRepository.GetQueryableAsync();
             queryable = queryable
                 .WhereIf(input.QuestionId.HasValue, q => q.Id == input.QuestionId.Value)
-                .WhereIf(input.QuestionRepositoryId.HasValue, q => q.QuestionRepositoryId == input.QuestionRepositoryId.Value)
+                .WhereIf(input.QuestionBankId.HasValue, q => q.QuestionBankId == input.QuestionBankId.Value)
                 .WhereIf(!input.Content.IsNullOrWhiteSpace(), q => q.Content.Contains(input.Content))
                 .WhereIf(input.QuestionType.HasValue, q => q.QuestionType == input.QuestionType.Value);
             if (input.IsFavorite)

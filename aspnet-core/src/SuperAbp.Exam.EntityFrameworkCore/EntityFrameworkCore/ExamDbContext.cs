@@ -19,13 +19,13 @@ using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
-using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.MenuManagement.EntityFrameworkCore;
-using SuperAbp.Exam.PaperManagement.PaperRepos;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.TrainingManagement;
 using PaperConsts = SuperAbp.Exam.PaperManagement.Papers.PaperConsts;
 using SmartEnum.EFCore;
+using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
+using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.QuestionCategories;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
@@ -74,9 +74,9 @@ public class ExamDbContext :
     public DbSet<Question> Questions { get; set; }
     public DbSet<QuestionCategory> QuestionCategories { get; set; }
     public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
-    public DbSet<QuestionRepo> QuestionRepositories { get; set; }
+    public DbSet<QuestionBank> QuestionBanks { get; set; }
     public DbSet<Paper> Papers { get; set; }
-    public DbSet<PaperRepo> ExamRepositories { get; set; }
+    public DbSet<PaperQuestionRule> PaperQuestionRules { get; set; }
 
     public DbSet<Examination> Exams { get; set; }
 
@@ -139,14 +139,14 @@ public class ExamDbContext :
             b.Property(p => p.Sort).IsRequired().HasDefaultValue(0);
         });
 
-        builder.Entity<QuestionRepo>(b =>
+        builder.Entity<QuestionBank>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "QuestionRepositories", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "QuestionBanks", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
 
-            b.Property(p => p.Title).IsRequired().HasMaxLength(QuestionRepoConsts.MaxTitleLength);
-            b.Property(p => p.Remark).HasMaxLength(QuestionRepoConsts.MaxRemarkLength);
+            b.Property(p => p.Title).IsRequired().HasMaxLength(QuestionBankConsts.MaxTitleLength);
+            b.Property(p => p.Remark).HasMaxLength(QuestionBankConsts.MaxRemarkLength);
         });
 
         builder.Entity<Paper>(b =>
@@ -159,9 +159,9 @@ public class ExamDbContext :
             b.Property(p => p.Description).HasMaxLength(PaperConsts.MaxDescriptionLength);
         });
 
-        builder.Entity<PaperRepo>(b =>
+        builder.Entity<PaperQuestionRule>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "PaperRepositories", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "PaperQuestionRules", ExamConsts.DbSchema);
             b.ConfigureByConvention();
         });
 

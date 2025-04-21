@@ -8,9 +8,9 @@ public static class ExamDomainErrorCodes
         public const string CorrectCountError = "Exam:Question:0002";
     }
 
-    public static class QuestionRepositories
+    public static class QuestionBanks
     {
-        public const string TitleAlreadyExists = "Exam: QuestionRepository:0001";
+        public const string TitleAlreadyExists = "Exam: QuestionBank:0001";
     }
 
     public static class QuestionAnswers

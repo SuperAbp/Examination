@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using SuperAbp.Exam.Admin.PaperManagement.PaperRepos;
+using SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.Admin.PaperManagement.Papers;
-using SuperAbp.Exam.PaperManagement.PaperRepos;
+using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
 
 namespace SuperAbp.Exam.Admin.PaperManagement
@@ -27,11 +27,11 @@ namespace SuperAbp.Exam.Admin.PaperManagement
 
             #region 考试题库
 
-            CreateMap<PaperRepo, GetPaperRepoForEditorOutput>();
-            CreateMap<PaperRepo, PaperRepoListDto>();
-            CreateMap<PaperRepositoryWithDetails, PaperRepoListDto>();
-            CreateMap<PaperRepo, PaperRepoDetailDto>();
-            CreateMap<PaperRepoCreateOrUpdateDtoBase, PaperRepo>();
+            CreateMap<PaperQuestionRule, GetPaperQuestionRuleForEditorOutput>();
+            CreateMap<PaperQuestionRule, PaperQuestionRuleListDto>();
+            CreateMap<PaperQuestionRuleWithDetails, PaperQuestionRuleListDto>();
+            CreateMap<PaperQuestionRule, PaperQuestionRuleDetailDto>();
+            CreateMap<PaperQuestionRuleCreateOrUpdateDtoBase, PaperQuestionRule>();
 
             #endregion 考试题库
         }

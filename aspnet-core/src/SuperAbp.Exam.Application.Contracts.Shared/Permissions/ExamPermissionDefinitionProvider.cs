@@ -29,21 +29,21 @@ public class ExamPermissionDefinitionProvider : PermissionDefinitionProvider
         questionAnswers.AddChild(ExamPermissions.QuestionAnswers.Update, L("Permission:Edit"));
         questionAnswers.AddChild(ExamPermissions.QuestionAnswers.Delete, L("Permission:Delete"));
 
-        var questionRepos = myGroup.AddPermission(ExamPermissions.QuestionRepositories.Default, L("Permission:QuestionRepositories"));
-        questionRepos.AddChild(ExamPermissions.QuestionRepositories.Management, L("Permission:Management"));
-        questionRepos.AddChild(ExamPermissions.QuestionRepositories.Create, L("Permission:Create"));
-        questionRepos.AddChild(ExamPermissions.QuestionRepositories.Update, L("Permission:Edit"));
-        questionRepos.AddChild(ExamPermissions.QuestionRepositories.Delete, L("Permission:Delete"));
+        var questionBanks = myGroup.AddPermission(ExamPermissions.QuestionBanks.Default, L("Permission:QuestionBanks"));
+        questionBanks.AddChild(ExamPermissions.QuestionBanks.Management, L("Permission:Management"));
+        questionBanks.AddChild(ExamPermissions.QuestionBanks.Create, L("Permission:Create"));
+        questionBanks.AddChild(ExamPermissions.QuestionBanks.Update, L("Permission:Edit"));
+        questionBanks.AddChild(ExamPermissions.QuestionBanks.Delete, L("Permission:Delete"));
 
         var papers = myGroup.AddPermission(ExamPermissions.Papers.Default, L("Permission:Papers"));
         papers.AddChild(ExamPermissions.Papers.Create, L("Permission:Create"));
         papers.AddChild(ExamPermissions.Papers.Update, L("Permission:Edit"));
         papers.AddChild(ExamPermissions.Papers.Delete, L("Permission:Delete"));
 
-        var paperRepositories = myGroup.AddPermission(ExamPermissions.PaperRepos.Default, L("Permission:PaperRepositories"));
-        paperRepositories.AddChild(ExamPermissions.PaperRepos.Create, L("Permission:Create"));
-        paperRepositories.AddChild(ExamPermissions.PaperRepos.Update, L("Permission:Edit"));
-        paperRepositories.AddChild(ExamPermissions.PaperRepos.Delete, L("Permission:Delete"));
+        var paperQuestionRules = myGroup.AddPermission(ExamPermissions.PaperQuestionRules.Default, L("Permission:PaperQuestionRules"));
+        paperQuestionRules.AddChild(ExamPermissions.PaperQuestionRules.Create, L("Permission:Create"));
+        paperQuestionRules.AddChild(ExamPermissions.PaperQuestionRules.Update, L("Permission:Edit"));
+        paperQuestionRules.AddChild(ExamPermissions.PaperQuestionRules.Delete, L("Permission:Delete"));
 
         var exams = myGroup.AddPermission(ExamPermissions.Exams.Default, L("Permission:Exams"));
         exams.AddChild(ExamPermissions.Exams.Create, L("Permission:Create"));

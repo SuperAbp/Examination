@@ -18,7 +18,7 @@ public class QuestionCreateOrUpdateDtoBase
     /// <summary>
     /// 所属题库
     /// </summary>
-    public Guid QuestionRepositoryId { get; set; }
+    public Guid QuestionBankId { get; set; }
 
     /// <summary>
     /// 所属分类

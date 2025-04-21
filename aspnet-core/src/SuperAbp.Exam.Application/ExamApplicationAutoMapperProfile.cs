@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using SuperAbp.Exam.Favorites;
-using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.Exam.TrainingManagement;
 
 namespace SuperAbp.Exam;

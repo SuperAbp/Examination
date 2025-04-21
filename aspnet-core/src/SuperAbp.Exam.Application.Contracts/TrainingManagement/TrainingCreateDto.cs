@@ -7,7 +7,7 @@ public class TrainingCreateDto
     /// <summary>
     /// 题库Id
     /// </summary>
-    public Guid QuestionRepositoryId { get; set; }
+    public Guid QuestionBankId { get; set; }
 
     /// <summary>
     /// 题目Id

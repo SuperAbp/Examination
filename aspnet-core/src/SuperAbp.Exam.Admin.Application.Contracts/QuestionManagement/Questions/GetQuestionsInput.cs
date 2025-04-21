@@ -15,5 +15,5 @@ public class GetQuestionsInput : PagedAndSortedResultRequestDto
 
     public int? QuestionType { get; set; }
 
-    public Guid[] QuestionRepositoryIds { get; set; } = [];
+    public Guid[] QuestionBankIds { get; set; } = [];
 }

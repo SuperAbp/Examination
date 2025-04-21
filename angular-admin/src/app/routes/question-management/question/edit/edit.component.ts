@@ -4,8 +4,8 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderModule } from '@delon/abc/page-header';
-import { OptionService, QuestionAnswerService, QuestionRepoService, QuestionService } from '@proxy/admin/controllers';
-import { QuestionRepoListDto } from '@proxy/admin/question-management/question-repos';
+import { OptionService, QuestionAnswerService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
+import { QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
 import { GetQuestionForEditorOutput } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -56,14 +56,14 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
   private router = inject(Router);
   private localizationService = inject(LocalizationService);
   private questionService = inject(QuestionService);
-  private questionRepoService = inject(QuestionRepoService);
+  private questionBankService = inject(QuestionBankService);
   private answerService = inject(QuestionAnswerService);
   private optionService = inject(OptionService);
 
   loading = false;
   isConfirmLoading = false;
   questionTypes: Array<{ label: string; value: number }> = [];
-  questionRepositories: QuestionRepoListDto[];
+  questionBanks: QuestionBankListDto[];
 
   form: FormGroup = null;
 
@@ -99,7 +99,7 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
   }
 
   buildForm() {
-    this.questionRepoService
+    this.questionBankService
       .getList({ skipCount: 0, maxResultCount: 100 })
       .pipe(
         tap(res => {
@@ -116,13 +116,13 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
               })
             )
             .subscribe();
-          this.questionRepositories = res.items;
+          this.questionBanks = res.items;
 
           this.form = this.fb.group({
             content: [this.question.content || '', [Validators.required]],
             analysis: [this.question.analysis || ''],
             questionType: [this.question.questionType >= 0 ? this.question.questionType : null, [Validators.required]],
-            questionRepositoryId: [this.question.questionRepositoryId || '', [Validators.required]],
+            questionBankId: [this.question.questionBankId || '', [Validators.required]],
             options: this.fb.array([], [Validators.required])
           });
         })

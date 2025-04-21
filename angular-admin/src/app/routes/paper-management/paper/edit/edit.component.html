@@ -9,13 +9,13 @@
     <page-header [title]="'Exam::NewPaper' | abpLocalization"></page-header>
   }
   <ng-container>
-    <nz-card [nzTitle]="'Exam::QuestionRepository' | abpLocalization">
-      <app-paper-management-repository
-        #PaperRepository
+    <nz-card [nzTitle]="'Exam::QuestionBank' | abpLocalization">
+      <app-paper-management-paper-question-rule
+        #PaperQuestionRule
         [paperId]="paperId"
         [paperForm]="form"
         (totalScoreChange)="changeTotalScore($event)"
-      ></app-paper-management-repository>
+      ></app-paper-management-paper-question-rule>
     </nz-card>
     <nz-card [nzTitle]="'Exam::ExamConfig' | abpLocalization">
       <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="horizontal">

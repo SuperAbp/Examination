@@ -57,10 +57,10 @@ public class ExamTestData : ISingletonDependency
     public Guid QuestionCategory2Id = Guid.NewGuid();
     public string QuestionCategory2Name = "QuestionCategory2的Name";
 
-    public Guid QuestionRepository1Id = Guid.NewGuid();
-    public Guid QuestionRepository2Id = Guid.NewGuid();
-    public string QuestionRepository1Title = "Question Repository1的Title";
-    public string QuestionRepository2Title = "Question Repository2的Title";
+    public Guid QuestionBank1Id = Guid.NewGuid();
+    public Guid QuestionBank2Id = Guid.NewGuid();
+    public string QuestionBank1Title = "Question Bank1的Title";
+    public string QuestionBank2Title = "Question Bank2的Title";
 
     public Guid Paper1Id = Guid.NewGuid();
     public string Paper1Name = "Paper1的Name";
@@ -80,9 +80,9 @@ public class ExamTestData : ISingletonDependency
     public Guid Examination22Id = Guid.NewGuid();
     public string Examination22Name = "Examination22的Name";
 
-    public Guid PaperRepository1Id = Guid.NewGuid();
+    public Guid PaperQuestionRule1Id = Guid.NewGuid();
 
-    public Guid PaperRepository2Id = Guid.NewGuid();
+    public Guid PaperQuestionRule2Id = Guid.NewGuid();
 
     public Guid UserExam11Id = Guid.NewGuid();
     public Guid UserExam12Id = Guid.NewGuid();
