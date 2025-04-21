@@ -21,9 +21,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
             await NormalizeMaxResultCountAsync(input);
 
             List<UserExamQuestionWithDetails> entities = await userExamQuestionRepository
-                .GetListAsync(input.Sorting, input.SkipCount, input.MaxResultCount, input.UserExamId);
-            List<UserExamQuestionListDto> dtos = [];
-            foreach (UserExamQuestionWithDetails entity in entities)
+                .GetListAsync(input.UserExamId, input.Sorting, input.SkipCount, input.MaxResultCount);
+            List<UserExamQuestionListDto> dtos = entities.Select(q => new UserExamQuestionListDto()
             {
                 UserExamQuestionListDto dto = new()
                 {

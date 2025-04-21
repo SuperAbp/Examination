@@ -21,10 +21,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<List<UserExamQuestionWithDetails>> GetListAsync(
+            Guid userExamId,
             string? sorting = null,
             int skipCount = 0,
             int maxResultCount = int.MaxValue,
-            Guid? userExamId = null,
             CancellationToken cancellationToken = default);
     }
 }
