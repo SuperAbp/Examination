@@ -1,5 +1,5 @@
-﻿using SuperAbp.Exam.QuestionManagement.Questions;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
 
@@ -20,8 +20,5 @@ public class QuestionCreateOrUpdateDtoBase
     /// </summary>
     public Guid QuestionBankId { get; set; }
 
-    /// <summary>
-    /// 所属分类
-    /// </summary>
-    public Guid QuestionCategoryId { get; set; }
+    public IReadOnlyList<Guid>? KnowledgePointIds { get; set; }
 }

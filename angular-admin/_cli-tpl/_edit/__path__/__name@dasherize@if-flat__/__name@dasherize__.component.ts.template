@@ -1,7 +1,16 @@
-import { LocalizationService } from '@abp/ng.core';
+import { CoreModule, LocalizationService } from '@abp/ng.core';
 import { Component, OnInit, <% if(modal) { %> Input, <% } %> ViewChild<% if(!!viewEncapsulation) { %>, ViewEncapsulation<% }%><% if(changeDetection !== 'Default') { %>, ChangeDetectionStrategy<% }%> } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, tap } from 'rxjs/operators';<% if(modal) { %>
 import { NzModalRef } from 'ng-zorro-antd/modal';<% } else { %>
 import { ActivatedRoute } from '@angular/router';
@@ -9,7 +18,20 @@ import { Location } from '@angular/common';<% } %>
 
 @Component({
   selector: '<%= selector %>',
-  templateUrl: './<%= dasherize(name) %>.component.html',<% if(!inlineStyle) { %><% } else { %>
+  templateUrl: './<%= dasherize(name) %>.component.html',
+  standalone: true,
+  imports: [
+    CoreModule,
+    PageHeaderModule,
+    FooterToolbarModule,
+    NzSpinModule,
+    NzCardModule,
+    NzGridModule,
+    NzFormModule,
+    NzSelectModule,
+    NzInputModule,
+    NzButtonModule
+  ],<% if(!inlineStyle) { %><% } else { %>
     styleUrls: ['./<%= dasherize(name) %>.component.<%= style %>']<% } %><% if(!!viewEncapsulation) { %>,
   encapsulation: ViewEncapsulation.<%= viewEncapsulation %><% } if (changeDetection !== 'Default') { %>,
   changeDetection: ChangeDetectionStrategy.<%= changeDetection %><% } %>
@@ -24,15 +46,13 @@ export class <%= componentName %> implements OnInit {  <% if(modal) { %>
 
   form: FormGroup = null;
 
-  constructor(
-    private fb: FormBuilder,<% if(modal) { %>
-    private modal: NzModalRef,<% } else { %>    
-    private route: ActivatedRoute,
-    private location: Location,<% } %>
-    private messageService: NzMessageService,
-    private localizationService: LocalizationService,
-    private <%= camelize(target) %>Service: <%= classify(target) %>Service
-  ) {}
+  private fb = inject(FormBuilder);<% if(modal) { %>
+  private modal = inject(NzModalRef);<% } else { %>    
+  private route = inject(ActivatedRoute);
+  private location = inject(Location);<% } %>
+  private messageService = inject(NzMessageService);
+  private localizationService = inject(LocalizationService);
+  private <%= camelize(target) %>Service = inject(<%= classify(target) %>Service);
 
   ngOnInit(): void {
     <% if(!modal) { %>this.<%= camelize(target) %>Id = +this.route.snapshot.paramMap.get('id');<% } %>
@@ -82,7 +102,7 @@ export class <%= componentName %> implements OnInit {  <% if(modal) { %>
         )
         .pipe(
           tap((response) => {
-            this.messageService.success(this.localizationService.instant('*::SaveSucceed'));<% if(modal) { %>
+            <% if(modal) { %>
             this.modal.close(true);<% } else { %>
             this.location.back();<% } %>
           }),
@@ -98,7 +118,7 @@ export class <%= componentName %> implements OnInit {  <% if(modal) { %>
         )
         .pipe(
           tap((response) => {
-            this.messageService.success(this.localizationService.instant('*::SaveSucceed'));<% if(modal) { %>
+            <% if(modal) { %>
             this.modal.close(true);<% } else { %>
             this.location.back();<% } %>
           }),

@@ -1,0 +1,27 @@
+<div class="modal-header">
+  <div class="modal-title" *ngIf="form && !knowledgePointId">{{ 'Exam::NewKnowledgePoint' | abpLocalization }}</div>
+  <div class="modal-title" *ngIf="form && knowledgePointId">{{ 'Exam::Edit' | abpLocalization }}</div>
+</div>
+<div class="modal-body">
+  <ng-template #loaderRef>
+    <nz-spin class="modal-spin"></nz-spin>
+  </ng-template>
+  <form *ngIf="form; else loaderRef" nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'Exam::Name' | abpLocalization }}</nz-form-label>
+      <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="nameErrorTpl">
+        <input formControlName="name" nz-input [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Name' | abpLocalization)" />
+        <ng-template #nameErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>
+<div class="modal-footer">
+  <button nz-button nzType="primary" *ngIf="form" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
+    {{ 'Exam::Submit' | abpLocalization }}
+  </button>
+</div>

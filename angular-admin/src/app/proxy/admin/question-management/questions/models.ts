@@ -27,7 +27,7 @@ export interface QuestionCreateOrUpdateDtoBase {
   content?: string;
   analysis?: string;
   questionBankId?: string;
-  questionCategoryId?: string;
+  knowledgePointIds: string[];
 }
 
 export interface QuestionImportDto {
@@ -38,7 +38,7 @@ export interface QuestionImportDto {
 
 export interface QuestionListDto extends EntityDto<string> {
   questionBank?: string;
-  questionCategory?: string;
+  knowledgePoints: string[];
   questionType: number;
   content?: string;
   analysis?: string;

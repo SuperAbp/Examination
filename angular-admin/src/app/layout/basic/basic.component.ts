@@ -12,8 +12,8 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 
 import { HeaderClearStorageComponent } from './widgets/clear-storage.component';
 import { HeaderFullScreenComponent } from './widgets/fullscreen.component';
-import { HeaderUserComponent } from './widgets/user.component';
 import { HeaderI18nComponent } from './widgets/i18n.component';
+import { HeaderUserComponent } from './widgets/user.component';
 
 @Component({
   selector: 'layout-basic',

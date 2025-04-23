@@ -39,9 +39,4 @@ public class Question : FullAuditedAggregateRoot<Guid>
     /// 所属题库
     /// </summary>
     public Guid QuestionBankId { get; set; }
-
-    /// <summary>
-    /// 所属分类
-    /// </summary>
-    public Guid QuestionCategoryId { get; set; }
 }

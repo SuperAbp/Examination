@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
@@ -16,7 +17,7 @@ public class QuestionListDto : EntityDto<Guid>
     /// <summary>
     /// 分类
     /// </summary>
-    public required string QuestionCategory { get; set; }
+    public IReadOnlyList<string>? KnowledgePoints { get; set; }
 
     public int QuestionType { get; set; }
 

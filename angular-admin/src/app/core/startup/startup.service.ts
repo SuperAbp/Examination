@@ -98,6 +98,16 @@ export class StartupService {
             icon: { type: 'icon', value: 'appstore' }
           },
           {
+            text: '系统管理',
+            icon: { type: 'icon', value: 'setting' },
+            children: [
+              {
+                text: '知识点',
+                link: '/sys/knowledge-point'
+              }
+            ]
+          },
+          {
             text: '权限管理',
             icon: { type: 'icon', value: 'verified' },
             children: [
@@ -122,10 +132,6 @@ export class StartupService {
               {
                 text: '题库管理',
                 link: '/question-management/question-bank'
-              },
-              {
-                text: '问题类别管理',
-                link: '/question-management/category'
               },
               {
                 text: '问题管理',

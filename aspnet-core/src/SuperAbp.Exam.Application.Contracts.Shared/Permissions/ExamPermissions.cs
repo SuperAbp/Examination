@@ -14,9 +14,9 @@ public static class ExamPermissions
         public const string Delete = Default + ".Delete";
     }
 
-    public static class QuestionCategories
+    public static class KnowledgePoints
     {
-        public const string Default = GroupName + ".QuestionCategory";
+        public const string Default = GroupName + ".KnowledgePoint";
         public const string Management = Default + ".Management";
         public const string Create = Default + ".Create";
         public const string Update = Default + ".Update";

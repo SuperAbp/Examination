@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.ExamManagement.UserExams;
+using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
-using SuperAbp.Exam.QuestionManagement.QuestionCategories;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.TrainingManagement;
 using Volo.Abp.Data;
@@ -20,7 +20,7 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     IQuestionRepository questionRepository,
     IQuestionBankRepository questionBankRepository,
     IQuestionAnswerRepository questionAnswerRepository,
-    IQuestionCategoryRepository questionCategoryRepository,
+    IKnowledgePointRepository knowledgePointRepository,
     IExamRepository examRepository,
     IPaperRepository paperRepository,
     IPaperQuestionRuleRepository paperQuestionRuleRepository,
@@ -122,10 +122,10 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                     testData.Question11Id, false, TrainingSource.QuestionBank)
             ]);
 
-            await questionCategoryRepository.InsertManyAsync([
-                new QuestionCategory(testData.QuestionCategory1Id, testData.QuestionCategory1Name),
-                new QuestionCategory(testData.QuestionCategory11Id, testData.QuestionCategory11Name, testData.QuestionCategory1Id),
-                new QuestionCategory(testData.QuestionCategory2Id, testData.QuestionCategory1Name)
+            await knowledgePointRepository.InsertManyAsync([
+                new KnowledgePoint(testData.KnowledgePoint1Id, testData.KnowledgePoint1Name),
+                new KnowledgePoint(testData.KnowledgePoint11Id, testData.KnowledgePoint11Name, testData.KnowledgePoint1Id),
+                new KnowledgePoint(testData.KnowledgePoint2Id, testData.KnowledgePoint2Name)
             ]);
         }
     }

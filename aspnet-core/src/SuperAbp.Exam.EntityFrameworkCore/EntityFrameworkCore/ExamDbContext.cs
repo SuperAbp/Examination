@@ -22,11 +22,11 @@ using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using SuperAbp.MenuManagement.EntityFrameworkCore;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.TrainingManagement;
-using PaperConsts = SuperAbp.Exam.PaperManagement.Papers.PaperConsts;
 using SmartEnum.EFCore;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
-using SuperAbp.Exam.QuestionManagement.QuestionCategories;
+using SuperAbp.Exam.KnowledgePoints;
+using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -72,10 +72,12 @@ public class ExamDbContext :
     #endregion Entities from the modules
 
     public DbSet<Question> Questions { get; set; }
-    public DbSet<QuestionCategory> QuestionCategories { get; set; }
+    public DbSet<KnowledgePoint> KnowledgePoints { get; set; }
     public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
     public DbSet<QuestionBank> QuestionBanks { get; set; }
     public DbSet<Paper> Papers { get; set; }
+
+    public DbSet<QuestionKnowledgePoint> QuestionKnowledgePoints { get; set; }
     public DbSet<PaperQuestionRule> PaperQuestionRules { get; set; }
 
     public DbSet<Examination> Exams { get; set; }
@@ -119,13 +121,13 @@ public class ExamDbContext :
             b.Property(p => p.Analysis).HasMaxLength(QuestionConsts.MaxAnalysisLength);
         });
 
-        builder.Entity<QuestionCategory>(b =>
+        builder.Entity<KnowledgePoint>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "QuestionCategories", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "KnowledgePoints", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureFullAudited();
 
-            b.Property(p => p.Name).IsRequired().HasMaxLength(QuestionCategoryConsts.MaxNameLength);
+            b.Property(p => p.Name).IsRequired().HasMaxLength(KnowledgePointConsts.MaxNameLength);
         });
 
         builder.Entity<QuestionAnswer>(b =>
@@ -147,6 +149,15 @@ public class ExamDbContext :
 
             b.Property(p => p.Title).IsRequired().HasMaxLength(QuestionBankConsts.MaxTitleLength);
             b.Property(p => p.Remark).HasMaxLength(QuestionBankConsts.MaxRemarkLength);
+        });
+
+        builder.Entity<QuestionKnowledgePoint>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "QuestionKnowledgePoints", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.HasKey(qk => new { qk.QuestionId, qk.KnowledgePointId });
+            b.HasIndex(qk => new { qk.QuestionId, qk.KnowledgePointId });
         });
 
         builder.Entity<Paper>(b =>

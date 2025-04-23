@@ -95,11 +95,13 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         public virtual async Task<QuestionListDto> CreateAsync(QuestionCreateDto input)
         {
             ValidationCorrectCountAsync(input.QuestionType, input.Options.Count(a => a.Right));
-
             Question question = await questionManager.CreateAsync(input.QuestionBankId, QuestionType.FromValue(input.QuestionType), input.Content);
-            question.QuestionCategoryId = input.QuestionCategoryId;
             question.Analysis = input.Analysis;
             question = await questionRepository.InsertAsync(question);
+            if (input.KnowledgePointIds is not null)
+            {
+                await questionManager.SetKnowledgePointAsync(question, input.KnowledgePointIds);
+            }
             await CreateOrUpdateAnswerAsync(question.Id, input.Options);
             return ObjectMapper.Map<Question, QuestionListDto>(question);
         }
@@ -113,8 +115,11 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             await questionManager.SetContentAsync(question, input.Content);
             question.Analysis = input.Analysis;
             question.QuestionBankId = input.QuestionBankId;
-            question.QuestionCategoryId = input.QuestionCategoryId;
             question = await questionRepository.UpdateAsync(question);
+            if (input.KnowledgePointIds is not null)
+            {
+                await questionManager.SetKnowledgePointAsync(question, input.KnowledgePointIds);
+            }
             await CreateOrUpdateAnswerAsync(question.Id, input.Options);
             return ObjectMapper.Map<Question, QuestionListDto>(question);
         }

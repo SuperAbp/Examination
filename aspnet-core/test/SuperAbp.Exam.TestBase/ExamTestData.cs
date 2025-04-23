@@ -50,12 +50,12 @@ public class ExamTestData : ISingletonDependency
     public Guid Answer224Id = Guid.NewGuid();
     public string Answer224Content = "Answer4的Content";
 
-    public Guid QuestionCategory1Id = Guid.NewGuid();
-    public string QuestionCategory1Name = "QuestionCategory1的Name";
-    public Guid QuestionCategory11Id = Guid.NewGuid();
-    public string QuestionCategory11Name = "QuestionCategory11的Name";
-    public Guid QuestionCategory2Id = Guid.NewGuid();
-    public string QuestionCategory2Name = "QuestionCategory2的Name";
+    public Guid KnowledgePoint1Id = Guid.NewGuid();
+    public string KnowledgePoint1Name = "KnowledgePoint1的Name";
+    public Guid KnowledgePoint11Id = Guid.NewGuid();
+    public string KnowledgePoint11Name = "KnowledgePoint11的Name";
+    public Guid KnowledgePoint2Id = Guid.NewGuid();
+    public string KnowledgePoint2Name = "KnowledgePoint2的Name";
 
     public Guid QuestionBank1Id = Guid.NewGuid();
     public Guid QuestionBank2Id = Guid.NewGuid();
