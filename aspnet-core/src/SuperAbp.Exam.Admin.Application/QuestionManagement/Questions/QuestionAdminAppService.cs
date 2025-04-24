@@ -9,6 +9,7 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
+using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 {
@@ -19,6 +20,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         IQuestionRepository questionRepository,
         IQuestionBankRepository questionBankRepository,
         IQuestionAnswerRepository questionAnswerRepository,
+        IQuestionKnowledgePointRepository questionKnowledgePointRepository,
         Func<int, IQuestionAnalysis> questionAnalysis)
         : ExamAppService, IQuestionAdminAppService
     {
@@ -59,8 +61,14 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         public virtual async Task<GetQuestionForEditorOutput> GetEditorAsync(Guid id)
         {
             Question entity = await questionRepository.GetAsync(id);
+            var dto = ObjectMapper.Map<Question, GetQuestionForEditorOutput>(entity);
+            List<Guid> points = await questionManager.GetKnowledgePointIdsAsync(id);
+            if (points.Count > 0)
+            {
+                dto.KnowledgePointIds = points.ToArray();
+            }
 
-            return ObjectMapper.Map<Question, GetQuestionForEditorOutput>(entity);
+            return dto;
         }
 
         [Authorize(ExamPermissions.Questions.Import)]

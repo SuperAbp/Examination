@@ -1204,8 +1204,8 @@
                     }
                   ],
                   "returnValue": {
-                    "type": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.Admin.KnowledgePoints.KnowledgePointListDto>",
-                    "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.Admin.KnowledgePoints.KnowledgePointListDto>"
+                    "type": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.Admin.KnowledgePoints.KnowledgePointNodeDto>",
+                    "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.Admin.KnowledgePoints.KnowledgePointNodeDto>"
                   }
                 },
                 {
@@ -1319,8 +1319,8 @@
                 }
               ],
               "returnValue": {
-                "type": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.Admin.KnowledgePoints.KnowledgePointListDto>",
-                "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.Admin.KnowledgePoints.KnowledgePointListDto>"
+                "type": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.Admin.KnowledgePoints.KnowledgePointNodeDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.Admin.KnowledgePoints.KnowledgePointNodeDto>"
               },
               "allowAnonymous": null,
               "implementFrom": "SuperAbp.Exam.Admin.KnowledgePoints.IKnowledgePointAdminAppService"
@@ -7483,7 +7483,7 @@
       "genericArguments": null,
       "properties": []
     },
-    "SuperAbp.Exam.Admin.KnowledgePoints.KnowledgePointListDto": {
+    "SuperAbp.Exam.Admin.KnowledgePoints.KnowledgePointNodeDto": {
       "baseType": null,
       "isEnum": false,
       "enumNames": null,
@@ -7503,7 +7503,7 @@
           "regex": null
         },
         {
-          "name": "ParentId",
+          "name": "Name",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -7515,10 +7515,10 @@
           "regex": null
         },
         {
-          "name": "Name",
+          "name": "Children",
           "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
+          "type": "[SuperAbp.Exam.Admin.KnowledgePoints.KnowledgePointNodeDto]",
+          "typeSimple": "[SuperAbp.Exam.Admin.KnowledgePoints.KnowledgePointNodeDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

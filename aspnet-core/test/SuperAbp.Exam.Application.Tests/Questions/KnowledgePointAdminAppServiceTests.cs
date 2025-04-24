@@ -27,7 +27,7 @@ public abstract class KnowledgePointAdminAppServiceTests<TStartupModule> : ExamA
     [Fact]
     public async Task Should_Get_All()
     {
-        ListResultDto<KnowledgePointListDto> result = await _knowledgePointAppService.GetAllAsync(new GetKnowledgePointsInput());
+        ListResultDto<KnowledgePointNodeDto> result = await _knowledgePointAppService.GetAllAsync(new GetKnowledgePointsInput());
         result.Items.Count.ShouldBeGreaterThan(0);
     }
 

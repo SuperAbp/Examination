@@ -1,20 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.Permissions;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.ObjectMapping;
 
 namespace SuperAbp.Exam.Admin.KnowledgePoints;
 
 [Authorize(ExamPermissions.KnowledgePoints.Default)]
 public class KnowledgePointAdminAppService(IKnowledgePointRepository knowledgePointRepository) : ExamAppService, IKnowledgePointAdminAppService
 {
-    public async Task<ListResultDto<KnowledgePointListDto>> GetAllAsync(GetKnowledgePointsInput input)
+    public async Task<ListResultDto<KnowledgePointNodeDto>> GetAllAsync(GetKnowledgePointsInput input)
     {
         List<KnowledgePoint> knowledgePoints = await knowledgePointRepository.GetListAsync(input.Name);
-        return new ListResultDto<KnowledgePointListDto>(ObjectMapper.Map<List<KnowledgePoint>, List<KnowledgePointListDto>>(knowledgePoints));
+        List<KnowledgePointNodeDto> dtos = BuildTree(knowledgePoints);
+        return new ListResultDto<KnowledgePointNodeDto>(dtos);
+    }
+
+    private List<KnowledgePointNodeDto> BuildTree(List<KnowledgePoint> knowledgePoints)
+    {
+        var groupedByParentId = knowledgePoints
+            .GroupBy(kp => kp.ParentId ?? Guid.Empty)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        return BuildTreeNodes(Guid.Empty, groupedByParentId);
+    }
+
+    private List<KnowledgePointNodeDto> BuildTreeNodes(Guid parentId, Dictionary<Guid, List<KnowledgePoint>> groupedByParentId)
+    {
+        if (!groupedByParentId.TryGetValue(parentId, out var children))
+        {
+            return new List<KnowledgePointNodeDto>();
+        }
+
+        return children.Select(kp => new KnowledgePointNodeDto
+        {
+            Id = kp.Id,
+            Name = kp.Name,
+            Children = BuildTreeNodes(kp.Id, groupedByParentId) // Recursively build child nodes
+        }).ToList();
     }
 
     public async Task<GetKnowledgePointForEditorOutput> GetEditorAsync(Guid id)

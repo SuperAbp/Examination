@@ -85,6 +85,20 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
+        <nz-form-label>{{ 'Exam::KnowledgePoint' | abpLocalization }}</nz-form-label>
+        <nz-form-control>
+          <nz-tree-select
+            formControlName="knowledgePointIds"
+            [nzNodes]="nodes"
+            nzShowSearch
+            [nzAllowClear]="false"
+            [nzMultiple]="true"
+            [nzDefaultExpandAll]="true"
+            nzPlaceHolder="Please select"
+          ></nz-tree-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
         <nz-form-label>{{ 'Exam::Analysis' | abpLocalization }}</nz-form-label>
         <nz-form-control>
           <textarea

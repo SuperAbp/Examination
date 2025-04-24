@@ -15,6 +15,12 @@ public class QuestionManager(IQuestionRepository questionRepository, IQuestionKn
     protected IQuestionKnowledgePointRepository QuestionKnowledgePointRepository { get; } =
         questionKnowledgePointRepository;
 
+    public async Task<List<Guid>> GetKnowledgePointIdsAsync(Guid questionId)
+    {
+        List<QuestionKnowledgePoint> points = await questionKnowledgePointRepository.GetByQuestionIdAsync(questionId);
+        return points.Select(p => p.KnowledgePointId).ToList();
+    }
+
     public virtual async Task<Question> CreateAsync(Guid questionBankId, QuestionType questionType, string content)
     {
         await CheckContentAsync(content);
@@ -24,9 +30,6 @@ public class QuestionManager(IQuestionRepository questionRepository, IQuestionKn
 
     public virtual async Task SetKnowledgePointAsync(Question question, IEnumerable<Guid> knowledgePointIds)
     {
-        Check.NotNull(question, nameof(question));
-        Check.NotNull(knowledgePointIds, nameof(knowledgePointIds));
-
         List<QuestionKnowledgePoint> knowledgePoints = await QuestionKnowledgePointRepository.GetByQuestionIdAsync(question.Id);
         IEnumerable<Guid> currentKnowledgePointIds = knowledgePoints.Select(kp => kp.KnowledgePointId);
         await QuestionKnowledgePointRepository.DeleteManyAsync(

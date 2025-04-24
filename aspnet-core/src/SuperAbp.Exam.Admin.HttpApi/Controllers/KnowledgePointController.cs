@@ -19,7 +19,7 @@ public class KnowledgePointController(IKnowledgePointAdminAppService knowledgePo
     /// <param name="input"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ListResultDto<KnowledgePointListDto>> GetAllAsync(GetKnowledgePointsInput input)
+    public async Task<ListResultDto<KnowledgePointNodeDto>> GetAllAsync(GetKnowledgePointsInput input)
     {
         return await knowledgePointAppService.GetAllAsync(input);
     }

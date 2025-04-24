@@ -15,7 +15,7 @@ public interface IKnowledgePointAdminAppService : IApplicationService
     /// </summary>
     /// <param name="input">查询条件</param>
     /// <returns>结果</returns>
-    Task<ListResultDto<KnowledgePointListDto>> GetAllAsync(GetKnowledgePointsInput input);
+    Task<ListResultDto<KnowledgePointNodeDto>> GetAllAsync(GetKnowledgePointsInput input);
 
     /// <summary>
     /// 获取修改

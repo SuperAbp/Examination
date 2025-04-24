@@ -1,7 +1,7 @@
 import { RestService, Rest } from '@abp/ng.core';
 import type { ListResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
-import type { GetKnowledgePointForEditorOutput, GetKnowledgePointsInput, KnowledgePointCreateDto, KnowledgePointListDto, KnowledgePointUpdateDto } from '../knowledge-points/models';
+import type { GetKnowledgePointForEditorOutput, GetKnowledgePointsInput, KnowledgePointCreateDto, KnowledgePointNodeDto, KnowledgePointUpdateDto } from '../knowledge-points/models';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +29,7 @@ export class KnowledgePointService {
   
 
   getAll = (input: GetKnowledgePointsInput, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, ListResultDto<KnowledgePointListDto>>({
+    this.restService.request<any, ListResultDto<KnowledgePointNodeDto>>({
       method: 'GET',
       url: '/knowledge-point',
       params: { name: input.name },

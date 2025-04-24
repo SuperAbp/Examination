@@ -11,10 +11,10 @@ export interface GetKnowledgePointsInput {
 export interface KnowledgePointCreateDto extends GetKnowledgePointForEditorOutput {
 }
 
-export interface KnowledgePointListDto {
+export interface KnowledgePointNodeDto {
   id?: string;
-  parentId?: string;
   name?: string;
+  children: KnowledgePointNodeDto[];
 }
 
 export interface KnowledgePointUpdateDto extends GetKnowledgePointForEditorOutput {

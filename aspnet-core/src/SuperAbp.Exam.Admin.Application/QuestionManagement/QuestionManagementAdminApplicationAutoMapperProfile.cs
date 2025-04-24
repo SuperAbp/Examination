@@ -54,7 +54,7 @@ public class QuestionManagementAdminApplicationAutoMapperProfile : Profile
 
         #region 题目分类
 
-        CreateMap<KnowledgePoint, KnowledgePointListDto>();
+        CreateMap<KnowledgePoint, KnowledgePointNodeDto>();
         CreateMap<KnowledgePoint, GetKnowledgePointForEditorOutput>();
 
         #endregion 题目分类

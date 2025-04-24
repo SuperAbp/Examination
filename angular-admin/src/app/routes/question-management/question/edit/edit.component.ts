@@ -4,7 +4,13 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderModule } from '@delon/abc/page-header';
-import { OptionService, QuestionAnswerService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
+import {
+  KnowledgePointService,
+  OptionService,
+  QuestionAnswerService,
+  QuestionBankService,
+  QuestionService
+} from '@proxy/admin/controllers';
 import { QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
 import { GetQuestionForEditorOutput } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -14,15 +20,15 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
 import { forkJoin, Observable } from 'rxjs';
-import { finalize, map, tap } from 'rxjs/operators';
+import { expand, finalize, map, tap } from 'rxjs/operators';
 
 import { QuestionManagementAnswerComponent } from '../../answer/answer.component';
 import { BlankComponent } from '../../answer/blank.component';
 import { JudgeComponent } from '../../answer/judge.component';
 import { MultiSelectComponent } from '../../answer/multi-select.component';
 import { SingleSelectComponent } from '../../answer/single-select.component';
-
 @Component({
   selector: 'app-question-management-question-edit',
   templateUrl: './edit.component.html',
@@ -41,7 +47,8 @@ import { SingleSelectComponent } from '../../answer/single-select.component';
     JudgeComponent,
     SingleSelectComponent,
     MultiSelectComponent,
-    BlankComponent
+    BlankComponent,
+    NzTreeSelectModule
   ]
 })
 export class QuestionManagementQuestionEditComponent implements OnInit {
@@ -59,6 +66,7 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
   private questionBankService = inject(QuestionBankService);
   private answerService = inject(QuestionAnswerService);
   private optionService = inject(OptionService);
+  private knowledgePointService = inject(KnowledgePointService);
 
   loading = false;
   isConfirmLoading = false;
@@ -66,6 +74,7 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
   questionBanks: QuestionBankListDto[];
 
   form: FormGroup = null;
+  nodes: any[] = [];
 
   get options() {
     return this.form.get('options') as FormArray;
@@ -79,6 +88,15 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       let id = params.get('id');
       this.questionId = id;
+
+      this.knowledgePointService
+        .getAll({})
+        .pipe(
+          tap(response => {
+            this.nodes = this.mapTreeData(response.items);
+          })
+        )
+        .subscribe();
       if (this.questionId) {
         this.questionService
           .getEditor(this.questionId)
@@ -96,6 +114,14 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+  mapTreeData(data: any[]): any[] {
+    return data.map(item => ({
+      title: item.name,
+      key: item.id,
+      isLeaf: item.children.length === 0,
+      children: item.children ? this.mapTreeData(item.children) : []
+    }));
   }
 
   buildForm() {
@@ -123,6 +149,7 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
             analysis: [this.question.analysis || ''],
             questionType: [this.question.questionType >= 0 ? this.question.questionType : null, [Validators.required]],
             questionBankId: [this.question.questionBankId || '', [Validators.required]],
+            knowledgePointIds: [this.question.knowledgePointIds || []],
             options: this.fb.array([], [Validators.required])
           });
         })

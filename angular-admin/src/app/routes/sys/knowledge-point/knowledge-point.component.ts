@@ -5,7 +5,7 @@ import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st
 import { DelonFormModule, SFSchema, SFStringWidgetSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
 import { KnowledgePointService } from '@proxy/admin/controllers';
-import { GetKnowledgePointsInput, KnowledgePointListDto } from '@proxy/admin/knowledge-points';
+import { GetKnowledgePointsInput, KnowledgePointNodeDto } from '@proxy/admin/knowledge-points';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -16,10 +16,9 @@ import { tap } from 'rxjs/operators';
 
 import { SysKnowledgePointEditComponent } from './edit/edit.component';
 
-export interface TreeNodeInterface extends KnowledgePointListDto {
+export interface TreeNodeInterface extends KnowledgePointNodeDto {
   level?: number;
   expand?: boolean;
-  children?: TreeNodeInterface[];
   parent?: TreeNodeInterface;
 }
 
@@ -46,7 +45,7 @@ export class SysKnowledgePointComponent implements OnInit {
   private permissionService = inject(PermissionService);
   private knowledgePointService = inject(KnowledgePointService);
 
-  knowledgePoints: KnowledgePointListDto[];
+  knowledgePoints: KnowledgePointNodeDto[];
   loading = false;
   params: GetKnowledgePointsInput;
   page: STPage = {
@@ -138,15 +137,17 @@ export class SysKnowledgePointComponent implements OnInit {
       .getAll(this.params)
       .pipe(tap(() => (this.loading = false)))
       .subscribe(response => {
+        // 直接使用后端返回的树形结构数据
         this.knowledgePoints = response.items;
-        response.items
-          .filter(item => item.parentId == null)
-          .forEach(item => {
-            this.mapOfExpandedData[item.id] = this.convertTreeToList(item);
-          });
+
+        // 将树形结构数据转换为前端可用的展开数据
+        this.mapOfExpandedData = {};
+        this.knowledgePoints.forEach(item => {
+          this.mapOfExpandedData[item.id] = this.convertTreeToList(item);
+        });
       });
   }
-  convertTreeToList(root: KnowledgePointListDto): TreeNodeInterface[] {
+  convertTreeToList(root: KnowledgePointNodeDto): TreeNodeInterface[] {
     const stack: TreeNodeInterface[] = [];
     const array: TreeNodeInterface[] = [];
     const hashMap = {};
@@ -154,22 +155,14 @@ export class SysKnowledgePointComponent implements OnInit {
 
     while (stack.length !== 0) {
       const node = stack.pop()!;
-      let children = this.knowledgePoints.filter(item => item.parentId === node.id);
-      if (children.length > 0) {
-        node.children = children;
+      if (node.children && node.children.length > 0) {
+        node.children.forEach(child => {
+          stack.push({ ...child, level: node.level! + 1, expand: false, parent: node });
+        });
+      } else {
+        delete node.children;
       }
       this.visitNode(node, hashMap, array);
-
-      this.knowledgePoints
-        .filter(item => item.parentId === node.id)
-        .forEach(item => {
-          stack.push({
-            ...item,
-            level: node.level! + 1,
-            expand: true,
-            parent: node
-          });
-        });
     }
     console.log(array);
 
