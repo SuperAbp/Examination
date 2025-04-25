@@ -32,12 +32,12 @@ public class QuestionManager(IQuestionRepository questionRepository, IQuestionKn
     {
         List<QuestionKnowledgePoint> knowledgePoints = await QuestionKnowledgePointRepository.GetByQuestionIdAsync(question.Id);
         IEnumerable<Guid> currentKnowledgePointIds = knowledgePoints.Select(kp => kp.KnowledgePointId);
-        await QuestionKnowledgePointRepository.DeleteManyAsync(
-            knowledgePoints
-                .Where(k => currentKnowledgePointIds
-                    .Except(knowledgePointIds)
-                    .Distinct()
-                    .Contains(k.Id)));
+        List<QuestionKnowledgePoint> removeKnowledgePoints = knowledgePoints
+            .Where(k => currentKnowledgePointIds
+                .Except(knowledgePointIds)
+                .Distinct()
+                .Contains(k.KnowledgePointId)).ToList();
+        await QuestionKnowledgePointRepository.DeleteManyAsync(removeKnowledgePoints);
 
         IEnumerable<Guid> newIds = knowledgePointIds.Except(currentKnowledgePointIds).Distinct();
         List<QuestionKnowledgePoint> newKnowledgePoints = [];
