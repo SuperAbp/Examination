@@ -26,7 +26,10 @@ public abstract class UserExamQuestionAppServiceTests<TStartupModule> : ExamAppl
     [Fact]
     public async Task Should_Get_List()
     {
-        PagedResultDto<UserExamQuestionListDto> result = await _userExamQuestionAppService.GetListAsync(new GetUserExamQuestionsInput());
+        PagedResultDto<UserExamQuestionListDto> result = await _userExamQuestionAppService.GetListAsync(new GetUserExamQuestionsInput()
+        {
+            UserExamId = _testData.UserExam11Id
+        });
         result.Items.Count.ShouldBeGreaterThan(0);
     }
 

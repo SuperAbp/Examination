@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
-using SuperAbp.Exam.QuestionManagement.QuestionBanks;
-using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 {
@@ -18,9 +15,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         QuestionManager questionManager,
         QuestionAnswerManager questionAnswerManager,
         IQuestionRepository questionRepository,
-        IQuestionBankRepository questionBankRepository,
         IQuestionAnswerRepository questionAnswerRepository,
-        IQuestionKnowledgePointRepository questionKnowledgePointRepository,
         Func<int, IQuestionAnalysis> questionAnalysis)
         : ExamAppService, IQuestionAdminAppService
     {
@@ -28,32 +23,11 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         {
             await NormalizeMaxResultCountAsync(input);
 
-            var questionQueryable = await questionRepository.GetQueryableAsync();
+            int totalCount = await questionRepository.GetCountAsync(input.Content, input.QuestionType, input.QuestionBankIds.ToList());
+            List<QuestionWithDetails> questions = await questionRepository.GetListAsync(input.Sorting, input.SkipCount, input.MaxResultCount,
+                input.Content, input.QuestionType, input.QuestionBankIds.ToList());
 
-            questionQueryable = questionQueryable
-                .WhereIf(input.QuestionBankIds.Length > 0, q => input.QuestionBankIds.Contains(q.QuestionBankId))
-                .WhereIf(input.QuestionType.HasValue, q => q.QuestionType == input.QuestionType.Value)
-                .WhereIf(!input.Content.IsNullOrWhiteSpace(), q => q.Content.Contains(input.Content));
-
-            var queryable = from q in questionQueryable
-                            join r in (await questionBankRepository.GetQueryableAsync()) on q.QuestionBankId equals r.Id
-                            select new QuestionBankWithDetails
-                            {
-                                Id = q.Id,
-                                QuestionBank = r.Title,
-                                Analysis = q.Analysis,
-                                Content = q.Content,
-                                QuestionType = q.QuestionType,
-                                CreationTime = q.CreationTime
-                            };
-
-            long totalCount = await AsyncExecuter.CountAsync(queryable);
-
-            var entities = await AsyncExecuter.ToListAsync(queryable
-                .OrderBy(input.Sorting ?? QuestionConsts.DefaultSorting)
-                .PageBy(input));
-
-            var dtos = ObjectMapper.Map<List<QuestionBankWithDetails>, List<QuestionListDto>>(entities);
+            var dtos = ObjectMapper.Map<List<QuestionWithDetails>, List<QuestionListDto>>(questions);
 
             return new PagedResultDto<QuestionListDto>(totalCount, dtos);
         }

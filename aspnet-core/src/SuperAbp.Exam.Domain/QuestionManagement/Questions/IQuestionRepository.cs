@@ -15,27 +15,40 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// <summary>
     /// 数量
     /// </summary>
-    /// <param name="questionRepositoryId">题库Id</param>
+    /// <param name="questionBankId">题库Id</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<int> GetCountAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default);
+    Task<int> GetCountAsync(Guid questionBankId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 数量
     /// </summary>
-    /// <param name="questionRepositoryId">题库Id</param>
+    /// <param name="questionBankId">题库Id</param>
     /// <param name="questionType">问题类型</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType, CancellationToken cancellationToken = default);
+    Task<int> GetCountAsync(Guid questionBankId, QuestionType questionType, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 题型
     /// </summary>
-    /// <param name="questionRepositoryId"></param>
+    /// <param name="questionBankId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default);
+    Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionBankId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 数量
+    /// </summary>
+    /// <param name="content">题目</param>
+    /// <param name="questionBankIds">题库Id</param>
+    /// <param name="questionType">问题类型</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<int> GetCountAsync(string? content = null,
+        int? questionType = null,
+        List<Guid>? questionBankIds = null,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 列表
@@ -43,16 +56,17 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// <param name="sorting"></param>
     /// <param name="skipCount"></param>
     /// <param name="maxResultCount"></param>
-    /// <param name="questionRepositoryId">题库Id</param>
+    /// <param name="content">题目</param>
     /// <param name="questionType">题型</param>
+    /// <param name="questionBankIds">题库Id</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<List<Question>> GetListAsync(
-        string? sorting = null,
+    Task<List<QuestionWithDetails>> GetListAsync(string? sorting = null,
         int skipCount = 0,
         int maxResultCount = int.MaxValue,
-        Guid? questionRepositoryId = null,
+        string? content = null,
         int? questionType = null,
+        List<Guid>? questionBankIds = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>

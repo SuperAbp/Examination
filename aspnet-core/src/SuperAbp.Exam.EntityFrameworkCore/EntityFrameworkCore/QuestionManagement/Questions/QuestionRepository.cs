@@ -8,51 +8,88 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
+using SuperAbp.Exam.KnowledgePoints;
+using SuperAbp.Exam.QuestionManagement.QuestionBanks;
+using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
+using SuperAbp.Exam.EntityFrameworkCore.KnowledgePoints;
+using SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionKnowledgePoints;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.Questions;
 
 public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
     : EfCoreRepository<ExamDbContext, Question, Guid>(dbContextProvider), IQuestionRepository
 {
-    public async Task<int> GetCountAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default)
+    public async Task<int> GetCountAsync(Guid questionBankId, CancellationToken cancellationToken = default)
     {
         return await (await GetDbSetAsync())
-            .Where(r => r.QuestionBankId == questionRepositoryId)
+            .Where(r => r.QuestionBankId == questionBankId)
             .CountAsync(cancellationToken);
     }
 
-    public async Task<int> GetCountAsync(Guid questionRepositoryId, QuestionType questionType, CancellationToken cancellationToken = default)
+    public async Task<int> GetCountAsync(Guid questionBankId, QuestionType questionType, CancellationToken cancellationToken = default)
     {
         return await (await GetDbSetAsync())
-            .Where(r => r.QuestionBankId == questionRepositoryId && r.QuestionType == questionType)
+            .Where(r => r.QuestionBankId == questionBankId && r.QuestionType == questionType)
             .CountAsync(cancellationToken);
     }
 
-    public async Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionRepositoryId, CancellationToken cancellationToken = default)
+    public async Task<List<QuestionType>> GetQuestionTypesAsync(Guid questionBankId, CancellationToken cancellationToken = default)
     {
         var dbSet = await GetDbSetAsync();
-        return await dbSet.Where(q => q.QuestionBankId == questionRepositoryId)
+        return await dbSet.Where(q => q.QuestionBankId == questionBankId)
             .GroupBy(q => q.QuestionType)
             .Select(q => q.Key)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Question>> GetListAsync(string? sorting = null,
-        int skipCount = 0,
-        int maxResultCount = int.MaxValue,
-        Guid? questionRepositoryId = null,
-        int? questionType = null,
+    public async Task<int> GetCountAsync(string? content = null, int? questionType = null, List<Guid>? questionBankIds = null,
         CancellationToken cancellationToken = default)
     {
-        var queryable = await GetQueryableAsync();
+        var questionQueryable = await GetQueryableAsync(content, questionType, questionBankIds);
+        return await questionQueryable.CountAsync(cancellationToken);
+    }
 
-        return await queryable
-            .WhereIf(questionRepositoryId.HasValue, p => p.QuestionBankId == questionRepositoryId.Value)
-            .WhereIf(questionType.HasValue, p => p.QuestionType == questionType.Value)
-            .OrderBy(string.IsNullOrWhiteSpace(sorting) ? QuestionConsts.DefaultSorting : sorting)
-            .OrderBy(q => Guid.NewGuid())
-            .PageBy(skipCount, maxResultCount)
-            .ToListAsync(cancellationToken: cancellationToken);
+    public async Task<List<QuestionWithDetails>> GetListAsync(string? sorting = null,
+        int skipCount = 0,
+        int maxResultCount = int.MaxValue,
+        string? content = null,
+        int? questionType = null,
+        List<Guid>? questionBankIds = null,
+        CancellationToken cancellationToken = default)
+    {
+        var dbContext = await GetDbContextAsync();
+        var questionQueryable = await GetQueryableAsync(content, questionType, questionBankIds);
+        var questionBankQueryable = dbContext.Set<QuestionBank>().AsQueryable();
+        var questionKnowledgePointQueryable = dbContext.Set<QuestionKnowledgePoint>().AsQueryable();
+        var knowledgePointQueryable = dbContext.Set<KnowledgePoint>().AsQueryable();
+
+        var pointQueryable = from qkp in questionKnowledgePointQueryable
+                             join kp in knowledgePointQueryable on qkp.KnowledgePointId equals kp.Id
+                             select new { qkp.QuestionId, kp.Name };
+
+        var queryable = from q in questionQueryable
+                        join qb in questionBankQueryable on q.QuestionBankId equals qb.Id
+                        join kp in pointQueryable on q.Id equals kp.QuestionId into kpGroup
+                        select new QuestionWithDetails
+                        {
+                            Id = q.Id,
+                            QuestionBank = qb.Title,
+                            Content = q.Content,
+                            Analysis = q.Analysis,
+                            QuestionType = q.QuestionType,
+                            CreationTime = q.CreationTime,
+                            KnowledgePoints = kpGroup.Select(k => k.Name).ToList()
+                        };
+
+        return await queryable.ToListAsync(cancellationToken);
+    }
+
+    private async Task<IQueryable<Question>> GetQueryableAsync(string? content, int? questionType, List<Guid>? questionBankIds)
+    {
+        return (await GetQueryableAsync())
+            .WhereIf(questionBankIds is not null && questionBankIds.Count > 0, q => questionBankIds.Contains(q.QuestionBankId))
+            .WhereIf(questionType.HasValue, q => q.QuestionType == questionType.Value)
+            .WhereIf(!content.IsNullOrWhiteSpace(), q => q.Content.Contains(content));
     }
 
     public async Task<List<Question>> GetRandomListAsync(int maxResultCount = Int32.MaxValue, Guid? questionRepositoryId = null,

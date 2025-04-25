@@ -96,6 +96,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
       render: 'questionType'
     },
     { title: this.localizationService.instant('Exam::QuestionContent'), index: 'content' },
+    { title: this.localizationService.instant('Exam::KnowledgePoint'), index: 'knowledgePoints' },
     { title: this.localizationService.instant('Exam::CreationTime'), index: 'creationTime', type: 'date' },
     {
       title: this.localizationService.instant('Exam::Actions'),

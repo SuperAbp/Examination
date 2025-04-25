@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions
 {
-    public class QuestionBankWithDetails
+    public class QuestionWithDetails
     {
         public Guid Id { get; set; }
 
@@ -12,6 +13,11 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
         public string QuestionBank { get; set; }
 
         public QuestionType QuestionType { get; set; }
+
+        /// <summary>
+        /// 分类
+        /// </summary>
+        public List<string>? KnowledgePoints { get; set; }
 
         /// <summary>
         /// 题干
