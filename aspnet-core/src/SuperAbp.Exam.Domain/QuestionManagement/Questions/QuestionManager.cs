@@ -2,23 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
-using Volo.Abp;
 using Volo.Abp.Domain.Services;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions;
 
-public class QuestionManager(IQuestionRepository questionRepository, IQuestionKnowledgePointRepository questionKnowledgePointRepository) : DomainService
+public class QuestionManager(IQuestionRepository questionRepository, IQuestionKnowledgePointRepository questionKnowledgePointRepository, IKnowledgePointRepository knowledgePointRepository) : DomainService
 {
     protected IQuestionRepository QuestionRepository { get; } = questionRepository;
 
     protected IQuestionKnowledgePointRepository QuestionKnowledgePointRepository { get; } =
         questionKnowledgePointRepository;
 
+    public IKnowledgePointRepository KnowledgePointRepository { get; } = knowledgePointRepository;
+
     public async Task<List<Guid>> GetKnowledgePointIdsAsync(Guid questionId)
     {
-        List<QuestionKnowledgePoint> points = await questionKnowledgePointRepository.GetByQuestionIdAsync(questionId);
+        List<QuestionKnowledgePoint> points = await QuestionKnowledgePointRepository.GetByQuestionIdAsync(questionId);
         return points.Select(p => p.KnowledgePointId).ToList();
+    }
+
+    public async Task<List<KnowledgePoint>> GetKnowledgePointsAsync(Guid questionId)
+    {
+        return await KnowledgePointRepository.GetByQuestionIdAsync(questionId);
     }
 
     public virtual async Task<Question> CreateAsync(Guid questionBankId, QuestionType questionType, string content)

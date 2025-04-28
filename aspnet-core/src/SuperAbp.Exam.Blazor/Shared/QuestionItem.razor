@@ -27,18 +27,33 @@
                OnSubmit="@SubmitAsync"></Blank>
         break;
 }
-@if (ShowAnalysis && !String.IsNullOrEmpty(Question.Analysis))
+@if (ShowAnalysis)
 {
-    <div class="analysis">
-        <Card Title="题目解析">
-            @Question.Analysis
-        </Card>
-    </div>
+    <Descriptions Column="1">
+    @if (Question.KnowledgePoints.Count > 0)
+    {
+        <DescriptionsItem Title="@L["KnowledgePoint"]">
+            @foreach (string knowledgePoint in Question.KnowledgePoints)
+            {
+                <Tag>@knowledgePoint</Tag>
+            }
+        </DescriptionsItem>
+    }
+   @if (!String.IsNullOrEmpty(Question.Analysis))
+    {
+        <DescriptionsItem Title="@L["Analysis"]">
+                @Question.Analysis
+        </DescriptionsItem>
+    }
+    </Descriptions>
 }
 
+@using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages
+@using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.QuestionManagement.Questions
+@inject IStringLocalizer<ExamResource> L
 @code {
     [Parameter]
     public int Number { get; set; }
