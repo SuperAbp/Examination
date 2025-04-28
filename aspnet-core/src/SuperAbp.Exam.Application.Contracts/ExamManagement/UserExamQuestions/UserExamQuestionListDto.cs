@@ -26,8 +26,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
         /// </summary>
         public decimal? Score { get; set; }
 
-        public decimal QuestionScore { get; set; }
-        public required string Answers { get; set; }
         public string? QuestionAnalysis { get; set; }
 
         public List<QuestionAnswerListDto> QuestionAnswers { get; set; } = [];
