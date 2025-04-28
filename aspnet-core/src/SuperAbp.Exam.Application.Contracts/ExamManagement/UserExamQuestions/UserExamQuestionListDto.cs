@@ -28,7 +28,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
 
         public string? QuestionAnalysis { get; set; }
 
-        public List<QuestionAnswerListDto> QuestionAnswers { get; set; } = [];
+        public IReadOnlyList<string> KnowledgePoints { get; set; } = [];
+        public IReadOnlyList<QuestionAnswerListDto> QuestionAnswers { get; set; } = [];
 
         public class QuestionAnswerListDto
         {

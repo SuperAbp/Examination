@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using SuperAbp.Exam.KnowledgePoints;
+using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
 {
-    public class UserExamQuestionAppService(IUserExamQuestionRepository userExamQuestionRepository)
+    public class UserExamQuestionAppService(IUserExamQuestionRepository userExamQuestionRepository, QuestionManager questionManager)
         : ExamAppService, IUserExamQuestionAppService
     {
+        protected IUserExamQuestionRepository UserExamQuestionRepository { get; } = userExamQuestionRepository;
+        protected QuestionManager QuestionManager { get; } = questionManager;
+
         public virtual async Task<UserExamQuestionDetailDto> GetAsync(Guid id)
         {
-            UserExamQuestion entity = await userExamQuestionRepository.GetAsync(id);
+            UserExamQuestion entity = await UserExamQuestionRepository.GetAsync(id);
 
             return ObjectMapper.Map<UserExamQuestion, UserExamQuestionDetailDto>(entity);
         }
@@ -20,9 +26,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
         {
             await NormalizeMaxResultCountAsync(input);
 
-            List<UserExamQuestionWithDetails> entities = await userExamQuestionRepository
+            List<UserExamQuestionWithDetails> entities = await UserExamQuestionRepository
                 .GetListAsync(input.UserExamId, input.Sorting, input.SkipCount, input.MaxResultCount);
-            List<UserExamQuestionListDto> dtos = entities.Select(q => new UserExamQuestionListDto()
+            List<UserExamQuestionListDto> dtos = [];
+            foreach (UserExamQuestionWithDetails entity in entities)
             {
                 UserExamQuestionListDto dto = new()
                 {
@@ -33,6 +40,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
                     QuestionScore = entity.QuestionScore,
                     QuestionType = entity.QuestionType
                 };
+                List<KnowledgePoint> knowledgePoints = await QuestionManager.GetKnowledgePointsAsync(entity.QuestionId);
+                if (knowledgePoints.Count > 0)
+                {
+                    dto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
+                }
                 if (entity.Finished)
                 {
                     dto.QuestionAnalysis = entity.QuestionAnalysis;
@@ -40,19 +52,27 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
                     dto.Score = entity.Score;
                 }
 
-                foreach (UserExamQuestionWithDetails.QuestionAnswer answer in entity.QuestionAnswers)
+                List<UserExamQuestionListDto.QuestionAnswerListDto> answerDtos = [];
+                if (entity.QuestionAnswers.Count > 0)
                 {
-                    UserExamQuestionListDto.QuestionAnswerListDto answerDto = new()
+                    foreach (UserExamQuestionWithDetails.QuestionAnswer answer in entity.QuestionAnswers)
                     {
-                        Id = answer.Id,
-                        Content = answer.Content,
-                    };
-                    if (entity.Finished)
-                    {
-                        answerDto.Right = answer.Right;
+                        UserExamQuestionListDto.QuestionAnswerListDto answerDto = new()
+                        {
+                            Id = answer.Id,
+                            Content = answer.Content,
+                        };
+                        if (entity.Finished)
+                        {
+                            answerDto.Right = answer.Right;
+                        }
+
+                        answerDtos.Add(answerDto);
                     }
-                    dto.QuestionAnswers.Add(answerDto);
+
+                    dto.QuestionAnswers = answerDtos;
                 }
+
                 dtos.Add(dto);
             }
             return new PagedResultDto<UserExamQuestionListDto>(0, dtos);
@@ -60,7 +80,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
 
         public virtual async Task<GetUserExamQuestionForEditorOutput> GetEditorAsync(Guid id)
         {
-            UserExamQuestion entity = await userExamQuestionRepository.GetAsync(id);
+            UserExamQuestion entity = await UserExamQuestionRepository.GetAsync(id);
 
             return ObjectMapper.Map<UserExamQuestion, GetUserExamQuestionForEditorOutput>(entity);
         }
@@ -73,21 +93,21 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
                 Answers = input.Answers
             };
 
-            entity = await userExamQuestionRepository.InsertAsync(entity);
+            entity = await UserExamQuestionRepository.InsertAsync(entity);
             return ObjectMapper.Map<UserExamQuestion, UserExamQuestionListDto>(entity);
         }
 
         public virtual async Task<UserExamQuestionListDto> AnswerAsync(Guid id, UserExamQuestionAnswerDto input)
         {
-            UserExamQuestion entity = await userExamQuestionRepository.GetAsync(id);
+            UserExamQuestion entity = await UserExamQuestionRepository.GetAsync(id);
             entity.Answers = input.Answers;
-            entity = await userExamQuestionRepository.UpdateAsync(entity);
+            entity = await UserExamQuestionRepository.UpdateAsync(entity);
             return ObjectMapper.Map<UserExamQuestion, UserExamQuestionListDto>(entity);
         }
 
         public virtual async Task DeleteAsync(Guid id)
         {
-            await userExamQuestionRepository.DeleteAsync(id);
+            await UserExamQuestionRepository.DeleteAsync(id);
         }
 
         /// <summary>
