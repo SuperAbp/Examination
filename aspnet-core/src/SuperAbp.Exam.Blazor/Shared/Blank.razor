@@ -24,20 +24,6 @@
         <br />
     }
 }
-@* @if (ShowAnalysis)
-{
-    <div class="block">
-        <div>
-            <span class="title">正确答案：</span>
-            <div class="body">
-                @foreach (var item in Answers)
-                {
-                    <div>@item.Content</div>
-                }
-            </div>
-        </div>
-    </div>
-}*@
 @if (!ShowAnalysis)
 {
     if (ShowConfirm)

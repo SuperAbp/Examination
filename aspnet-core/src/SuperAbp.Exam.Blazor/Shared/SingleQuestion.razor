@@ -1,33 +1,33 @@
 ﻿<style>
     .question-content .title {
-    font-size: 18px;
+        font-size: 18px;
     }
 
-    .question-content .title .number {
-    font-weight: bold;
-    }
+        .question-content .title .number {
+            font-weight: bold;
+        }
 
     .question-content .chooses {
-    width: 100%;
+        width: 100%;
     }
 
     .bottom {
-    margin-top: 10px;
-    display: flex;
-    -o-justify-content: space-between;
-    -webkit-justify-content: space-between;
-    justify-content: space-between;
+        margin-top: 10px;
+        display: flex;
+        -o-justify-content: space-between;
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
     }
 
     .analysis {
-    margin-top: 10px;
-    margin-bottom: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 
     .ant-tag.current {
-    color: #389e0d;
-    background: #f6ffed;
-    border-color: #b7eb8f;
+        color: #389e0d;
+        background: #f6ffed;
+        border-color: #b7eb8f;
     }
 
 </style>
@@ -43,10 +43,10 @@ else
     <GridRow Gutter="16">
         <GridCol Span="4">
             <QuestionNumber CurrentId="_questionIds[_questionIndex]"
-            Numbers="Questions"
-            SuccessIds="GetSuccessIds()"
-            ErrorIds="GetErrorIds()"
-            OnChanged="ShowQuestionAsync"></QuestionNumber>
+                            Numbers="Questions"
+                            SuccessIds="GetSuccessIds()"
+                            ErrorIds="GetErrorIds()"
+                            OnChanged="ShowQuestionAsync"></QuestionNumber>
         </GridCol>
         <GridCol Span="20">
             <Card class="question-content">
@@ -63,16 +63,26 @@ else
                     }
                     else
                     {
-                        @if (_question != null)
-                        {
-                            <QuestionItem Number="_questionIndex + 1"
-                            Question="_question"
-                            QuestionAnswers="_questionAnswers"
-                            ShowAnalysis="_showAnalysis"
-                                          Answered="@GetAnswered()"
-                            OnSubmit="@SubmitAsync"></QuestionItem>
+                        <QuestionItem Number="_questionIndex + 1"
+                                      Question="_question"
+                                      QuestionAnswers="_questionAnswers"
+                                      ShowAnalysis="_showAnalysis"
+                                      Answered="@GetAnswered()"
+                                      OnSubmit="@SubmitAsync"></QuestionItem>
 
+                        @if (_showAnalysis && QuestionType.FromValue(_question.QuestionType).Name == QuestionType.FillInTheBlanks.Name)
+                        {
+                            <div class="block">
+                                <span class="title">答案：</span>
+                                <div class="body">
+                                    @foreach (var item in _questionAnswers)
+                                    {
+                                        <div>@item.Content</div>
+                                    }
+                                </div>
+                            </div>
                         }
+
 
                         <div class="bottom">
                             @if (_questionIndex <= 0)
@@ -148,7 +158,7 @@ else
             GoDetail();
             return;
         }
-        _questionIds = Questions.SelectMany(q => q.Questions.Select(i => i.QuestionId)).ToArray();        
+        _questionIds = Questions.SelectMany(q => q.Questions.Select(i => i.QuestionId)).ToArray();
 
         int maxIndex = 0;
         if (TrainType is null or 0)
