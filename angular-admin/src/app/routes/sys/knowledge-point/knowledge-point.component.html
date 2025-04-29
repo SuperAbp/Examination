@@ -1,0 +1,53 @@
+<page-header [action]="phActionTpl">
+  <ng-template #phActionTpl>
+    <button (click)="add()" nz-button nzType="primary" *abpPermission="'Exam.KnowledgePoint.Create'">
+      {{ 'Exam::NewKnowledgePoint' | abpLocalization }}
+    </button>
+  </ng-template>
+</page-header>
+<nz-card>
+  <nz-table #expandTable [nzData]="knowledgePoints" nzTableLayout="fixed">
+    <thead>
+      <tr>
+        <th>{{ 'Exam::Name' | abpLocalization }}</th>
+        <th>{{ 'Exam::Actions' | abpLocalization }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of expandTable.data; track data) {
+        @for (item of mapOfExpandedData[data.id]; track item) {
+          @if ((item.parent && item.parent.expand) || !item.parent) {
+            <tr>
+              <td
+                [nzIndentSize]="item.level! * 20"
+                [nzShowExpand]="!!item.children"
+                [(nzExpand)]="item.expand"
+                (nzExpandChange)="collapse(mapOfExpandedData[data.id], item, $event)"
+              >
+                {{ item.name }}
+              </td>
+              <td>
+                <button nz-button nzType="link" (click)="add(item.id)" *abpPermission="'Exam.KnowledgePoint.Create'">
+                  <i nz-icon nzType="plus"></i>
+                </button>
+                <button nz-button nzType="link" (click)="edit(item.id)" *abpPermission="'Exam.KnowledgePoint.Update'">
+                  <i nz-icon nzType="edit"></i>
+                </button>
+                <button
+                  nz-popconfirm
+                  [nzPopconfirmTitle]="'Exam::AreYouSure' | abpLocalization"
+                  nz-button
+                  nzType="link"
+                  (click)="delete(item)"
+                  *abpPermission="'Exam.KnowledgePoint.Delete'"
+                >
+                  <i nz-icon nzType="delete"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        }
+      }
+    </tbody>
+  </nz-table>
+</nz-card>

@@ -14,6 +14,15 @@ public static class ExamPermissions
         public const string Delete = Default + ".Delete";
     }
 
+    public static class KnowledgePoints
+    {
+        public const string Default = GroupName + ".KnowledgePoint";
+        public const string Management = Default + ".Management";
+        public const string Create = Default + ".Create";
+        public const string Update = Default + ".Update";
+        public const string Delete = Default + ".Delete";
+    }
+
     public static class QuestionAnswers
     {
         public const string Default = GroupName + ".QuestionAnswer";
@@ -22,9 +31,9 @@ public static class ExamPermissions
         public const string Delete = Default + ".Delete";
     }
 
-    public static class QuestionRepositories
+    public static class QuestionBanks
     {
-        public const string Default = GroupName + ".QuestionRepository";
+        public const string Default = GroupName + ".QuestionBank";
         public const string Management = Default + ".Management";
         public const string Create = Default + ".Create";
         public const string Update = Default + ".Update";
@@ -39,9 +48,9 @@ public static class ExamPermissions
         public const string Delete = Default + ".Delete";
     }
 
-    public static class PaperRepos
+    public static class PaperQuestionRules
     {
-        public const string Default = GroupName + ".PaperRepository";
+        public const string Default = GroupName + ".PaperQuestionRule";
         public const string Create = Default + ".Create";
         public const string Update = Default + ".Update";
         public const string Delete = Default + ".Delete";

@@ -1,0 +1,88 @@
+﻿@page "/question-bank/{id:guid}"
+
+<style>
+    h3{
+        font-weight: 700;
+    }
+</style>
+
+@if(_questionBank is not null)
+{
+    <Card>
+        <TitleTemplate>
+            <span @onclick="GoDetail" style="cursor: pointer">
+                <Icon Type="arrow-left" Theme="IconThemeType.Outline" />返回
+            </span>
+            <Divider Type="DividerType.Vertical" />@_questionBank.Title
+        </TitleTemplate>
+        <ChildContent>
+            @if (!_questionBank.Remark.IsNullOrWhiteSpace())
+            {
+                <h3>简介：</h3>
+                <p>@_questionBank.Remark</p>
+                <Divider />
+            }
+
+            <h3>自由练习</h3>
+            <Button OnClick="() => StartTraining(0)">顺序练习</Button>
+            <Button OnClick="() => StartTraining(1)">背题模式</Button>
+            
+        @if (_questionTypes.Count > 0)
+        {
+            <Divider/>
+            <h3>题型练习</h3>
+            @foreach (var questionType in _questionTypes)
+            {
+                <Button OnClick="() => StartTraining(0, (int)questionType)">@L["QuestionType:" + questionType]</Button>
+            }
+        }
+        </ChildContent>
+    </Card>
+}
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.QuestionBanks
+@using SuperAbp.Exam.QuestionManagement.Questions
+@inject IStringLocalizer<ExamResource> L
+@inject IQuestionBankAppService QuestionBankAppService
+@inject NavigationManager Navigation
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    IReadOnlyList<QuestionType> _questionTypes = Array.Empty<QuestionType>();
+
+    QuestionBankDetailDto _questionBank;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _questionBank = await QuestionBankAppService.GetAsync(Id);
+        _questionTypes = await GetQuestionTypesAsync();
+    }
+
+    private async Task<IReadOnlyList<QuestionType>> GetQuestionTypesAsync()
+    {
+        return (await QuestionBankAppService.GetQuestionTypesAsync(Id)).Items;
+    }
+    private void StartTraining(int trainType, int? questionType = null)
+    {
+        var url = $"/question-bank/{Id}/training";
+        if (trainType > 0)
+        {
+            url = $"/question-bank/{Id}/training/{trainType}";
+        }
+        else
+        {
+            if (questionType.HasValue)
+            {
+                url += "?questionType=" + questionType.Value;
+            }
+        }
+        Navigation.NavigateTo(url);
+    }
+    private void GoDetail()
+    {
+        Navigation.NavigateTo("/question-bank");
+    }
+
+}

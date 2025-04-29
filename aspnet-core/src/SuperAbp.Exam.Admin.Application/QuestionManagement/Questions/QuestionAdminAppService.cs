@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.Permissions;
-using SuperAbp.Exam.QuestionManagement.QuestionRepos;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
@@ -17,7 +15,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         QuestionManager questionManager,
         QuestionAnswerManager questionAnswerManager,
         IQuestionRepository questionRepository,
-        IQuestionRepoRepository questionRepoRepository,
         IQuestionAnswerRepository questionAnswerRepository,
         Func<int, IQuestionAnalysis> questionAnalysis)
         : ExamAppService, IQuestionAdminAppService
@@ -26,32 +23,11 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         {
             await NormalizeMaxResultCountAsync(input);
 
-            var questionQueryable = await questionRepository.GetQueryableAsync();
+            int totalCount = await questionRepository.GetCountAsync(input.Content, input.QuestionType, input.QuestionBankIds.ToList());
+            List<QuestionWithDetails> questions = await questionRepository.GetListAsync(input.Sorting, input.SkipCount, input.MaxResultCount,
+                input.Content, input.QuestionType, input.QuestionBankIds.ToList());
 
-            questionQueryable = questionQueryable
-                .WhereIf(input.QuestionRepositoryIds.Length > 0, q => input.QuestionRepositoryIds.Contains(q.QuestionRepositoryId))
-                .WhereIf(input.QuestionType.HasValue, q => q.QuestionType == input.QuestionType.Value)
-                .WhereIf(!input.Content.IsNullOrWhiteSpace(), q => q.Content.Contains(input.Content));
-
-            var queryable = from q in questionQueryable
-                            join r in (await questionRepoRepository.GetQueryableAsync()) on q.QuestionRepositoryId equals r.Id
-                            select new QuestionRepositoryWithDetails
-                            {
-                                Id = q.Id,
-                                QuestionRepository = r.Title,
-                                Analysis = q.Analysis,
-                                Content = q.Content,
-                                QuestionType = q.QuestionType,
-                                CreationTime = q.CreationTime
-                            };
-
-            long totalCount = await AsyncExecuter.CountAsync(queryable);
-
-            var entities = await AsyncExecuter.ToListAsync(queryable
-                .OrderBy(input.Sorting ?? QuestionConsts.DefaultSorting)
-                .PageBy(input));
-
-            var dtos = ObjectMapper.Map<List<QuestionRepositoryWithDetails>, List<QuestionListDto>>(entities);
+            var dtos = ObjectMapper.Map<List<QuestionWithDetails>, List<QuestionListDto>>(questions);
 
             return new PagedResultDto<QuestionListDto>(totalCount, dtos);
         }
@@ -59,8 +35,14 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         public virtual async Task<GetQuestionForEditorOutput> GetEditorAsync(Guid id)
         {
             Question entity = await questionRepository.GetAsync(id);
+            var dto = ObjectMapper.Map<Question, GetQuestionForEditorOutput>(entity);
+            List<Guid> points = await questionManager.GetKnowledgePointIdsAsync(id);
+            if (points.Count > 0)
+            {
+                dto.KnowledgePointIds = points.ToArray();
+            }
 
-            return ObjectMapper.Map<Question, GetQuestionForEditorOutput>(entity);
+            return dto;
         }
 
         [Authorize(ExamPermissions.Questions.Import)]
@@ -72,7 +54,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             List<QuestionAnswer> answers = [];
             foreach (QuestionImportModel item in items)
             {
-                Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, QuestionType.FromValue(input.QuestionType), item.Title);
+                Question question = await questionManager.CreateAsync(input.QuestionBankId, QuestionType.FromValue(input.QuestionType), item.Title);
                 question.Analysis = item.Analysis;
 
                 for (int i = 0; i < item.Options.Count; i++)
@@ -95,10 +77,13 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         public virtual async Task<QuestionListDto> CreateAsync(QuestionCreateDto input)
         {
             ValidationCorrectCountAsync(input.QuestionType, input.Options.Count(a => a.Right));
-
-            Question question = await questionManager.CreateAsync(input.QuestionRepositoryId, QuestionType.FromValue(input.QuestionType), input.Content);
+            Question question = await questionManager.CreateAsync(input.QuestionBankId, QuestionType.FromValue(input.QuestionType), input.Content);
             question.Analysis = input.Analysis;
             question = await questionRepository.InsertAsync(question);
+            if (input.KnowledgePointIds is not null)
+            {
+                await questionManager.SetKnowledgePointAsync(question, input.KnowledgePointIds);
+            }
             await CreateOrUpdateAnswerAsync(question.Id, input.Options);
             return ObjectMapper.Map<Question, QuestionListDto>(question);
         }
@@ -111,8 +96,12 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 
             await questionManager.SetContentAsync(question, input.Content);
             question.Analysis = input.Analysis;
-            question.QuestionRepositoryId = input.QuestionRepositoryId;
+            question.QuestionBankId = input.QuestionBankId;
             question = await questionRepository.UpdateAsync(question);
+            if (input.KnowledgePointIds is not null)
+            {
+                await questionManager.SetKnowledgePointAsync(question, input.KnowledgePointIds);
+            }
             await CreateOrUpdateAnswerAsync(question.Id, input.Options);
             return ObjectMapper.Map<Question, QuestionListDto>(question);
         }

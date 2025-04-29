@@ -5,6 +5,7 @@ using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.Favorites;
+using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.Permissions;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
@@ -12,8 +13,12 @@ using Volo.Abp.Users;
 namespace SuperAbp.Exam.QuestionManagement.Questions
 {
     [Authorize(ExamPermissions.Questions.Default)]
-    public class QuestionAppService(IQuestionRepository questionRepository, IFavoriteRepository favoriteRepository) : ExamAppService, IQuestionAppService
+    public class QuestionAppService(IQuestionRepository questionRepository, IFavoriteRepository favoriteRepository, QuestionManager questionManager) : ExamAppService, IQuestionAppService
     {
+        public IQuestionRepository QuestionRepository { get; } = questionRepository;
+        public IFavoriteRepository FavoriteRepository { get; } = favoriteRepository;
+        protected QuestionManager QuestionManager { get; } = questionManager;
+
         public virtual async Task<PagedResultDto<QuestionListDto>> GetListAsync(GetQuestionsInput input)
         {
             IQueryable<Question> queryable = await FilterAsync(input);
@@ -37,15 +42,15 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
 
         private async Task<IQueryable<Question>> FilterAsync(GetQuestionsInput input)
         {
-            IQueryable<Question> queryable = await questionRepository.GetQueryableAsync();
+            IQueryable<Question> queryable = await QuestionRepository.GetQueryableAsync();
             queryable = queryable
                 .WhereIf(input.QuestionId.HasValue, q => q.Id == input.QuestionId.Value)
-                .WhereIf(input.QuestionRepositoryId.HasValue, q => q.QuestionRepositoryId == input.QuestionRepositoryId.Value)
+                .WhereIf(input.QuestionBankId.HasValue, q => q.QuestionBankId == input.QuestionBankId.Value)
                 .WhereIf(!input.Content.IsNullOrWhiteSpace(), q => q.Content.Contains(input.Content))
                 .WhereIf(input.QuestionType.HasValue, q => q.QuestionType == input.QuestionType.Value);
             if (input.IsFavorite)
             {
-                var favoriteQueryable = await favoriteRepository.GetQueryableAsync();
+                var favoriteQueryable = await FavoriteRepository.GetQueryableAsync();
                 queryable = from q in queryable
                             join f in favoriteQueryable on q.Id equals f.QuestionId
                             where f.CreatorId == CurrentUser.GetId()
@@ -56,9 +61,15 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
 
         public virtual async Task<QuestionDetailDto> GetAsync(Guid id)
         {
-            Question entity = await questionRepository.GetAsync(id);
+            Question entity = await QuestionRepository.GetAsync(id);
+            List<KnowledgePoint> knowledgePoints = await QuestionManager.GetKnowledgePointsAsync(id);
+            var dto = ObjectMapper.Map<Question, QuestionDetailDto>(entity);
+            if (knowledgePoints.Count > 0)
+            {
+                dto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
+            }
 
-            return ObjectMapper.Map<Question, QuestionDetailDto>(entity);
+            return dto;
         }
     }
 }

@@ -8,7 +8,7 @@ public class ExamMenus
     public const string My = Prefix + ".My";
     public const string MyExam = Prefix + ".MyExam";
     public const string MyFavorite = Prefix + ".MyFavorite";
-    public const string QuestionRepository = Prefix + ".QuestionRepository";
+    public const string QuestionBank = Prefix + ".QuestionBank";
 
     //Add your menu items here...
 }

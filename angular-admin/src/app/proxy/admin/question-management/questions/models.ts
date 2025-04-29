@@ -1,18 +1,17 @@
-import type { QuestionType } from '../../../question-management/questions/question-type.enum';
 import type { EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
 export interface GetQuestionForEditorOutput extends QuestionCreateOrUpdateDtoBase {
-  questionType: QuestionType;
+  questionType: number;
 }
 
 export interface GetQuestionsInput extends PagedAndSortedResultRequestDto {
   content?: string;
-  questionType?: QuestionType;
-  questionRepositoryIds: string[];
+  questionType?: number;
+  questionBankIds: string[];
 }
 
 export interface QuestionCreateDto extends QuestionCreateOrUpdateDtoBase {
-  questionType: QuestionType;
+  questionType: number;
   options: QuestionCreateOrUpdateAnswerDto[];
 }
 
@@ -27,18 +26,20 @@ export interface QuestionCreateOrUpdateAnswerDto {
 export interface QuestionCreateOrUpdateDtoBase {
   content?: string;
   analysis?: string;
-  questionRepositoryId?: string;
+  questionBankId?: string;
+  knowledgePointIds: string[];
 }
 
 export interface QuestionImportDto {
-  questionRepositoryId?: string;
-  questionType: QuestionType;
+  questionBankId?: string;
+  questionType: number;
   content?: string;
 }
 
 export interface QuestionListDto extends EntityDto<string> {
-  questionRepository?: string;
-  questionType: QuestionType;
+  questionBank?: string;
+  knowledgePoints: string[];
+  questionType: number;
   content?: string;
   analysis?: string;
   creationTime?: string;

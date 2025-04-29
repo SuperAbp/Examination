@@ -17,12 +17,12 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
         : EfCoreRepository<ExamDbContext, UserExamQuestion, Guid>(dbContextProvider), IUserExamQuestionRepository
     {
         // TODO:编写仓储代码
-        public async Task<List<UserExamQuestionWithDetails>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
-            Guid? userExamId = null, CancellationToken cancellationToken = default)
+        public async Task<List<UserExamQuestionWithDetails>> GetListAsync(Guid userExamId, string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
+            CancellationToken cancellationToken = default)
         {
             var dbContext = await GetDbContextAsync();
             var examQuestionQueryable = await GetQueryableAsync();
-            var userExamQueryable = dbContext.Set<UserExam>().AsQueryable().WhereIf(userExamId.HasValue, ue => ue.Id == userExamId);
+            var userExamQueryable = dbContext.Set<UserExam>().AsQueryable();
             var questionQueryable = dbContext.Set<Question>().AsQueryable();
             var questionAnswerQueryable = dbContext.Set<QuestionAnswer>().AsQueryable();
 
@@ -30,6 +30,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
                           join ue in userExamQueryable on e.UserExamId equals ue.Id
                           join q in questionQueryable on e.QuestionId equals q.Id
                           join a in questionAnswerQueryable on q.Id equals a.QuestionId into questionAnswers
+                          where e.UserExamId == userExamId
                           select new UserExamQuestionWithDetails()
                           {
                               Id = e.Id,

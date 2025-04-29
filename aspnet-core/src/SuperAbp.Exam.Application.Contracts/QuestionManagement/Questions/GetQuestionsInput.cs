@@ -18,5 +18,5 @@ public class GetQuestionsInput
 
     public Guid? QuestionId { get; set; }
 
-    public Guid? QuestionRepositoryId { get; set; }
+    public Guid? QuestionBankId { get; set; }
 }

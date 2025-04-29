@@ -13,6 +13,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
 
         public Guid QuestionId { get; set; }
         public int QuestionType { get; set; }
+        public decimal QuestionScore { get; set; }
+        public string? Answers { get; set; }
 
         /// <summary>
         /// 正确
@@ -24,11 +26,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
         /// </summary>
         public decimal? Score { get; set; }
 
-        public decimal QuestionScore { get; set; }
-        public required string Answers { get; set; }
         public string? QuestionAnalysis { get; set; }
 
-        public List<QuestionAnswerListDto> QuestionAnswers { get; set; } = [];
+        public IReadOnlyList<string> KnowledgePoints { get; set; } = [];
+        public IReadOnlyList<QuestionAnswerListDto> QuestionAnswers { get; set; } = [];
 
         public class QuestionAnswerListDto
         {

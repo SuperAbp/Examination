@@ -25,7 +25,7 @@ public abstract class TrainingAppServiceTests<TStartupModule> : ExamApplicationT
     [Fact]
     public async Task Should_Get_List()
     {
-        var result = await _trainingAppService.GetListAsync(new GetTrainsInput { QuestionRepositoryId = _testData.QuestionRepository1Id });
+        var result = await _trainingAppService.GetListAsync(new GetTrainsInput { QuestionBankId = _testData.QuestionBank1Id });
         result.Items.Count.ShouldBeGreaterThan(0);
     }
 
@@ -34,8 +34,8 @@ public abstract class TrainingAppServiceTests<TStartupModule> : ExamApplicationT
     {
         var input = new TrainingCreateDto
         {
-            TrainingSource = TrainingSource.QuestionRepository,
-            QuestionRepositoryId = _testData.QuestionRepository1Id,
+            TrainingSource = TrainingSource.QuestionBank,
+            QuestionBankId = _testData.QuestionBank1Id,
             QuestionId = _testData.Question12Id,
             Right = true
         };

@@ -2,27 +2,33 @@ import { CoreModule, LocalizationService } from '@abp/ng.core';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Observable } from 'rxjs';
-import { finalize, tap } from 'rxjs/operators';
-import { QuestionManagementAnswerComponent } from '../../answer/answer.component';
-import { PageHeaderModule } from '@delon/abc/page-header';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
-import { SingleSelectComponent } from '../../answer/single-select.component';
-import { MultiSelectComponent } from '../../answer/multi-select.component';
-import { BlankComponent } from '../../answer/blank.component';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { JudgeComponent } from '../../answer/judge.component';
+import { PageHeaderModule } from '@delon/abc/page-header';
+import {
+  KnowledgePointService,
+  OptionService,
+  QuestionAnswerService,
+  QuestionBankService,
+  QuestionService
+} from '@proxy/admin/controllers';
+import { QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
 import { GetQuestionForEditorOutput } from '@proxy/admin/question-management/questions';
-import { QuestionAnswerService, QuestionRepoService, QuestionService } from '@proxy/admin/controllers';
-import { QuestionType } from '@proxy/question-management/questions';
-import { QuestionRepoListDto } from '@proxy/admin/question-management/question-repos';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
+import { forkJoin, Observable } from 'rxjs';
+import { expand, finalize, map, tap } from 'rxjs/operators';
 
+import { QuestionManagementAnswerComponent } from '../../answer/answer.component';
+import { BlankComponent } from '../../answer/blank.component';
+import { JudgeComponent } from '../../answer/judge.component';
+import { MultiSelectComponent } from '../../answer/multi-select.component';
+import { SingleSelectComponent } from '../../answer/single-select.component';
 @Component({
   selector: 'app-question-management-question-edit',
   templateUrl: './edit.component.html',
@@ -41,7 +47,8 @@ import { QuestionRepoListDto } from '@proxy/admin/question-management/question-r
     JudgeComponent,
     SingleSelectComponent,
     MultiSelectComponent,
-    BlankComponent
+    BlankComponent,
+    NzTreeSelectModule
   ]
 })
 export class QuestionManagementQuestionEditComponent implements OnInit {
@@ -56,14 +63,18 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
   private router = inject(Router);
   private localizationService = inject(LocalizationService);
   private questionService = inject(QuestionService);
-  private questionRepoService = inject(QuestionRepoService);
+  private questionBankService = inject(QuestionBankService);
   private answerService = inject(QuestionAnswerService);
+  private optionService = inject(OptionService);
+  private knowledgePointService = inject(KnowledgePointService);
+
   loading = false;
   isConfirmLoading = false;
   questionTypes: Array<{ label: string; value: number }> = [];
-  questionRepositories: QuestionRepoListDto[];
+  questionBanks: QuestionBankListDto[];
 
   form: FormGroup = null;
+  nodes: any[] = [];
 
   get options() {
     return this.form.get('options') as FormArray;
@@ -77,6 +88,15 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       let id = params.get('id');
       this.questionId = id;
+
+      this.knowledgePointService
+        .getAll({})
+        .pipe(
+          tap(response => {
+            this.nodes = this.mapTreeData(response.items);
+          })
+        )
+        .subscribe();
       if (this.questionId) {
         this.questionService
           .getEditor(this.questionId)
@@ -95,24 +115,41 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
       }
     });
   }
+  mapTreeData(data: any[]): any[] {
+    return data.map(item => ({
+      title: item.name,
+      key: item.id,
+      isLeaf: item.children.length === 0,
+      children: item.children ? this.mapTreeData(item.children) : []
+    }));
+  }
 
   buildForm() {
-    this.questionRepoService
+    this.questionBankService
       .getList({ skipCount: 0, maxResultCount: 100 })
       .pipe(
         tap(res => {
-          Object.keys(QuestionType)
-            .filter(k => !isNaN(Number(k)))
-            .map(key => {
-              this.questionTypes.push({ label: this.localizationService.instant('Exam::QuestionType:' + key), value: +key });
-            });
-          this.questionRepositories = res.items;
+          this.optionService
+            .getQuestionTypes()
+            .pipe(
+              map(res => {
+                Object.keys(res).forEach(key => {
+                  this.questionTypes.push({
+                    label: this.localizationService.instant(`Exam::QuestionType:${key}`),
+                    value: +key
+                  });
+                });
+              })
+            )
+            .subscribe();
+          this.questionBanks = res.items;
 
           this.form = this.fb.group({
             content: [this.question.content || '', [Validators.required]],
             analysis: [this.question.analysis || ''],
             questionType: [this.question.questionType >= 0 ? this.question.questionType : null, [Validators.required]],
-            questionRepositoryId: [this.question.questionRepositoryId || '', [Validators.required]],
+            questionBankId: [this.question.questionBankId || '', [Validators.required]],
+            knowledgePointIds: [this.question.knowledgePointIds || []],
             options: this.fb.array([], [Validators.required])
           });
         })

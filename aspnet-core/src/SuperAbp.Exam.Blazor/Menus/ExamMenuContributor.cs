@@ -49,7 +49,7 @@ public class ExamMenuContributor : IMenuContributor
             context.Menu.Items.Add(new ApplicationMenuItem(
                 ExamMenus.Exam,
                 l["Menu:OnlineExam"],
-                "/Exam",
+                "/exam",
                 icon: IconType.Outline.Home
             ));
             var identityMenuItem = new ApplicationMenuItem(ExamMenus.My, l["Menu:My"], icon: IconType.Outline.User);
@@ -57,19 +57,19 @@ public class ExamMenuContributor : IMenuContributor
             identityMenuItem.Items.Add(new ApplicationMenuItem(
                 ExamMenus.MyExam,
                 l["Menu:MyExam"],
-                "/My/Exam",
+                "/my/exam",
                 icon: IconType.Outline.Home
             ));
             identityMenuItem.Items.Add(new ApplicationMenuItem(
                 ExamMenus.MyFavorite,
                 l["Menu:MyFavorite"],
-                "/My/Favorite",
+                "/my/favorite",
                 icon: IconType.Outline.Star
             ));
             context.Menu.Items.Add(new ApplicationMenuItem(
-                ExamMenus.QuestionRepository,
-                l["Menu:QuestionRepository"],
-                "/Repository",
+                ExamMenus.QuestionBank,
+                l["Menu:QuestionBank"],
+                "/question-bank",
                 icon: IconType.Outline.History
             ));
         }

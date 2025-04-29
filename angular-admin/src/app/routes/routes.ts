@@ -44,7 +44,8 @@ export const routes: Routes = [
       {
         path: 'exam-management',
         loadChildren: () => import('./exam-management/routes').then(m => m.routes)
-      }
+      },
+      { path: 'sys', loadChildren: () => import('./sys/routes').then(m => m.routes) }
     ]
   },
   // 空白布局

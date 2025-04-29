@@ -5,10 +5,9 @@ import { Router } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { _HttpClient } from '@delon/theme';
-import { QuestionRepoService, QuestionService } from '@proxy/admin/controllers';
-import { QuestionRepoListDto } from '@proxy/admin/question-management/question-repos';
+import { OptionService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
+import { QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
 import { QuestionImportDto } from '@proxy/admin/question-management/questions';
-import { QuestionType } from '@proxy/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -17,7 +16,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { finalize, tap } from 'rxjs';
+import { finalize, map, tap } from 'rxjs';
 
 @Component({
   selector: 'app-question-management-question-import',
@@ -40,37 +39,46 @@ export class QuestionManagementQuestionImportComponent implements OnInit {
   private fb = inject(FormBuilder);
   private modal = inject(NzModalService);
   private router = inject(Router);
+  private optionService = inject(OptionService);
   private localizationService = inject(LocalizationService);
   private questionService = inject(QuestionService);
-  private questionRepoService = inject(QuestionRepoService);
+  private questionBankService = inject(QuestionBankService);
 
   isConfirmLoading: boolean = false;
   form: FormGroup = null;
 
   question: QuestionImportDto;
   questionTypes: Array<{ label: string; value: number }> = [];
-  questionRepositories: QuestionRepoListDto[];
+  questionBanks: QuestionBankListDto[];
 
   ngOnInit(): void {
     this.question = {} as QuestionImportDto;
     this.buildForm();
   }
   buildForm() {
-    this.questionRepoService
+    this.questionBankService
       .getList({ skipCount: 0, maxResultCount: 100 })
       .pipe(
         tap(res => {
-          Object.keys(QuestionType)
-            .filter(k => !isNaN(Number(k)))
-            .map(key => {
-              this.questionTypes.push({ label: this.localizationService.instant('Exam::QuestionType:' + key), value: +key });
-            });
-          this.questionRepositories = res.items;
+          this.optionService
+            .getQuestionTypes()
+            .pipe(
+              map(res => {
+                Object.keys(res).forEach(key => {
+                  this.questionTypes.push({
+                    label: this.localizationService.instant(`Exam::QuestionType:${key}`),
+                    value: +key
+                  });
+                });
+              })
+            )
+            .subscribe();
+          this.questionBanks = res.items;
 
           this.form = this.fb.group({
             content: [this.question.content || '', [Validators.required]],
             questionType: [null, [Validators.required]],
-            questionRepositoryId: [this.question.questionRepositoryId || '', [Validators.required]]
+            questionBankId: [this.question.questionBankId || '', [Validators.required]]
           });
         })
       )

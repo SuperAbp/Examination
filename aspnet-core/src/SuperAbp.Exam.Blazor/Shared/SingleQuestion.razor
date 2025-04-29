@@ -257,7 +257,7 @@ else
             await TrainingAppService.CreateAsync(new TrainingCreateDto()
                 {
                     TrainingSource = TrainingSource.Favorite,
-                    QuestionRepositoryId = _question.QuestionRepositoryId,
+                    QuestionBankId = _question.QuestionBankId,
                     QuestionId = item.QuestionId,
                     Right = right
                 });

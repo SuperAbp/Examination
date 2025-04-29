@@ -1,5 +1,5 @@
-﻿using SuperAbp.Exam.QuestionManagement.Questions;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
@@ -12,9 +12,14 @@ public class QuestionListDto : EntityDto<Guid>
     /// <summary>
     /// 题库
     /// </summary>
-    public required string QuestionRepository { get; set; }
+    public required string QuestionBank { get; set; }
 
-    public QuestionType QuestionType { get; set; }
+    /// <summary>
+    /// 分类
+    /// </summary>
+    public IReadOnlyList<string>? KnowledgePoints { get; set; }
+
+    public int QuestionType { get; set; }
 
     /// <summary>
     /// 题干

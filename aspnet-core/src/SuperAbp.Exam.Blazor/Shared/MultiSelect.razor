@@ -78,6 +78,9 @@
         <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
     }
 }
+
+@using JetBrains.Annotations
+@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages
 @using Volo.Abp.AspNetCore.Components.Notifications
@@ -89,8 +92,7 @@
     public IReadOnlyList<QuestionAnswerViewModel> Answers { get; set; }
     [Parameter]
     public bool ShowAnalysis { get; set; }
-    [Parameter]
-    public string Answered { get; set; }
+    [Parameter] [CanBeNull] public string Answered { get; set; }
     [Parameter]
     public EventCallback<QuestionAnswerSelectEventArgs> OnSelect { get; set; }
     [Parameter]

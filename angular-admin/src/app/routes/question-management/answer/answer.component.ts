@@ -2,7 +2,6 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, inject }
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { QuestionAnswerService } from '@proxy/admin/controllers';
 import { GetQuestionAnswersInput, QuestionAnswerCreateDto, QuestionAnswerListDto } from '@proxy/admin/question-management/question-answers';
-import { QuestionType } from '@proxy/question-management/questions';
 import { forkJoin, Observable } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 
@@ -37,7 +36,7 @@ export class QuestionManagementAnswerComponent {
   @Input()
   questionId: string;
   @Input()
-  questionType: QuestionType;
+  questionType: number;
   @Input()
   questionForm: FormGroup;
 

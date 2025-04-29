@@ -195,7 +195,67 @@ namespace SuperAbp.Exam.Migrations
                     b.ToTable("AppFavorites", (string)null);
                 });
 
-            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperRepos.PaperRepo", b =>
+            modelBuilder.Entity("SuperAbp.Exam.KnowledgePoints.KnowledgePoint", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletionTime");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppKnowledgePoints", (string)null);
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperQuestionRules.PaperQuestionRule", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -234,7 +294,7 @@ namespace SuperAbp.Exam.Migrations
                     b.Property<decimal?>("Proportion")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("QuestionRepositoryId")
+                    b.Property<Guid>("QuestionBankId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("SingleCount")
@@ -245,7 +305,7 @@ namespace SuperAbp.Exam.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppPaperRepositories", (string)null);
+                    b.ToTable("AppPaperQuestionRules", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.PaperManagement.Papers.Paper", b =>
@@ -375,7 +435,7 @@ namespace SuperAbp.Exam.Migrations
                     b.ToTable("AppQuestionAnswers", (string)null);
                 });
 
-            modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.QuestionRepos.QuestionRepo", b =>
+            modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.QuestionBanks.QuestionBank", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -433,7 +493,25 @@ namespace SuperAbp.Exam.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppQuestionRepositories", (string)null);
+                    b.ToTable("AppQuestionBanks", (string)null);
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints.QuestionKnowledgePoint", b =>
+                {
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("KnowledgePointId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("QuestionId", "KnowledgePointId");
+
+                    b.HasIndex("QuestionId", "KnowledgePointId");
+
+                    b.ToTable("AppQuestionKnowledgePoints", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.Questions.Question", b =>
@@ -492,7 +570,7 @@ namespace SuperAbp.Exam.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<Guid>("QuestionRepositoryId")
+                    b.Property<Guid>("QuestionBankId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("QuestionType")
@@ -524,10 +602,10 @@ namespace SuperAbp.Exam.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("ExtraProperties");
 
-                    b.Property<Guid>("QuestionId")
+                    b.Property<Guid>("QuestionBankId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("QuestionRepositoryId")
+                    b.Property<Guid>("QuestionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Right")

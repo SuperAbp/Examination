@@ -1,0 +1,59 @@
+﻿@page "/question-bank"
+
+
+<Card Title="我的考试">
+    <Table TItem="QuestionBankListDto"
+           DataSource="@QuestionBanks"
+           Loading="Loading"
+           RowKey="x=>x.Id"
+            Total="TotalCount"
+            @bind-PageIndex="CurrentPage"
+            @bind-PageSize="PageSize"
+        OnChange="Change">
+        <PropertyColumn Property="c=>c.Title" Title="@L["Title"]" />
+        <PropertyColumn Property="c=>c.CreationTime" Title="@L["CreationTime"]" />
+        <ActionColumn Title="@L["Action"]">
+            <Space>
+                <SpaceItem>
+                    <Button Type="@ButtonType.Primary" OnClick="() =>  GoDetail(context.Id)">@L["Detail"]</Button>
+                </SpaceItem>
+            </Space>
+        </ActionColumn>
+    </Table>
+</Card>
+
+@using AntDesign.TableModels
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.QuestionBanks
+@inject NavigationManager Navigation
+@inject IStringLocalizer<ExamResource> L
+@inject IQuestionBankAppService QuestionBankAppService
+    @code {
+    IReadOnlyList<QuestionBankListDto> QuestionBanks;
+    int CurrentPage = 1;
+    int PageSize = 10;
+    int TotalCount = 0;
+    bool Loading = true;
+
+    public async Task Change(QueryModel model)
+    {
+        await GetListAsync(model.PageIndex , model.PageSize);
+    }
+    protected async Task GetListAsync(int pageIndex, int pageSize, string sorting = null)
+    {
+        this.Loading = true;
+        var result = await QuestionBankAppService
+            .GetListAsync(new GetQuestionBanksInput() 
+                { SkipCount = (pageIndex - 1) * pageSize, MaxResultCount = pageSize, Sorting = sorting });
+        QuestionBanks = result.Items;
+        TotalCount = (int)result.TotalCount;
+        this.Loading = false;
+    }
+
+    private void GoDetail(Guid id)
+    {
+        Navigation.NavigateTo($"/question-bank/{id}");
+    }
+
+}

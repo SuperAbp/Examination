@@ -11,15 +11,8 @@ namespace SuperAbp.Exam.Admin.Controllers;
 /// 问题
 /// </summary>
 [Route("api/question-management/question")]
-public class QuestionController : ExamController, IQuestionAdminAppService
+public class QuestionController(IQuestionAdminAppService questionAppService) : ExamController, IQuestionAdminAppService
 {
-    private readonly IQuestionAdminAppService _questionAppService;
-
-    public QuestionController(IQuestionAdminAppService questionAppService)
-    {
-        _questionAppService = questionAppService;
-    }
-
     /// <summary>
     /// 列表
     /// </summary>
@@ -28,7 +21,7 @@ public class QuestionController : ExamController, IQuestionAdminAppService
     [HttpGet]
     public virtual async Task<PagedResultDto<QuestionListDto>> GetListAsync(GetQuestionsInput input)
     {
-        return await _questionAppService.GetListAsync(input);
+        return await questionAppService.GetListAsync(input);
     }
 
     /// <summary>
@@ -39,7 +32,7 @@ public class QuestionController : ExamController, IQuestionAdminAppService
     [HttpGet("{id}/editor")]
     public virtual async Task<GetQuestionForEditorOutput> GetEditorAsync(Guid id)
     {
-        return await _questionAppService.GetEditorAsync(id);
+        return await questionAppService.GetEditorAsync(id);
     }
 
     /// <summary>
@@ -50,7 +43,7 @@ public class QuestionController : ExamController, IQuestionAdminAppService
     [HttpPost("import")]
     public virtual async Task ImportAsync(QuestionImportDto input)
     {
-        await _questionAppService.ImportAsync(input);
+        await questionAppService.ImportAsync(input);
     }
 
     /// <summary>
@@ -61,7 +54,7 @@ public class QuestionController : ExamController, IQuestionAdminAppService
     [HttpPost]
     public virtual async Task<QuestionListDto> CreateAsync(QuestionCreateDto input)
     {
-        return await _questionAppService.CreateAsync(input);
+        return await questionAppService.CreateAsync(input);
     }
 
     /// <summary>
@@ -73,7 +66,7 @@ public class QuestionController : ExamController, IQuestionAdminAppService
     [HttpPut("{id}")]
     public virtual async Task<QuestionListDto> UpdateAsync(Guid id, QuestionUpdateDto input)
     {
-        return await _questionAppService.UpdateAsync(id, input);
+        return await questionAppService.UpdateAsync(id, input);
     }
 
     /// <summary>
@@ -84,6 +77,6 @@ public class QuestionController : ExamController, IQuestionAdminAppService
     [HttpDelete("{id}")]
     public virtual async Task DeleteAsync(Guid id)
     {
-        await _questionAppService.DeleteAsync(id);
+        await questionAppService.DeleteAsync(id);
     }
 }

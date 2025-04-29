@@ -9,7 +9,7 @@ public class GetQuestionsInputValidator : AbstractValidator<GetQuestionsInput>
 {
     public GetQuestionsInputValidator(IStringLocalizer<ExamResource> local)
     {
-        RuleFor(q => q.QuestionRepositoryId)
+        RuleFor(q => q.QuestionBankId)
             .NotNull()
             .NotEmpty()
             .WithMessage(local["The {0} field is required.", "{PropertyName}"])

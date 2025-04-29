@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Shouldly;
 using SuperAbp.Exam.Admin.PaperManagement.Papers;
-using SuperAbp.Exam.PaperManagement.PaperRepos;
+using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
@@ -19,14 +19,14 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
     private readonly ExamTestData _testData;
     private readonly IPaperAdminAppService _paperAdminAppService;
     private readonly IPaperRepository _paperRepository;
-    private readonly IPaperRepoRepository _paperRepoRepository;
+    private readonly IPaperQuestionRuleRepository _paperRepoRepository;
 
     protected PaperAdminAppServiceTests()
     {
         _testData = GetRequiredService<ExamTestData>();
         _paperAdminAppService = GetRequiredService<IPaperAdminAppService>();
         _paperRepository = GetRequiredService<IPaperRepository>();
-        _paperRepoRepository = GetRequiredService<IPaperRepoRepository>();
+        _paperRepoRepository = GetRequiredService<IPaperQuestionRuleRepository>();
     }
 
     [Fact]
@@ -46,11 +46,11 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
     [Fact]
     public async Task Should_Create()
     {
-        PaperCreateOrUpdatePaperRepoDto[] repositories =
+        PaperCreateOrUpdatePaperQuestionRuleDto[] repositories =
         [
-            new PaperCreateOrUpdatePaperRepoDto()
+            new PaperCreateOrUpdatePaperQuestionRuleDto()
             {
-                QuestionRepositoryId = _testData.QuestionRepository1Id,
+                QuestionBankId = _testData.QuestionBank1Id,
                 SingleCount = 1,
                 SingleScore = 1,
                 MultiCount = 1,
@@ -66,7 +66,7 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
             Name = "New_Name",
             Description = "New_Description",
             Score = repositories.Sum(r => r.SingleScore + r.MultiScore + r.JudgeScore + r.BlankScore) ?? 0,
-            Repositories = repositories
+            PaperQuestionRules = repositories
         };
         PaperListDto dto = await _paperAdminAppService.CreateAsync(input);
         Paper paper = await _paperRepository.GetAsync(dto.Id);
@@ -74,18 +74,18 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
         paper.Name.ShouldBe(input.Name);
         paper.Description.ShouldBe(input.Description);
         paper.Score.ShouldBe(input.Score);
-        List<PaperRepo> paperRepos = await _paperRepoRepository.GetListAsync(paperId: paper.Id);
-        paperRepos.Count.ShouldBe(input.Repositories.Length);
+        List<PaperQuestionRule> paperRepos = await _paperRepoRepository.GetListAsync(paperId: paper.Id);
+        paperRepos.Count.ShouldBe(input.PaperQuestionRules.Length);
     }
 
     [Fact]
     public async Task Should_Create_Throw_Exists_Content()
     {
-        PaperCreateOrUpdatePaperRepoDto[] repositories =
+        PaperCreateOrUpdatePaperQuestionRuleDto[] repositories =
         [
-            new PaperCreateOrUpdatePaperRepoDto()
+            new PaperCreateOrUpdatePaperQuestionRuleDto()
             {
-                QuestionRepositoryId = _testData.QuestionRepository1Id,
+                QuestionBankId = _testData.QuestionBank1Id,
                 SingleCount = 1,
                 SingleScore = 1,
                 MultiCount = 1,
@@ -101,7 +101,7 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
             Name = _testData.Paper1Name,
             Description = "New_Description",
             Score = repositories.Sum(r => r.SingleScore + r.MultiScore + r.JudgeScore + r.BlankScore) ?? 0,
-            Repositories = repositories
+            PaperQuestionRules = repositories
         };
         await Should.ThrowAsync<PaperNameAlreadyExistException>(
             async () => await _paperAdminAppService.CreateAsync(input));
@@ -128,10 +128,10 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
             Name = _testData.Paper1Name,
             Description = "New_Description",
             Score = 0,
-            Repositories = [
-                new PaperCreateOrUpdatePaperRepoDto()
+            PaperQuestionRules = [
+                new PaperCreateOrUpdatePaperQuestionRuleDto()
                 {
-                    QuestionRepositoryId = _testData.QuestionRepository1Id,
+                    QuestionBankId = _testData.QuestionBank1Id,
                     SingleCount = 1,
                     SingleScore = 1,
                     MultiCount = 1,
@@ -150,11 +150,11 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
     [Fact]
     public async Task Should_Update()
     {
-        PaperCreateOrUpdatePaperRepoDto[] repositories =
+        PaperCreateOrUpdatePaperQuestionRuleDto[] repositories =
         [
-            new PaperCreateOrUpdatePaperRepoDto()
+            new PaperCreateOrUpdatePaperQuestionRuleDto()
             {
-                QuestionRepositoryId = _testData.QuestionRepository1Id,
+                QuestionBankId = _testData.QuestionBank1Id,
                 SingleCount = 1,
                 SingleScore = 1,
                 MultiCount = 1,
@@ -164,9 +164,9 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
                 BlankCount = 1,
                 BlankScore = 1
             },
-            new PaperCreateOrUpdatePaperRepoDto()
+            new PaperCreateOrUpdatePaperQuestionRuleDto()
             {
-                QuestionRepositoryId = _testData.QuestionRepository2Id,
+                QuestionBankId = _testData.QuestionBank2Id,
                 SingleCount = 1,
                 SingleScore = 1,
                 MultiCount = 1,
@@ -182,7 +182,7 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
             Name = "Update_Name",
             Description = "Update_Description",
             Score = repositories.Sum(r => r.SingleScore + r.MultiScore + r.JudgeScore + r.BlankScore) ?? 0,
-            Repositories = repositories
+            PaperQuestionRules = repositories
         };
         await _paperAdminAppService.UpdateAsync(_testData.Paper1Id, input);
         Paper paper = await _paperRepository.GetAsync(_testData.Paper1Id);
@@ -190,7 +190,7 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
         paper.Name.ShouldBe(input.Name);
         paper.Description.ShouldBe(input.Description);
         paper.Score.ShouldBe(input.Score);
-        List<PaperRepo> paperRepos = await _paperRepoRepository.GetListAsync(paperId: paper.Id);
+        List<PaperQuestionRule> paperRepos = await _paperRepoRepository.GetListAsync(paperId: paper.Id);
     }
 
     [Fact]
@@ -214,10 +214,10 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
             Name = _testData.Paper1Name,
             Description = "New_Description",
             Score = 0,
-            Repositories = [
-                new PaperCreateOrUpdatePaperRepoDto()
+            PaperQuestionRules = [
+                new PaperCreateOrUpdatePaperQuestionRuleDto()
                 {
-                    QuestionRepositoryId = _testData.QuestionRepository1Id,
+                    QuestionBankId = _testData.QuestionBank1Id,
                     SingleCount = 1,
                     SingleScore = 1,
                     MultiCount = 1,
@@ -236,11 +236,11 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
     [Fact]
     public async Task Should_Update_Throw_Exists_Content()
     {
-        PaperCreateOrUpdatePaperRepoDto[] repositories =
+        PaperCreateOrUpdatePaperQuestionRuleDto[] repositories =
         [
-            new PaperCreateOrUpdatePaperRepoDto()
+            new PaperCreateOrUpdatePaperQuestionRuleDto()
             {
-                QuestionRepositoryId = _testData.QuestionRepository1Id,
+                QuestionBankId = _testData.QuestionBank1Id,
                 SingleCount = 1,
                 SingleScore = 1,
                 MultiCount = 1,
@@ -250,9 +250,9 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
                 BlankCount = 1,
                 BlankScore = 1
             },
-            new PaperCreateOrUpdatePaperRepoDto()
+            new PaperCreateOrUpdatePaperQuestionRuleDto()
             {
-                QuestionRepositoryId = _testData.QuestionRepository2Id,
+                QuestionBankId = _testData.QuestionBank2Id,
                 SingleCount = 1,
                 SingleScore = 1,
                 MultiCount = 1,
@@ -268,7 +268,7 @@ public abstract class PaperAdminAppServiceTests<TStartupModule> : ExamApplicatio
             Name = _testData.Paper2Name,
             Description = "Update_Description",
             Score = repositories.Sum(r => r.SingleScore + r.MultiScore + r.JudgeScore + r.BlankScore) ?? 0,
-            Repositories = repositories
+            PaperQuestionRules = repositories
         };
         await Should.ThrowAsync<PaperNameAlreadyExistException>(
             async () => await _paperAdminAppService.UpdateAsync(_testData.Paper1Id, input));

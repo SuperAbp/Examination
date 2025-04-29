@@ -12,10 +12,10 @@ public class Training : AggregateRoot<Guid>, IHasCreationTime
     protected Training()
     { }
 
-    public Training(Guid id, Guid userId, Guid questionRepositoryId, Guid questionId, bool right, TrainingSource trainingSource) : base(id)
+    public Training(Guid id, Guid userId, Guid questionBankId, Guid questionId, bool right, TrainingSource trainingSource) : base(id)
     {
         UserId = userId;
-        QuestionRepositoryId = questionRepositoryId;
+        QuestionBankId = questionBankId;
         QuestionId = questionId;
         Right = right;
         TrainingSource = trainingSource;
@@ -26,7 +26,7 @@ public class Training : AggregateRoot<Guid>, IHasCreationTime
     /// <summary>
     /// 题库Id
     /// </summary>
-    public Guid QuestionRepositoryId { get; set; }
+    public Guid QuestionBankId { get; set; }
 
     /// <summary>
     /// 题目Id

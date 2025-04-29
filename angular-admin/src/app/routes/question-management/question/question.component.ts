@@ -1,17 +1,16 @@
 import { CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFStringWidgetSchema } from '@delon/form';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { map, tap } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { PageHeaderModule } from '@delon/abc/page-header';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { QuestionRepoService, QuestionService } from '@proxy/admin/controllers';
+import { OptionService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
 import { GetQuestionsInput, QuestionListDto } from '@proxy/admin/question-management/questions';
-import { QuestionType } from '@proxy/question-management/questions';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-question-management-question',
@@ -25,7 +24,8 @@ export class QuestionManagementQuestionComponent implements OnInit {
   private messageService = inject(NzMessageService);
   private permissionService = inject(PermissionService);
   private questionService = inject(QuestionService);
-  private questionRepositoryService = inject(QuestionRepoService);
+  private questionBankService = inject(QuestionBankService);
+  private optionService = inject(OptionService);
 
   questions: QuestionListDto[];
   total: number;
@@ -55,28 +55,27 @@ export class QuestionManagementQuestionComponent implements OnInit {
           width: 250,
           allowClear: true,
           asyncData: () =>
-            of(
-              Object.keys(QuestionType)
-                .filter(k => !isNaN(Number(k)))
-                .map(key => {
-                  return { label: this.localizationService.instant('Exam::QuestionType:' + key), value: +key };
-                })
-            ).pipe()
+            this.optionService.getQuestionTypes().pipe(
+              map(res => {
+                const temp: SFSchemaEnumType[] = [];
+                Object.keys(res).forEach(key => {
+                  temp.push({ label: this.localizationService.instant(`Exam::QuestionType:${key}`), value: key });
+                });
+                return temp;
+              })
+            )
         } as SFSelectWidgetSchema
       },
       repositoryId: {
         type: 'string',
         title: '',
         ui: {
-          placeholder: this.localizationService.instant(
-            'Exam::ChoosePlaceholder',
-            this.localizationService.instant('Exam::QuestionRepository')
-          ),
+          placeholder: this.localizationService.instant('Exam::ChoosePlaceholder', this.localizationService.instant('Exam::QuestionBank')),
           widget: 'select',
           width: 250,
           allowClear: true,
           asyncData: () =>
-            this.questionRepositoryService.getList({ skipCount: 0, maxResultCount: 100 }).pipe(
+            this.questionBankService.getList({ skipCount: 0, maxResultCount: 100 }).pipe(
               map((res: any) => {
                 const temp: SFSchemaEnumType[] = [];
                 res.items.forEach(item => {
@@ -91,12 +90,13 @@ export class QuestionManagementQuestionComponent implements OnInit {
   };
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
-    { title: this.localizationService.instant('Exam::QuestionRepository'), index: 'questionRepository' },
+    { title: this.localizationService.instant('Exam::QuestionBank'), index: 'questionBank' },
     {
       title: this.localizationService.instant('Exam::QuestionType'),
       render: 'questionType'
     },
     { title: this.localizationService.instant('Exam::QuestionContent'), index: 'content' },
+    { title: this.localizationService.instant('Exam::KnowledgePoint'), index: 'knowledgePoints' },
     { title: this.localizationService.instant('Exam::CreationTime'), index: 'creationTime', type: 'date' },
     {
       title: this.localizationService.instant('Exam::Actions'),
@@ -125,7 +125,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
           },
           click: (record, _modal, component) => {
             this.questionService.delete(record.id).subscribe(response => {
-              this.messageService.success(this.localizationService.instant('Exam::SuccessDeleted', record.name));
+              this.messageService.success(this.localizationService.instant('Exam::DeletedSuccessfully', record.name));
               // tslint:disable-next-line: no-non-null-assertion
               component!.removeRow(record);
             });
@@ -150,8 +150,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
     return {
       skipCount: 0,
       maxResultCount: 10,
-      sorting: 'Id Desc',
-      questionRepositoryIds: []
+      questionBankIds: []
     };
   }
   change(e: STChange) {
@@ -170,9 +169,9 @@ export class QuestionManagementQuestionComponent implements OnInit {
   }
   search(e) {
     if (e.repositoryId) {
-      this.params.questionRepositoryIds = [e.repositoryId];
+      this.params.questionBankIds = [e.repositoryId];
     } else {
-      delete this.params.questionRepositoryIds;
+      delete this.params.questionBankIds;
     }
     if (e.content) {
       this.params.content = e.content;

@@ -1,15 +1,15 @@
 import { CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
-import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
-import { DelonFormModule, SFSchema, SFStringWidgetSchema } from '@delon/form';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzButtonModule } from 'ng-zorro-antd/button';
+import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
+import { DelonFormModule, SFSchema, SFStringWidgetSchema } from '@delon/form';
 import { PaperService } from '@proxy/admin/controllers';
 import { GetPapersInput, PaperListDto } from '@proxy/admin/paper-management/papers';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-exam-management-paper',

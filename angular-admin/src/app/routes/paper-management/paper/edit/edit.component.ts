@@ -1,20 +1,21 @@
+import { CoreModule } from '@abp/ng.core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { finalize, tap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
-import { dateTimePickerUtil } from '@delon/util';
-import { PaperManagementRepositoryComponent } from '../../repository/repository.component';
-import { CoreModule } from '@abp/ng.core';
+import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderModule } from '@delon/abc/page-header';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { dateTimePickerUtil } from '@delon/util';
+import { PaperService } from '@proxy/admin/controllers';
+import { GetPaperForEditorOutput } from '@proxy/admin/paper-management/papers';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
-import { GetPaperForEditorOutput } from '@proxy/admin/paper-management/papers';
-import { PaperService } from '@proxy/admin/controllers';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { finalize, tap } from 'rxjs/operators';
+
+import { PaperManagementPaperQuestionRuleComponent } from '../../paper-question-rule/paper-question-rule.component';
 
 @Component({
   selector: 'app-exam-management-paper-edit',
@@ -37,15 +38,15 @@ import { PaperService } from '@proxy/admin/controllers';
     NzInputModule,
     NzInputNumberModule,
     NzButtonModule,
-    PaperManagementRepositoryComponent
+    PaperManagementPaperQuestionRuleComponent
   ]
 })
 export class PaperManagementPaperEditComponent implements OnInit {
   paperId: string;
   paper: GetPaperForEditorOutput;
 
-  @ViewChild('PaperRepository')
-  paperRepositoryComponent: PaperManagementRepositoryComponent;
+  @ViewChild('PaperQuestionRule')
+  paperRepositoryComponent: PaperManagementPaperQuestionRuleComponent;
 
   loading = false;
   isConfirmLoading = false;
@@ -99,7 +100,7 @@ export class PaperManagementPaperEditComponent implements OnInit {
       name: [this.paper.name || '', [Validators.required]],
       description: [this.paper.description || ''],
       score: [this.paper.score || 0],
-      repositories: this.fb.array([], [Validators.required])
+      paperQuestionRules: this.fb.array([], [Validators.required])
     });
   }
 

@@ -1,7 +1,7 @@
-﻿using SuperAbp.Exam.QuestionManagement.QuestionRepos;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Guids;
@@ -11,11 +11,11 @@ namespace SuperAbp.Exam.Data
 {
     internal class ExamDataSeedContributor : IDataSeedContributor, ITransientDependency
     {
-        private readonly IQuestionRepoRepository _questionRepoRepository;
+        private readonly IQuestionBankRepository _questionRepoRepository;
         private readonly IGuidGenerator _guidGenerator;
         private readonly ICurrentTenant _currentTenant;
 
-        public ExamDataSeedContributor(ICurrentTenant currentTenant, IGuidGenerator guidGenerator, IQuestionRepoRepository questionRepoRepository)
+        public ExamDataSeedContributor(ICurrentTenant currentTenant, IGuidGenerator guidGenerator, IQuestionBankRepository questionRepoRepository)
         {
             _currentTenant = currentTenant;
             _guidGenerator = guidGenerator;
@@ -30,12 +30,12 @@ namespace SuperAbp.Exam.Data
                 {
                     return;
                 }
-                var books = new List<QuestionRepo>
+                var books = new List<QuestionBank>
                 {
-                    new QuestionRepo(
+                    new QuestionBank(
                         id: _guidGenerator.Create(),
                         DateTime.Now.Year +"年上学期期中考试"),
-                    new QuestionRepo(
+                    new QuestionBank(
                         id: _guidGenerator.Create(),
                         DateTime.Now.Year +"年上学期期末考试")
                 };

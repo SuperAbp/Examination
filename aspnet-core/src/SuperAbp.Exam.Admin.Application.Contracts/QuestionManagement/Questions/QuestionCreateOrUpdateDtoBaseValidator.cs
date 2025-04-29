@@ -13,7 +13,7 @@ public class QuestionCreateOrUpdateDtoBaseValidator : AbstractValidator<Question
             .NotNull()
             .NotEmpty()
             .WithMessage(local["The {0} field is required.", "{PropertyName}"]);
-        RuleFor(q => q.QuestionRepositoryId)
+        RuleFor(q => q.QuestionBankId)
             .NotNull()
             .WithMessage(local["The {0} field is required.", "{PropertyName}"])
             .NotEqual(Guid.Empty)

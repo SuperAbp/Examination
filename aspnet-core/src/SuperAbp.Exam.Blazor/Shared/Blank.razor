@@ -45,6 +45,9 @@
         <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
     }
 }
+
+@using JetBrains.Annotations
+@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages
@@ -61,8 +64,7 @@
     public bool ShowAnalysis { get; set; }
 
     [Parameter] public bool ShowConfirm { get; set; } = true;
-    [Parameter]
-    public string Answered { get; set; }
+    [Parameter] [CanBeNull] public string Answered { get; set; }
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 

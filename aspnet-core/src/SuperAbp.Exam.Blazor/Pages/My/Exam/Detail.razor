@@ -59,7 +59,7 @@
                             break;
                     }
                     <div class="card">
-                        <Descriptions Column="1">
+                        <Descriptions class="desc" Column="1">
                             @if(examQuestion.Right.HasValue)
                             {
                                 <div style="font-size:24px;margin-bottom: 5px;">
@@ -82,6 +82,15 @@
                             @if (examQuestion.QuestionType == QuestionType.FillInTheBlanks.Value)
                             {
                                 <DescriptionsItem Title="正确答案">@(string.Join(ExamConsts.Splitter, examQuestion.QuestionAnswers.Select(a => a.Content)))</DescriptionsItem>
+                            }
+                            @if (examQuestion.KnowledgePoints.Count > 0)
+                            {
+                                <DescriptionsItem Title="@L["KnowledgePoint"]">
+                                    @foreach (string knowledgePoint in examQuestion.KnowledgePoints)
+                                    {
+                                        <Tag>@knowledgePoint</Tag>
+                                    }
+                                </DescriptionsItem>
                             }
                             @if (!String.IsNullOrEmpty(examQuestion.QuestionAnalysis))
                             {

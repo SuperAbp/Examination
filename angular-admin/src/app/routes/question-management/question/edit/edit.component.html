@@ -40,25 +40,25 @@
         </nz-col>
         <nz-col nzLg="12" nzXs="24">
           <nz-form-item>
-            <nz-form-label nzRequired>{{ 'Exam::QuestionRepository' | abpLocalization }}</nz-form-label>
+            <nz-form-label nzRequired>{{ 'Exam::QuestionBank' | abpLocalization }}</nz-form-label>
             <nz-form-control
               nzHasFeedback
               [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
-              [nzErrorTip]="questionRepositoryErrorTpl"
+              [nzErrorTip]="questionBankErrorTpl"
             >
               <nz-select
-                formControlName="questionRepositoryId"
+                formControlName="questionBankId"
                 nzShowSearch
                 nzAllowClear
-                [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization: ('Exam::QuestionRepository' | abpLocalization)"
+                [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization: ('Exam::QuestionBank' | abpLocalization)"
               >
                 <nz-option
-                  *ngFor="let questionRepository of questionRepositories"
-                  [nzValue]="questionRepository.id"
-                  [nzLabel]="questionRepository.title"
+                  *ngFor="let questionBank of questionBanks"
+                  [nzValue]="questionBank.id"
+                  [nzLabel]="questionBank.title"
                 ></nz-option>
               </nz-select>
-              <ng-template #questionRepositoryErrorTpl let-control>
+              <ng-template #questionBankErrorTpl let-control>
                 @if (control.hasError('required')) {
                   {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
                 }
@@ -82,6 +82,20 @@
               {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
             }
           </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'Exam::KnowledgePoint' | abpLocalization }}</nz-form-label>
+        <nz-form-control>
+          <nz-tree-select
+            formControlName="knowledgePointIds"
+            [nzNodes]="nodes"
+            nzShowSearch
+            [nzAllowClear]="false"
+            [nzMultiple]="true"
+            [nzDefaultExpandAll]="true"
+            [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::KnowledgePoint' | abpLocalization)"
+          ></nz-tree-select>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>

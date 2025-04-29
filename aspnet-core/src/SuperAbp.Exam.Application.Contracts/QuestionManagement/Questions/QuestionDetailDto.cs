@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions;
@@ -10,7 +11,9 @@ public class QuestionDetailDto : EntityDto<Guid>
 {
     public int QuestionType { get; set; }
 
-    public Guid QuestionRepositoryId { get; set; }
+    public Guid QuestionBankId { get; set; }
+
+    public IReadOnlyList<string> KnowledgePoints { get; set; } = [];
 
     /// <summary>
     /// 题干
