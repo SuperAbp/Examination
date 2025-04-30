@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
+using SuperAbp.Exam.ExamManagement.UserExams;
 using Volo.Abp.Domain.Entities;
 
 namespace SuperAbp.Exam.ExamManagement.UserExamQuestions;
@@ -39,4 +39,6 @@ public class UserExamQuestion : Entity<Guid>
     /// 得分
     /// </summary>
     public decimal? Score { get; set; }
+
+    public UserExam UserExam { get; set; }
 }

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 
@@ -38,4 +41,6 @@ public class UserExam : AggregateRoot<Guid>, IHasCreationTime
     public DateTime? FinishedTime { get; set; }
 
     public DateTime CreationTime { get; protected set; }
+
+    public ICollection<UserExamQuestion> Questions { get; set; }
 }

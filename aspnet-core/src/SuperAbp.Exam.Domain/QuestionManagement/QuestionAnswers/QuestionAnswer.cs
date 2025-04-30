@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers;
@@ -41,4 +42,5 @@ public class QuestionAnswer : FullAuditedEntity<Guid>
     public int Sort { get; set; }
 
     public Guid QuestionId { get; set; }
+    public Question Question { get; set; }
 }

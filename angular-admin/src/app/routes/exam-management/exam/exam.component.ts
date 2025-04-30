@@ -1,16 +1,17 @@
 import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFStringWidgetSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { tap } from 'rxjs/operators';
-import { ExamManagementExamEditComponent } from './edit/edit.component';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { PageHeaderModule } from '@delon/abc/page-header';
 import { ExaminationService } from '@proxy/admin/controllers';
 import { ExamListDto, GetExamsInput } from '@proxy/admin/exam-management/exams';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { tap } from 'rxjs/operators';
+
+import { ExamManagementExamEditComponent } from './edit/edit.component';
 
 @Component({
   selector: 'app-exam-management-exam',

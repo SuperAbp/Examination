@@ -50,6 +50,8 @@ public interface IQuestionRepository : IRepository<Question, Guid>
         List<Guid>? questionBankIds = null,
         CancellationToken cancellationToken = default);
 
+    Task<List<Question>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// 列表
     /// </summary>

@@ -49,6 +49,12 @@ public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvi
         return await questionQueryable.CountAsync(cancellationToken);
     }
 
+    public async Task<List<Question>> GetByIdsAsync(IEnumerable<Guid> ids,
+        CancellationToken cancellationToken = default)
+    {
+        return await GetListAsync(q => ids.Contains(q.Id), cancellationToken: cancellationToken, includeDetails: true);
+    }
+
     public async Task<List<QuestionWithDetails>> GetListAsync(string? sorting = null,
         int skipCount = 0,
         int maxResultCount = int.MaxValue,

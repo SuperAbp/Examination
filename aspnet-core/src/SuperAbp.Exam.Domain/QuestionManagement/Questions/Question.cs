@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions;
@@ -39,4 +41,6 @@ public class Question : FullAuditedAggregateRoot<Guid>
     /// 所属题库
     /// </summary>
     public Guid QuestionBankId { get; set; }
+
+    public List<QuestionAnswer> Answers { get; set; }
 }

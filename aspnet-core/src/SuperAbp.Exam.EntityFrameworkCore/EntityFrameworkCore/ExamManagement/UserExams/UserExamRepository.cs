@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SuperAbp.Exam.EntityFrameworkCore.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.ExamManagement.UserExams;
+using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
@@ -24,12 +27,64 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
             return await (await GetQueryableAsync()).AnyAsync(x => x.UserId == userId && !x.Finished, GetCancellationToken(cancellationToken));
         }
 
-        public async Task<int> GetCountAsync(Guid? userId = null, CancellationToken cancellationToken = default)
+        public async Task<UserExamWithDetails> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await (await GetQueryableAsync()).WhereIf(userId.HasValue, c => c.UserId == userId).CountAsync(GetCancellationToken(cancellationToken));
+            var dbContext = await GetDbContextAsync();
+            var userExamQueryable = await GetQueryableAsync();
+            var examQuestionQueryable = dbContext.Set<UserExamQuestion>().AsQueryable();
+            var questionQueryable = dbContext.Set<Question>().AsQueryable();
+            var questionAnswerQueryable = dbContext.Set<QuestionAnswer>().AsQueryable();
+
+            UserExam userExam = await userExamQueryable
+                 .AsNoTracking()
+                 .Include(ue => ue.Questions)
+                .SingleAsync(ue => ue.Id == id, cancellationToken);
+
+            return await (from ue in userExamQueryable
+                          join ueq in examQuestionQueryable on ue.Id equals ueq.UserExamId
+                          join q in questionQueryable on ueq.QuestionId equals q.Id
+                          join a in questionAnswerQueryable on q.Id equals a.QuestionId into questionAnswers
+                          where ue.Id == id
+                          select new UserExamWithDetails()
+                          {
+                              Id = ue.Id,
+                              Answers = ueq.Answers,
+                              Finished = ue.Finished,
+                              Right = ueq.Right,
+                              Score = ueq.Score,
+                              Question = q
+                              // QuestionId = q.Id,
+                              // Question = q.Content,
+                              // QuestionAnalysis = q.Analysis,
+                              // QuestionScore = ueq.QuestionScore,
+                              // QuestionType = q.QuestionType,
+                              // QuestionAnswers = questionAnswers.ToList()
+                          }).SingleAsync(cancellationToken);
         }
 
-        public async Task<List<UserExamWithDetails>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue, Guid? userId = null,
+        public async Task<int> GetCountAsync(Guid? userId = null,
+            Guid? examId = null, CancellationToken cancellationToken = default)
+        {
+            return await (await GetQueryableAsync())
+                .WhereIf(userId.HasValue, c => c.UserId == userId)
+                .WhereIf(examId.HasValue, c => c.ExamId == examId)
+                .CountAsync(cancellationToken);
+        }
+
+        public async Task<List<UserExam>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue, Guid? examId = null,
+            CancellationToken cancellationToken = default)
+        {
+            // TODO: How to combine with GetListWithDetailAsync;
+            var queryable = await GetQueryableAsync();
+            return await queryable
+                .WhereIf(examId.HasValue, c => c.ExamId == examId)
+                .OrderBy(sorting ?? UserExamConsts.DefaultSorting)
+                .Skip(skipCount)
+                .Take(maxResultCount)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<UserExamWithDetails>> GetListWithDetailAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue, Guid? userId = null,
             CancellationToken cancellationToken = default)
         {
             var dbContext = await GetDbContextAsync();

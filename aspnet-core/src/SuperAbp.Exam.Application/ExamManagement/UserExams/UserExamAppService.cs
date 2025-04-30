@@ -4,14 +4,16 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Timing;
 using Volo.Abp.Users;
+using static SuperAbp.Exam.ExamDomainErrorCodes;
+using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.QuestionDto;
+using Volo.Abp.Domain.Entities;
+using SuperAbp.Exam.KnowledgePoints;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
@@ -21,7 +23,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         IUserExamRepository userExamRepository,
         UserExamManager userExamManager,
         IExamRepository examRepository,
-        IQuestionRepository questionRepository,
+        IKnowledgePointRepository knowledgePointRepository,
+        IQuestionRepository questionRepository, QuestionManager questionManager,
         IQuestionAnswerRepository questionAnswerRepository,
         IUserExamQuestionRepository userExamQuestionRepository)
         : ExamAppService, IUserExamAppService
@@ -34,9 +37,41 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public virtual async Task<UserExamDetailDto> GetAsync(Guid id)
         {
-            UserExam entity = await userExamRepository.GetAsync(id);
-
-            return ObjectMapper.Map<UserExam, UserExamDetailDto>(entity);
+            UserExam userExam = await userExamRepository.GetAsync(id);
+            List<Guid> questionIds = userExam.Questions.Select(q => q.QuestionId).ToList();
+            List<Question> questions = await questionRepository.GetByIdsAsync(questionIds);
+            var dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
+            List<UserExamDetailDto.QuestionDto> questionDtos = [];
+            foreach (Question question in questions)
+            {
+                var questionDto = ObjectMapper.Map<Question, UserExamDetailDto.QuestionDto>(question);
+                questionDto.Right = userExam.Questions.First(q => q.QuestionId == question.Id).Right;
+                questionDto.Answers = userExam.Questions.FirstOrDefault(q => q.QuestionId == question.Id)?.Answers;
+                // TODO:batch query
+                List<KnowledgePoint> knowledgePoints = await questionManager.GetKnowledgePointsAsync(question.Id);
+                if (knowledgePoints.Count > 0)
+                {
+                    questionDto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
+                }
+                List<OptionDto> answerDtos = [];
+                foreach (QuestionAnswer answer in question.Answers)
+                {
+                    OptionDto optionDto = new()
+                    {
+                        Id = answer.Id,
+                        Content = answer.Content,
+                    };
+                    if (userExam.Finished)
+                    {
+                        optionDto.Right = answer.Right;
+                    }
+                    answerDtos.Add(optionDto);
+                }
+                questionDto.Options = answerDtos;
+                questionDtos.Add(questionDto);
+            }
+            dto.Questions = questionDtos;
+            return dto;
         }
 
         public virtual async Task<PagedResultDto<UserExamListDto>> GetListAsync(GetUserExamsInput input)
@@ -44,7 +79,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             await NormalizeMaxResultCountAsync(input);
 
             int totalCount = await userExamRepository.GetCountAsync(CurrentUser.GetId());
-            List<UserExamWithDetails> entities = await userExamRepository.GetListAsync(
+            List<UserExamWithDetails> entities = await userExamRepository.GetListWithDetailAsync(
                 input.Sorting ?? UserExamConsts.DefaultSorting, input.SkipCount, input.MaxResultCount,
                 CurrentUser.GetId());
 
