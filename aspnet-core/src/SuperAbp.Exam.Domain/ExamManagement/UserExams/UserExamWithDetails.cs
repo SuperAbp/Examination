@@ -10,6 +10,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public Guid Id { get; set; }
         public Guid ExamId { get; set; }
 
+        public Guid UserId { get; set; }
         public string ExamName { get; set; }
 
         // public Guid QuestionId { get; set; }

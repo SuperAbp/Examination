@@ -6,33 +6,32 @@ import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delo
 import { DelonFormModule, SFSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
 import { UserExamService } from '@proxy/admin/controllers';
-import { GetUserExamsInput, UserExamListDto } from '@proxy/admin/exam-management/user-exams';
+import { GetUserExamWithUsersInput, UserExamWithUserDto } from '@proxy/admin/exam-management/user-exams';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-exam-management-user-exam',
-  templateUrl: './user-exam.component.html',
+  selector: 'app-exam-management-user-exam-user',
+  templateUrl: './user-exam-user.component.html',
   standalone: true,
   imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
-export class ExamManagementUserExamComponent implements OnInit {
+export class ExamManagementUserExamUserComponent implements OnInit {
   private router = inject(Router);
-
   private route = inject(ActivatedRoute);
+  private modal = inject(ModalHelper);
   private localizationService = inject(LocalizationService);
   private messageService = inject(NzMessageService);
   private permissionService = inject(PermissionService);
-  private userExamService = inject(UserExamService);
+  private userExamUserService = inject(UserExamService);
 
   examId!: string;
-  userId!: string;
-  userExams: UserExamListDto[];
+  userExamUsers: UserExamWithUserDto[];
   total: number;
   loading = false;
-  params: GetUserExamsInput;
+  params: GetUserExamWithUsersInput;
   page: STPage = {
     show: true,
     showSize: true,
@@ -40,27 +39,21 @@ export class ExamManagementUserExamComponent implements OnInit {
     pageSizes: [10, 20, 30, 40, 50]
   };
   searchSchema: SFSchema = {
-    properties: {
-      // TODO:搜索参数
-    }
+    properties: {}
   };
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
     { title: this.localizationService.instant('Exam::User'), index: 'user' },
-    { title: this.localizationService.instant('Exam::TotalScore'), index: 'totalScore' },
-    { title: this.localizationService.instant('Exam::ExamTime'), render: 'examTime' },
-    { title: this.localizationService.instant('Exam::Finished'), index: 'finished', type: 'yn' },
+    { title: this.localizationService.instant('Exam::TotalCount'), index: 'totalCount' },
+    { title: this.localizationService.instant('Exam::MaxScore'), index: 'maxScore' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [
         {
           icon: 'info',
           type: 'modal',
-          iif: record => {
-            return record.finished;
-          },
           click: (record: STData, modal?: any, instance?: STComponent) => {
-            this.router.navigateByUrl(`/exam-management/user-exam/${record['id']}`);
+            this.router.navigateByUrl(`/exam-management/user-exam?examId=${this.examId}&userId=${record['userId']}`);
           }
         }
       ]
@@ -69,23 +62,21 @@ export class ExamManagementUserExamComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.examId = params['examId'];
-      this.userId = params['userId'];
+      this.examId = params['examId']!;
       this.params = this.resetParameters();
       this.getList();
     });
   }
   getList() {
     this.loading = true;
-    this.userExamService
-      .getList(this.params)
+    this.userExamUserService
+      .getListWithUser(this.params)
       .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => (this.userExams = response.items));
+      .subscribe(response => ((this.userExamUsers = response.items), (this.total = response.totalCount)));
   }
-  resetParameters(): GetUserExamsInput {
+  resetParameters(): GetUserExamWithUsersInput {
     return {
       examId: this.examId,
-      userId: this.userId,
       skipCount: 0,
       maxResultCount: 10
     };

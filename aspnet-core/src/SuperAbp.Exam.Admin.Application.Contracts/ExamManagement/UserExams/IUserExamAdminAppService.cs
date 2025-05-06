@@ -5,9 +5,29 @@ using Volo.Abp.Application.Services;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.UserExams;
 
+/// <summary>
+/// 用户考试管理
+/// </summary>
 public interface IUserExamAdminAppService : IApplicationService
 {
-    Task<PagedResultDto<UserExamListDto>> GetListAsync(GetUserExamsInput input);
+    /// <summary>
+    /// 列表
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    Task<PagedResultDto<UserExamWithUserDto>> GetListWithUserAsync(GetUserExamWithUsersInput input);
 
-    Task<UserExamDetailDto> GetDetailAsync(Guid userExamId);
+    /// <summary>
+    /// 列表
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    Task<ListResultDto<UserExamListDto>> GetListAsync(GetUserExamsInput input);
+
+    /// <summary>
+    /// 详情
+    /// </summary>
+    /// <param name="id">主键</param>
+    /// <returns></returns>
+    Task<UserExamDetailDto> GetAsync(Guid id);
 }

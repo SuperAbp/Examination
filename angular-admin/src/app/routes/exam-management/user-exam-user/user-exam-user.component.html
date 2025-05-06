@@ -3,7 +3,7 @@
   <sf mode="search" [schema]="searchSchema" (formSubmit)="search($event)" (formReset)="reset()"></sf>
   <st
     #st
-    [data]="userExams"
+    [data]="userExamUsers"
     [columns]="columns"
     [loading]="loading"
     [page]="page"
@@ -12,13 +12,5 @@
     [header]="'Exam::DataStart' | abpLocalization"
     [footer]="'Exam::DataEnd' | abpLocalization"
     responsiveHideHeaderFooter
-  >
-    <ng-template st-row="examTime" let-item let-index="index">
-      {{ item.creationTime }} ~
-      <span *ngIf="item.finished && item.finishedTime; else unfinished">{{ item.finishedTime }}</span>
-      <ng-template #unfinished>
-        {{ 'Exam::Unfinished' | abpLocalization }}
-      </ng-template>
-    </ng-template>
-  </st>
+  ></st>
 </nz-card>

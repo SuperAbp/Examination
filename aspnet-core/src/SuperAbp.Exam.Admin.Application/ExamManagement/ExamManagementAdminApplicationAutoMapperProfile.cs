@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using SuperAbp.Exam.Admin.ExamManagement.Exams;
+using SuperAbp.Exam.Admin.ExamManagement.UserExams;
 using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.UserExams;
 
 namespace SuperAbp.Exam.Admin.ExamManagement
 {
@@ -23,6 +25,9 @@ namespace SuperAbp.Exam.Admin.ExamManagement
             CreateMap<ExamUpdateDto, Examination>();
 
             #endregion 考试
+
+            CreateMap<UserExamWithUser, UserExamWithUserDto>();
+            CreateMap<UserExam, UserExamListDto>();
         }
     }
 }

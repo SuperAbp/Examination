@@ -1,5 +1,6 @@
 import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFStringWidgetSchema } from '@delon/form';
@@ -21,6 +22,7 @@ import { ExamManagementExamEditComponent } from './edit/edit.component';
 })
 export class ExamManagementExamComponent implements OnInit {
   private modal = inject(ModalHelper);
+  private router = inject(Router);
   private localizationService = inject(LocalizationService);
   private messageService = inject(NzMessageService);
   private permissionService = inject(PermissionService);
@@ -63,6 +65,18 @@ export class ExamManagementExamComponent implements OnInit {
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [
+        {
+          text: '考试记录',
+          modal: {
+            component: ExamManagementExamEditComponent,
+            params: (record: any) => ({
+              examId: record.id
+            })
+          },
+          click: record => {
+            this.router.navigateByUrl(`/exam-management/user-exam-user?examId=${record.id}`);
+          }
+        },
         {
           icon: 'edit',
           type: 'modal',

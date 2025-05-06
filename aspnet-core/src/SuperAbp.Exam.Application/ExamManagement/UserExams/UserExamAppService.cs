@@ -10,9 +10,7 @@ using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Timing;
 using Volo.Abp.Users;
-using static SuperAbp.Exam.ExamDomainErrorCodes;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.QuestionDto;
-using Volo.Abp.Domain.Entities;
 using SuperAbp.Exam.KnowledgePoints;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
@@ -24,7 +22,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         UserExamManager userExamManager,
         IExamRepository examRepository,
         IKnowledgePointRepository knowledgePointRepository,
-        IQuestionRepository questionRepository, QuestionManager questionManager,
+        IQuestionRepository questionRepository,
+        QuestionManager questionManager,
         IQuestionAnswerRepository questionAnswerRepository,
         IUserExamQuestionRepository userExamQuestionRepository)
         : ExamAppService, IUserExamAppService

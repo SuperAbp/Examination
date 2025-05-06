@@ -1,8 +1,11 @@
-import { ConfigStateService, LocalizationService, PermissionService } from '@abp/ng.core';
+import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
+import { PageHeaderModule } from '@delon/abc/page-header';
 import { Component, inject, OnInit, ViewChild<% if(!!viewEncapsulation) { %>, ViewEncapsulation<% }%><% if(changeDetection !== 'Default') { %>, ChangeDetectionStrategy<% }%> } from '@angular/core';
-import { STChange, STColumn, STComponent, STPage } from '@delon/abc/st';
-import { SFSchema } from '@delon/form';
+import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
+import { DelonFormModule, SFSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
 import { <%= classify(module) %><%= classify(name) %>EditComponent } from './edit/edit.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
@@ -98,8 +101,7 @@ export class <%= componentName %> implements OnInit {
   resetParameters():Get<%= classify(name) %>sInput {
     return {
       skipCount: 0,
-      maxResultCount: 10,
-      sorting: 'Id Desc',
+      maxResultCount: 10
     };
   }
   change(e: STChange) {

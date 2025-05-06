@@ -41,6 +41,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         /// <param name="skipCount">跳过</param>
         /// <param name="maxResultCount">最大</param>
         /// <param name="examId">考试Id</param>
+        /// <param name="userId">用户Id</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<List<UserExam>> GetListAsync(
@@ -48,6 +49,14 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             int skipCount = 0,
             int maxResultCount = int.MaxValue,
             Guid? examId = null,
+            Guid? userId = null,
+            CancellationToken cancellationToken = default);
+
+        Task<List<UserExamWithUser>> GetListByExamIdAsync(
+            Guid examId,
+            string? sorting = null,
+            int skipCount = 0,
+            int maxResultCount = int.MaxValue,
             CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -57,6 +66,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         /// <param name="skipCount">跳过</param>
         /// <param name="maxResultCount">最大</param>
         /// <param name="userId">用户Id</param>
+        /// <param name="examId">考试Id</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<List<UserExamWithDetails>> GetListWithDetailAsync(
@@ -64,6 +74,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             int skipCount = 0,
             int maxResultCount = int.MaxValue,
             Guid? userId = null,
+            Guid? examId = null,
             CancellationToken cancellationToken = default);
     }
 }

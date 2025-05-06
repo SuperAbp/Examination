@@ -5,7 +5,7 @@ using Volo.Abp.Application.Dtos;
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
     /// <summary>
-    /// 列表
+    /// 详情
     /// </summary>
     public class UserExamDetailDto : EntityDto<Guid>
     {

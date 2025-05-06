@@ -10,7 +10,7 @@ namespace SuperAbp.Exam.Controllers
     /// <summary>
     /// 用户考试
     /// </summary>
-    [Route("api/userExam")]
+    [Route("api/user-exam")]
     public class UserExamController : ExamController, IUserExamAppService
     {
         private readonly IUserExamAppService _userExamAppService;
