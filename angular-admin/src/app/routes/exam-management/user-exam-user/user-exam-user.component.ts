@@ -3,14 +3,17 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
-import { DelonFormModule, SFSchema } from '@delon/form';
+import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
 import { UserExamService } from '@proxy/admin/controllers';
 import { GetUserExamWithUsersInput, UserExamWithUserDto } from '@proxy/admin/exam-management/user-exams';
+import { IdentityUserService } from '@super-abp/ng.identity/proxy';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+
+import type { CellOptions } from '@delon/abc/cell';
 
 @Component({
   selector: 'app-exam-management-user-exam-user',
@@ -26,6 +29,7 @@ export class ExamManagementUserExamUserComponent implements OnInit {
   private messageService = inject(NzMessageService);
   private permissionService = inject(PermissionService);
   private userExamUserService = inject(UserExamService);
+  private userService = inject(IdentityUserService);
 
   examId!: string;
   userExamUsers: UserExamWithUserDto[];
@@ -39,25 +43,40 @@ export class ExamManagementUserExamUserComponent implements OnInit {
     pageSizes: [10, 20, 30, 40, 50]
   };
   searchSchema: SFSchema = {
-    properties: {}
+    properties: {
+      repositoryId: {
+        type: 'string',
+        title: '',
+        ui: {
+          placeholder: this.localizationService.instant('Exam::ChoosePlaceholder', this.localizationService.instant('Exam::QuestionBank')),
+          widget: 'select',
+          width: 250,
+          allowClear: true,
+          asyncData: () =>
+            this.userService.getList({ skipCount: 0, maxResultCount: 100 }).pipe(
+              map((res: any) => {
+                const temp: SFSchemaEnumType[] = [];
+                res.items.forEach(item => {
+                  temp.push({ label: item.title, value: item.id });
+                });
+                return temp;
+              })
+            )
+        } as SFSelectWidgetSchema
+      }
+    }
   };
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
     { title: this.localizationService.instant('Exam::User'), index: 'user' },
-    { title: this.localizationService.instant('Exam::TotalCount'), index: 'totalCount' },
-    { title: this.localizationService.instant('Exam::MaxScore'), index: 'maxScore' },
     {
-      title: this.localizationService.instant('Exam::Actions'),
-      buttons: [
-        {
-          icon: 'info',
-          type: 'modal',
-          click: (record: STData, modal?: any, instance?: STComponent) => {
-            this.router.navigateByUrl(`/exam-management/user-exam?examId=${this.examId}&userId=${record['userId']}`);
-          }
-        }
-      ]
-    }
+      title: this.localizationService.instant('Exam::TotalCount'),
+      index: 'totalCount',
+      cell: record => {
+        return { link: { url: `/exam-management/user-exam?examId=${this.examId}&userId=${record['userId']}` } } as CellOptions;
+      }
+    },
+    { title: this.localizationService.instant('Exam::MaxScore'), index: 'maxScore' }
   ];
 
   ngOnInit() {
