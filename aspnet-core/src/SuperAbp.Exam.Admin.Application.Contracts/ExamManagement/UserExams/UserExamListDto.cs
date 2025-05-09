@@ -4,6 +4,8 @@ namespace SuperAbp.Exam.Admin.ExamManagement.UserExams;
 
 public class UserExamListDto
 {
+    public Guid Id { get; set; }
+
     /// <summary>
     /// 总分
     /// </summary>

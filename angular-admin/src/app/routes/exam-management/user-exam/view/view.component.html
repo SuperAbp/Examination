@@ -1,0 +1,35 @@
+<page-header *ngIf="userExam" [action]="phActionTpl" [title]="userExam.examId">
+  <ng-template #phActionTpl>
+    <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
+  </ng-template>
+</page-header>
+@if (loading) {
+  <nz-spin></nz-spin>
+} @else {
+  <nz-card>
+    <div *ngFor="let questionType of questionTypes; let i = index">
+      <h2>
+        {{ chineseNumber[i] }}、{{ 'Exam::QuestionType:' + questionType | abpLocalization }}题（共{{
+          questionTypeMaps[questionType].length
+        }}题）
+      </h2>
+      <div class="question" *ngFor="let question of questionTypeMaps[questionType]">
+        <h3> {{ question.content }} </h3>
+        <choose *ngIf="questionType == '0' || questionType == '1' || questionType == '2'" [question]="question"></choose>
+        <ng-container *ngIf="questionType == '3'">
+          <blank [answers]="getAnswer(question.answers)"></blank>
+          <div>
+            <span>正确答案：</span>
+            <span>{{ getOptions(question) }}</span>
+          </div>
+        </ng-container>
+
+        <nz-switch [ngModel]="question.right" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
+        <ng-template #checkedTemplate><span nz-icon nzType="check"></span></ng-template>
+        <ng-template #unCheckedTemplate><span nz-icon nzType="close"></span></ng-template>
+        <nz-input-number [(ngModel)]="question.score" [nzMin]="0" [nzMax]="question.questionScore" [nzStep]="1"></nz-input-number>
+        <textarea nz-input placeholder="Reason" [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
+      </div>
+    </div>
+  </nz-card>
+}

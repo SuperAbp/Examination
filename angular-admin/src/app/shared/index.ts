@@ -3,6 +3,8 @@
 // Utils
 export * from './utils/yuan';
 
+export * from './pipes';
+
 // Module
 export * from './shared-imports';
 export * from './shared.module';

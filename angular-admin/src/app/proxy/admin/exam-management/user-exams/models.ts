@@ -23,6 +23,7 @@ export interface UserExamDetailDto_QuestionDto {
   answers?: string;
   right?: boolean;
   score?: number;
+  questionScore?: number;
   knowledgePoints: string[];
   options: UserExamDetailDto_QuestionDto_OptionDto[];
 }

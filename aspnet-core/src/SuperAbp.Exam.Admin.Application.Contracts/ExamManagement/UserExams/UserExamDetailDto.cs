@@ -41,6 +41,8 @@ public class UserExamDetailDto
         /// </summary>
         public decimal? Score { get; set; }
 
+        public decimal? QuestionScore { get; set; }
+
         public IReadOnlyList<string> KnowledgePoints { get; set; } = [];
 
         public List<OptionDto> Options { get; set; } = [];
