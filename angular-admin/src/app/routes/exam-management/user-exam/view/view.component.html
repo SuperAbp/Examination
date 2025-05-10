@@ -17,18 +17,47 @@
         <h3> {{ question.content }} </h3>
         <choose *ngIf="questionType == '0' || questionType == '1' || questionType == '2'" [question]="question"></choose>
         <ng-container *ngIf="questionType == '3'">
-          <blank [answers]="getAnswer(question.answers)"></blank>
-          <div>
-            <span>正确答案：</span>
-            <span>{{ getOptions(question) }}</span>
+          <div nz-row nzGutter="16">
+            <div nz-col nzSpan="12">
+              <blank [answers]="getAnswer(question.answers)"></blank>
+              <span>正确答案：</span>
+              <span>{{ getOptions(question) }}</span>
+            </div>
+            <div nz-col nzSpan="12">
+              <form nz-form>
+                <nz-form-item>
+                  <nz-form-label>正确错误</nz-form-label>
+                  <nz-form-control nzErrorTip="Please input your username!">
+                    <nz-switch
+                      [ngModel]="question.right"
+                      [nzCheckedChildren]="checkedTemplate"
+                      [nzUnCheckedChildren]="unCheckedTemplate"
+                    ></nz-switch>
+                    <ng-template #checkedTemplate><span nz-icon nzType="check"></span></ng-template>
+                    <ng-template #unCheckedTemplate><span nz-icon nzType="close"></span></ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>{{ 'Exam::Score' | abpLocalization }}</nz-form-label>
+                  <nz-form-control nzErrorTip="Please input your username!">
+                    <nz-input-number
+                      [(ngModel)]="question.score"
+                      [nzMin]="0"
+                      [nzMax]="question.questionScore"
+                      [nzStep]="1"
+                    ></nz-input-number>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>{{ 'Exam::Reason' | abpLocalization }}</nz-form-label>
+                  <nz-form-control nzErrorTip="Please input your username!">
+                    <textarea nz-input placeholder="Reason" [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
+                  </nz-form-control>
+                </nz-form-item>
+              </form>
+            </div>
           </div>
         </ng-container>
-
-        <nz-switch [ngModel]="question.right" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
-        <ng-template #checkedTemplate><span nz-icon nzType="check"></span></ng-template>
-        <ng-template #unCheckedTemplate><span nz-icon nzType="close"></span></ng-template>
-        <nz-input-number [(ngModel)]="question.score" [nzMin]="0" [nzMax]="question.questionScore" [nzStep]="1"></nz-input-number>
-        <textarea nz-input placeholder="Reason" [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
       </div>
     </div>
   </nz-card>
