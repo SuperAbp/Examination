@@ -6,6 +6,7 @@ import { PageHeaderComponent } from '@delon/abc/page-header';
 import { UserExamService } from '@proxy/admin/controllers';
 import { UserExamDetailDto, UserExamDetailDto_QuestionDto } from '@proxy/admin/exam-management/user-exams';
 import { SharedModule } from '@shared';
+import { NzAffixModule } from 'ng-zorro-antd/affix';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -14,6 +15,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { QuestionNumber, QuestionNumberItem } from 'src/app/shared/components/question-number';
 
 @Component({
   selector: 'app-exam-management-user-exam-view',
@@ -29,7 +31,8 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
     NzButtonModule,
     NzRadioModule,
     NzIconModule,
-    NzSwitchModule
+    NzSwitchModule,
+    NzAffixModule
   ]
 })
 export class ExamManagementUserExamViewComponent implements OnInit {
@@ -67,6 +70,26 @@ export class ExamManagementUserExamViewComponent implements OnInit {
   }
   getAnswer(amswers: string) {
     return amswers != null && amswers.split('||');
+  }
+
+  getQuestionNumbers(): QuestionNumber[] {
+    const questionTypes = this.questionTypes;
+    let questionNumbers: QuestionNumber[] = [];
+    questionTypes.forEach(t => {
+      let questionType = +t;
+      let currentQuestions = this.questions
+        .filter(q => q.questionType == questionType)
+        .map(q => {
+          return { id: q.id, score: q.questionScore };
+        });
+      let questionNumber: QuestionNumber = {
+        questionType: questionType,
+        questions: currentQuestions,
+        totalScore: currentQuestions.reduce((acc, item) => acc + item.score, 0)
+      };
+      questionNumbers.push(questionNumber);
+    });
+    return questionNumbers;
   }
 
   ngOnInit(): void {
