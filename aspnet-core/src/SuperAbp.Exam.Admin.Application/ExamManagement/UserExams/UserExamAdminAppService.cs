@@ -62,14 +62,14 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
         IdentityUser user = await UserRepository.GetAsync(userExam.UserId);
         List<Guid> questionIds = userExam.Questions.Select(q => q.QuestionId).ToList();
         List<Question> questions = await QuestionRepository.GetByIdsAsync(questionIds);
-        var dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
+        UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
         dto.ExamName = examination.Name;
         dto.UserName = user.UserName;
         List<UserExamDetailDto.QuestionDto> questionDtos = [];
         foreach (Question question in questions)
         {
             var questionDto = ObjectMapper.Map<Question, UserExamDetailDto.QuestionDto>(question);
-            var userExamQuestion = userExam.Questions.Single(q => q.QuestionId == question.Id);
+            UserExamQuestion userExamQuestion = userExam.Questions.Single(q => q.QuestionId == question.Id);
             questionDto.Right = userExamQuestion.Right;
             questionDto.Reason = userExamQuestion.Reason;
             questionDto.Score = userExamQuestion.Score;

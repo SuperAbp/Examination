@@ -39,13 +39,15 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             UserExam userExam = await userExamRepository.GetAsync(id);
             List<Guid> questionIds = userExam.Questions.Select(q => q.QuestionId).ToList();
             List<Question> questions = await questionRepository.GetByIdsAsync(questionIds);
-            var dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
+            UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
             List<UserExamDetailDto.QuestionDto> questionDtos = [];
             foreach (Question question in questions)
             {
                 var questionDto = ObjectMapper.Map<Question, UserExamDetailDto.QuestionDto>(question);
-                questionDto.Right = userExam.Questions.First(q => q.QuestionId == question.Id).Right;
-                questionDto.Answers = userExam.Questions.FirstOrDefault(q => q.QuestionId == question.Id)?.Answers;
+                UserExamQuestion userExamQuestion = userExam.Questions.Single(q => q.QuestionId == question.Id);
+                questionDto.Right = userExamQuestion.Right;
+                questionDto.Answers = userExamQuestion.Answers;
+                questionDto.QuestionScore = userExamQuestion.QuestionScore;
                 // TODO:batch query
                 List<KnowledgePoint> knowledgePoints = await questionManager.GetKnowledgePointsAsync(question.Id);
                 if (knowledgePoints.Count > 0)
