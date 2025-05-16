@@ -1,6 +1,7 @@
 import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import type { CellOptions } from '@delon/abc/cell';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema } from '@delon/form';
@@ -12,8 +13,6 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { map, tap } from 'rxjs/operators';
-
-import type { CellOptions } from '@delon/abc/cell';
 
 @Component({
   selector: 'app-exam-management-user-exam-user',

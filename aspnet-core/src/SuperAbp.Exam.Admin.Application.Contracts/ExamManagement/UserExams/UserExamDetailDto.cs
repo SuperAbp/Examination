@@ -11,6 +11,9 @@ public class UserExamDetailDto
     public Guid UserId { get; set; }
     public Guid ExamId { get; set; }
 
+    public required string ExamName { get; set; }
+    public required string UserName { get; set; }
+
     public IReadOnlyList<QuestionDto> Questions { get; set; } = [];
 
     public class QuestionDto
@@ -42,6 +45,8 @@ public class UserExamDetailDto
         public decimal? Score { get; set; }
 
         public decimal? QuestionScore { get; set; }
+
+        public string? Reason { get; set; }
 
         public IReadOnlyList<string> KnowledgePoints { get; set; } = [];
 

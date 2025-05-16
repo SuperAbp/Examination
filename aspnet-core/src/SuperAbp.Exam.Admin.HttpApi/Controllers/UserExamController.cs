@@ -1,5 +1,6 @@
 ﻿using SuperAbp.Exam.Admin.ExamManagement.UserExams;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.Application.Dtos;
@@ -46,5 +47,17 @@ public class UserExamController(IUserExamAdminAppService userExamAdminAppService
     public async Task<UserExamDetailDto> GetAsync(Guid id)
     {
         return await UserExamAdminAppService.GetAsync(id);
+    }
+
+    /// <summary>
+    /// 题目审核
+    /// </summary>
+    /// <param name="id">主键</param>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [HttpPatch("review")]
+    public async Task ReviewQuestionsAsync(Guid id, List<ReviewedQuestionDto> input)
+    {
+        await UserExamAdminAppService.ReviewQuestionsAsync(id, input);
     }
 }

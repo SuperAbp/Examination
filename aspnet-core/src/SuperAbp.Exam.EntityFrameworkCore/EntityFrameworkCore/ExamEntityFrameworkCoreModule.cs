@@ -61,7 +61,7 @@ public class ExamEntityFrameworkCoreModule : AbpModule
             });
             options.Entity<UserExam>(questionOption =>
             {
-                questionOption.DefaultWithDetailsFunc = query => query.Include(o => o.Questions);
+                questionOption.DefaultWithDetailsFunc = query => query.Include(o => o.Questions).ThenInclude(o => o.QuestionReviews);
             });
         });
     }

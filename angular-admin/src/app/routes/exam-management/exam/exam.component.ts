@@ -66,7 +66,7 @@ export class ExamManagementExamComponent implements OnInit {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [
         {
-          text: '考试记录',
+          text: this.localizationService.instant('Exam::ExamRecord'),
           modal: {
             component: ExamManagementExamEditComponent,
             params: (record: any) => ({

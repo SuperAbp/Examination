@@ -23,6 +23,7 @@ using SuperAbp.MenuManagement.EntityFrameworkCore;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.TrainingManagement;
 using SmartEnum.EFCore;
+using SuperAbp.Exam.ExamManagement.UserExamQuestionReviews;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.KnowledgePoints;
@@ -84,6 +85,7 @@ public class ExamDbContext :
 
     public DbSet<UserExam> UserExams { get; set; }
     public DbSet<UserExamQuestion> UerExamQuestions { get; set; }
+    public DbSet<UserExamQuestionReview> UserExamQuestionReviews { get; set; }
 
     public DbSet<Training> Trains { get; set; }
 
@@ -199,9 +201,18 @@ public class ExamDbContext :
         {
             b.ToTable(ExamConsts.DbTablePrefix + "UserExamQuestion", ExamConsts.DbSchema);
             b.ConfigureByConvention();
-            b.ConfigureAuditedAggregateRoot();
 
             b.Property(p => p.Answers).HasMaxLength(UserExamQuestionConsts.MaxAnswersLength);
+            b.Property(p => p.Reason).HasMaxLength(UserExamQuestionConsts.MaxReasonLength);
+        });
+
+        builder.Entity<UserExamQuestionReview>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "UserExamQuestionReview", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.ConfigureFullAudited();
+
+            b.Property(p => p.Reason).HasMaxLength(UserExamQuestionReviewConsts.MaxReasonLength);
         });
 
         builder.Entity<Training>(b =>

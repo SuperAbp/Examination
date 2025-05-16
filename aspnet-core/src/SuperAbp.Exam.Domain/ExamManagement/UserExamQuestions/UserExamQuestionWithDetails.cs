@@ -31,6 +31,8 @@ public class UserExamQuestionWithDetails
     /// </summary>
     public required string Question { get; set; }
 
+    public string? QuestionReviewReason { get; set; }
+
     /// <summary>
     /// 解析
     /// </summary>

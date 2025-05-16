@@ -46,7 +46,6 @@ export class ExamManagementUserExamComponent implements OnInit {
   };
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
-    { title: this.localizationService.instant('Exam::User'), index: 'user' },
     { title: this.localizationService.instant('Exam::TotalScore'), index: 'totalScore' },
     { title: this.localizationService.instant('Exam::ExamTime'), render: 'examTime' },
     { title: this.localizationService.instant('Exam::Finished'), index: 'finished', type: 'yn' },

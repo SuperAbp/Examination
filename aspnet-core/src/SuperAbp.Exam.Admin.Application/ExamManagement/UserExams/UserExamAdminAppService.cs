@@ -6,20 +6,24 @@ using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System.Linq;
+using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using Volo.Abp.Identity;
+using Volo.Abp.Users;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.UserExams;
 
 public class UserExamAdminAppService(IUserExamRepository userExamRepository,
     IQuestionRepository questionRepository,
     IIdentityUserRepository userRepository,
+    IExamRepository examRepository,
     QuestionManager questionManager,
     UserExamManager userExamManager) : ExamAppService, IUserExamAdminAppService
 {
     protected IQuestionRepository QuestionRepository { get; } = questionRepository;
     public IIdentityUserRepository UserRepository { get; } = userRepository;
+    public IExamRepository ExamRepository { get; } = examRepository;
     protected QuestionManager QuestionManager { get; } = questionManager;
     public UserExamManager UserExamManager { get; } = userExamManager;
     protected IUserExamRepository UserExamRepository { get; } = userExamRepository;
@@ -54,18 +58,23 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
     public async Task<UserExamDetailDto> GetAsync(Guid id)
     {
         UserExam userExam = await UserExamRepository.GetAsync(id);
+        Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
+        IdentityUser user = await UserRepository.GetAsync(userExam.UserId);
         List<Guid> questionIds = userExam.Questions.Select(q => q.QuestionId).ToList();
         List<Question> questions = await QuestionRepository.GetByIdsAsync(questionIds);
-        // TODO: Only Query User Exam Question
-        List<UserExamQuestionWithDetails> userExamQuestions = await UserExamManager.GetQuestionsAsync(userExam.Id);
         var dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
+        dto.ExamName = examination.Name;
+        dto.UserName = user.UserName;
         List<UserExamDetailDto.QuestionDto> questionDtos = [];
         foreach (Question question in questions)
         {
             var questionDto = ObjectMapper.Map<Question, UserExamDetailDto.QuestionDto>(question);
-            questionDto.Right = userExam.Questions.First(q => q.QuestionId == question.Id).Right;
-            questionDto.Answers = userExam.Questions.FirstOrDefault(q => q.QuestionId == question.Id)?.Answers;
-            questionDto.QuestionScore = userExamQuestions.Single(ueq => ueq.QuestionId == question.Id).QuestionScore;
+            var userExamQuestion = userExam.Questions.Single(q => q.QuestionId == question.Id);
+            questionDto.Right = userExamQuestion.Right;
+            questionDto.Reason = userExamQuestion.Reason;
+            questionDto.Score = userExamQuestion.Score;
+            questionDto.Answers = userExamQuestion.Answers;
+            questionDto.QuestionScore = userExamQuestion.QuestionScore;
             List<KnowledgePoint> knowledgePoints = await QuestionManager.GetKnowledgePointsAsync(question.Id);
             if (knowledgePoints.Count > 0)
             {
@@ -90,5 +99,20 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
         }
         dto.Questions = questionDtos;
         return dto;
+    }
+
+    public async Task ReviewQuestionsAsync(Guid id, List<ReviewedQuestionDto> input)
+    {
+        UserExam userExam = await UserExamRepository.GetAsync(id);
+        foreach (ReviewedQuestionDto question in input)
+        {
+            if (!question.Score.HasValue)
+            {
+                continue;
+            }
+            userExam.ReviewQuestion(GuidGenerator.Create(), question.QuestionId, question.Right, question.Score.Value, question.Reason);
+        }
+        userExam.UpdateTotalScore();
+        await UserExamRepository.UpdateAsync(userExam);
     }
 }

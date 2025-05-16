@@ -43,6 +43,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
                               QuestionAnalysis = q.Analysis,
                               QuestionScore = e.QuestionScore,
                               QuestionType = q.QuestionType,
+                              QuestionReviewReason = e.Reason,
                               QuestionAnswers = questionAnswers
                                   .Select(qa => new UserExamQuestionWithDetails.QuestionAnswer()
                                   {

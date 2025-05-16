@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -30,4 +31,12 @@ public interface IUserExamAdminAppService : IApplicationService
     /// <param name="id">主键</param>
     /// <returns></returns>
     Task<UserExamDetailDto> GetAsync(Guid id);
+
+    /// <summary>
+    /// 题目审核
+    /// </summary>
+    /// <param name="id">主键</param>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    Task ReviewQuestionsAsync(Guid id, List<ReviewedQuestionDto> input);
 }
