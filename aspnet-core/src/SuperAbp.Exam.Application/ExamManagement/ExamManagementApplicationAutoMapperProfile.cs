@@ -39,16 +39,6 @@ namespace SuperAbp.Exam.ExamManagement
                     opt => opt.Ignore());
 
             #endregion 用户考试
-
-            #region 用户考题
-
-            CreateMap<UserExamQuestion, GetUserExamQuestionForEditorOutput>();
-            CreateMap<UserExamQuestion, UserExamQuestionListDto>();
-            CreateMap<UserExamQuestion, UserExamQuestionDetailDto>();
-            CreateMap<UserExamQuestionCreateDto, UserExamQuestion>();
-            CreateMap<UserExamQuestionAnswerDto, UserExamQuestion>();
-
-            #endregion 用户考题
         }
     }
 }

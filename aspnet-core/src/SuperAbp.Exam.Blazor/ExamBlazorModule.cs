@@ -13,6 +13,8 @@ using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.AspNetCore.Components.Web.BasicTheme;
+using Autofac.Core;
+using Blazored.LocalStorage;
 
 namespace SuperAbp.Exam.Blazor;
 
@@ -22,7 +24,7 @@ namespace SuperAbp.Exam.Blazor;
     typeof(AbpAspNetCoreComponentsWebAssemblyBasicThemeModule)
 )]
 [DependsOn(typeof(AbpAspNetCoreComponentsWebBasicThemeModule))]
-    public class ExamBlazorModule : AbpModule
+public class ExamBlazorModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
@@ -35,7 +37,10 @@ namespace SuperAbp.Exam.Blazor;
         ConfigureUI(builder);
         ConfigureMenu(context);
         ConfigureAutoMapper(context);
+
+        builder.Services.AddBlazoredLocalStorage();
     }
+
     private void ConfigureRouter(ServiceConfigurationContext context)
     {
         Configure<AbpRouterOptions>(options =>
@@ -51,7 +56,6 @@ namespace SuperAbp.Exam.Blazor;
             options.MenuContributors.Add(new ExamMenuContributor(context.Services.GetConfiguration()));
         });
     }
-
 
     private static void ConfigureAuthentication(WebAssemblyHostBuilder builder)
     {
@@ -71,7 +75,6 @@ namespace SuperAbp.Exam.Blazor;
     private static void ConfigureUI(WebAssemblyHostBuilder builder)
     {
         builder.RootComponents.Add<App>("#ApplicationContainer");
-
     }
 
     private static void ConfigureHttpClient(ServiceConfigurationContext context, IWebAssemblyHostEnvironment environment)

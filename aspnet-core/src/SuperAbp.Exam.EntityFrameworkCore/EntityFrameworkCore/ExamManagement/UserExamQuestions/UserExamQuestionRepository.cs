@@ -51,7 +51,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
                                       Content = qa.Content,
                                       Right = qa.Right
                                   }).ToList()
-                          }).ToListAsync(GetCancellationToken(cancellationToken));
+                          }).ToListAsync(cancellationToken);
         }
     }
 }

@@ -48,6 +48,12 @@ public class UserExam : FullAuditedAggregateRoot<Guid>
         q.Review(reviewId, right, score, comment);
     }
 
+    public void AnswerQuestion(Guid questionId, string answers)
+    {
+        UserExamQuestion q = Questions.FirstOrDefault(x => x.QuestionId == questionId) ?? throw new Exception("题目不存在");
+        q.Answers = answers;
+    }
+
     public void UpdateTotalScore()
     {
         TotalScore = Questions.Sum(q => q.Score ?? 0);

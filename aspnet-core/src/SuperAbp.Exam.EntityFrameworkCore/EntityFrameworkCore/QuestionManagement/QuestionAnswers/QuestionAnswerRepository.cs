@@ -22,7 +22,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionAnswers
 
         public async Task<bool> ContentExistsAsync(Guid questionId, string content, CancellationToken cancellationToken = default)
         {
-            return await (await GetDbSetAsync()).AnyAsync(x => x.QuestionId == questionId && x.Content == content, GetCancellationToken(cancellationToken));
+            return await (await GetDbSetAsync()).AnyAsync(x => x.QuestionId == questionId && x.Content == content, cancellationToken);
         }
 
         public async Task DeleteByQuestionIdAsync(Guid questionId, CancellationToken cancellationToken = default)

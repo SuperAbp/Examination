@@ -42,7 +42,7 @@ public class PaperQuestionRuleRepository(IDbContextProvider<ExamDbContext> dbCon
              .WhereIf(paperId.HasValue, p => p.PaperId == paperId.Value)
              .OrderBy(string.IsNullOrWhiteSpace(sorting) ? PaperQuestionRuleConsts.DefaultSorting : sorting)
              .PageBy(skipCount, maxResultCount)
-             .ToListAsync(GetCancellationToken(cancellationToken));
+             .ToListAsync(cancellationToken);
     }
 
     public async Task DeleteAsync(Guid paperId, Guid questionRepositoryId, CancellationToken cancellationToken = default)
@@ -52,6 +52,6 @@ public class PaperQuestionRuleRepository(IDbContextProvider<ExamDbContext> dbCon
 
     public async Task DeleteByPaperIdAsync(Guid paperId, CancellationToken cancellationToken = default)
     {
-        await DeleteAsync(er => er.PaperId == paperId, cancellationToken: GetCancellationToken(cancellationToken));
+        await DeleteAsync(er => er.PaperId == paperId, cancellationToken: cancellationToken);
     }
 }

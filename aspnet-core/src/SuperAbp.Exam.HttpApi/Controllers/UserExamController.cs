@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.Application.Dtos;
@@ -64,14 +65,27 @@ namespace SuperAbp.Exam.Controllers
         }
 
         /// <summary>
+        /// 答题
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPatch("{id}/answer")]
+        public async Task AnswerAsync(Guid id, UserExamAnswerDto input)
+        {
+            await _userExamAppService.AnswerAsync(id, input);
+        }
+
+        /// <summary>
         /// 完成考试
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
         [HttpPatch("{id}/finished")]
-        public async Task FinishedAsync(Guid id)
+        public async Task FinishedAsync(Guid id, List<UserExamAnswerDto> input)
         {
-            await _userExamAppService.FinishedAsync(id);
+            await _userExamAppService.FinishedAsync(id, input);
         }
     }
 }

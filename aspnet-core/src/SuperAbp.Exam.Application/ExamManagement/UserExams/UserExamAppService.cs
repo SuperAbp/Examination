@@ -20,23 +20,22 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         IClock clock,
         IUserExamRepository userExamRepository,
         UserExamManager userExamManager,
-        IExamRepository examRepository,
-        IKnowledgePointRepository knowledgePointRepository,
         IQuestionRepository questionRepository,
         QuestionManager questionManager,
-        IQuestionAnswerRepository questionAnswerRepository,
-        IUserExamQuestionRepository userExamQuestionRepository)
+        IQuestionAnswerRepository questionAnswerRepository)
         : ExamAppService, IUserExamAppService
     {
+        protected IUserExamRepository UserExamRepository { get; } = userExamRepository;
+
         public async Task<Guid?> GetUnfinishedAsync()
         {
-            var userExam = await userExamRepository.FindAsync(u => u.UserId == CurrentUser.GetId() && !u.Finished);
+            var userExam = await UserExamRepository.FindAsync(u => u.UserId == CurrentUser.GetId() && !u.Finished);
             return userExam?.Id;
         }
 
         public virtual async Task<UserExamDetailDto> GetAsync(Guid id)
         {
-            UserExam userExam = await userExamRepository.GetAsync(id);
+            UserExam userExam = await UserExamRepository.GetAsync(id);
             List<Guid> questionIds = userExam.Questions.Select(q => q.QuestionId).ToList();
             List<Question> questions = await questionRepository.GetByIdsAsync(questionIds);
             UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
@@ -79,8 +78,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         {
             await NormalizeMaxResultCountAsync(input);
 
-            int totalCount = await userExamRepository.GetCountAsync(CurrentUser.GetId());
-            List<UserExamWithDetails> entities = await userExamRepository.GetListWithDetailAsync(
+            int totalCount = await UserExamRepository.GetCountAsync(CurrentUser.GetId());
+            List<UserExamWithDetails> entities = await UserExamRepository.GetListWithDetailAsync(
                 input.Sorting ?? UserExamConsts.DefaultSorting, input.SkipCount, input.MaxResultCount,
                 CurrentUser.GetId());
 
@@ -92,30 +91,37 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         {
             UserExam userExam = await userExamManager.CreateAsync(input.ExamId, CurrentUser.GetId());
             await userExamManager.CreateQuestionsAsync(userExam.Id, input.ExamId);
-            await userExamRepository.InsertAsync(userExam);
+            await UserExamRepository.InsertAsync(userExam);
             return ObjectMapper.Map<UserExam, UserExamListDto>(userExam);
         }
 
-        public virtual async Task FinishedAsync(Guid id)
+        public virtual async Task AnswerAsync(Guid id, UserExamAnswerDto input)
         {
-            UserExam userExam = await userExamRepository.GetAsync(id);
+            UserExam userExam = await UserExamRepository.GetAsync(id);
+            userExam.AnswerQuestion(input.QuestionId, input.Answers);
+            await UserExamRepository.UpdateAsync(userExam);
+        }
+
+        public virtual async Task FinishedAsync(Guid id, List<UserExamAnswerDto> input)
+        {
+            UserExam userExam = await UserExamRepository.GetAsync(id);
             userExam.Finished = true;
             userExam.FinishedTime = clock.Now;
-            await userExamRepository.UpdateAsync(userExam);
 
-            List<UserExamQuestionWithDetails> userExamQuestions = await userExamQuestionRepository.GetListAsync(userExamId: id);
-            List<UserExamQuestion> questions = [];
             decimal totalScore = 0;
-            foreach (UserExamQuestionWithDetails item in userExamQuestions)
+            foreach (UserExamQuestion item in userExam.Questions)
             {
-                if (item.Answers is null)
-                {
-                    continue;
-                }
-
                 bool right = false;
                 decimal score = 0;
-                // TODO:更新UserExamQuestion的Right和Score
+                UserExamAnswerDto? answer = input.SingleOrDefault(a => a.QuestionId == item.QuestionId);
+                if (answer is null || String.IsNullOrWhiteSpace(answer.Answers))
+                {
+                    item.Right = right;
+                    item.Score = score;
+                    continue;
+                }
+                item.Answers = answer.Answers;
+
                 Question question = await questionRepository.GetAsync(item.QuestionId);
                 List<QuestionAnswer> questionAnswers = await questionAnswerRepository.GetListAsync(item.QuestionId);
                 if ((question.QuestionType == QuestionType.SingleSelect || question.QuestionType == QuestionType.Judge)
@@ -134,19 +140,21 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 }
                 else if (question.QuestionType == QuestionType.FillInTheBlanks)
                 {
-                    // TODO:一空多项，多空多项，无序
+                    string[] allAnswers = item.Answers.Split(ExamConsts.Splitter);
+                    if (allAnswers.Length == questionAnswers.Count && allAnswers.SequenceEqual(questionAnswers.Select(a => a.Content)))
+                    {
+                        // TODO:一空多项，多空多项，无序
+                        right = true;
+                        score = item.QuestionScore;
+                    }
                 }
 
-                UserExamQuestion userExamQuestion = await userExamQuestionRepository.GetAsync(item.Id);
-                userExamQuestion.Right = right;
-                userExamQuestion.Score = score;
-                questions.Add(userExamQuestion);
+                item.Right = right;
+                item.Score = score;
             }
 
-            await userExamQuestionRepository.UpdateManyAsync(questions);
-
             userExam.TotalScore = totalScore;
-            await userExamRepository.UpdateAsync(userExam);
+            await UserExamRepository.UpdateAsync(userExam);
         }
 
         private async Task NormalizeMaxResultCountAsync(PagedAndSortedResultRequestDto input)

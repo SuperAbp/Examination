@@ -19,7 +19,7 @@
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
-        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="@ShowAnalysis" />
+        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="@ShowAnalysis" onblur="ValidateAsync" />
         <br />
         <br />
     }

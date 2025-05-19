@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SuperAbp.Exam.ExamManagement.UserExamQuestions;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -38,9 +40,18 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         Task<UserExamListDto> CreateAsync(UserExamCreateDto input);
 
         /// <summary>
+        /// 答题
+        /// </summary>
+        /// <param name="id">主键</param>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task AnswerAsync(Guid id, UserExamAnswerDto input);
+
+        /// <summary>
         /// 完成考试
         /// </summary>
         /// <param name="id"></param>
-        Task FinishedAsync(Guid id);
+        /// <param name="input"></param>
+        Task FinishedAsync(Guid id, List<UserExamAnswerDto> input);
     }
 }

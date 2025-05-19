@@ -8,6 +8,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     /// </summary>
     public class GetUserExamsInput : PagedAndSortedResultRequestDto
     {
-        public Guid UserExamId { get; set; }
+        public Guid? UserExamId { get; set; }
     }
 }

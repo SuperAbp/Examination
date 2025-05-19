@@ -25,7 +25,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
     {
         public async Task<bool> UnfinishedExistsAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            return await (await GetQueryableAsync()).AnyAsync(x => x.UserId == userId && !x.Finished, GetCancellationToken(cancellationToken));
+            return await (await GetQueryableAsync()).AnyAsync(x => x.UserId == userId && !x.Finished, cancellationToken);
         }
 
         public async Task<UserExamWithDetails> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
@@ -131,7 +131,11 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
                               FinishedTime = ue.FinishedTime,
                               TotalScore = ue.TotalScore,
                               Finished = ue.Finished
-                          }).ToListAsync(GetCancellationToken(cancellationToken));
+                          })
+                .OrderBy(sorting ?? UserExamConsts.DefaultSorting)
+                .Skip(skipCount)
+                .Take(maxResultCount)
+                .ToListAsync(cancellationToken);
         }
     }
 }

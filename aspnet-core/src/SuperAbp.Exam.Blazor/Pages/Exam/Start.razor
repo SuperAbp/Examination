@@ -1,13 +1,4 @@
 ﻿@page "/exam/start/{id:guid}"
-@using SuperAbp.Exam.ExamManagement.UserExams
-@using SuperAbp.Exam.ExamManagement.UserExamQuestions
-@using SuperAbp.Exam.QuestionManagement.Questions
-@using SuperAbp.Exam.Blazor.Model
-@using SuperAbp.Exam.Localization
-@using Volo.Abp.AspNetCore.Components.Notifications
-@using Microsoft.Extensions.Localization
-@using SuperAbp.Exam.ExamManagement.Exams
-@using Volo.Abp.Application.Dtos
 
 <style>
     .question-content .title {
@@ -86,32 +77,33 @@ else
 
                             var currentQuestions = _examQuestions.Where(q => q.QuestionType == questionType.QuestionType).ToArray();
                             <h2>@chineseNumber[i]、@L["QuestionType:" + questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q => q.QuestionScore))分）</h2>
-                            foreach (UserExamQuestionListDto examQuestion in currentQuestions)
+                            foreach (UserExamDetailDto.QuestionDto examQuestion in currentQuestions)
                             {
+                                IReadOnlyList<QuestionAnswerViewModel> answers = ToQuestionAnswerViewModels(examQuestion.Options);
                                 <h3 class="title">
                                     <span class="number">@(number++)</span>
-                                    <span>@examQuestion.Question</span>
+                                    <span>@examQuestion.Content</span>
                                 </h3>
                                 @switch (QuestionType.FromValue(examQuestion.QuestionType).Name)
                                 {
                                     case nameof(QuestionType.SingleSelect):
                                     case nameof(QuestionType.Judge):
-                                        <SingleSelect QuestionId="examQuestion.QuestionId"
+                                        <SingleSelect QuestionId="examQuestion.Id"
                                         Answered="@examQuestion.Answers"
-                                        Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                        Answers="answers"
                                         OnSubmit="@SubmitAsync"></SingleSelect>
                                         break;
                                     case nameof(QuestionType.MultiSelect):
-                                        <MultiSelect QuestionId="examQuestion.QuestionId"
+                                        <MultiSelect QuestionId="examQuestion.Id"
                                         Answered="@examQuestion.Answers"
-                                        Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                        Answers="answers"
                                         ShowAnalysis="false"
                                         OnSelect="@SelectAsync"></MultiSelect>
                                         break;
                                     case nameof(QuestionType.FillInTheBlanks):
-                                        <Blank QuestionId="examQuestion.QuestionId"
+                                        <Blank QuestionId="examQuestion.Id"
                                         Answered="@examQuestion.Answers"
-                                        Answers="ToQuestionAnswerViewModels(examQuestion.QuestionAnswers)"
+                                        Answers="answers"
                                         ShowAnalysis="false"
                                         ShowConfirm="false"
                                         OnSubmit="@SubmitAsync"></Blank>
@@ -134,12 +126,16 @@ else
         </GridCol>
     </GridRow>
 }
+
+@using SuperAbp.Exam.ExamManagement.UserExams
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.Localization
+@using Microsoft.Extensions.Localization
 @inject NavigationManager Navigation
 @inject IStringLocalizer<ExamResource> L
-@inject IUiNotificationService UiNotificationService
 @inject IUserExamAppService UserExamAppService
-@inject IExaminationAppService ExaminationAppService
-@inject IUserExamQuestionAppService UserExamQuestionAppService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 @code {
     [Parameter]
     public Guid Id { get; set; }
@@ -148,27 +144,44 @@ else
     bool loadingQuestion = false;
     string[] chineseNumber = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
 
-    ExamDetailDto _exam;
-    IReadOnlyList<UserExamQuestionListDto> _examQuestions = Array.Empty<UserExamQuestionListDto>();
-    List<QuestionNumberVo> _questions =[];
+    IReadOnlyList<UserExamDetailDto.QuestionDto> _examQuestions = Array.Empty<UserExamDetailDto.QuestionDto>();
+    Dictionary<int, int> _questionTypes = new();
+    List<QuestionNumberVo> _questions = [];
+    private string _questionAnswerStorageKey;
 
     protected override async Task OnInitializedAsync()
     {
+        _questionAnswerStorageKey = $"question_answers_{Id}";
         var userExam = await UserExamAppService.GetAsync(Id);
-        _exam = await ExaminationAppService.GetAsync(userExam.ExamId);
-        PagedResultDto<UserExamQuestionListDto> dto = await UserExamQuestionAppService.GetListAsync(new GetUserExamQuestionsInput() { UserExamId = Id });
-        _examQuestions = dto.Items;
+        _examQuestions = userExam.Questions;
+        List<QuestionAnswerItem> answerItems = await localStorage.GetItemAsync<List<QuestionAnswerItem>>(_questionAnswerStorageKey) ?? [];
+        if (answerItems.Count > 0)
+        {
+            foreach (var item in answerItems)
+            {
+                var question = _examQuestions.SingleOrDefault(q => q.Id == item.QuestionId);
+                if (question is null)
+                {
+                    continue;
+                }
+                question.Answers = item.Answer;
+            }
+        }
 
-        foreach (QuestionType type in dto.Items
-                     .GroupBy(q=>q.QuestionType).Select(q=>q.Key).Distinct())
+        _questionTypes = _examQuestions.GroupBy(q => q.QuestionType).Select(q => new
+        {
+            QuestionType = q.Key,
+            Count = q.Count()
+        }).ToDictionary(key => key.QuestionType, value => value.Count);
+        foreach (KeyValuePair<int, int> item in _questionTypes)
         {
             QuestionNumberVo vo = new QuestionNumberVo()
             {
-                QuestionType = type,
-                Questions = dto.Items.Where(q => q.QuestionType == type)
-                    .Select(q=>new QuestionNumberVo.QuestionIndex()
+                QuestionType = item.Key,
+                    Questions = _examQuestions.Where(q => q.QuestionType == item.Key)
+                    .Select(q => new QuestionNumberVo.QuestionIndex()
                     {
-                        QuestionId = q.QuestionId,
+                        QuestionId = q.Id,
                         QuestionScore = q.QuestionScore
                     }).ToArray()
             };
@@ -177,24 +190,33 @@ else
         }
         loading = false;
     }
-    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamQuestionListDto.QuestionAnswerListDto> answers)
+    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamDetailDto.QuestionDto.OptionDto> answers)
     {
         return answers
             .Select(qa => new QuestionAnswerViewModel
-                {
-                    Id = qa.Id,
-                    Content = qa.Content,
-                    Right = false
-                }).ToArray();
+            {
+                Id = qa.Id,
+                Content = qa.Content,
+                Right = false
+            }).ToArray();
     }
     public virtual async Task SubmitAsync(QuestionAnswerItem item)
     {
-        await Answer(item.QuestionId, item.Answer);
+        List<QuestionAnswerItem> answerItems = await localStorage.GetItemAsync<List<QuestionAnswerItem>>(_questionAnswerStorageKey)??[];
+        answerItems = answerItems.Where(x => x.QuestionId != item.QuestionId).ToList();
+        answerItems.Add(item);
+        await localStorage.SetItemAsync(_questionAnswerStorageKey, answerItems);
     }
 
     public virtual async Task SubmitPaperAsync()
     {
-        await UserExamAppService.FinishedAsync(Id);
+        List<QuestionAnswerItem> answerItems = await localStorage.GetItemAsync<List<QuestionAnswerItem>>(_questionAnswerStorageKey) ?? [];
+        await UserExamAppService.FinishedAsync(Id, answerItems.Select(a => new UserExamAnswerDto
+        {
+            QuestionId = a.QuestionId,
+            Answers = a.Answer
+        }).ToList());
+        await localStorage.RemoveItemAsync(_questionAnswerStorageKey);
         Navigation.NavigateTo("/exam/result");
     }
 
@@ -211,10 +233,9 @@ else
     /// <returns></returns>
     protected async Task Answer(Guid questionId, string answer)
     {
-        var examQuestionId = _examQuestions.First(q => q.QuestionId == questionId).Id;
-
-        await UserExamQuestionAppService.AnswerAsync(examQuestionId, new UserExamQuestionAnswerDto()
+        await UserExamAppService.AnswerAsync(Id, new UserExamAnswerDto()
             {
+                QuestionId = questionId,
                 Answers = answer
             });
     }
