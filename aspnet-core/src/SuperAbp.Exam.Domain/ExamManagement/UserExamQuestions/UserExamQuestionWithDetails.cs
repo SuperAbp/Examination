@@ -9,11 +9,6 @@ public class UserExamQuestionWithDetails
     public Guid Id { get; set; }
 
     /// <summary>
-    /// 是否交卷
-    /// </summary>
-    public bool Finished { get; set; }
-
-    /// <summary>
     /// 正确
     /// </summary>
     public bool? Right { get; set; }

@@ -7934,6 +7934,18 @@
           "regex": null
         },
         {
+          "name": "Status",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "Questions",
           "jsonName": null,
           "type": "[SuperAbp.Exam.Admin.ExamManagement.UserExams.UserExamDetailDto_QuestionDto]",
@@ -8165,18 +8177,6 @@
           "regex": null
         },
         {
-          "name": "Finished",
-          "jsonName": null,
-          "type": "System.Boolean",
-          "typeSimple": "boolean",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
           "name": "FinishedTime",
           "jsonName": null,
           "type": "System.DateTime?",
@@ -8193,6 +8193,18 @@
           "jsonName": null,
           "type": "System.DateTime",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Status",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

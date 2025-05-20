@@ -19,6 +19,7 @@ public class UserExam : FullAuditedAggregateRoot<Guid>
     {
         UserId = userId;
         ExamId = examId;
+        Status = UserExamStatus.NotStarted;
     }
 
     public Guid UserId { get; protected set; }
@@ -30,14 +31,11 @@ public class UserExam : FullAuditedAggregateRoot<Guid>
     public decimal TotalScore { get; set; }
 
     /// <summary>
-    /// 是否交卷
-    /// </summary>
-    public bool Finished { get; set; }
-
-    /// <summary>
     /// 交卷时间
     /// </summary>
     public DateTime? FinishedTime { get; set; }
+
+    public UserExamStatus Status { get; set; }
 
     public ICollection<UserExamQuestion> Questions { get; set; }
 
@@ -57,5 +55,14 @@ public class UserExam : FullAuditedAggregateRoot<Guid>
     public void UpdateTotalScore()
     {
         TotalScore = Questions.Sum(q => q.Score ?? 0);
+    }
+
+    public bool IsSubmitted()
+    {
+        return new[]
+        {
+            UserExamStatus.Submitted, UserExamStatus.Reviewed, UserExamStatus.TimeoutAutoSubmitted,
+            UserExamStatus.Scored
+        }.Contains(Status);
     }
 }

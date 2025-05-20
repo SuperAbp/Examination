@@ -14,11 +14,11 @@
     responsiveHideHeaderFooter
   >
     <ng-template st-row="examTime" let-item let-index="index">
-      {{ item.creationTime }} ~
-      <span *ngIf="item.finished && item.finishedTime; else unfinished">{{ item.finishedTime }}</span>
-      <ng-template #unfinished>
-        {{ 'Exam::Unfinished' | abpLocalization }}
-      </ng-template>
+      {{ item.creationTime }}
+      <span *ngIf="item.finishedTime"> ~ {{ item.finishedTime }}</span>
+    </ng-template>
+    <ng-template st-row="status" let-item let-index="index">
+      {{ 'Exam::UserExamStatus:' + item.status | abpLocalization }}
     </ng-template>
   </st>
 </nz-card>

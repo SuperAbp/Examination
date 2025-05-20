@@ -13,7 +13,6 @@ using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
-using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
 {
@@ -25,7 +24,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
     {
         public async Task<bool> UnfinishedExistsAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            return await (await GetQueryableAsync()).AnyAsync(x => x.UserId == userId && !x.Finished, cancellationToken);
+            return await (await GetQueryableAsync()).AnyAsync(x => x.UserId == userId && x.Status == UserExamStatus.InProgress, cancellationToken);
         }
 
         public async Task<UserExamWithDetails> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
@@ -50,7 +49,6 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
                           {
                               Id = ue.Id,
                               Answers = ueq.Answers,
-                              Finished = ue.Finished,
                               Right = ueq.Right,
                               Score = ueq.Score,
                               Question = q
@@ -130,7 +128,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
                               CreationTime = ue.CreationTime,
                               FinishedTime = ue.FinishedTime,
                               TotalScore = ue.TotalScore,
-                              Finished = ue.Finished
+                              Status = ue.Status
                           })
                 .OrderBy(sorting ?? UserExamConsts.DefaultSorting)
                 .Skip(skipCount)

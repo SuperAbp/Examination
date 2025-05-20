@@ -48,7 +48,7 @@ export class ExamManagementUserExamComponent implements OnInit {
   columns: STColumn[] = [
     { title: this.localizationService.instant('Exam::TotalScore'), index: 'totalScore' },
     { title: this.localizationService.instant('Exam::ExamTime'), render: 'examTime' },
-    { title: this.localizationService.instant('Exam::Finished'), index: 'finished', type: 'yn' },
+    { title: this.localizationService.instant('Exam::Status'), render: 'status' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [
@@ -56,7 +56,7 @@ export class ExamManagementUserExamComponent implements OnInit {
           icon: 'info',
           type: 'modal',
           iif: record => {
-            return record.finished;
+            return record.status === 2 || record.status === 3 || record.status === 4 || record.status === 5;
           },
           click: (record: STData, modal?: any, instance?: STComponent) => {
             this.router.navigateByUrl(`/exam-management/user-exam/${record['id']}`);

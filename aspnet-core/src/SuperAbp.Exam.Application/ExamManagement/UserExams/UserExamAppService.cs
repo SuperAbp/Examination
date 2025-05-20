@@ -29,7 +29,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public async Task<Guid?> GetUnfinishedAsync()
         {
-            var userExam = await UserExamRepository.FindAsync(u => u.UserId == CurrentUser.GetId() && !u.Finished);
+            var userExam = await UserExamRepository.FindAsync(u => u.UserId == CurrentUser.GetId() && u.Status == UserExamStatus.InProgress);
             return userExam?.Id;
         }
 
@@ -61,7 +61,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                         Id = answer.Id,
                         Content = answer.Content,
                     };
-                    if (userExam.Finished)
+                    if (userExam.IsSubmitted())
                     {
                         optionDto.Right = answer.Right;
                     }
@@ -90,6 +90,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public virtual async Task<UserExamListDto> CreateAsync(UserExamCreateDto input)
         {
             UserExam userExam = await userExamManager.CreateAsync(input.ExamId, CurrentUser.GetId());
+            userExam.Status = UserExamStatus.InProgress;
             await userExamManager.CreateQuestionsAsync(userExam.Id, input.ExamId);
             await UserExamRepository.InsertAsync(userExam);
             return ObjectMapper.Map<UserExam, UserExamListDto>(userExam);
@@ -105,8 +106,9 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public virtual async Task FinishedAsync(Guid id, List<UserExamAnswerDto> input)
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
-            userExam.Finished = true;
             userExam.FinishedTime = clock.Now;
+            // TODO: Submitted Or Scored
+            userExam.Status = UserExamStatus.Submitted;
 
             decimal totalScore = 0;
             foreach (UserExamQuestion item in userExam.Questions)

@@ -58,6 +58,10 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
     public async Task<UserExamDetailDto> GetAsync(Guid id)
     {
         UserExam userExam = await UserExamRepository.GetAsync(id);
+        if (userExam.Status == UserExamStatus.InProgress)
+        {
+            throw new UnfinishedException();
+        }
         Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
         IdentityUser user = await UserRepository.GetAsync(userExam.UserId);
         List<Guid> questionIds = userExam.Questions.Select(q => q.QuestionId).ToList();
@@ -65,6 +69,7 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
         UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
         dto.ExamName = examination.Name;
         dto.UserName = user.UserName;
+        dto.Status = userExam.Status;
         List<UserExamDetailDto.QuestionDto> questionDtos = [];
         foreach (Question question in questions)
         {
@@ -88,7 +93,7 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
                     Id = answer.Id,
                     Content = answer.Content,
                 };
-                if (userExam.Finished)
+                if (userExam.IsSubmitted())
                 {
                     optionDto.Right = answer.Right;
                 }

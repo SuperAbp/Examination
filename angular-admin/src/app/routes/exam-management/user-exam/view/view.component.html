@@ -27,7 +27,7 @@
                 <choose *ngIf="questionType == '0' || questionType == '1' || questionType == '2'" [question]="question"></choose>
                 <ng-container *ngIf="questionType == '3'">
                   <div nz-row nzGutter="16">
-                    <div nz-col nzSpan="12">
+                    <div nz-col [nzSpan]="isReview ? 12 : 24">
                       <blank [answers]="getAnswer(question.answers)"></blank>
                       <nz-descriptions [nzColumn]="1">
                         <nz-descriptions-item [nzTitle]="'Exam::UserAnswer' | abpLocalization">
@@ -41,7 +41,7 @@
                         </nz-descriptions-item>
                       </nz-descriptions>
                     </div>
-                    <div nz-col nzSpan="12" [formGroupName]="i">
+                    <div *ngIf="isReview" nz-col nzSpan="12" [formGroupName]="i">
                       <nz-form-item>
                         <nz-form-label>{{ 'Exam::IsAnswer' | abpLocalization }}</nz-form-label>
                         <nz-form-control>

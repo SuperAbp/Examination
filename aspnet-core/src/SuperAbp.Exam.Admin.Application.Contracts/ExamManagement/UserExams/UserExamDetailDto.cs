@@ -14,6 +14,8 @@ public class UserExamDetailDto
     public required string ExamName { get; set; }
     public required string UserName { get; set; }
 
+    public int Status { get; set; }
+
     public IReadOnlyList<QuestionDto> Questions { get; set; } = [];
 
     public class QuestionDto

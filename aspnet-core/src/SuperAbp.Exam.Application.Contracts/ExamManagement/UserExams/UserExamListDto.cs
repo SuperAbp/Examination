@@ -20,13 +20,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         /// </summary>
         public decimal TotalScore { get; set; }
 
-        /// <summary>
-        /// 是否交卷
-        /// </summary>
-        public bool Finished { get; set; }
-
         public DateTime? FinishedTime { get; set; }
 
         public DateTime CreationTime { get; set; }
+
+        public int Status { get; set; }
     }
 }

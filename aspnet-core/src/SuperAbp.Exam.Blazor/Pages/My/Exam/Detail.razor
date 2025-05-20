@@ -106,6 +106,7 @@ else
     </GridRow>
 }
 @inject IStringLocalizer<ExamResource> L
+@inject NavigationManager Navigation
 @inject IUserExamAppService UserExamAppService
 @code {
     [Parameter]
@@ -120,6 +121,10 @@ else
     protected override async Task OnInitializedAsync()
     {
         UserExamDetailDto dto = await UserExamAppService.GetAsync(Id);
+        if (dto.Status != UserExamStatus.Scored)
+        {
+            Navigation.NavigateTo("/my/exam/");
+        }
         _examQuestions = dto.Questions;
         _questionTypes = _examQuestions.GroupBy(q => q.QuestionType).Select(q => new
         {

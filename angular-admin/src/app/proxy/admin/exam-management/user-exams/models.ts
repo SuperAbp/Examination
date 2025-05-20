@@ -21,6 +21,7 @@ export interface UserExamDetailDto {
   examId?: string;
   examName?: string;
   userName?: string;
+  status: number;
   questions: UserExamDetailDto_QuestionDto[];
 }
 
@@ -47,9 +48,9 @@ export interface UserExamDetailDto_QuestionDto_OptionDto {
 export interface UserExamListDto {
   id?: string;
   totalScore: number;
-  finished: boolean;
   finishedTime?: string;
   creationTime?: string;
+  status: number;
 }
 
 export interface UserExamWithUserDto {

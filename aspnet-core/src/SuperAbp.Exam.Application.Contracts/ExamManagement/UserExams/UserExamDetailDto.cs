@@ -11,6 +11,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     {
         public Guid UserId { get; set; }
         public Guid ExamId { get; set; }
+        public int Status { get; set; }
 
         public IReadOnlyList<QuestionDto> Questions { get; set; } = [];
 

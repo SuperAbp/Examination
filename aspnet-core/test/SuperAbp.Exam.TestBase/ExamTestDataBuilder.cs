@@ -55,14 +55,14 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 new QuestionAnswer(testData.Answer122Id, testData.Question12Id, testData.Answer122Content, true),
                 new QuestionAnswer(testData.Answer123Id, testData.Question12Id, testData.Answer123Content, false),
                 new QuestionAnswer(testData.Answer124Id, testData.Question12Id, testData.Answer124Content, false),
-                new QuestionAnswer(testData.Answer211Id, testData.Question11Id, testData.Answer211Content, false),
-                new QuestionAnswer(testData.Answer212Id, testData.Question11Id, testData.Answer212Content, true),
-                new QuestionAnswer(testData.Answer213Id, testData.Question11Id, testData.Answer213Content, false),
-                new QuestionAnswer(testData.Answer214Id, testData.Question11Id, testData.Answer214Content, false),
-                new QuestionAnswer(testData.Answer221Id, testData.Question12Id, testData.Answer221Content, false),
-                new QuestionAnswer(testData.Answer222Id, testData.Question12Id, testData.Answer222Content, true),
-                new QuestionAnswer(testData.Answer223Id, testData.Question12Id, testData.Answer223Content, false),
-                new QuestionAnswer(testData.Answer224Id, testData.Question12Id, testData.Answer224Content, false)]);
+                new QuestionAnswer(testData.Answer211Id, testData.Question21Id, testData.Answer211Content, false),
+                new QuestionAnswer(testData.Answer212Id, testData.Question21Id, testData.Answer212Content, true),
+                new QuestionAnswer(testData.Answer213Id, testData.Question21Id, testData.Answer213Content, false),
+                new QuestionAnswer(testData.Answer214Id, testData.Question21Id, testData.Answer214Content, false),
+                new QuestionAnswer(testData.Answer221Id, testData.Question22Id, testData.Answer221Content, false),
+                new QuestionAnswer(testData.Answer222Id, testData.Question22Id, testData.Answer222Content, true),
+                new QuestionAnswer(testData.Answer223Id, testData.Question22Id, testData.Answer223Content, false),
+                new QuestionAnswer(testData.Answer224Id, testData.Question22Id, testData.Answer224Content, false)]);
 
             await paperRepository.InsertManyAsync([
                 new Paper(testData.Paper1Id, testData.Paper1Name, 100),
@@ -102,10 +102,10 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 ]);
 
             await userExamRepository.InsertManyAsync([
-                new UserExam(testData.UserExam11Id, testData.Examination11Id, testData.UserId) { Finished = true },
-                new UserExam(testData.UserExam12Id, testData.Examination12Id, testData.UserId) { Finished = true },
-                new UserExam(testData.UserExam21Id, testData.Examination21Id, testData.UserId) { Finished = true },
-                new UserExam(testData.UserExam22Id, testData.Examination22Id, testData.UserId) { Finished = true }
+                new UserExam(testData.UserExam11Id, testData.Examination11Id, testData.UserId),
+                new UserExam(testData.UserExam12Id, testData.Examination12Id, testData.UserId),
+                new UserExam(testData.UserExam21Id, testData.Examination21Id, testData.UserId),
+                new UserExam(testData.UserExam22Id, testData.Examination22Id, testData.UserId)
             ]);
 
             await userExamQuestionRepository.InsertManyAsync([

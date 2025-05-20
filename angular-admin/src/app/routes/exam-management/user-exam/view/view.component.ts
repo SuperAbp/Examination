@@ -76,6 +76,9 @@ export class ExamManagementUserExamViewComponent implements OnInit {
     return Object.keys(this.questionTypeMaps);
   }
 
+  get isReview() {
+    return this.userExam.status === 3 || this.userExam.status === 2;
+  }
   getOptions(question: UserExamDetailDto_QuestionDto) {
     return question.options.map(o => o.content).join('||');
   }

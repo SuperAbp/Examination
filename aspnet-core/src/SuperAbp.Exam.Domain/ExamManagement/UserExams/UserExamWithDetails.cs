@@ -37,6 +37,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public DateTime CreationTime { get; set; }
 
+        public UserExamStatus Status { get; set; }
+
         /// <summary>
         /// 正确
         /// </summary>
@@ -46,11 +48,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         /// 得分
         /// </summary>
         public decimal? Score { get; set; }
-
-        /// <summary>
-        /// 是否交卷
-        /// </summary>
-        public bool Finished { get; set; }
 
         public DateTime? FinishedTime { get; set; }
 
