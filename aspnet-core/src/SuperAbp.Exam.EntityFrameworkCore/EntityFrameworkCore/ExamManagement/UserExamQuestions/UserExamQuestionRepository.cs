@@ -35,7 +35,6 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
                           {
                               Id = e.Id,
                               Answers = e.Answers,
-                              Finished = ue.Finished,
                               Right = e.Right,
                               Score = e.Score,
                               QuestionId = q.Id,
@@ -43,6 +42,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
                               QuestionAnalysis = q.Analysis,
                               QuestionScore = e.QuestionScore,
                               QuestionType = q.QuestionType,
+                              QuestionReviewReason = e.Reason,
                               QuestionAnswers = questionAnswers
                                   .Select(qa => new UserExamQuestionWithDetails.QuestionAnswer()
                                   {
@@ -50,7 +50,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
                                       Content = qa.Content,
                                       Right = qa.Right
                                   }).ToList()
-                          }).ToListAsync(GetCancellationToken(cancellationToken));
+                          }).ToListAsync(cancellationToken);
         }
     }
 }

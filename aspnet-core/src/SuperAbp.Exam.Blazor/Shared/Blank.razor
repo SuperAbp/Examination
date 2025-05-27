@@ -19,7 +19,7 @@
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
-        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="@ShowAnalysis" />
+        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="@ShowAnalysis" onblur="ValidateAsync" />
         <br />
         <br />
     }
@@ -33,7 +33,6 @@
 }
 
 @using JetBrains.Annotations
-@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages

@@ -105,6 +105,61 @@ namespace SuperAbp.Exam.Migrations
                     b.ToTable("AppExamination", (string)null);
                 });
 
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestionReviews.UserExamQuestionReview", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletionTime");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<bool>("Right")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Score")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("UserExamQuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserExamQuestionId");
+
+                    b.ToTable("AppUserExamQuestionReview", (string)null);
+                });
+
             modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestions.UserExamQuestion", b =>
                 {
                     b.Property<Guid>("Id")
@@ -114,11 +169,45 @@ namespace SuperAbp.Exam.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletionTime");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LastModifierId");
+
                     b.Property<Guid>("QuestionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("QuestionScore")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<bool?>("Right")
                         .HasColumnType("bit");
@@ -130,6 +219,8 @@ namespace SuperAbp.Exam.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserExamId");
 
                     b.ToTable("AppUserExamQuestion", (string)null);
                 });
@@ -150,6 +241,18 @@ namespace SuperAbp.Exam.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CreationTime");
 
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletionTime");
+
                     b.Property<Guid>("ExamId")
                         .HasColumnType("uniqueidentifier");
 
@@ -163,6 +266,23 @@ namespace SuperAbp.Exam.Migrations
 
                     b.Property<DateTime?>("FinishedTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalScore")
                         .HasColumnType("decimal(18,2)");
@@ -431,6 +551,8 @@ namespace SuperAbp.Exam.Migrations
                         .HasDefaultValue(0);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
 
                     b.ToTable("AppQuestionAnswers", (string)null);
                 });
@@ -2440,6 +2562,39 @@ namespace SuperAbp.Exam.Migrations
                     b.ToTable("AbpTenantConnectionStrings", (string)null);
                 });
 
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestionReviews.UserExamQuestionReview", b =>
+                {
+                    b.HasOne("SuperAbp.Exam.ExamManagement.UserExamQuestions.UserExamQuestion", "Question")
+                        .WithMany("QuestionReviews")
+                        .HasForeignKey("UserExamQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestions.UserExamQuestion", b =>
+                {
+                    b.HasOne("SuperAbp.Exam.ExamManagement.UserExams.UserExam", "UserExam")
+                        .WithMany("Questions")
+                        .HasForeignKey("UserExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserExam");
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.QuestionAnswers.QuestionAnswer", b =>
+                {
+                    b.HasOne("SuperAbp.Exam.QuestionManagement.Questions.Question", "Question")
+                        .WithMany("Answers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+                });
+
             modelBuilder.Entity("SuperAbp.MenuManagement.Menus.Menu", b =>
                 {
                     b.HasOne("SuperAbp.MenuManagement.Menus.Menu", "Parent")
@@ -2589,6 +2744,21 @@ namespace SuperAbp.Exam.Migrations
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestions.UserExamQuestion", b =>
+                {
+                    b.Navigation("QuestionReviews");
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExams.UserExam", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.Questions.Question", b =>
+                {
+                    b.Navigation("Answers");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLog", b =>

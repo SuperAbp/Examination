@@ -13,13 +13,6 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
     [Authorize(ExamPermissions.Exams.Default)]
     public class ExaminationAdminAppService(IExamRepository examRepository) : ExamAppService, IExaminationAdminAppService
     {
-        public virtual async Task<ExamDetailDto> GetAsync(Guid id)
-        {
-            Examination entity = await examRepository.GetAsync(id);
-
-            return ObjectMapper.Map<Examination, ExamDetailDto>(entity);
-        }
-
         public virtual async Task<PagedResultDto<ExamListDto>> GetListAsync(GetExamsInput input)
         {
             await NormalizeMaxResultCountAsync(input);
@@ -37,6 +30,13 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             List<ExamListDto> dtos = ObjectMapper.Map<List<Examination>, List<ExamListDto>>(entities);
 
             return new PagedResultDto<ExamListDto>(totalCount, dtos);
+        }
+
+        public virtual async Task<ExamDetailDto> GetAsync(Guid id)
+        {
+            Examination entity = await examRepository.GetAsync(id);
+
+            return ObjectMapper.Map<Examination, ExamDetailDto>(entity);
         }
 
         public virtual async Task<GetExamForEditorOutput> GetEditorAsync(Guid id)

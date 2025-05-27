@@ -1,0 +1,14 @@
+<page-header *ngIf="exam" [action]="phActionTpl" [title]="exam.name">
+  <ng-template #phActionTpl>
+    <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
+  </ng-template>
+</page-header>
+<nz-card>
+  <nz-spin *ngIf="!exam" class="modal-spin"></nz-spin>
+  <sv-container *ngIf="exam">
+    <sv label="姓名">{{ exam.name }}</sv>
+    <sv label="分数">{{ exam.score }}({{ exam.passingScore }})</sv>
+    <sv label="总时长">{{ exam.totalTime }}</sv>
+    <sv label="时间">{{ exam.startTime }}~{{ exam.endTime }}</sv>
+  </sv-container>
+</nz-card>

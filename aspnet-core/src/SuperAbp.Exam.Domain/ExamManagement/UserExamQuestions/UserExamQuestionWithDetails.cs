@@ -9,11 +9,6 @@ public class UserExamQuestionWithDetails
     public Guid Id { get; set; }
 
     /// <summary>
-    /// 是否交卷
-    /// </summary>
-    public bool Finished { get; set; }
-
-    /// <summary>
     /// 正确
     /// </summary>
     public bool? Right { get; set; }
@@ -30,6 +25,8 @@ public class UserExamQuestionWithDetails
     /// 题干
     /// </summary>
     public required string Question { get; set; }
+
+    public string? QuestionReviewReason { get; set; }
 
     /// <summary>
     /// 解析

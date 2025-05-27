@@ -2,6 +2,7 @@
 using SuperAbp.Exam.ExamManagement.UserExams;
 using AutoMapper;
 using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.QuestionManagement.Questions;
 
 namespace SuperAbp.Exam.ExamManagement
 {
@@ -26,20 +27,18 @@ namespace SuperAbp.Exam.ExamManagement
 
             CreateMap<UserExam, UserExamListDto>();
             CreateMap<UserExamWithDetails, UserExamListDto>();
-            CreateMap<UserExam, UserExamDetailDto>();
+            CreateMap<UserExam, UserExamDetailDto>()
+                .ForMember(s => s.Questions,
+                opt => opt.Ignore());
             CreateMap<UserExamCreateDto, UserExam>();
 
+            CreateMap<Question, UserExamDetailDto.QuestionDto>()
+                .ForMember(s => s.Right,
+                    opt => opt.Ignore())
+                .ForMember(s => s.Options,
+                    opt => opt.Ignore());
+
             #endregion 用户考试
-
-            #region 用户考题
-
-            CreateMap<UserExamQuestion, GetUserExamQuestionForEditorOutput>();
-            CreateMap<UserExamQuestion, UserExamQuestionListDto>();
-            CreateMap<UserExamQuestion, UserExamQuestionDetailDto>();
-            CreateMap<UserExamQuestionCreateDto, UserExamQuestion>();
-            CreateMap<UserExamQuestionAnswerDto, UserExamQuestion>();
-
-            #endregion 用户考题
         }
     }
 }

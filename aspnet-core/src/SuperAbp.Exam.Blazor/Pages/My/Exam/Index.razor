@@ -5,16 +5,17 @@
            DataSource="@_userExams"
            Total="_totalCount"
            Loading="_loading"
-           RowKey="x=>x.ExamId"
+           RowKey="x=>x.Id"
            @bind-PageIndex="_currentPage"
            @bind-PageSize="_pageSize"
            OnChange="Change">
         <PropertyColumn Property="c => c.ExamName" Title="@L["ExamName"]"/>
+        <PropertyColumn Field="@L["UserExamStatus:" + context.Status]"  Title="@L["Status"]" />
         <PropertyColumn Property="c => c.TotalScore" Title="@L["TotalScore"]" />
-        <PropertyColumn Property="c => c.CreationTime" Title="@L["StartedTime"]" />
-        <PropertyColumn Property="c => c.FinishedTime" Title="@L["FinishedTime"]" />
-        <ActionColumn Title="@L["Action"]">
-            @if (context.Finished)
+        <PropertyColumn Property="c => c.CreationTime" Title="@L["StartTime"]" />
+        <PropertyColumn Property="c => c.FinishedTime" Title="@L["EndTime"]" />
+        <ActionColumn Title="@L["Actions"]">
+            @if (context.Status == UserExamStatus.Scored)
             {
                 <Space>
                     <SpaceItem>

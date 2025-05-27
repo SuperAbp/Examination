@@ -1,0 +1,24 @@
+<page-header [title]="'Exam::ExamRecord' | abpLocalization"> </page-header>
+<nz-card>
+  <sf mode="search" [schema]="searchSchema" (formSubmit)="search($event)" (formReset)="reset()"></sf>
+  <st
+    #st
+    [data]="userExams"
+    [columns]="columns"
+    [loading]="loading"
+    [page]="page"
+    [total]="total"
+    (change)="change($event)"
+    [header]="'Exam::DataStart' | abpLocalization"
+    [footer]="'Exam::DataEnd' | abpLocalization"
+    responsiveHideHeaderFooter
+  >
+    <ng-template st-row="examTime" let-item let-index="index">
+      {{ item.creationTime }}
+      <span *ngIf="item.finishedTime"> ~ {{ item.finishedTime }}</span>
+    </ng-template>
+    <ng-template st-row="status" let-item let-index="index">
+      {{ 'Exam::UserExamStatus:' + item.status | abpLocalization }}
+    </ng-template>
+  </st>
+</nz-card>

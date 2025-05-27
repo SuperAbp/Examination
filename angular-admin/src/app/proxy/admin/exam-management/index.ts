@@ -1,2 +1,3 @@
 import * as Exams from './exams';
-export { Exams };
+import * as UserExams from './user-exams';
+export { Exams, UserExams };

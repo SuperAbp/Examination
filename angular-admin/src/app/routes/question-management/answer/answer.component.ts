@@ -95,9 +95,13 @@ export class QuestionManagementAnswerComponent {
     });
   }
   delete(index: number, item: AbstractControl) {
-    this.answerService.delete(item.value.id).subscribe(() => {
+    if (item.value.id && item.value.id !== null) {
+      this.answerService.delete(item.value.id).subscribe(() => {
+        this.options.removeAt(index);
+      });
+    } else {
       this.options.removeAt(index);
-    });
+    }
   }
 
   resetParameters(): GetQuestionAnswersInput {

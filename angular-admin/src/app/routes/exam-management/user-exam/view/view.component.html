@@ -1,0 +1,94 @@
+<page-header *ngIf="userExam" [action]="phActionTpl" [title]="userExam.examName + ' - ' + userExam.userName">
+  <ng-template #phActionTpl>
+    <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
+  </ng-template>
+</page-header>
+@if (loading) {
+  <nz-spin></nz-spin>
+} @else {
+  <div nz-row nzGutter="16">
+    <div nz-col nzSpan="6">
+      <nz-affix [nzOffsetTop]="70">
+        <question-number [questionNumbers]="getQuestionNumbers()"></question-number>
+      </nz-affix>
+    </div>
+    <div nz-col nzSpan="18">
+      <nz-card>
+        <div *ngFor="let questionType of questionTypes; let i = index">
+          <h2>
+            {{ chineseNumber[i] }}、{{ 'Exam::QuestionType:' + questionType | abpLocalization }}题（共{{
+              questionTypeMaps[questionType].length
+            }}题）
+          </h2>
+          <form nz-form [formGroup]="form">
+            <ng-container formArrayName="questions">
+              <div class="question" *ngFor="let question of questionTypeMaps[questionType]; let i = index">
+                <h3 [id]="question.id"> {{ i + 1 }}.{{ question.content }} </h3>
+                <choose *ngIf="questionType == '0' || questionType == '1' || questionType == '2'" [question]="question"></choose>
+                <ng-container *ngIf="questionType == '3'">
+                  <div nz-row nzGutter="16">
+                    <div nz-col [nzSpan]="isReview ? 12 : 24">
+                      <blank [answers]="getAnswer(question.answers)"></blank>
+                      <nz-descriptions [nzColumn]="1">
+                        <nz-descriptions-item [nzTitle]="'Exam::UserAnswer' | abpLocalization">
+                          {{ question.answers }}
+                        </nz-descriptions-item>
+                        <nz-descriptions-item [nzTitle]="'Exam::Answer' | abpLocalization">
+                          {{ getOptions(question) }}
+                        </nz-descriptions-item>
+                        <nz-descriptions-item *ngIf="question.analysis" [nzTitle]="'Exam::Analysis' | abpLocalization">
+                          {{ question.analysis }}
+                        </nz-descriptions-item>
+                      </nz-descriptions>
+                    </div>
+                    <div *ngIf="isReview" nz-col nzSpan="12" [formGroupName]="i">
+                      <nz-form-item>
+                        <nz-form-label>{{ 'Exam::IsAnswer' | abpLocalization }}</nz-form-label>
+                        <nz-form-control>
+                          <nz-switch
+                            formControlName="right"
+                            [nzCheckedChildren]="checkedTemplate"
+                            [nzUnCheckedChildren]="unCheckedTemplate"
+                          ></nz-switch>
+                          <ng-template #checkedTemplate><span nz-icon nzType="check"></span></ng-template>
+                          <ng-template #unCheckedTemplate><span nz-icon nzType="close"></span></ng-template>
+                        </nz-form-control>
+                      </nz-form-item>
+                      <nz-form-item>
+                        <nz-form-label>{{ 'Exam::Score' | abpLocalization }}</nz-form-label>
+                        <nz-form-control>
+                          <nz-input-number
+                            formControlName="score"
+                            [nzMin]="0"
+                            [nzMax]="question.questionScore"
+                            [nzStep]="1"
+                          ></nz-input-number>
+                        </nz-form-control>
+                      </nz-form-item>
+                      <nz-form-item>
+                        <nz-form-label>{{ 'Exam::Reason' | abpLocalization }}</nz-form-label>
+                        <nz-form-control>
+                          <textarea
+                            formControlName="reason"
+                            nz-input
+                            placeholder="Reason"
+                            [nzAutosize]="{ minRows: 2, maxRows: 6 }"
+                          ></textarea>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+          </form>
+        </div>
+      </nz-card>
+    </div>
+  </div>
+  <footer-toolbar errorCollect>
+    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">{{
+      'Exam::Submit' | abpLocalization
+    }}</button>
+  </footer-toolbar>
+}

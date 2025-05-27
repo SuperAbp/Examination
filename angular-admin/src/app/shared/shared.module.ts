@@ -1,12 +1,16 @@
-import { NgModule, Type } from '@angular/core';
+import { CoreModule as AbpCoreModule } from '@abp/ng.core';
 import { CommonModule } from '@angular/common';
+import { NgModule, Type } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { AlainThemeModule } from '@delon/theme';
 import { DelonACLModule } from '@delon/acl';
 import { DelonFormModule } from '@delon/form';
-import { CoreModule as AbpCoreModule } from '@abp/ng.core';
+import { AlainThemeModule } from '@delon/theme';
 
+import { BlankComponent } from './components/blank';
+import { ChooseComponent } from './components/choose';
+import { QuestionNumberComponent } from './components/question-number';
+import { CharPipe } from './pipes';
 import { SHARED_DELON_MODULES } from './shared-delon.module';
 import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
 
@@ -18,8 +22,9 @@ const THIRDMODULES: Array<Type<void>> = [];
 
 // #region your componets & directives
 
-const COMPONENTS: Array<Type<void>> = [];
+const COMPONENTS: Array<Type<void>> = [QuestionNumberComponent, ChooseComponent, BlankComponent];
 const DIRECTIVES: Array<Type<void>> = [];
+const PIPES = [CharPipe];
 
 // #endregion
 
@@ -41,6 +46,7 @@ const DIRECTIVES: Array<Type<void>> = [];
   declarations: [
     // your components
     ...COMPONENTS,
+    ...PIPES,
     ...DIRECTIVES
   ],
   exports: [
@@ -52,6 +58,7 @@ const DIRECTIVES: Array<Type<void>> = [];
     AlainThemeModule,
     DelonACLModule,
     DelonFormModule,
+    ...PIPES,
     ...SHARED_DELON_MODULES,
     ...SHARED_ZORRO_MODULES,
     // third libs

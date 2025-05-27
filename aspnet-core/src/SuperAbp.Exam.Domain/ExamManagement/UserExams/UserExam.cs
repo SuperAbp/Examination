@@ -1,13 +1,15 @@
 ﻿using System;
-using Volo.Abp.Auditing;
-using Volo.Abp.Domain.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using SuperAbp.Exam.ExamManagement.UserExamQuestions;
+using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams;
 
 /// <summary>
 /// 用户考试
 /// </summary>
-public class UserExam : AggregateRoot<Guid>, IHasCreationTime
+public class UserExam : FullAuditedAggregateRoot<Guid>
 {
     protected UserExam()
     {
@@ -17,6 +19,7 @@ public class UserExam : AggregateRoot<Guid>, IHasCreationTime
     {
         UserId = userId;
         ExamId = examId;
+        Status = UserExamStatus.NotStarted;
     }
 
     public Guid UserId { get; protected set; }
@@ -28,14 +31,38 @@ public class UserExam : AggregateRoot<Guid>, IHasCreationTime
     public decimal TotalScore { get; set; }
 
     /// <summary>
-    /// 是否交卷
-    /// </summary>
-    public bool Finished { get; set; }
-
-    /// <summary>
     /// 交卷时间
     /// </summary>
     public DateTime? FinishedTime { get; set; }
 
-    public DateTime CreationTime { get; protected set; }
+    public UserExamStatus Status { get; set; }
+
+    public ICollection<UserExamQuestion> Questions { get; set; }
+
+    public void ReviewQuestion(Guid reviewId, Guid questionId, bool right, decimal score, string? comment)
+    {
+        UserExamQuestion q = Questions.FirstOrDefault(x => x.QuestionId == questionId) ?? throw new Exception("题目不存在");
+
+        q.Review(reviewId, right, score, comment);
+    }
+
+    public void AnswerQuestion(Guid questionId, string answers)
+    {
+        UserExamQuestion q = Questions.FirstOrDefault(x => x.QuestionId == questionId) ?? throw new Exception("题目不存在");
+        q.Answers = answers;
+    }
+
+    public void UpdateTotalScore()
+    {
+        TotalScore = Questions.Sum(q => q.Score ?? 0);
+    }
+
+    public bool IsSubmitted()
+    {
+        return new[]
+        {
+            UserExamStatus.Submitted, UserExamStatus.Reviewed, UserExamStatus.TimeoutAutoSubmitted,
+            UserExamStatus.Scored
+        }.Contains(Status);
+    }
 }

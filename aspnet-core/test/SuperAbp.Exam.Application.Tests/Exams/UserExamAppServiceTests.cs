@@ -1,6 +1,7 @@
 ﻿using Shouldly;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Modularity;
@@ -59,6 +60,21 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
         UserExamListDto repoDto = await _userExamAppService.CreateAsync(input);
         UserExam userExam = await _userExamRepository.GetAsync(repoDto.Id);
         userExam.ShouldNotBeNull();
+        userExam.Status.ShouldBe(UserExamStatus.InProgress);
         userExam.ExamId.ShouldBe(input.ExamId);
+    }
+
+    [Fact]
+    public async Task Should_Answer()
+    {
+        await _userExamAppService.AnswerAsync(_testData.UserExam11Id,
+            new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" });
+    }
+
+    [Fact]
+    public async Task Should_Finished()
+    {
+        await _userExamAppService.FinishedAsync(_testData.UserExam11Id,
+            [new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" }]);
     }
 }

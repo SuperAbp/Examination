@@ -26,6 +26,7 @@ public static class ExamDomainErrorCodes
     public static class UserExams
     {
         public const string UnfinishedAlreadyExists = "Exam:UserExams:0001";
+        public const string Unfinished = "Exam:UserExams:0002";
     }
 
     public static class Exams
