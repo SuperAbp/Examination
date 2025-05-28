@@ -1,11 +1,19 @@
 ﻿using Shouldly;
+using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.Modularity;
+using Volo.Abp.Security.Claims;
+using Volo.Abp.Timing;
 using Xunit;
+using System.Threading;
 
 namespace SuperAbp.Exam.Exams;
 
@@ -15,12 +23,14 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
     private readonly ExamTestData _testData;
     private readonly IUserExamAppService _userExamAppService;
     private readonly IUserExamRepository _userExamRepository;
+    private readonly ICurrentPrincipalAccessor _currentPrincipalAccessor;
 
     protected UserExamAppServiceTests()
     {
         _testData = GetRequiredService<ExamTestData>();
         _userExamAppService = GetRequiredService<IUserExamAppService>();
         _userExamRepository = GetRequiredService<IUserExamRepository>();
+        _currentPrincipalAccessor = GetRequiredService<ICurrentPrincipalAccessor>();
     }
 
     // TODO: SQLite cannot apply aggregate operator 'Max' on expressions of type 'decimal'
@@ -41,13 +51,15 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
     [Fact]
     public async Task Should_Get_Unfinished()
     {
-        UserExamCreateDto input = new()
+        using (_currentPrincipalAccessor.Change([
+                   new Claim(AbpClaimTypes.UserId, _testData.User2Id.ToString()),
+                   new Claim(AbpClaimTypes.UserName, "test1"),
+                   new Claim(AbpClaimTypes.Email, "test1@abp.io")
+               ]))
         {
-            ExamId = _testData.Examination11Id
-        };
-        await _userExamAppService.CreateAsync(input);
-        Guid? result = await _userExamAppService.GetUnfinishedAsync();
-        result.ShouldNotBeNull();
+            Guid? result = await _userExamAppService.GetUnfinishedAsync();
+            result.ShouldNotBeNull();
+        }
     }
 
     [Fact]
@@ -55,13 +67,55 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
     {
         UserExamCreateDto input = new()
         {
-            ExamId = _testData.Examination11Id
+            ExamId = _testData.Examination12Id
         };
         UserExamListDto repoDto = await _userExamAppService.CreateAsync(input);
         UserExam userExam = await _userExamRepository.GetAsync(repoDto.Id);
         userExam.ShouldNotBeNull();
         userExam.Status.ShouldBe(UserExamStatus.InProgress);
         userExam.ExamId.ShouldBe(input.ExamId);
+    }
+
+    [Fact]
+    public async Task Should_Create_Throw_OutOfExamTimeException()
+    {
+        UserExamCreateDto input = new()
+        {
+            ExamId = _testData.Examination31Id
+        };
+        await Should.ThrowAsync<OutOfExamTimeException>(async () =>
+            await _userExamAppService.CreateAsync(input));
+    }
+
+    [Fact]
+    public async Task Should_Create_Throw_UnfinishedAlreadyExistException()
+    {
+        UserExamCreateDto input = new()
+        {
+            ExamId = _testData.Examination12Id
+        };
+        using (_currentPrincipalAccessor.Change([
+                   new Claim(AbpClaimTypes.UserId, _testData.User2Id.ToString()),
+                   new Claim(AbpClaimTypes.UserName, "test1"),
+                   new Claim(AbpClaimTypes.Email, "test1@abp.io")
+               ]))
+        {
+            await Should.ThrowAsync<UnfinishedAlreadyExistException>(async () =>
+            {
+                await _userExamAppService.CreateAsync(input);
+            });
+        }
+    }
+
+    [Fact]
+    public async Task Should_Create_Throw_InvalidExamStatusException()
+    {
+        UserExamCreateDto input = new()
+        {
+            ExamId = _testData.Examination11Id
+        };
+        await Should.ThrowAsync<InvalidExamStatusException>(async () =>
+            await _userExamAppService.CreateAsync(input));
     }
 
     [Fact]

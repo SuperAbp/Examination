@@ -5,7 +5,8 @@ namespace SuperAbp.Exam;
 
 public class ExamTestData : ISingletonDependency
 {
-    public Guid UserId = new Guid("2e701e62-0953-4dd3-910b-dc6cc93ccb0d");
+    public Guid User1Id = new Guid("2e701e62-0953-4dd3-910b-dc6cc93ccb0d");
+    public Guid User2Id = Guid.NewGuid();
 
     public Guid Question11Id = Guid.NewGuid();
     public Guid Question12Id = Guid.NewGuid();
@@ -74,11 +75,23 @@ public class ExamTestData : ISingletonDependency
     public Guid Examination12Id = Guid.NewGuid();
     public string Examination12Name = "Examination12的Name";
 
+    public Guid Examination13Id = Guid.NewGuid();
+    public string Examination13Name = "Examination12的Name";
+
+    public Guid Examination14Id = Guid.NewGuid();
+    public string Examination14Name = "Examination12的Name";
+
+    public Guid Examination15Id = Guid.NewGuid();
+    public string Examination15Name = "Examination12的Name";
+
     public Guid Examination21Id = Guid.NewGuid();
     public string Examination21Name = "Examination21的Name";
 
     public Guid Examination22Id = Guid.NewGuid();
     public string Examination22Name = "Examination22的Name";
+
+    public Guid Examination31Id = Guid.NewGuid();
+    public string Examination31Name = "Examination31的Name";
 
     public Guid PaperQuestionRule1Id = Guid.NewGuid();
 
@@ -89,6 +102,8 @@ public class ExamTestData : ISingletonDependency
 
     public Guid UserExam21Id = Guid.NewGuid();
     public Guid UserExam22Id = Guid.NewGuid();
+
+    public Guid UserExam31Id = Guid.NewGuid();
 
     public Guid UserExamQuestion11Id = Guid.NewGuid();
     public Guid UserExamQuestion12Id = Guid.NewGuid();

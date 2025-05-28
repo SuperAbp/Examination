@@ -40,7 +40,7 @@ public class UserExamManager(
     private async Task CheckExamTimeAsync(Guid examId)
     {
         Examination exam = await examRepository.GetAsync(examId);
-        if (exam.StartTime > DateTime.Now || exam.EndTime < DateTime.Now)
+        if (exam.StartTime > Clock.Now || exam.EndTime < Clock.Now)
         {
             throw new OutOfExamTimeException();
         }

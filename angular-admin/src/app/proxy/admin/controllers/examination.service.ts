@@ -10,6 +10,14 @@ export class ExaminationService {
   apiName = 'Default';
   
 
+  cancel = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, void>({
+      method: 'PATCH',
+      url: `/api/exam/${id}/cancel`,
+    },
+    { apiName: this.apiName,...config });
+  
+
   create = (input: ExamCreateDto, config?: Partial<Rest.Config>) =>
     this.restService.request<any, ExamListDto>({
       method: 'POST',
@@ -48,6 +56,14 @@ export class ExaminationService {
       method: 'GET',
       url: '/api/exam',
       params: { name: input.name, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  publish = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, void>({
+      method: 'PATCH',
+      url: `/api/exam/${id}/publish`,
     },
     { apiName: this.apiName,...config });
   

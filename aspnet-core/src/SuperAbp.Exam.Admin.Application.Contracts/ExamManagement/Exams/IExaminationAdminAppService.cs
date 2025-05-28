@@ -47,6 +47,20 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         Task<ExamListDto> UpdateAsync(Guid id, ExamUpdateDto input);
 
         /// <summary>
+        /// 取消考试
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task CancelAsync(Guid id);
+
+        /// <summary>
+        /// 发布考试
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task PublishAsync(Guid id);
+
+        /// <summary>
         /// 删除
         /// </summary>
         /// <param name="id">主键</param>

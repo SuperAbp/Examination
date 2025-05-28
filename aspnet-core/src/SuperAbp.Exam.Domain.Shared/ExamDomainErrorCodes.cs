@@ -32,5 +32,7 @@ public static class ExamDomainErrorCodes
     public static class Exams
     {
         public const string OutOfExamTime = "Exam:Exams:0001";
+        public const string InvalidExam = "Exam:Exams:0002";
+        public const string InvalidStatus = "Exam:Exams:0003";
     }
 }

@@ -22,5 +22,8 @@
     <ng-template st-row="score" let-item>
       <span>{{ item.score }}（{{ 'Exam::PassingScore' | abpLocalization }}：{{ item.passingScore }}）</span>
     </ng-template>
+    <ng-template st-row="status" let-item let-index="index">
+      {{ 'Exam::ExaminationStatus:' + item.status | abpLocalization }}
+    </ng-template>
   </st>
 </nz-card>

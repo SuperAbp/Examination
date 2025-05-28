@@ -94,18 +94,53 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 },
             ]);
 
+            Examination ongoingExam = new(testData.Examination12Id, testData.Paper1Id,
+                testData.Examination12Name, 100, 60, 60)
+            {
+                Status = ExaminationStatus.Ongoing
+            };
+            Examination gradingExam = new(testData.Examination13Id, testData.Paper1Id,
+                testData.Examination13Name, 100, 60, 60)
+            {
+                Status = ExaminationStatus.Grading
+            };
+            Examination completedExam = new(testData.Examination14Id, testData.Paper1Id,
+                testData.Examination14Name, 100, 60, 60)
+            {
+                Status = ExaminationStatus.Completed
+            };
+            Examination cancelledExam = new(testData.Examination15Id, testData.Paper1Id,
+                testData.Examination15Name, 100, 60, 60)
+            {
+                Status = ExaminationStatus.Cancelled
+            };
+            Examination timeExam = new(testData.Examination31Id, testData.Paper1Id,
+                testData.Examination31Name, 100, 60, 60)
+            {
+                Status = ExaminationStatus.Ongoing
+            };
+            timeExam.SetTime(DateTime.Now.AddDays(-2), DateTime.Now.AddDays(-1));
             await examRepository.InsertManyAsync([
                 new Examination(testData.Examination11Id, testData.Paper1Id, testData.Examination11Name, 100, 60, 60),
-                new Examination(testData.Examination12Id, testData.Paper1Id, testData.Examination12Name, 100, 60, 60),
+                ongoingExam,
+                gradingExam,
+                completedExam,
+                cancelledExam,
                 new Examination(testData.Examination21Id, testData.Paper2Id, testData.Examination21Name, 100, 60, 60),
                 new Examination(testData.Examination22Id, testData.Paper2Id, testData.Examination22Name, 100, 60, 60),
+                timeExam
                 ]);
 
+            UserExam inProgressUserExam = new(testData.UserExam31Id, testData.Examination11Id, testData.User2Id)
+            {
+                Status = UserExamStatus.InProgress
+            };
             await userExamRepository.InsertManyAsync([
-                new UserExam(testData.UserExam11Id, testData.Examination11Id, testData.UserId),
-                new UserExam(testData.UserExam12Id, testData.Examination12Id, testData.UserId),
-                new UserExam(testData.UserExam21Id, testData.Examination21Id, testData.UserId),
-                new UserExam(testData.UserExam22Id, testData.Examination22Id, testData.UserId)
+                new UserExam(testData.UserExam11Id, testData.Examination11Id, testData.User1Id),
+                new UserExam(testData.UserExam12Id, testData.Examination12Id, testData.User1Id),
+                new UserExam(testData.UserExam21Id, testData.Examination21Id, testData.User1Id),
+                new UserExam(testData.UserExam22Id, testData.Examination22Id, testData.User1Id),
+                inProgressUserExam
             ]);
 
             await userExamQuestionRepository.InsertManyAsync([
@@ -116,9 +151,9 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
             ]);
 
             await trainingRepository.InsertManyAsync([
-                new Training(testData.Training1Id, testData.UserId, testData.QuestionBank1Id,
+                new Training(testData.Training1Id, testData.User1Id, testData.QuestionBank1Id,
                     testData.Question11Id, false, TrainingSource.QuestionBank),
-                new Training(testData.Training2Id, testData.UserId, testData.QuestionBank1Id,
+                new Training(testData.Training2Id, testData.User1Id, testData.QuestionBank1Id,
                     testData.Question11Id, false, TrainingSource.QuestionBank)
             ]);
 

@@ -12,6 +12,7 @@ using Volo.Abp.Timing;
 using Volo.Abp.Users;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.QuestionDto;
 using SuperAbp.Exam.KnowledgePoints;
+using Volo.Abp;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
@@ -19,6 +20,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     public class UserExamAppService(
         IClock clock,
         IUserExamRepository userExamRepository,
+        IExamRepository examRepository,
         UserExamManager userExamManager,
         IQuestionRepository questionRepository,
         QuestionManager questionManager,
@@ -26,6 +28,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         : ExamAppService, IUserExamAppService
     {
         protected IUserExamRepository UserExamRepository { get; } = userExamRepository;
+        protected IExamRepository ExamRepository { get; } = examRepository;
 
         public async Task<Guid?> GetUnfinishedAsync()
         {
@@ -89,6 +92,12 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public virtual async Task<UserExamListDto> CreateAsync(UserExamCreateDto input)
         {
+            Examination exam = await ExamRepository.GetAsync(input.ExamId);
+            if (exam.Status != ExaminationStatus.Ongoing)
+            {
+                throw new InvalidExamStatusException(exam.Status);
+            }
+
             UserExam userExam = await userExamManager.CreateAsync(input.ExamId, CurrentUser.GetId());
             userExam.Status = UserExamStatus.InProgress;
             await userExamManager.CreateQuestionsAsync(userExam.Id, input.ExamId);

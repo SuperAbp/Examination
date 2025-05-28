@@ -64,6 +64,7 @@ public abstract class ExaminationAdminAppServiceTests<TStartupModule> : ExamAppl
         examination.PassingScore.ShouldBe(input.PassingScore);
         examination.StartTime.ShouldBe(input.StartTime);
         examination.EndTime.ShouldBe(input.EndTime);
+        examination.Status.Value.ShouldBe(ExaminationStatus.Draft.Value);
     }
 
     [Fact]
@@ -90,6 +91,33 @@ public abstract class ExaminationAdminAppServiceTests<TStartupModule> : ExamAppl
         examination.PassingScore.ShouldBe(input.PassingScore);
         examination.StartTime.ShouldBe(input.StartTime);
         examination.EndTime.ShouldBe(input.EndTime);
+        examination.Status.Value.ShouldBe(ExaminationStatus.Draft.Value);
+    }
+
+    [Fact]
+    public async Task Should_Publish()
+    {
+        await _examinationAppService.PublishAsync(_testData.Examination11Id);
+    }
+
+    [Fact]
+    public async Task Should_Publish_Throw_InvalidExamStatusException()
+    {
+        await Should.ThrowAsync<InvalidExamStatusException>(async () =>
+            await _examinationAppService.PublishAsync(_testData.Examination12Id));
+    }
+
+    [Fact]
+    public async Task Should_Cancel()
+    {
+        await _examinationAppService.PublishAsync(_testData.Examination11Id);
+    }
+
+    [Fact]
+    public async Task Should_Cancel_Throw_InvalidExamStatusException()
+    {
+        await Should.ThrowAsync<InvalidExamStatusException>(async () =>
+            await _examinationAppService.PublishAsync(_testData.Examination15Id));
     }
 
     [Fact]
