@@ -109,6 +109,15 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
     public async Task ReviewQuestionsAsync(Guid id, List<ReviewedQuestionDto> input)
     {
         UserExam userExam = await UserExamRepository.GetAsync(id);
+        if (userExam.Status != UserExamStatus.Submitted)
+        {
+            throw new InvalidUserExamStatusException(userExam.Status);
+        }
+        Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
+        if (examination.Status != ExaminationStatus.Grading)
+        {
+            throw new InvalidExamStatusException(examination.Status);
+        }
         foreach (ReviewedQuestionDto question in input)
         {
             if (!question.Score.HasValue)

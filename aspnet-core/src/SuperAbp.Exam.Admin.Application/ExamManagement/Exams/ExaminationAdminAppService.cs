@@ -83,6 +83,10 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         public virtual async Task CancelAsync(Guid id)
         {
             Examination exam = await ExamRepository.GetAsync(id);
+            if (exam.Status == ExaminationStatus.Draft || exam.Status == ExaminationStatus.Cancelled)
+            {
+                throw new InvalidExamStatusException(exam.Status);
+            }
             exam.Status = ExaminationStatus.Cancelled;
             await ExamRepository.UpdateAsync(exam);
         }

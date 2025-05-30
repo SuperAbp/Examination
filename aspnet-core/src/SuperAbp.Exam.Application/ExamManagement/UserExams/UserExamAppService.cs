@@ -108,6 +108,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public virtual async Task AnswerAsync(Guid id, UserExamAnswerDto input)
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
+            Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
+            if (examination.Status != ExaminationStatus.Ongoing)
+            {
+                throw new InvalidExamStatusException(examination.Status);
+            }
             userExam.AnswerQuestion(input.QuestionId, input.Answers);
             await UserExamRepository.UpdateAsync(userExam);
         }
@@ -115,6 +120,12 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public virtual async Task FinishedAsync(Guid id, List<UserExamAnswerDto> input)
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
+            Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
+            if (examination.Status != ExaminationStatus.Ongoing)
+            {
+                throw new InvalidExamStatusException(examination.Status);
+            }
+
             userExam.FinishedTime = clock.Now;
             // TODO: Submitted Or Scored
             userExam.Status = UserExamStatus.Submitted;

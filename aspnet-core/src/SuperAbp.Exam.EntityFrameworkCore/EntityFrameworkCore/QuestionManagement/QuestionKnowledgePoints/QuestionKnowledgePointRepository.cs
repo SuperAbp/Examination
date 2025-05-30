@@ -8,8 +8,8 @@ using System.Threading;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionKnowledgePoints;
 
-public class QuestionKnowledgePointRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
-    : EfCoreRepository<ExamDbContext, QuestionKnowledgePoint>(dbContextProvider), IQuestionKnowledgePointRepository
+public class QuestionKnowledgePointRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
+    : EfCoreRepository<IExamDbContext, QuestionKnowledgePoint>(dbContextProvider), IQuestionKnowledgePointRepository
 {
     public async Task<List<QuestionKnowledgePoint>> GetByQuestionIdAsync(Guid questionId, CancellationToken cancellationToken = default)
     {

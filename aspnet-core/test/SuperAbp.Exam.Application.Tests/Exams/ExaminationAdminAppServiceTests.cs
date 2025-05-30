@@ -110,14 +110,14 @@ public abstract class ExaminationAdminAppServiceTests<TStartupModule> : ExamAppl
     [Fact]
     public async Task Should_Cancel()
     {
-        await _examinationAppService.PublishAsync(_testData.Examination11Id);
+        await _examinationAppService.CancelAsync(_testData.Examination12Id);
     }
 
     [Fact]
     public async Task Should_Cancel_Throw_InvalidExamStatusException()
     {
         await Should.ThrowAsync<InvalidExamStatusException>(async () =>
-            await _examinationAppService.PublishAsync(_testData.Examination15Id));
+            await _examinationAppService.CancelAsync(_testData.Examination15Id));
     }
 
     [Fact]

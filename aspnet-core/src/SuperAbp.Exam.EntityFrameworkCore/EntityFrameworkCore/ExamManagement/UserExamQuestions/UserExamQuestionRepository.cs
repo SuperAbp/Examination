@@ -13,8 +13,8 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExamQuestions
 {
-    public class UserExamQuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
-        : EfCoreRepository<ExamDbContext, UserExamQuestion, Guid>(dbContextProvider), IUserExamQuestionRepository
+    public class UserExamQuestionRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
+        : EfCoreRepository<IExamDbContext, UserExamQuestion, Guid>(dbContextProvider), IUserExamQuestionRepository
     {
         // TODO:编写仓储代码
         public async Task<List<UserExamQuestionWithDetails>> GetListAsync(Guid userExamId, string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,

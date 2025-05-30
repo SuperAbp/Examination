@@ -2,18 +2,12 @@
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.Modularity;
 using Volo.Abp.Security.Claims;
-using Volo.Abp.Timing;
 using Xunit;
-using System.Threading;
 
 namespace SuperAbp.Exam.Exams;
 
@@ -33,8 +27,7 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
         _currentPrincipalAccessor = GetRequiredService<ICurrentPrincipalAccessor>();
     }
 
-    // TODO: SQLite cannot apply aggregate operator 'Max' on expressions of type 'decimal'
-    // [Fact]
+    [Fact]
     public async Task Should_Get_List()
     {
         PagedResultDto<UserExamListDto> result = await _userExamAppService.GetListAsync(new GetUserExamsInput());
@@ -121,14 +114,30 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
     [Fact]
     public async Task Should_Answer()
     {
-        await _userExamAppService.AnswerAsync(_testData.UserExam11Id,
+        await _userExamAppService.AnswerAsync(_testData.UserExam12Id,
             new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" });
+    }
+
+    [Fact]
+    public async Task Should_Answer_Throw_InvalidExamStatusException()
+    {
+        await Should.ThrowAsync<InvalidExamStatusException>(async () =>
+            await _userExamAppService.AnswerAsync(_testData.UserExam11Id,
+                new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" }));
     }
 
     [Fact]
     public async Task Should_Finished()
     {
-        await _userExamAppService.FinishedAsync(_testData.UserExam11Id,
+        await _userExamAppService.FinishedAsync(_testData.UserExam12Id,
             [new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" }]);
+    }
+
+    [Fact]
+    public async Task Should_Finished_Throw_InvalidExamStatusException()
+    {
+        await Should.ThrowAsync<InvalidExamStatusException>(async () =>
+            await _userExamAppService.FinishedAsync(_testData.UserExam11Id,
+                [new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" }]));
     }
 }

@@ -133,7 +133,7 @@ export class ExamManagementExamComponent implements OnInit {
             {
               text: this.localizationService.instant('Exam::Cancel'),
               iif: record => {
-                return this.permissionService.getGrantedPolicy('Exam.Exam.Cancel') && record.status !== 4;
+                return this.permissionService.getGrantedPolicy('Exam.Exam.Cancel') && record.status !== 4 && record.status !== 0;
               },
               click: (record, _modal, component) => {
                 this.examService.cancel(record.id).subscribe(response => {

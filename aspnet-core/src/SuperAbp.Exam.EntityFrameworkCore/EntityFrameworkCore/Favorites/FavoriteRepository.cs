@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.Favorites;
 
-public class FavoriteRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
-    : EfCoreRepository<ExamDbContext, Favorite, Guid>(dbContextProvider), IFavoriteRepository
+public class FavoriteRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
+    : EfCoreRepository<IExamDbContext, Favorite, Guid>(dbContextProvider), IFavoriteRepository
 {
     public async Task<List<FavoriteWithDetails>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
         Guid? creatorId = null, string? questionContent = null, QuestionType? questionType = null, CancellationToken cancellationToken = default)
@@ -32,7 +32,7 @@ public class FavoriteRepository(IDbContextProvider<ExamDbContext> dbContextProvi
 
     private async Task<IQueryable<FavoriteWithDetails>> GetQueryableAsync(Guid? creatorId, string? questionContent = null, QuestionType? questionType = null)
     {
-        ExamDbContext dbContext = await GetDbContextAsync();
+        var dbContext = await GetDbContextAsync();
 
         IQueryable<Favorite> queryable = (await GetQueryableAsync())
             .WhereIf(creatorId.HasValue, p => p.CreatorId == creatorId.Value);

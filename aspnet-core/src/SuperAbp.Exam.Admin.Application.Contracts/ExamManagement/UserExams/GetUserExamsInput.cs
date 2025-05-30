@@ -5,7 +5,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.UserExams;
 
 public class GetUserExamsInput : PagedAndSortedResultRequestDto
 {
-    public Guid ExamId { get; set; }
+    public required Guid ExamId { get; set; }
 
-    public Guid UserId { get; set; }
+    public required Guid UserId { get; set; }
 }

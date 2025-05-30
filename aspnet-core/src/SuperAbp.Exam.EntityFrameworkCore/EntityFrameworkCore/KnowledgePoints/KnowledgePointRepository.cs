@@ -13,8 +13,8 @@ using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.KnowledgePoints;
 
-public class KnowledgePointRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
-    : EfCoreRepository<ExamDbContext, KnowledgePoint, Guid>(dbContextProvider), IKnowledgePointRepository
+public class KnowledgePointRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
+    : EfCoreRepository<IExamDbContext, KnowledgePoint, Guid>(dbContextProvider), IKnowledgePointRepository
 {
     public async Task<List<KnowledgePoint>> GetByQuestionIdAsync(Guid questionId, CancellationToken cancellationToken = default)
     {
