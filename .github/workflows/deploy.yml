@@ -24,14 +24,14 @@ jobs:
 
   deploy-backend:
     needs: build
-    uses: ./.github/workflows/deploy-backend.yml@test-publish
+    uses: ./.github/workflows/deploy-backend.yml
     with:
       tag: ${{ needs.build.outputs.tag }}
     secrets: inherit
 
   deploy-frontend:
     needs: build
-    uses: ./.github/workflows/deploy-frontend.yml@test-publish
+    uses: ./.github/workflows/deploy-frontend.yml
     with:
       tag: ${{ needs.build.outputs.tag }}
     secrets: inherit
