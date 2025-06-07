@@ -1,0 +1,29 @@
+name: Deploy Frontend
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build Angular Project
+        working-directory: ./angular-admin
+        run: |
+          npm install
+          npm run build
+          mkdir -p ../publish/Admin
+          cp -r dist/* ../publish/Admin/
+            
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend
+          path: .dist/*

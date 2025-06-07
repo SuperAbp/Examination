@@ -1,0 +1,40 @@
+name: Deploy Backend
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Publish .NET Core Project
+        working-directory: ./aspnet-core/src
+        run: |
+          echo "Publishing Admin API..."
+          dotnet publish SuperAbp.Exam.Admin.HttpApi.Host/SuperAbp.Exam.Admin.HttpApi.Host.csproj -c Release -o ../publish/AdminApi
+
+          echo "Publishing API..."
+          dotnet publish SuperAbp.Exam.HttpApi.Host/SuperAbp.Exam.HttpApi.Host.csproj -c Release -o ../publish/Api
+
+          echo "Publishing Auth Server..."
+          dotnet publish SuperAbp.Exam.AuthServer/SuperAbp.Exam.AuthServer.csproj -c Release -o ../publish/AuthServer
+
+          echo "Publishing Web UI..."
+          dotnet publish SuperAbp.Exam.Blazor/SuperAbp.Exam.Blazor.csproj -c Release -o ../../publish/Web
+
+          echo "Publishing Db Migrator..."
+          dotnet publish SuperAbp.Exam.DbMigrator/SuperAbp.Exam.DbMigrator.csproj -c Release -o ../publish/DbMigrator
+      
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        working-directory: ./aspnet-core
+        with:
+          name: backend
+          path: ./publish/*

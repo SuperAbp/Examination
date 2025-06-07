@@ -1,0 +1,79 @@
+name: Deploy on Tag
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get_tag.outputs.TAG }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get Tag Name
+        id: get_tag
+        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Run Unit Tests
+        run: |
+          dotnet test --nologo --verbosity normal
+
+  deploy-backend:
+    needs: build
+    uses: ./deploy-backend.yml
+    with:
+      tag: ${{ needs.build.outputs.tag }}
+    secrets: inherit
+
+  deploy-frontend:
+    needs: build
+    uses: ./deploy-frontend.yml
+    with:
+      tag: ${{ needs.build.outputs.tag }}
+    secrets: inherit
+  
+  deploy-all:
+    name: "Package and Deploy to Server"
+    needs: [deploy-backend, deploy-frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download backend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: backend
+          path: ./publish
+      
+      - name: Download frontend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend
+          path: ./publish/Admin
+
+      - name: Compress publish folder
+        run: tar -czf deploy.tar.gz -C publish .
+
+      - name: Upload compressed file
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "deploy.tar.gz"
+          target: "/var/www/deploy/${{ inputs.tag }}"
+
+      - name: Run Migration & Restart Service
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            chmod +x /var/www/deploy.sh
+            /var/www/deploy.sh ${{ inputs.tag }}
