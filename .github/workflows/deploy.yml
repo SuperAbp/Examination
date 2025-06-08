@@ -24,7 +24,7 @@ jobs:
 
   deploy-backend:
     needs: build
-    uses: .github/workflows/deploy-backend.yml
+    uses: ./.github/workflows/deploy-backend.yml
     with:
       tag: ${{ needs.build.outputs.tag }}
     secrets: inherit
