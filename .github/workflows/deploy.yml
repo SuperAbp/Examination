@@ -31,7 +31,7 @@ jobs:
 
   deploy-frontend:
     needs: build
-    uses: .github/workflows/deploy-frontend.yml
+    uses: ./.github/workflows/deploy-frontend.yml
     with:
       tag: ${{ needs.build.outputs.tag }}
     secrets: inherit
