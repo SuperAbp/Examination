@@ -19,7 +19,7 @@ jobs:
         run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - name: Run Unit Tests
-        working-directory: aspnet-core/src
+        working-directory: aspnet-core
         run: |
           pwd
           ls -la
