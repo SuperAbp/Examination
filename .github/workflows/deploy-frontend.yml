@@ -14,10 +14,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build Angular Project
+      - name: Install dependencies
         run: |
           cd angular-admin
           yarn install
+      - name: Show installed @delon/mock version
+        run: npm list @delon/mock
+
+      - name: Build Angular Project
+        run: |
           npm run build
           mkdir -p ../publish/Admin
           cp -r dist/* ../publish/Admin/
