@@ -18,11 +18,14 @@ jobs:
         id: get_tag
         run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
       - name: Run Unit Tests
         working-directory: aspnet-core
         run: |
-          pwd
-          ls -la
           dotnet test --nologo --verbosity normal
 
   deploy-backend:
