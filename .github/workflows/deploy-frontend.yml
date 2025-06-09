@@ -22,8 +22,8 @@ jobs:
           mkdir -p ../publish/Admin
           cp -r dist/* ../publish/Admin/
 
-      - name: Upload backend artifact
+      - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
         with:
-          name: backend
+          name: frontend
           path: .dist/*
