@@ -14,13 +14,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install dependencies
+      - name: Build Angular Project
         run: |
           cd angular-admin
           yarn install
-
-      - name: Build Angular Project
-        run: |
           npm run build
           mkdir -p ../publish/Admin
           cp -r dist/* ../publish/Admin/
