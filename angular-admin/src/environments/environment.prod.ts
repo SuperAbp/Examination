@@ -2,40 +2,35 @@
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { DelonMockModule } from '@delon/mock';
+import { provideMockConfig, mockInterceptor } from '@delon/mock';
 import { Environment } from 'src/Environment';
 
 import * as MOCKDATA from '../../_mock';
 
-const baseUrl = 'http://admin.exam.lzez.com.cn/';
+const baseUrl = 'http://admin.examimg.superabp.com/';
 export const environment = {
   application: {
     baseUrl,
-    name: '123',
+    name: '考乐试',
     logoUrl: ''
   },
   oAuthConfig: {
-    issuer: '',
-    redirectUri: baseUrl
-    //   clientId: 'CertificationAuthority_App',
-    //   responseType: 'code',
-    //   scope: 'offline_access CertificationAuthority',
+    issuer: 'http://auth.examimg.superabp.com/',
+    redirectUri: baseUrl,
+    clientId: 'Exam_Admin_App',
+    responseType: 'code',
+    scope: 'offline_access Exam',
+    requireHttps: true
   },
   apis: {
     default: {
-      url: 'http://api.admin.exam.lzez.com.cn',
-      rootNamespace: 'Lzez.Exam'
+      url: 'http://api.admin.examimg.superabp.com',
+      rootNamespace: 'SuperAbp.Exam'
     }
   },
   resource: {
-    mediaUrl: 'http://api.admin.exam.lzez.com.cn/api/super-abp/media',
-    userUrl: 'https://passport.lzez.com.cn',
-    erpUrl: 'https://erp.ahsanle.cn/'
-  },
-  identity: {
-    url: 'https://passport.lzez.com.cn',
-    loginCallback: 'OX/BPTEMAKcxz5zEC2B57sK7fCkwlYN+PkJOn8xaEVfOuM8NFw/bDtPebYHB9r9sGVOZZ9tF5RY=',
-    logoutCallback: 'OX/BPTEMAKcxz5zEC2B57sK7fCkwlYN+mONLLComz8I='
+    mediaUrl: 'http://api.admin.examimg.superabp.com/api/super-abp/media',
+    userUrl: 'https://auth.examimg.superabp.com'
   },
   api: {
     baseUrl: './',
@@ -44,7 +39,9 @@ export const environment = {
   },
   production: true,
   useHash: true,
-  modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
+  providers: [provideMockConfig({ data: MOCKDATA })],
+  interceptorFns: [mockInterceptor],
+  modules: []
 } as Environment;
 
 /*
