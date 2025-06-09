@@ -18,15 +18,13 @@ jobs:
         run: |
           cd angular-admin
           yarn install
-      - name: Show installed @delon/mock version
-        run: npm list @delon/mock
 
       - name: Build Angular Project
         run: |
           npm run build
           mkdir -p ../publish/Admin
           cp -r dist/* ../publish/Admin/
-            
+
       - name: Upload backend artifact
         uses: actions/upload-artifact@v4
         with:
