@@ -19,11 +19,9 @@ jobs:
           cd angular-admin
           yarn install
           npm run build
-          mkdir -p ../publish/Admin
-          cp -r dist/* ../publish/Admin/
 
       - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
         with:
           name: frontend
-          path: .dist/*
+          path: dist/*
