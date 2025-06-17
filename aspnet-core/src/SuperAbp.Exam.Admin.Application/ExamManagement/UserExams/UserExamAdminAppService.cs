@@ -127,6 +127,7 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
             userExam.ReviewQuestion(GuidGenerator.Create(), question.QuestionId, question.Right, question.Score.Value, question.Reason);
         }
         userExam.UpdateTotalScore();
+        userExam.Status = UserExamStatus.Scored;
         await UserExamRepository.UpdateAsync(userExam);
     }
 }

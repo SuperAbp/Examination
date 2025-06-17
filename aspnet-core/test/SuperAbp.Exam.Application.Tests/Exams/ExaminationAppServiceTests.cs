@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Shouldly;
 using SuperAbp.Exam.ExamManagement.Exams;
 using Volo.Abp.Application.Dtos;
@@ -24,6 +25,7 @@ public abstract class ExaminationAppServiceTests<TStartupModule> : ExamApplicati
     {
         PagedResultDto<ExamListDto> result = await _examinationAppService.GetListAsync(new GetExamsInput());
         result.Items.Count.ShouldBeGreaterThan(0);
+        result.Items.Where(c => c.Status != ExaminationStatus.Published).ShouldBeEmpty();
     }
 
     [Fact]

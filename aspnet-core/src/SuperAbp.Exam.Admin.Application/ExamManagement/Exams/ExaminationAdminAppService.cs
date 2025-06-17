@@ -55,6 +55,10 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             {
                 Description = input.Description
             };
+            if (input.Published)
+            {
+                examination.Status = ExaminationStatus.Published;
+            }
             examination.SetTime(input.StartTime, input.EndTime);
             examination = await ExamRepository.InsertAsync(examination);
             return ObjectMapper.Map<Examination, ExamListDto>(examination);
@@ -67,6 +71,10 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             if (examination.Status != ExaminationStatus.Draft)
             {
                 throw new InvalidExamStatusException(examination.Status);
+            }
+            if (input.Published)
+            {
+                examination.Status = ExaminationStatus.Published;
             }
             examination.PaperId = input.PaperId;
             examination.Name = input.Name;
@@ -99,7 +107,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             {
                 throw new InvalidExamStatusException(exam.Status);
             }
-            exam.Status = ExaminationStatus.Ongoing;
+            exam.Status = ExaminationStatus.Published;
             await ExamRepository.UpdateAsync(exam);
         }
 

@@ -116,6 +116,9 @@ public class ExamTestData : ISingletonDependency
     public Guid UserExamQuestion21Id = Guid.NewGuid();
     public Guid UserExamQuestion22Id = Guid.NewGuid();
 
+    public Guid UserExamQuestion31Id = Guid.NewGuid();
+    public Guid UserExamQuestion32Id = Guid.NewGuid();
+
     public Guid Training1Id = Guid.NewGuid();
     public Guid Training2Id = Guid.NewGuid();
 }

@@ -15,6 +15,7 @@ using Volo.Abp.Users;
 namespace SuperAbp.Exam.ExamManagement.UserExams;
 
 public class UserExamManager(
+    ExamManager examManager,
     IExamRepository examRepository,
     IQuestionRepository questionRepository,
     IPaperRepository paperRepository,
@@ -26,24 +27,9 @@ public class UserExamManager(
     public async Task<UserExam> CreateAsync(Guid examId, Guid userId)
     {
         await CheckUnfinishedAsync(userId);
-        await CheckExamTimeAsync(examId);
+        await examManager.CheckCreateUserExamAsync(examId);
 
         return new UserExam(GuidGenerator.Create(), examId, userId);
-    }
-
-    /// <summary>
-    /// 检查考试时间
-    /// </summary>
-    /// <param name="examId">考试Id</param>
-    /// <returns></returns>
-    /// <exception cref="OutOfExamTimeException"></exception>
-    private async Task CheckExamTimeAsync(Guid examId)
-    {
-        Examination exam = await examRepository.GetAsync(examId);
-        if (exam.StartTime > Clock.Now || exam.EndTime < Clock.Now)
-        {
-            throw new OutOfExamTimeException();
-        }
     }
 
     /// <summary>
@@ -68,12 +54,10 @@ public class UserExamManager(
     /// <returns></returns>
     public async Task CreateQuestionsAsync(Guid userExamId, Guid examId)
     {
-        var exam = await examRepository.FindAsync(examId)
-                   ?? throw new UserFriendlyException("题库不存在");
-        var paper = await paperRepository.FindAsync(exam.PaperId)
-                    ?? throw new UserFriendlyException("试卷不存在");
-        var paperRepos = await paperQuestionRuleRepository.GetListAsync(paperId: paper.Id);
-        var examQuestions = new List<UserExamQuestion>();
+        Examination exam = await examRepository.GetAsync(examId);
+        Paper paper = await paperRepository.GetAsync(exam.PaperId);
+        List<PaperQuestionRule> paperRepos = await paperQuestionRuleRepository.GetListAsync(paperId: paper.Id);
+        List<UserExamQuestion> examQuestions = [];
         foreach (var paperRepo in paperRepos)
         {
             if (paperRepo.SingleCount is > 0)

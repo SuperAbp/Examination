@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
+using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Entities.Auditing;
+using static SuperAbp.Exam.ExamDomainErrorCodes;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams;
 
@@ -41,14 +43,18 @@ public class UserExam : FullAuditedAggregateRoot<Guid>
 
     public void ReviewQuestion(Guid reviewId, Guid questionId, bool right, decimal score, string? comment)
     {
-        UserExamQuestion q = Questions.FirstOrDefault(x => x.QuestionId == questionId) ?? throw new Exception("题目不存在");
+        UserExamQuestion q = Questions.FirstOrDefault(x => x.QuestionId == questionId) ?? throw new EntityNotFoundException("题目不存在");
 
         q.Review(reviewId, right, score, comment);
     }
 
     public void AnswerQuestion(Guid questionId, string answers)
     {
-        UserExamQuestion q = Questions.FirstOrDefault(x => x.QuestionId == questionId) ?? throw new Exception("题目不存在");
+        if (Status != UserExamStatus.InProgress)
+        {
+            throw new InvalidUserExamStatusException(Status);
+        }
+        UserExamQuestion q = Questions.FirstOrDefault(x => x.QuestionId == questionId) ?? throw new EntityNotFoundException("题目不存在");
         q.Answers = answers;
     }
 
@@ -61,7 +67,7 @@ public class UserExam : FullAuditedAggregateRoot<Guid>
     {
         return new[]
         {
-            UserExamStatus.Submitted, UserExamStatus.Reviewed, UserExamStatus.TimeoutAutoSubmitted,
+            UserExamStatus.Submitted,
             UserExamStatus.Scored
         }.Contains(Status);
     }

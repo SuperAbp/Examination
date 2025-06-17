@@ -20,7 +20,7 @@
         <PropertyColumn Property="c=>c.TotalTime" Title="@L["TotalTime"]" />
         <PropertyColumn Title="@L["ExamTime"]" Field="@($"{context.StartTime} ~ {context.EndTime}")" />
         <ActionColumn Title="@L["Action"]">
-            @if (context.StartTime.HasValue && context.EndTime.HasValue && (DateTime.Now > context.StartTime.Value && DateTime.Now < context.EndTime.Value))
+            @if (context.StartTime.HasValue && context.EndTime.HasValue && (Clock.Now > context.StartTime.Value && Clock.Now < context.EndTime.Value))
             {
                 <Space>
                     <SpaceItem>
@@ -38,8 +38,10 @@
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Localization
 @using Volo.Abp.AspNetCore.Components.Notifications
+@using Volo.Abp.Timing
 @attribute [Authorize]
 @inject NavigationManager Navigation
+@inject IClock Clock
 @inject IExaminationAppService ExamAppService
 @inject IUserExamAppService UserExamAppService
 @inject IUiNotificationService NotificationService

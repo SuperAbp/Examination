@@ -92,12 +92,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public virtual async Task<UserExamListDto> CreateAsync(UserExamCreateDto input)
         {
-            Examination exam = await ExamRepository.GetAsync(input.ExamId);
-            if (exam.Status != ExaminationStatus.Ongoing)
-            {
-                throw new InvalidExamStatusException(exam.Status);
-            }
-
             UserExam userExam = await userExamManager.CreateAsync(input.ExamId, CurrentUser.GetId());
             userExam.Status = UserExamStatus.InProgress;
             await userExamManager.CreateQuestionsAsync(userExam.Id, input.ExamId);
@@ -109,10 +103,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
             Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
-            if (examination.Status != ExaminationStatus.Ongoing)
+            if (examination.Status != ExaminationStatus.Published)
             {
                 throw new InvalidExamStatusException(examination.Status);
             }
+
             userExam.AnswerQuestion(input.QuestionId, input.Answers);
             await UserExamRepository.UpdateAsync(userExam);
         }
@@ -121,11 +116,14 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
             Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
-            if (examination.Status != ExaminationStatus.Ongoing)
+            if (examination.Status != ExaminationStatus.Published)
             {
                 throw new InvalidExamStatusException(examination.Status);
             }
-
+            if (userExam.Status != UserExamStatus.InProgress)
+            {
+                throw new InvalidUserExamStatusException(userExam.Status);
+            }
             userExam.FinishedTime = clock.Now;
             // TODO: Submitted Or Scored
             userExam.Status = UserExamStatus.Submitted;

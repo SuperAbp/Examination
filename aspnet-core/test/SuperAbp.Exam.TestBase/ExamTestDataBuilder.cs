@@ -97,7 +97,7 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
             Examination ongoingExam = new(testData.Examination12Id, testData.Paper1Id,
                 testData.Examination12Name, 100, 60, 60)
             {
-                Status = ExaminationStatus.Ongoing
+                Status = ExaminationStatus.Published
             };
             Examination gradingExam = new(testData.Examination13Id, testData.Paper1Id,
                 testData.Examination13Name, 100, 60, 60)
@@ -117,7 +117,7 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
             Examination timeExam = new(testData.Examination31Id, testData.Paper1Id,
                 testData.Examination31Name, 100, 60, 60)
             {
-                Status = ExaminationStatus.Ongoing
+                Status = ExaminationStatus.Published
             };
             timeExam.SetTime(DateTime.Now.AddDays(-2), DateTime.Now.AddDays(-1));
             await examRepository.InsertManyAsync([
@@ -131,7 +131,7 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 timeExam
                 ]);
 
-            UserExam inProgressUserExam = new(testData.UserExam31Id, testData.Examination11Id, testData.User2Id)
+            UserExam inProgressUserExam = new(testData.UserExam31Id, testData.Examination12Id, testData.User2Id)
             {
                 Status = UserExamStatus.InProgress
             };
@@ -156,7 +156,9 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 new UserExamQuestion(testData.UserExamQuestion15Id, testData.UserExam13Id, testData.Question11Id, 100),
                 new UserExamQuestion(testData.UserExamQuestion16Id, testData.UserExam13Id, testData.Question12Id, 100),
                 new UserExamQuestion(testData.UserExamQuestion21Id, testData.UserExam21Id, testData.Question11Id, 100),
-                new UserExamQuestion(testData.UserExamQuestion22Id, testData.UserExam21Id, testData.Question12Id, 100)
+                new UserExamQuestion(testData.UserExamQuestion22Id, testData.UserExam21Id, testData.Question12Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion31Id, testData.UserExam31Id, testData.Question11Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion32Id, testData.UserExam31Id, testData.Question12Id, 100)
             ]);
 
             await trainingRepository.InsertManyAsync([

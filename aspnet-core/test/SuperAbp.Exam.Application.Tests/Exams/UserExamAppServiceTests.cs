@@ -114,7 +114,7 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
     [Fact]
     public async Task Should_Answer()
     {
-        await _userExamAppService.AnswerAsync(_testData.UserExam12Id,
+        await _userExamAppService.AnswerAsync(_testData.UserExam31Id,
             new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" });
     }
 
@@ -129,7 +129,7 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
     [Fact]
     public async Task Should_Finished()
     {
-        await _userExamAppService.FinishedAsync(_testData.UserExam12Id,
+        await _userExamAppService.FinishedAsync(_testData.UserExam31Id,
             [new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" }]);
     }
 

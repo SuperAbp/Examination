@@ -12,6 +12,8 @@ namespace SuperAbp.Exam.ExamManagement.Exams
         public decimal Score { get; set; }
         public decimal PassingScore { get; set; }
         public int TotalTime { get; set; }
+        public int Status { get; set; }
+
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
     }
