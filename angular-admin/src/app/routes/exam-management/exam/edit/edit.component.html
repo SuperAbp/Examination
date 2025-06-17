@@ -95,8 +95,11 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
+    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save(false)">
       {{ 'Exam::Submit' | abpLocalization }}
+    </button>
+    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save(true)">
+      {{ 'Exam::Publish' | abpLocalization }}
     </button>
   </div>
 } @else {
