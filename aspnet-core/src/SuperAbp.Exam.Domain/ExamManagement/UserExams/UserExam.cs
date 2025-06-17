@@ -21,7 +21,7 @@ public class UserExam : FullAuditedAggregateRoot<Guid>
     {
         UserId = userId;
         ExamId = examId;
-        Status = UserExamStatus.NotStarted;
+        Status = UserExamStatus.InProgress;
     }
 
     public Guid UserId { get; protected set; }
