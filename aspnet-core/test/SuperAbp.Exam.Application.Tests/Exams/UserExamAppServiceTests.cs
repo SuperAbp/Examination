@@ -44,15 +44,8 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
     [Fact]
     public async Task Should_Get_Unfinished()
     {
-        using (_currentPrincipalAccessor.Change([
-                   new Claim(AbpClaimTypes.UserId, _testData.User2Id.ToString()),
-                   new Claim(AbpClaimTypes.UserName, "test1"),
-                   new Claim(AbpClaimTypes.Email, "test1@abp.io")
-               ]))
-        {
-            Guid? result = await _userExamAppService.GetUnfinishedAsync();
-            result.ShouldNotBeNull();
-        }
+        Guid? result = await _userExamAppService.GetUnfinishedAsync();
+        result.ShouldNotBeNull();
     }
 
     [Fact]
@@ -62,22 +55,36 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
         {
             ExamId = _testData.Examination12Id
         };
-        UserExamListDto repoDto = await _userExamAppService.CreateAsync(input);
-        UserExam userExam = await _userExamRepository.GetAsync(repoDto.Id);
-        userExam.ShouldNotBeNull();
-        userExam.Status.ShouldBe(UserExamStatus.InProgress);
-        userExam.ExamId.ShouldBe(input.ExamId);
+        using (_currentPrincipalAccessor.Change([
+                   new Claim(AbpClaimTypes.UserId, _testData.User2Id.ToString()),
+                   new Claim(AbpClaimTypes.UserName, "test1"),
+                   new Claim(AbpClaimTypes.Email, "test1@abp.io")
+               ]))
+        {
+            UserExamListDto repoDto = await _userExamAppService.CreateAsync(input);
+            UserExam userExam = await _userExamRepository.GetAsync(repoDto.Id);
+            userExam.ShouldNotBeNull();
+            userExam.Status.ShouldBe(UserExamStatus.InProgress);
+            userExam.ExamId.ShouldBe(input.ExamId);
+        }
     }
 
     [Fact]
     public async Task Should_Create_Throw_OutOfExamTimeException()
     {
-        UserExamCreateDto input = new()
+        using (_currentPrincipalAccessor.Change([
+                   new Claim(AbpClaimTypes.UserId, _testData.User2Id.ToString()),
+                   new Claim(AbpClaimTypes.UserName, "test1"),
+                   new Claim(AbpClaimTypes.Email, "test1@abp.io")
+               ]))
         {
-            ExamId = _testData.Examination31Id
-        };
-        await Should.ThrowAsync<OutOfExamTimeException>(async () =>
-            await _userExamAppService.CreateAsync(input));
+            UserExamCreateDto input = new()
+            {
+                ExamId = _testData.Examination31Id
+            };
+            await Should.ThrowAsync<OutOfExamTimeException>(async () =>
+                await _userExamAppService.CreateAsync(input));
+        }
     }
 
     [Fact]
@@ -87,57 +94,87 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
         {
             ExamId = _testData.Examination12Id
         };
+        await Should.ThrowAsync<UnfinishedAlreadyExistException>(async () =>
+        {
+            await _userExamAppService.CreateAsync(input);
+        });
+    }
+
+    [Fact]
+    public async Task Should_Create_Throw_InvalidExamStatusException()
+    {
         using (_currentPrincipalAccessor.Change([
                    new Claim(AbpClaimTypes.UserId, _testData.User2Id.ToString()),
                    new Claim(AbpClaimTypes.UserName, "test1"),
                    new Claim(AbpClaimTypes.Email, "test1@abp.io")
                ]))
         {
-            await Should.ThrowAsync<UnfinishedAlreadyExistException>(async () =>
+            UserExamCreateDto input = new()
             {
-                await _userExamAppService.CreateAsync(input);
-            });
+                ExamId = _testData.Examination11Id
+            };
+            await Should.ThrowAsync<InvalidExamStatusException>(async () =>
+                await _userExamAppService.CreateAsync(input));
         }
-    }
-
-    [Fact]
-    public async Task Should_Create_Throw_InvalidExamStatusException()
-    {
-        UserExamCreateDto input = new()
-        {
-            ExamId = _testData.Examination11Id
-        };
-        await Should.ThrowAsync<InvalidExamStatusException>(async () =>
-            await _userExamAppService.CreateAsync(input));
     }
 
     [Fact]
     public async Task Should_Answer()
     {
-        await _userExamAppService.AnswerAsync(_testData.UserExam31Id,
+        await _userExamAppService.AnswerAsync(_testData.UserExam11Id,
             new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" });
     }
 
     [Fact]
     public async Task Should_Answer_Throw_InvalidExamStatusException()
     {
-        await Should.ThrowAsync<InvalidExamStatusException>(async () =>
-            await _userExamAppService.AnswerAsync(_testData.UserExam11Id,
+        using (_currentPrincipalAccessor.Change([
+                   new Claim(AbpClaimTypes.UserId, _testData.User3Id.ToString()),
+                   new Claim(AbpClaimTypes.UserName, "test1"),
+                   new Claim(AbpClaimTypes.Email, "test1@abp.io")
+               ]))
+        {
+            await Should.ThrowAsync<InvalidExamStatusException>(async () =>
+                await _userExamAppService.AnswerAsync(_testData.UserExam21Id,
+                    new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" }));
+        }
+    }
+
+    [Fact]
+    public async Task Should_Answer_Throw_InvalidUserExamStatusException()
+    {
+        await Should.ThrowAsync<InvalidUserExamStatusException>(async () =>
+            await _userExamAppService.AnswerAsync(_testData.UserExam12Id,
                 new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" }));
     }
 
     [Fact]
     public async Task Should_Finished()
     {
-        await _userExamAppService.FinishedAsync(_testData.UserExam31Id,
+        await _userExamAppService.FinishedAsync(_testData.UserExam11Id,
             [new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" }]);
     }
 
     [Fact]
     public async Task Should_Finished_Throw_InvalidExamStatusException()
     {
-        await Should.ThrowAsync<InvalidExamStatusException>(async () =>
-            await _userExamAppService.FinishedAsync(_testData.UserExam11Id,
+        using (_currentPrincipalAccessor.Change([
+                   new Claim(AbpClaimTypes.UserId, _testData.User3Id.ToString()),
+                   new Claim(AbpClaimTypes.UserName, "test1"),
+                   new Claim(AbpClaimTypes.Email, "test1@abp.io")
+               ]))
+        {
+            await Should.ThrowAsync<InvalidExamStatusException>(async () =>
+                await _userExamAppService.FinishedAsync(_testData.UserExam21Id,
+                    [new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" }]));
+        }
+    }
+
+    [Fact]
+    public async Task Should_Finished_Throw_InvalidUserExamStatusException()
+    {
+        await Should.ThrowAsync<InvalidUserExamStatusException>(async () =>
+            await _userExamAppService.FinishedAsync(_testData.UserExam12Id,
                 [new UserExamAnswerDto() { QuestionId = _testData.Question11Id, Answers = "A" }]));
     }
 }

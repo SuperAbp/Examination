@@ -40,10 +40,14 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 new QuestionBank(testData.QuestionBank2Id, testData.QuestionBank2Title)]);
 
             await questionRepository.InsertManyAsync([
-                new Question(testData.Question11Id, testData.QuestionBank1Id, QuestionType.SingleSelect, testData.Question11Content1),
-                new Question(testData.Question12Id, testData.QuestionBank1Id, QuestionType.SingleSelect, testData.Question12Content2),
-                new Question(testData.Question21Id, testData.QuestionBank2Id, QuestionType.SingleSelect, testData.Question21Content1),
-                new Question(testData.Question22Id, testData.QuestionBank2Id, QuestionType.SingleSelect, testData.Question22Content2),
+                new Question(testData.Question11Id, testData.QuestionBank1Id, QuestionType.SingleSelect, testData.Question11Content),
+                new Question(testData.Question12Id, testData.QuestionBank1Id, QuestionType.MultiSelect, testData.Question12Content),
+                new Question(testData.Question13Id, testData.QuestionBank1Id, QuestionType.Judge, testData.Question13Content),
+                new Question(testData.Question14Id, testData.QuestionBank1Id, QuestionType.FillInTheBlanks, testData.Question14Content),
+                new Question(testData.Question21Id, testData.QuestionBank2Id, QuestionType.SingleSelect, testData.Question21Content),
+                new Question(testData.Question22Id, testData.QuestionBank2Id, QuestionType.MultiSelect, testData.Question22Content),
+                new Question(testData.Question23Id, testData.QuestionBank2Id, QuestionType.Judge, testData.Question23Content),
+                new Question(testData.Question24Id, testData.QuestionBank2Id, QuestionType.FillInTheBlanks, testData.Question24Content),
                 ]);
 
             await questionAnswerRepository.InsertManyAsync([
@@ -53,16 +57,20 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 new QuestionAnswer(testData.Answer114Id, testData.Question11Id, testData.Answer114Content, false),
                 new QuestionAnswer(testData.Answer121Id, testData.Question12Id, testData.Answer121Content, false),
                 new QuestionAnswer(testData.Answer122Id, testData.Question12Id, testData.Answer122Content, true),
-                new QuestionAnswer(testData.Answer123Id, testData.Question12Id, testData.Answer123Content, false),
+                new QuestionAnswer(testData.Answer123Id, testData.Question12Id, testData.Answer123Content, true),
                 new QuestionAnswer(testData.Answer124Id, testData.Question12Id, testData.Answer124Content, false),
+                new QuestionAnswer(testData.Answer131Id, testData.Question13Id, testData.Answer131Content, false),
+                new QuestionAnswer(testData.Answer132Id, testData.Question13Id, testData.Answer132Content, true),
+                new QuestionAnswer(testData.Answer141Id, testData.Question13Id, testData.Answer141Content, true),
                 new QuestionAnswer(testData.Answer211Id, testData.Question21Id, testData.Answer211Content, false),
                 new QuestionAnswer(testData.Answer212Id, testData.Question21Id, testData.Answer212Content, true),
-                new QuestionAnswer(testData.Answer213Id, testData.Question21Id, testData.Answer213Content, false),
-                new QuestionAnswer(testData.Answer214Id, testData.Question21Id, testData.Answer214Content, false),
                 new QuestionAnswer(testData.Answer221Id, testData.Question22Id, testData.Answer221Content, false),
                 new QuestionAnswer(testData.Answer222Id, testData.Question22Id, testData.Answer222Content, true),
                 new QuestionAnswer(testData.Answer223Id, testData.Question22Id, testData.Answer223Content, false),
-                new QuestionAnswer(testData.Answer224Id, testData.Question22Id, testData.Answer224Content, false)]);
+                new QuestionAnswer(testData.Answer224Id, testData.Question22Id, testData.Answer224Content, false),
+                new QuestionAnswer(testData.Answer231Id, testData.Question13Id, testData.Answer131Content, false),
+                new QuestionAnswer(testData.Answer232Id, testData.Question13Id, testData.Answer132Content, true),
+                new QuestionAnswer(testData.Answer241Id, testData.Question13Id, testData.Answer141Content, true)]);
 
             await paperRepository.InsertManyAsync([
                 new Paper(testData.Paper1Id, testData.Paper1Name, 100),
@@ -131,34 +139,42 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 timeExam
                 ]);
 
-            UserExam inProgressUserExam = new(testData.UserExam31Id, testData.Examination12Id, testData.User2Id)
-            {
-                Status = UserExamStatus.InProgress
-            };
-            UserExam submittedUserExam = new(testData.UserExam13Id, testData.Examination13Id, testData.User1Id)
-            {
-                Status = UserExamStatus.Submitted
-            };
             await userExamRepository.InsertManyAsync([
-                new UserExam(testData.UserExam11Id, testData.Examination11Id, testData.User1Id),
-                new UserExam(testData.UserExam12Id, testData.Examination12Id, testData.User1Id),
-                new UserExam(testData.UserExam21Id, testData.Examination21Id, testData.User1Id),
-                new UserExam(testData.UserExam22Id, testData.Examination22Id, testData.User1Id),
-                inProgressUserExam,
-                submittedUserExam
+                new(testData.UserExam11Id, testData.Examination12Id, testData.User1Id)
+                {
+                    Status = UserExamStatus.InProgress
+                },
+                new(testData.UserExam12Id, testData.Examination12Id, testData.User1Id)
+                {
+                    Status = UserExamStatus.Submitted
+                },
+                new(testData.UserExam21Id, testData.Examination13Id, testData.User3Id)
+                {
+                    Status = UserExamStatus.InProgress
+                },
+                new(testData.UserExam22Id, testData.Examination13Id, testData.User3Id)
+                {
+                    Status = UserExamStatus.Submitted
+                },
             ]);
 
             await userExamQuestionRepository.InsertManyAsync([
-                new UserExamQuestion(testData.UserExamQuestion11Id, testData.UserExam11Id, testData.Question11Id, 100),
-                new UserExamQuestion(testData.UserExamQuestion12Id, testData.UserExam11Id, testData.Question12Id, 100),
-                new UserExamQuestion(testData.UserExamQuestion13Id, testData.UserExam12Id, testData.Question11Id, 100),
-                new UserExamQuestion(testData.UserExamQuestion14Id, testData.UserExam12Id, testData.Question12Id, 100),
-                new UserExamQuestion(testData.UserExamQuestion15Id, testData.UserExam13Id, testData.Question11Id, 100),
-                new UserExamQuestion(testData.UserExamQuestion16Id, testData.UserExam13Id, testData.Question12Id, 100),
-                new UserExamQuestion(testData.UserExamQuestion21Id, testData.UserExam21Id, testData.Question11Id, 100),
-                new UserExamQuestion(testData.UserExamQuestion22Id, testData.UserExam21Id, testData.Question12Id, 100),
-                new UserExamQuestion(testData.UserExamQuestion31Id, testData.UserExam31Id, testData.Question11Id, 100),
-                new UserExamQuestion(testData.UserExamQuestion32Id, testData.UserExam31Id, testData.Question12Id, 100)
+                new UserExamQuestion(testData.UserExamQuestion111Id, testData.UserExam11Id, testData.Question11Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion112Id, testData.UserExam11Id, testData.Question12Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion113Id, testData.UserExam11Id, testData.Question13Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion114Id, testData.UserExam11Id, testData.Question14Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion121Id, testData.UserExam12Id, testData.Question11Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion122Id, testData.UserExam12Id, testData.Question12Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion123Id, testData.UserExam12Id, testData.Question13Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion124Id, testData.UserExam12Id, testData.Question14Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion211Id, testData.UserExam21Id, testData.Question11Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion212Id, testData.UserExam21Id, testData.Question12Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion213Id, testData.UserExam21Id, testData.Question13Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion214Id, testData.UserExam21Id, testData.Question14Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion221Id, testData.UserExam22Id, testData.Question11Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion222Id, testData.UserExam22Id, testData.Question12Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion223Id, testData.UserExam22Id, testData.Question13Id, 100),
+                new UserExamQuestion(testData.UserExamQuestion224Id, testData.UserExam22Id, testData.Question14Id, 100),
             ]);
 
             await trainingRepository.InsertManyAsync([

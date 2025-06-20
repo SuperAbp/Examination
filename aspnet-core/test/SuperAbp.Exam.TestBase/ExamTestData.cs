@@ -7,15 +7,24 @@ public class ExamTestData : ISingletonDependency
 {
     public Guid User1Id = new Guid("2e701e62-0953-4dd3-910b-dc6cc93ccb0d");
     public Guid User2Id = Guid.NewGuid();
+    public Guid User3Id = Guid.NewGuid();
 
     public Guid Question11Id = Guid.NewGuid();
     public Guid Question12Id = Guid.NewGuid();
+    public Guid Question13Id = Guid.NewGuid();
+    public Guid Question14Id = Guid.NewGuid();
     public Guid Question21Id = Guid.NewGuid();
     public Guid Question22Id = Guid.NewGuid();
-    public string Question11Content1 = "Question11的Content";
-    public string Question12Content2 = "Question12的Content";
-    public string Question21Content1 = "Question21的Content";
-    public string Question22Content2 = "Question22的Content";
+    public Guid Question23Id = Guid.NewGuid();
+    public Guid Question24Id = Guid.NewGuid();
+    public string Question11Content = "Question11的Content";
+    public string Question12Content = "Question12的Content";
+    public string Question13Content = "Question13的Content";
+    public string Question14Content = "Question14的Content";
+    public string Question21Content = "Question21的Content";
+    public string Question22Content = "Question22的Content";
+    public string Question23Content = "Question23的Content";
+    public string Question24Content = "Question24的Content";
 
     public Guid Answer111Id = Guid.NewGuid();
     public string Answer111Content = "Answer1的Content";
@@ -33,15 +42,17 @@ public class ExamTestData : ISingletonDependency
     public string Answer123Content = "Answer3的Content";
     public Guid Answer124Id = Guid.NewGuid();
     public string Answer124Content = "Answer4的Content";
+    public Guid Answer131Id = Guid.NewGuid();
+    public string Answer131Content = "Answer1的Content";
+    public Guid Answer132Id = Guid.NewGuid();
+    public string Answer132Content = "Answer2的Content";
+    public Guid Answer141Id = Guid.NewGuid();
+    public string Answer141Content = "Answer1的Content";
 
     public Guid Answer211Id = Guid.NewGuid();
     public string Answer211Content = "Answer1的Content";
     public Guid Answer212Id = Guid.NewGuid();
     public string Answer212Content = "Answer2的Content";
-    public Guid Answer213Id = Guid.NewGuid();
-    public string Answer213Content = "Answer3的Content";
-    public Guid Answer214Id = Guid.NewGuid();
-    public string Answer214Content = "Answer4的Content";
     public Guid Answer221Id = Guid.NewGuid();
     public string Answer221Content = "Answer1的Content";
     public Guid Answer222Id = Guid.NewGuid();
@@ -50,6 +61,12 @@ public class ExamTestData : ISingletonDependency
     public string Answer223Content = "Answer3的Content";
     public Guid Answer224Id = Guid.NewGuid();
     public string Answer224Content = "Answer4的Content";
+    public Guid Answer231Id = Guid.NewGuid();
+    public string Answer231Content = "Answer1的Content";
+    public Guid Answer232Id = Guid.NewGuid();
+    public string Answer232Content = "Answer2的Content";
+    public Guid Answer241Id = Guid.NewGuid();
+    public string Answer241Content = "Answer1的Content";
 
     public Guid KnowledgePoint1Id = Guid.NewGuid();
     public string KnowledgePoint1Name = "KnowledgePoint1的Name";
@@ -99,25 +116,25 @@ public class ExamTestData : ISingletonDependency
 
     public Guid UserExam11Id = Guid.NewGuid();
     public Guid UserExam12Id = Guid.NewGuid();
-    public Guid UserExam13Id = Guid.NewGuid();
-
     public Guid UserExam21Id = Guid.NewGuid();
     public Guid UserExam22Id = Guid.NewGuid();
 
-    public Guid UserExam31Id = Guid.NewGuid();
-
-    public Guid UserExamQuestion11Id = Guid.NewGuid();
-    public Guid UserExamQuestion12Id = Guid.NewGuid();
-    public Guid UserExamQuestion13Id = Guid.NewGuid();
-    public Guid UserExamQuestion14Id = Guid.NewGuid();
-    public Guid UserExamQuestion15Id = Guid.NewGuid();
-    public Guid UserExamQuestion16Id = Guid.NewGuid();
-
-    public Guid UserExamQuestion21Id = Guid.NewGuid();
-    public Guid UserExamQuestion22Id = Guid.NewGuid();
-
-    public Guid UserExamQuestion31Id = Guid.NewGuid();
-    public Guid UserExamQuestion32Id = Guid.NewGuid();
+    public Guid UserExamQuestion111Id = Guid.NewGuid();
+    public Guid UserExamQuestion112Id = Guid.NewGuid();
+    public Guid UserExamQuestion113Id = Guid.NewGuid();
+    public Guid UserExamQuestion114Id = Guid.NewGuid();
+    public Guid UserExamQuestion121Id = Guid.NewGuid();
+    public Guid UserExamQuestion122Id = Guid.NewGuid();
+    public Guid UserExamQuestion123Id = Guid.NewGuid();
+    public Guid UserExamQuestion124Id = Guid.NewGuid();
+    public Guid UserExamQuestion211Id = Guid.NewGuid();
+    public Guid UserExamQuestion212Id = Guid.NewGuid();
+    public Guid UserExamQuestion213Id = Guid.NewGuid();
+    public Guid UserExamQuestion214Id = Guid.NewGuid();
+    public Guid UserExamQuestion221Id = Guid.NewGuid();
+    public Guid UserExamQuestion222Id = Guid.NewGuid();
+    public Guid UserExamQuestion223Id = Guid.NewGuid();
+    public Guid UserExamQuestion224Id = Guid.NewGuid();
 
     public Guid Training1Id = Guid.NewGuid();
     public Guid Training2Id = Guid.NewGuid();
