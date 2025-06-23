@@ -5,19 +5,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
-using SuperAbp.Exam.EntityFrameworkCore.KnowledgePoints;
-using SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionKnowledgePoints;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.Questions;
 
-public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
-    : EfCoreRepository<ExamDbContext, Question, Guid>(dbContextProvider), IQuestionRepository
+public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
+    : EfCoreRepository<IExamDbContext, Question, Guid>(dbContextProvider), IQuestionRepository
 {
     public async Task<int> GetCountAsync(Guid questionBankId, CancellationToken cancellationToken = default)
     {
@@ -104,7 +101,7 @@ public class QuestionRepository(IDbContextProvider<ExamDbContext> dbContextProvi
         IQueryable<Question> queryable = (await GetQueryableAsync())
             .WhereIf(questionRepositoryId.HasValue, p => p.QuestionBankId == questionRepositoryId.Value)
             .WhereIf(questionType.HasValue, p => p.QuestionType == questionType.Value);
-        ExamDbContext dbContext = await GetDbContextAsync();
+        var dbContext = await GetDbContextAsync();
         if (dbContext.Database.ProviderName?.ToLower().Contains("sqlserver") ?? false)
         {
             return await queryable

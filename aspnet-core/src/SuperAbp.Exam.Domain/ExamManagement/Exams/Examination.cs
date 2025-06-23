@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
+using Volo.Abp.Timing;
 
 namespace SuperAbp.Exam.ExamManagement.Exams;
 
@@ -21,6 +23,7 @@ public class Examination : FullAuditedAggregateRoot<Guid>
         PassingScore = passingScore;
         TotalTime = totalTime;
         PaperId = paperId;
+        Status = ExaminationStatus.Draft;
     }
 
     /// <summary>
@@ -52,6 +55,8 @@ public class Examination : FullAuditedAggregateRoot<Guid>
     /// 试卷Id
     /// </summary>
     public Guid PaperId { get; set; }
+
+    public ExaminationStatus Status { get; set; }
 
     /// <summary>
     /// 开始时间

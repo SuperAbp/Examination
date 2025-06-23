@@ -36,6 +36,11 @@ public class ExamEntityFrameworkCoreTestModule : AbpModule
         });
         context.Services.AddAlwaysDisableUnitOfWorkTransaction();
 
+        context.Services.AddAbpDbContext<ExamDbContextInUnitTest>(options =>
+        {
+            options.AddDefaultRepositories(includeAllEntities: true);
+        });
+
         ConfigureInMemorySqlite(context.Services);
     }
 
@@ -62,11 +67,11 @@ public class ExamEntityFrameworkCoreTestModule : AbpModule
         var connection = new SqliteConnection("Data Source=:memory:");
         connection.Open();
 
-        var options = new DbContextOptionsBuilder<ExamDbContext>()
+        var options = new DbContextOptionsBuilder<ExamDbContextInUnitTest>()
             .UseSqlite(connection)
             .Options;
 
-        using (var context = new ExamDbContext(options))
+        using (var context = new ExamDbContextInUnitTest(options))
         {
             context.GetService<IRelationalDatabaseCreator>().CreateTables();
         }

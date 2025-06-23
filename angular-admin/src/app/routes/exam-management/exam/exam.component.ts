@@ -60,29 +60,18 @@ export class ExamManagementExamComponent implements OnInit {
       },
       index: 'totalTime'
     },
+    { title: this.localizationService.instant('Exam::Status'), render: 'status' },
     { title: this.localizationService.instant('Exam::StartTime'), index: 'startTime' },
     { title: this.localizationService.instant('Exam::EndTime'), index: 'endTime' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [
         {
-          text: this.localizationService.instant('Exam::ExamRecord'),
-          modal: {
-            component: ExamManagementExamEditComponent,
-            params: (record: any) => ({
-              examId: record.id
-            })
-          },
-          click: record => {
-            this.router.navigateByUrl(`/exam-management/user-exam-user?examId=${record.id}`);
-          }
-        },
-        {
           icon: 'edit',
           type: 'modal',
           tooltip: this.localizationService.instant('Exam::Edit'),
-          iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.Exam.Update');
+          iif: record => {
+            return this.permissionService.getGrantedPolicy('Exam.Exam.Update') && record.status === 0;
           },
           modal: {
             component: ExamManagementExamEditComponent,
@@ -101,8 +90,8 @@ export class ExamManagementExamComponent implements OnInit {
             okType: 'danger',
             icon: 'star'
           },
-          iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.Exam.Delete');
+          iif: record => {
+            return this.permissionService.getGrantedPolicy('Exam.Exam.Delete') && record.status === 0;
           },
           click: (record, _modal, component) => {
             this.examService.delete(record.id).subscribe(response => {
@@ -111,6 +100,48 @@ export class ExamManagementExamComponent implements OnInit {
               component!.removeRow(record);
             });
           }
+        },
+        {
+          text: this.localizationService.instant('Exam::More'),
+          children: [
+            {
+              text: this.localizationService.instant('Exam::ExamRecord'),
+              modal: {
+                component: ExamManagementExamEditComponent,
+                params: (record: any) => ({
+                  examId: record.id
+                })
+              },
+              click: record => {
+                this.router.navigateByUrl(`/exam-management/user-exam-user?examId=${record.id}`);
+              }
+            },
+            {
+              type: 'divider'
+            },
+            {
+              text: this.localizationService.instant('Exam::Publish'),
+              iif: record => {
+                return this.permissionService.getGrantedPolicy('Exam.Exam.Publish') && record.status === 0;
+              },
+              click: (record, _modal, component) => {
+                this.examService.publish(record.id).subscribe(response => {
+                  this.st.reload();
+                });
+              }
+            },
+            {
+              text: this.localizationService.instant('Exam::Cancel'),
+              iif: record => {
+                return this.permissionService.getGrantedPolicy('Exam.Exam.Cancel') && record.status !== 4 && record.status !== 0;
+              },
+              click: (record, _modal, component) => {
+                this.examService.cancel(record.id).subscribe(response => {
+                  this.st.reload();
+                });
+              }
+            }
+          ]
         }
       ]
     }

@@ -73,6 +73,28 @@ public class ExaminationController(IExaminationAdminAppService examAppService)
     }
 
     /// <summary>
+    /// 取消考试
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpPatch("{id}/cancel")]
+    public virtual async Task CancelAsync(Guid id)
+    {
+        await ExamAppService.CancelAsync(id);
+    }
+
+    /// <summary>
+    /// 发布考试
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpPatch("{id}/publish")]
+    public virtual async Task PublishAsync(Guid id)
+    {
+        await ExamAppService.PublishAsync(id);
+    }
+
+    /// <summary>
     /// 删除
     /// </summary>
     /// <param name="id">主键</param>

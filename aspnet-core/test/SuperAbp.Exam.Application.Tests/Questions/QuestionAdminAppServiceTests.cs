@@ -81,7 +81,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
         {
             QuestionBankId = _testData.QuestionBank1Id,
             QuestionType = QuestionType.MultiSelect.Value,
-            Content = _testData.Question11Content1,
+            Content = _testData.Question11Content,
             Analysis = "New_Analysis",
             Options = [new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content1" }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content2", Right = true }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content3", Right = true }]
         };
@@ -113,7 +113,7 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
         QuestionUpdateDto input = new()
         {
             QuestionBankId = _testData.QuestionBank1Id,
-            Content = _testData.Question12Content2,
+            Content = _testData.Question12Content,
             Analysis = "Update_Analysis",
             Options = [new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content1" }, new QuestionCreateOrUpdateAnswerDto() { Content = "New_Content2", Right = true }]
         };

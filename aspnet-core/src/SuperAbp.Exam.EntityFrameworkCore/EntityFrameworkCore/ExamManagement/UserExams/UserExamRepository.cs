@@ -19,8 +19,8 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
     /// <summary>
     /// 用户考试
     /// </summary>
-    public class UserExamRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
-        : EfCoreRepository<ExamDbContext, UserExam, Guid>(dbContextProvider), IUserExamRepository
+    public class UserExamRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
+        : EfCoreRepository<IExamDbContext, UserExam, Guid>(dbContextProvider), IUserExamRepository
     {
         public async Task<bool> UnfinishedExistsAsync(Guid userId, CancellationToken cancellationToken = default)
         {
@@ -88,7 +88,6 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
         public async Task<List<UserExamWithUser>> GetListByExamIdAsync(Guid examId, string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
             CancellationToken cancellationToken = default)
         {
-            var dbContext = await GetDbContextAsync();
             var queryable = (await GetQueryableAsync())
                 .Where(e => e.ExamId == examId)
                 .OrderBy(sorting ?? UserExamConsts.DefaultSorting)

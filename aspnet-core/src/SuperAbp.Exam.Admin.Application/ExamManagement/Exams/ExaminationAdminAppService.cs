@@ -13,11 +13,13 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
     [Authorize(ExamPermissions.Exams.Default)]
     public class ExaminationAdminAppService(IExamRepository examRepository) : ExamAppService, IExaminationAdminAppService
     {
+        protected IExamRepository ExamRepository { get; } = examRepository;
+
         public virtual async Task<PagedResultDto<ExamListDto>> GetListAsync(GetExamsInput input)
         {
             await NormalizeMaxResultCountAsync(input);
 
-            IQueryable<Examination> queryable = await examRepository.GetQueryableAsync();
+            IQueryable<Examination> queryable = await ExamRepository.GetQueryableAsync();
 
             queryable = queryable.WhereIf(!input.Name.IsNullOrWhiteSpace(), e => e.Name.Contains(input.Name));
 
@@ -34,14 +36,14 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 
         public virtual async Task<ExamDetailDto> GetAsync(Guid id)
         {
-            Examination entity = await examRepository.GetAsync(id);
+            Examination entity = await ExamRepository.GetAsync(id);
 
             return ObjectMapper.Map<Examination, ExamDetailDto>(entity);
         }
 
         public virtual async Task<GetExamForEditorOutput> GetEditorAsync(Guid id)
         {
-            Examination entity = await examRepository.GetAsync(id);
+            Examination entity = await ExamRepository.GetAsync(id);
 
             return ObjectMapper.Map<Examination, GetExamForEditorOutput>(entity);
         }
@@ -53,15 +55,27 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             {
                 Description = input.Description
             };
+            if (input.Published)
+            {
+                examination.Status = ExaminationStatus.Published;
+            }
             examination.SetTime(input.StartTime, input.EndTime);
-            examination = await examRepository.InsertAsync(examination);
+            examination = await ExamRepository.InsertAsync(examination);
             return ObjectMapper.Map<Examination, ExamListDto>(examination);
         }
 
         [Authorize(ExamPermissions.Exams.Update)]
         public virtual async Task<ExamListDto> UpdateAsync(Guid id, ExamUpdateDto input)
         {
-            Examination examination = await examRepository.GetAsync(id);
+            Examination examination = await ExamRepository.GetAsync(id);
+            if (examination.Status != ExaminationStatus.Draft)
+            {
+                throw new InvalidExamStatusException(examination.Status);
+            }
+            if (input.Published)
+            {
+                examination.Status = ExaminationStatus.Published;
+            }
             examination.PaperId = input.PaperId;
             examination.Name = input.Name;
             examination.Score = input.Score;
@@ -69,14 +83,38 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             examination.TotalTime = input.TotalTime;
             examination.Description = input.Description;
             examination.SetTime(input.StartTime, input.EndTime);
-            examination = await examRepository.UpdateAsync(examination);
+            examination = await ExamRepository.UpdateAsync(examination);
             return ObjectMapper.Map<Examination, ExamListDto>(examination);
+        }
+
+        [Authorize(ExamPermissions.Exams.Cancel)]
+        public virtual async Task CancelAsync(Guid id)
+        {
+            Examination exam = await ExamRepository.GetAsync(id);
+            if (exam.Status == ExaminationStatus.Draft || exam.Status == ExaminationStatus.Cancelled)
+            {
+                throw new InvalidExamStatusException(exam.Status);
+            }
+            exam.Status = ExaminationStatus.Cancelled;
+            await ExamRepository.UpdateAsync(exam);
+        }
+
+        [Authorize(ExamPermissions.Exams.Publish)]
+        public virtual async Task PublishAsync(Guid id)
+        {
+            Examination exam = await ExamRepository.GetAsync(id);
+            if (exam.Status != ExaminationStatus.Draft)
+            {
+                throw new InvalidExamStatusException(exam.Status);
+            }
+            exam.Status = ExaminationStatus.Published;
+            await ExamRepository.UpdateAsync(exam);
         }
 
         [Authorize(ExamPermissions.Exams.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
-            await examRepository.DeleteAsync(id);
+            await ExamRepository.DeleteAsync(id);
         }
 
         /// <summary>

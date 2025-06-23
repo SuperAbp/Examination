@@ -12,8 +12,8 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionAnswers
     /// <summary>
     /// 答案
     /// </summary>
-    public class QuestionAnswerRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
-        : EfCoreRepository<ExamDbContext, QuestionAnswer, Guid>(dbContextProvider), IQuestionAnswerRepository
+    public class QuestionAnswerRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
+        : EfCoreRepository<IExamDbContext, QuestionAnswer, Guid>(dbContextProvider), IQuestionAnswerRepository
     {
         public async Task<List<QuestionAnswer>> GetListAsync(Guid questionId, CancellationToken cancellationToken = default)
         {

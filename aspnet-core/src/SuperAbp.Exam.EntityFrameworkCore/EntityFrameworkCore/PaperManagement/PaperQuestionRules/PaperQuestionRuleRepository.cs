@@ -14,8 +14,8 @@ namespace SuperAbp.Exam.EntityFrameworkCore.PaperManagement.PaperQuestionRules;
 /// <summary>
 /// 考试题库
 /// </summary>
-public class PaperQuestionRuleRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
-    : EfCoreRepository<ExamDbContext, PaperQuestionRule, Guid>(dbContextProvider), IPaperQuestionRuleRepository
+public class PaperQuestionRuleRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
+    : EfCoreRepository<IExamDbContext, PaperQuestionRule, Guid>(dbContextProvider), IPaperQuestionRuleRepository
 {
     public async Task<PaperQuestionRule> GetAsync(Guid paperId, Guid questionRepositoryId, CancellationToken cancellationToken = default)
     {

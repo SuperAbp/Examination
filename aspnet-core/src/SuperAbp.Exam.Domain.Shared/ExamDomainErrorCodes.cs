@@ -27,10 +27,12 @@ public static class ExamDomainErrorCodes
     {
         public const string UnfinishedAlreadyExists = "Exam:UserExams:0001";
         public const string Unfinished = "Exam:UserExams:0002";
+        public const string InvalidStatus = "Exam:UserExams:0003";
     }
 
     public static class Exams
     {
         public const string OutOfExamTime = "Exam:Exams:0001";
+        public const string InvalidStatus = "Exam:Exams:0002";
     }
 }

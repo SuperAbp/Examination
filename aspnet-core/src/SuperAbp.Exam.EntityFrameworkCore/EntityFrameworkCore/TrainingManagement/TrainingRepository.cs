@@ -11,7 +11,7 @@ using System.Linq.Dynamic.Core;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.TrainingManagement;
 
-public class TrainingRepository(IDbContextProvider<ExamDbContext> dbContextProvider) : EfCoreRepository<ExamDbContext, Training, Guid>(dbContextProvider), ITrainingRepository
+public class TrainingRepository(IDbContextProvider<IExamDbContext> dbContextProvider) : EfCoreRepository<IExamDbContext, Training, Guid>(dbContextProvider), ITrainingRepository
 {
     public async Task<bool> AnyQuestionAsync(TrainingSource trainingSource, Guid questionId, CancellationToken cancellationToken = default)
     {

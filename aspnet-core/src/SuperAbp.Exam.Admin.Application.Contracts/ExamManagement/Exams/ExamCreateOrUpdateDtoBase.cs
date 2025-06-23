@@ -12,5 +12,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         public Guid PaperId { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
+
+        public bool Published { get; set; }
     }
 }

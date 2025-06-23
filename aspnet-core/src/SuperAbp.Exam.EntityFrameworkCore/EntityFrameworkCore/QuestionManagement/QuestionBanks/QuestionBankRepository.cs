@@ -14,8 +14,8 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionBanks
     /// <summary>
     /// 题库
     /// </summary>
-    public class QuestionBankRepository(IDbContextProvider<ExamDbContext> dbContextProvider)
-        : EfCoreRepository<ExamDbContext, QuestionBank, Guid>(dbContextProvider), IQuestionBankRepository
+    public class QuestionBankRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
+        : EfCoreRepository<IExamDbContext, QuestionBank, Guid>(dbContextProvider), IQuestionBankRepository
     {
         public async Task<bool> IdExistsAsync(Guid id, CancellationToken cancellationToken = default)
         {

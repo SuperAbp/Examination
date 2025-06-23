@@ -12,6 +12,7 @@ using Volo.Abp.Timing;
 using Volo.Abp.Users;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.QuestionDto;
 using SuperAbp.Exam.KnowledgePoints;
+using Volo.Abp;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
@@ -19,6 +20,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     public class UserExamAppService(
         IClock clock,
         IUserExamRepository userExamRepository,
+        IExamRepository examRepository,
         UserExamManager userExamManager,
         IQuestionRepository questionRepository,
         QuestionManager questionManager,
@@ -26,6 +28,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         : ExamAppService, IUserExamAppService
     {
         protected IUserExamRepository UserExamRepository { get; } = userExamRepository;
+        protected IExamRepository ExamRepository { get; } = examRepository;
 
         public async Task<Guid?> GetUnfinishedAsync()
         {
@@ -99,6 +102,12 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public virtual async Task AnswerAsync(Guid id, UserExamAnswerDto input)
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
+            Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
+            if (examination.Status != ExaminationStatus.Published)
+            {
+                throw new InvalidExamStatusException(examination.Status);
+            }
+
             userExam.AnswerQuestion(input.QuestionId, input.Answers);
             await UserExamRepository.UpdateAsync(userExam);
         }
@@ -106,6 +115,15 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public virtual async Task FinishedAsync(Guid id, List<UserExamAnswerDto> input)
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
+            Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
+            if (examination.Status != ExaminationStatus.Published)
+            {
+                throw new InvalidExamStatusException(examination.Status);
+            }
+            if (userExam.Status != UserExamStatus.InProgress)
+            {
+                throw new InvalidUserExamStatusException(userExam.Status);
+            }
             userExam.FinishedTime = clock.Now;
             // TODO: Submitted Or Scored
             userExam.Status = UserExamStatus.Submitted;

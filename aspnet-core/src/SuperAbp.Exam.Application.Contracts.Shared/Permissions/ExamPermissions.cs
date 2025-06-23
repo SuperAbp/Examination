@@ -61,6 +61,8 @@ public static class ExamPermissions
         public const string Default = GroupName + ".Exam";
         public const string Create = Default + ".Create";
         public const string Update = Default + ".Update";
+        public const string Publish = Default + ".Publish";
+        public const string Cancel = Default + ".Cancel";
         public const string Delete = Default + ".Delete";
     }
 }

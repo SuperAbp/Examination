@@ -30,6 +30,7 @@ export interface ExamListDto extends EntityDto<string> {
   totalTime: number;
   startTime?: string;
   endTime?: string;
+  status: number;
 }
 
 export interface ExamUpdateDto extends ExamCreateOrUpdateDtoBase {
