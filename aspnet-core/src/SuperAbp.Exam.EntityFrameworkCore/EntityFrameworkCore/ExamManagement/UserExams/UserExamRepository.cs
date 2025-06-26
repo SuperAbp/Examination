@@ -24,6 +24,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
     {
         public async Task<bool> UnfinishedExistsAsync(Guid userId, CancellationToken cancellationToken = default)
         {
+            // TODO:change check logic
             return await (await GetQueryableAsync()).AnyAsync(x => x.UserId == userId && x.Status == UserExamStatus.InProgress, cancellationToken);
         }
 

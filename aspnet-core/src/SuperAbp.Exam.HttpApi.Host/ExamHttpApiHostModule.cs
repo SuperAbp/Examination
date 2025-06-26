@@ -31,6 +31,7 @@ using Medallion.Threading;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using StackExchange.Redis;
+using Volo.Abp.AspNetCore.SignalR;
 
 namespace SuperAbp.Exam;
 
@@ -43,11 +44,11 @@ namespace SuperAbp.Exam;
     typeof(ExamApplicationModule),
     typeof(ExamEntityFrameworkCoreModule),
     typeof(AbpAspNetCoreSerilogModule),
-    typeof(AbpSwashbuckleModule)
+    typeof(AbpSwashbuckleModule),
+    typeof(AbpAspNetCoreSignalRModule)
 )]
 public class ExamHttpApiHostModule : AbpModule
 {
-
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         var configuration = context.Services.GetConfiguration();
@@ -63,10 +64,12 @@ public class ExamHttpApiHostModule : AbpModule
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
     }
+
     private void ConfigureCache(IConfiguration configuration)
     {
         Configure<AbpDistributedCacheOptions>(options => { options.KeyPrefix = "Exam:"; });
     }
+
     private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
     {
         context.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -148,6 +151,7 @@ public class ExamHttpApiHostModule : AbpModule
                 #endregion ×¢ÊÍ
             });
     }
+
     private void ConfigureDataProtection(
         ServiceConfigurationContext context,
         IConfiguration configuration,
@@ -164,13 +168,14 @@ public class ExamHttpApiHostModule : AbpModule
     private void ConfigureDistributedLocking(
         ServiceConfigurationContext context,
         IConfiguration configuration)
-    {        
+    {
         context.Services.AddSingleton<IDistributedLockProvider>(sp =>
         {
             var connection = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]!);
             return new RedisDistributedSynchronizationProvider(connection.GetDatabase());
         });
     }
+
     private void ConfigureCors(ServiceConfigurationContext context, IConfiguration configuration)
     {
         context.Services.AddCors(options =>
@@ -200,7 +205,19 @@ public class ExamHttpApiHostModule : AbpModule
         {
             app.UseDeveloperExceptionPage();
         }
+        app.Use(async (httpContext, next) =>
+        {
+            var accessToken = httpContext.Request.Query["access_token"];
 
+            var path = httpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) &&
+                (path.StartsWithSegments("/signalr-hubs/progress")))
+            {
+                httpContext.Request.Headers["Authorization"] = "Bearer " + accessToken;
+            }
+
+            await next();
+        });
         app.UseAbpRequestLocalization();
 
         if (!env.IsDevelopment())

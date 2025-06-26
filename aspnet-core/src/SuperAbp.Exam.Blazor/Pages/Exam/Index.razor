@@ -24,7 +24,7 @@
             {
                 <Space>
                     <SpaceItem>
-                        <Button Type="@ButtonType.Primary" OnClick="()=>StartAsync(context.Id)">@L["StartExam"]</Button>
+                        <Button Type="@ButtonType.Primary" OnClick="()=>StartAsync(context.Id)">@L["EnterExam"]</Button>
                     </SpaceItem>
                 </Space>
             }
@@ -71,12 +71,10 @@
         Exams = result.Items;
         TotalCount = (int)result.TotalCount;
         this.Loading = false;
-
     }
 
     private async Task StartAsync(Guid id)
     {
-        var dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = id });
-        Navigation.NavigateTo($"/exam/start/{dto.Id}");
+        Navigation.NavigateTo($"/exam/welcome/{id}");
     }
 }

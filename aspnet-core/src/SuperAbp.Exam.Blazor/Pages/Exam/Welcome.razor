@@ -1,0 +1,89 @@
+﻿@page "/exam/welcome/{id:guid}"
+@if (_loading)
+{
+    <div style=" text-align: center;margin: 50px 0;">
+        <Spin />
+    </div>
+}
+else
+{
+    <Card>
+        <h3 style="text-align: center;">考试须知</h3>
+        <div style="height: 500px;overflow-y: scroll;margin: 20px;border-top: 1px dashed #ddd;border-bottom: 1px dashed #ddd;">
+            @if (!String.IsNullOrWhiteSpace(_exam.Description))
+            {
+                @(new MarkupString(_exam.Description))
+            }
+        </div>
+        @_progress
+        <Progress Percent="@_progress" ShowInfo="false"></Progress>
+        <Button Type="ButtonType.Primary" Disabled="!_userExamId.HasValue" OnClick="Start">@L["StartExam"]</Button>
+    </Card>
+}
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.Extensions.Configuration
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.ExamManagement.Exams
+@using SuperAbp.Exam.ExamManagement.UserExams
+@using SuperAbp.Exam.Localization
+@using Volo.Abp.AspNetCore.Components.Notifications
+@inject NavigationManager Navigation
+@inject IStringLocalizer<ExamResource> L
+@inject IUserExamAppService UserExamAppService
+@inject IExaminationAppService ExamAppService
+
+@code {
+    [Inject]
+    public IAccessTokenProvider AccessTokenProvider { get; set; } = default!;
+
+    [Inject]
+    public IConfiguration Configuration { get; set; } = default!;
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    public HubConnection HubConnection { get; set; } = default!;
+    private Guid? _userExamId;
+    private ExamDetailDto _exam;
+    private bool _loading = true;
+    private int _progress = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _exam = await ExamAppService.GetAsync(Id);
+        (await AccessTokenProvider.RequestAccessToken()).TryGetToken(out var accessToken);
+        string signalRUrl = Configuration["SignalRUrl"] ?? "";
+        HubConnection = new HubConnectionBuilder()
+            .WithUrl(signalRUrl.EnsureEndsWith('/') + "signalr-hubs/progress", options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(accessToken!.Value);
+            })
+            .Build();
+
+        HubConnection.On<int>("ReceiveProgress", async message =>
+        {
+            _progress = message;
+            await InvokeAsync(StateHasChanged);
+        });
+
+        await HubConnection.StartAsync();
+
+        var dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = Id });
+        if (dto.Status == UserExamStatus.InProgress)
+        {
+            Navigation.NavigateTo($"/exam/start/{dto.Id}");
+        }
+        else
+        {
+            _userExamId = dto.Id;
+        }
+        
+        _loading = false;
+    }
+
+    private void Start()
+    {
+        Navigation.NavigateTo($"/exam/welcome/{_userExamId}");
+    }
+}
