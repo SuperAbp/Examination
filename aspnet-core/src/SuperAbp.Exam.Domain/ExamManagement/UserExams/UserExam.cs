@@ -21,6 +21,7 @@ public class UserExam : FullAuditedAggregateRoot<Guid>
         UserId = userId;
         ExamId = examId;
         Status = UserExamStatus.Waiting;
+        Questions = [];
     }
 
     public Guid UserId { get; protected set; }

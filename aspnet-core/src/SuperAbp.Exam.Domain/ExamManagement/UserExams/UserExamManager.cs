@@ -7,6 +7,7 @@ using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.Questions;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 using Volo.Abp.EventBus.Local;
 
@@ -94,9 +95,6 @@ public class UserExamManager(
                 UserId = userExam.UserId,
             });
         }
-
-        // TODO:Save failed;
-        await userExamRepository.UpdateAsync(userExam);
 
         await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto
         {

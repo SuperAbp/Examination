@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
@@ -156,6 +157,7 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
                 {
                     Status = UserExamStatus.Submitted
                 },
+                new(testData.UserExam31Id, testData.Examination13Id, testData.User3Id),
             ]);
 
             await userExamQuestionRepository.InsertManyAsync([
