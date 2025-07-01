@@ -17,7 +17,7 @@ else
         </div>
         @_progress
         <Progress Percent="@_progress" ShowInfo="false"></Progress>
-        <Button Type="ButtonType.Primary" Disabled="!_userExamId.HasValue" OnClick="Start">@L["StartExam"]</Button>
+        <Button Type="ButtonType.Primary" Disabled="!_userExamId.HasValue" OnClick="async () => await StartAsync()">@L["StartExam"]</Button>
     </Card>
 }
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
@@ -82,8 +82,9 @@ else
         _loading = false;
     }
 
-    private void Start()
+    private async Task StartAsync()
     {
-        Navigation.NavigateTo($"/exam/welcome/{_userExamId}");
+        await UserExamAppService.StartAsync(_userExamId!.Value);
+        Navigation.NavigateTo($"/exam/start/{_userExamId}");
     }
 }

@@ -65,6 +65,17 @@ namespace SuperAbp.Exam.Controllers
         }
 
         /// <summary>
+        /// 开始考试
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPatch("{id}/start")]
+        public async Task StartAsync(Guid id)
+        {
+            await _userExamAppService.StartAsync(id);
+        }
+
+        /// <summary>
         /// 答题
         /// </summary>
         /// <param name="id"></param>

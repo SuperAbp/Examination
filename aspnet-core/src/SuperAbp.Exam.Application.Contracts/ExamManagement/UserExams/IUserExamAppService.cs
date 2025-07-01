@@ -40,6 +40,13 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         Task<UserExamListDto> CreateAsync(UserExamCreateDto input);
 
         /// <summary>
+        /// 开始考试
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task StartAsync(Guid id);
+
+        /// <summary>
         /// 答题
         /// </summary>
         /// <param name="id">主键</param>

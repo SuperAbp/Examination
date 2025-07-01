@@ -113,6 +113,17 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             return ObjectMapper.Map<UserExam, UserExamListDto>(userExam);
         }
 
+        public virtual async Task StartAsync(Guid id)
+        {
+            UserExam userExam = await UserExamRepository.GetAsync(id);
+            if (userExam.Status != UserExamStatus.Waiting)
+            {
+                throw new InvalidUserExamStatusException(userExam.Status);
+            }
+            userExam.Status = UserExamStatus.InProgress;
+            await UserExamRepository.UpdateAsync(userExam);
+        }
+
         public virtual async Task AnswerAsync(Guid id, UserExamAnswerDto input)
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
