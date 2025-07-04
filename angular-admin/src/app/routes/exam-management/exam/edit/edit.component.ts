@@ -1,21 +1,23 @@
 import { CoreModule, LocalizationService } from '@abp/ng.core';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { finalize, tap } from 'rxjs/operators';
-import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
+import { I18NService } from '@core';
 import { dateTimePickerUtil } from '@delon/util';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
-import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { ExaminationService, PaperService } from '@proxy/admin/controllers';
 import { GetExamForEditorOutput } from '@proxy/admin/exam-management/exams';
 import { PaperListDto } from '@proxy/admin/paper-management/papers';
-import { ExaminationService, PaperService } from '@proxy/admin/controllers';
+import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { finalize, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-exam-management-exam-edit',
@@ -32,6 +34,7 @@ import { ExaminationService, PaperService } from '@proxy/admin/controllers';
     `
   ],
   standalone: true,
+  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
   imports: [
     CoreModule,
     NzModalModule,
@@ -42,7 +45,8 @@ import { ExaminationService, PaperService } from '@proxy/admin/controllers';
     NzInputNumberModule,
     NzCheckboxModule,
     NzDatePickerModule,
-    NzButtonModule
+    NzButtonModule,
+    EditorComponent
   ]
 })
 export class ExamManagementExamEditComponent implements OnInit {
@@ -57,14 +61,28 @@ export class ExamManagementExamEditComponent implements OnInit {
   showExamTime: boolean;
   papers: PaperListDto[] = [];
 
-  constructor(
-    private fb: FormBuilder,
-    private modal: NzModalRef,
-    private messageService: NzMessageService,
-    private localizationService: LocalizationService,
-    private examService: ExaminationService,
-    private paperService: PaperService
-  ) {}
+  private fb = inject(FormBuilder);
+  private modal = inject(NzModalRef);
+  private messageService = inject(NzMessageService);
+  private localizationService = inject(LocalizationService);
+  private i18n = inject(I18NService);
+  private examService = inject(ExaminationService);
+  private paperService = inject(PaperService);
+
+  init: EditorComponent['init'] = {
+    base_url: '/tinymce',
+    suffix: '.min',
+    plugins: 'preview fullscreen link table lists',
+    toolbar:
+      'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | forecolor backcolor removeformat | link table | fullscreen preview',
+    toolbar_mode: 'sliding'
+  };
+  constructor() {
+    if (this.i18n.defaultLang == 'zh-CN') {
+      this.init['language'] = 'zh_CN';
+      this.init['language_url'] = '/assets/tinymce/langs/zh_CN.js';
+    }
+  }
 
   get isLimitedTime() {
     return this.form.get('isLimitedTime');
