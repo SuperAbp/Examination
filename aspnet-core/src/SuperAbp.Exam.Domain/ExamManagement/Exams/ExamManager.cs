@@ -12,8 +12,6 @@ public class ExamManager(
     /// </summary>
     /// <param name="examId">考试Id</param>
     /// <returns></returns>
-    /// <exception cref="OutOfExamTimeException"></exception>
-    /// <exception cref="OutOfExamTimeException"></exception>
     public async Task CheckCreateUserExamAsync(Guid examId)
     {
         Examination exam = await examRepository.GetAsync(examId);

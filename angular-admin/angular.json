@@ -69,13 +69,16 @@
                 "glob": "**/*",
                 "input": "public"
               },
+              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
               "src/styles.less"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/tinymce/tinymce.min.js"
+            ],
             "allowedCommonJsDependencies": [
               "ajv",
               "ajv-formats",

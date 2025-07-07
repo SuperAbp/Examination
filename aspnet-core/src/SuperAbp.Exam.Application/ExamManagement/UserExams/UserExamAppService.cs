@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
+using SuperAbp.Exam.Jobs.UserExamCreateQuestion;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Timing;
@@ -13,6 +14,8 @@ using Volo.Abp.Users;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.QuestionDto;
 using SuperAbp.Exam.KnowledgePoints;
 using Volo.Abp;
+using Volo.Abp.BackgroundJobs;
+using Volo.Abp.ObjectMapping;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
@@ -24,11 +27,13 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         UserExamManager userExamManager,
         IQuestionRepository questionRepository,
         QuestionManager questionManager,
+        IBackgroundJobManager backgroundJobManager,
         IQuestionAnswerRepository questionAnswerRepository)
         : ExamAppService, IUserExamAppService
     {
         protected IUserExamRepository UserExamRepository { get; } = userExamRepository;
         protected IExamRepository ExamRepository { get; } = examRepository;
+        protected IBackgroundJobManager BackgroundJobManager { get; } = backgroundJobManager;
 
         public async Task<Guid?> GetUnfinishedAsync()
         {
@@ -92,11 +97,31 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public virtual async Task<UserExamListDto> CreateAsync(UserExamCreateDto input)
         {
+            List<UserExam> userExams = await UserExamRepository.GetListAsync(userId: CurrentUser.GetId(), examId: input.ExamId);
+            UserExam? inProgressUserExam = userExams.SingleOrDefault(u =>
+                new[] { UserExamStatus.Waiting, UserExamStatus.InProgress }.Contains(u.Status));
+            if (inProgressUserExam is not null)
+            {
+                return ObjectMapper.Map<UserExam, UserExamListDto>(inProgressUserExam);
+            }
             UserExam userExam = await userExamManager.CreateAsync(input.ExamId, CurrentUser.GetId());
-            userExam.Status = UserExamStatus.InProgress;
-            await userExamManager.CreateQuestionsAsync(userExam.Id, input.ExamId);
             await UserExamRepository.InsertAsync(userExam);
+            await BackgroundJobManager.EnqueueAsync(new UserExamCreateQuestionArgs()
+            {
+                UserExamId = userExam.Id
+            });
             return ObjectMapper.Map<UserExam, UserExamListDto>(userExam);
+        }
+
+        public virtual async Task StartAsync(Guid id)
+        {
+            UserExam userExam = await UserExamRepository.GetAsync(id);
+            if (userExam.Status != UserExamStatus.Waiting)
+            {
+                throw new InvalidUserExamStatusException(userExam.Status);
+            }
+            userExam.Status = UserExamStatus.InProgress;
+            await UserExamRepository.UpdateAsync(userExam);
         }
 
         public virtual async Task AnswerAsync(Guid id, UserExamAnswerDto input)

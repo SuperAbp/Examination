@@ -2813,6 +2813,13 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
+"@tinymce/tinymce-angular@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-angular/-/tinymce-angular-9.0.0.tgz#ee0a80da40eb87758f3fe0f5e70b4ccada1e7363"
+  integrity sha512-rqWxeITrUwwdLoV+KFs18RX76nVq0sGydmzP9po2SIE6R0Z0M6STX0SlGT20yC6qWcjrXCQ+VA15bDxn/zbI5g==
+  dependencies:
+    tslib "^2.3.0"
+
 "@tsconfig/node10@^1.0.7":
   version "1.0.11"
   resolved "https://registry.npmjs.org/@tsconfig/node10/-/node10-1.0.11.tgz"
@@ -10557,6 +10564,11 @@ thunky@^1.0.2:
   version "1.1.0"
   resolved "https://registry.npmjs.org/thunky/-/thunky-1.1.0.tgz"
   integrity sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==
+
+tinymce@^7.9.1:
+  version "7.9.1"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-7.9.1.tgz#1b18bad9cb7a3b4b12e3e5a7f29fc7daad0713d7"
+  integrity sha512-zaOHwmiP1EqTeLRXAvVriDb00JYnfEjWGPdKEuac7MiZJ5aiDMZ4Unc98Gmajn+PBljOmO1GKV6G0KwWn3+k8A==
 
 tmp@0.0.30:
   version "0.0.30"

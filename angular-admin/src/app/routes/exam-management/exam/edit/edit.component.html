@@ -40,12 +40,7 @@
       <nz-form-item>
         <nz-form-label>{{ 'Exam::Description' | abpLocalization }}</nz-form-label>
         <nz-form-control>
-          <textarea
-            rows="4"
-            formControlName="description"
-            nz-input
-            [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Description' | abpLocalization)"
-          ></textarea>
+          <editor formControlName="description" [init]="init" />
         </nz-form-control>
       </nz-form-item>
       <div nz-row>

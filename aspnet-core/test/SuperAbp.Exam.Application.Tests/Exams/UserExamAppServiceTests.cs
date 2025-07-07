@@ -64,7 +64,7 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
             UserExamListDto repoDto = await _userExamAppService.CreateAsync(input);
             UserExam userExam = await _userExamRepository.GetAsync(repoDto.Id);
             userExam.ShouldNotBeNull();
-            userExam.Status.ShouldBe(UserExamStatus.InProgress);
+            userExam.Status.ShouldBe(UserExamStatus.Waiting);
             userExam.ExamId.ShouldBe(input.ExamId);
         }
     }
@@ -92,7 +92,7 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
     {
         UserExamCreateDto input = new()
         {
-            ExamId = _testData.Examination12Id
+            ExamId = _testData.Examination11Id
         };
         await Should.ThrowAsync<UnfinishedAlreadyExistException>(async () =>
         {

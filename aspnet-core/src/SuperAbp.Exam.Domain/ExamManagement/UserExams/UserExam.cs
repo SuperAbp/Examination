@@ -4,7 +4,6 @@ using System.Linq;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Entities.Auditing;
-using static SuperAbp.Exam.ExamDomainErrorCodes;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams;
 
@@ -21,7 +20,8 @@ public class UserExam : FullAuditedAggregateRoot<Guid>
     {
         UserId = userId;
         ExamId = examId;
-        Status = UserExamStatus.InProgress;
+        Status = UserExamStatus.Waiting;
+        Questions = [];
     }
 
     public Guid UserId { get; protected set; }
@@ -39,7 +39,7 @@ public class UserExam : FullAuditedAggregateRoot<Guid>
 
     public UserExamStatus Status { get; set; }
 
-    public ICollection<UserExamQuestion> Questions { get; set; }
+    public List<UserExamQuestion> Questions { get; set; }
 
     public void ReviewQuestion(Guid reviewId, Guid questionId, bool right, decimal score, string? comment)
     {

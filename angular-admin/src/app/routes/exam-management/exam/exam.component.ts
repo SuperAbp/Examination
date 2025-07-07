@@ -105,6 +105,9 @@ export class ExamManagementExamComponent implements OnInit {
           text: this.localizationService.instant('Exam::More'),
           children: [
             {
+              iif: record => {
+                return record.status === 2;
+              },
               text: this.localizationService.instant('Exam::ExamRecord'),
               modal: {
                 component: ExamManagementExamEditComponent,

@@ -8,7 +8,13 @@ namespace SuperAbp.Exam.ExamManagement.Exams
     /// </summary>
     public class ExamDetailDto : EntityDto<System.Guid>
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
+
+        /// <summary>
+        /// 描述
+        /// </summary>
+        public string? Description { get; set; }
+
         public decimal Score { get; set; }
         public decimal PassingScore { get; set; }
         public int TotalTime { get; set; }

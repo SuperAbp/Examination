@@ -44,7 +44,6 @@ public class UserExamQuestion : FullAuditedEntity<Guid>
 
     public string? Reason { get; set; }
 
-    public UserExam UserExam { get; set; }
     public List<UserExamQuestionReview> QuestionReviews { get; set; }
 
     public void Review(Guid reviewId, bool right, decimal score, string? reason)

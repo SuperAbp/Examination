@@ -185,7 +185,6 @@ public class ExamDbContext :
             b.ConfigureAuditedAggregateRoot();
 
             b.Property(p => p.Name).IsRequired().HasMaxLength(PaperConsts.MaxNameLength);
-            b.Property(p => p.Description).HasMaxLength(PaperConsts.MaxDescriptionLength);
 
             b.HasIndex(p => p.PaperId);
         });
