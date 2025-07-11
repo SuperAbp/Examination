@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.Jobs.UserExamCreateQuestion;
-using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Timing;
 using Volo.Abp.Users;
@@ -16,6 +15,7 @@ using SuperAbp.Exam.KnowledgePoints;
 using Volo.Abp;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.ObjectMapping;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {

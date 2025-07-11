@@ -1,19 +1,20 @@
+import { CoreModule } from '@abp/ng.core';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { QuestionManagementAnswerComponent } from './answer.component';
-import { CoreModule } from '@abp/ng.core';
+import { QuestionService } from '@proxy/admin/controllers';
+import { QuestionAnswerDto } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { QuestionAnswerCreateDto } from '@proxy/admin/question-management/question-answers';
-import { QuestionAnswerService } from '@proxy/admin/controllers';
-interface QuestionAnswerTemp extends QuestionAnswerCreateDto {
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+
+import { QuestionManagementAnswerComponent } from './answer.component';
+interface QuestionAnswerTemp extends QuestionAnswerDto {
   id?: string;
 }
 
@@ -34,22 +35,14 @@ interface QuestionAnswerTemp extends QuestionAnswerCreateDto {
     NzIconModule
   ]
 })
-export class SingleSelectComponent extends QuestionManagementAnswerComponent implements OnInit {
+export class SingleSelectComponent extends QuestionManagementAnswerComponent {
   constructor(
     protected override fb: FormBuilder,
-    protected override answerService: QuestionAnswerService
+    protected override questionService: QuestionService
   ) {
-    super(fb, answerService);
+    super(fb, questionService);
   }
 
-  ngOnInit(): void {
-    this.params = this.resetParameters();
-    if (this.questionId) {
-      this.getList();
-    } else {
-      this.batchAdd(4);
-    }
-  }
   changeRadio(index: number, item) {
     this.options.controls.forEach((c, i) => {
       if (i != index && c['controls']['right'].value) {

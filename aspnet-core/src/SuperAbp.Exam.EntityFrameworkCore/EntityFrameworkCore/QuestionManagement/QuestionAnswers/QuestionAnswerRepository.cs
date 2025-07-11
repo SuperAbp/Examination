@@ -1,11 +1,11 @@
 ﻿using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
-using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.QuestionAnswers
 {

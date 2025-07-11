@@ -52,4 +52,11 @@ public interface IQuestionAdminAppService : IApplicationService
     /// <param name="id">主键</param>
     /// <returns></returns>
     Task DeleteAsync(Guid id);
+
+    /// <summary>
+    /// 删除答案
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="answerId"></param>
+    Task DeleteAnswerAsync(Guid id, Guid answerId);
 }

@@ -12,6 +12,7 @@ using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.Questions;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 using SuperAbp.Exam.TrainingManagement;
 using SuperAbp.MenuManagement.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;

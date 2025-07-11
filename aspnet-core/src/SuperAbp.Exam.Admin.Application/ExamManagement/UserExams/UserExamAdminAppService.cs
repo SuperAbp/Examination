@@ -8,9 +8,9 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 using System.Linq;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
-using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using Volo.Abp.Identity;
 using Volo.Abp.Users;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.UserExams;
 

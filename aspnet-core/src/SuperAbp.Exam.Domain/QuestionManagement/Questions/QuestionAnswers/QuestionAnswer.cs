@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+namespace SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
 /// <summary>
 /// 答案
@@ -11,14 +10,16 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 public class QuestionAnswer : FullAuditedEntity<Guid>
 {
     protected QuestionAnswer()
-    { Content = String.Empty; }
+    { Content = string.Empty; }
 
     [SetsRequiredMembers]
-    protected internal QuestionAnswer(Guid id, Guid questionId, string content, bool right) : base(id)
+    protected internal QuestionAnswer(Guid id, Guid questionId, string content, bool right, int sort = 0, string? analysis = null) : base(id)
     {
         Right = right;
         Content = content;
         QuestionId = questionId;
+        Sort = sort;
+        Analysis = analysis;
     }
 
     /// <summary>

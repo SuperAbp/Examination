@@ -79,4 +79,15 @@ public class QuestionController(IQuestionAdminAppService questionAppService) : E
     {
         await questionAppService.DeleteAsync(id);
     }
+
+    /// <summary>
+    /// 删除答案
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="answerId"></param>
+    [HttpDelete("{id}/answer/{answerId}")]
+    public async Task DeleteAnswerAsync(Guid id, Guid answerId)
+    {
+        await questionAppService.DeleteAnswerAsync(id, answerId);
+    }
 }

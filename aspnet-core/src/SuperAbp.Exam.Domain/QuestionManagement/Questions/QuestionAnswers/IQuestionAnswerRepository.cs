@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 
-namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers
+namespace SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers
 {
     /// <summary>
     /// 答案

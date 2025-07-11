@@ -2212,358 +2212,6 @@
             }
           }
         },
-        "SuperAbp.Exam.Admin.Controllers.QuestionAnswerController": {
-          "controllerName": "QuestionAnswer",
-          "controllerGroupName": "QuestionAnswer",
-          "isRemoteService": true,
-          "isIntegrationService": false,
-          "apiVersion": null,
-          "type": "SuperAbp.Exam.Admin.Controllers.QuestionAnswerController",
-          "interfaces": [
-            {
-              "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.IQuestionAnswerAdminAppService",
-              "name": "IQuestionAnswerAdminAppService",
-              "methods": [
-                {
-                  "name": "GetListAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "input",
-                      "typeAsString": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.GetQuestionAnswersInput, SuperAbp.Exam.Admin.Application.Contracts",
-                      "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.GetQuestionAnswersInput",
-                      "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.GetQuestionAnswersInput",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto>",
-                    "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto>"
-                  }
-                },
-                {
-                  "name": "GetEditorAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "id",
-                      "typeAsString": "System.Guid, System.Private.CoreLib",
-                      "type": "System.Guid",
-                      "typeSimple": "string",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.GetQuestionAnswerForEditorOutput",
-                    "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.GetQuestionAnswerForEditorOutput"
-                  }
-                },
-                {
-                  "name": "CreateAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "input",
-                      "typeAsString": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateDto, SuperAbp.Exam.Admin.Application.Contracts",
-                      "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateDto",
-                      "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateDto",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto",
-                    "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto"
-                  }
-                },
-                {
-                  "name": "UpdateAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "id",
-                      "typeAsString": "System.Guid, System.Private.CoreLib",
-                      "type": "System.Guid",
-                      "typeSimple": "string",
-                      "isOptional": false,
-                      "defaultValue": null
-                    },
-                    {
-                      "name": "input",
-                      "typeAsString": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerUpdateDto, SuperAbp.Exam.Admin.Application.Contracts",
-                      "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerUpdateDto",
-                      "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerUpdateDto",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto",
-                    "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto"
-                  }
-                },
-                {
-                  "name": "DeleteAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "id",
-                      "typeAsString": "System.Guid, System.Private.CoreLib",
-                      "type": "System.Guid",
-                      "typeSimple": "string",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "System.Void",
-                    "typeSimple": "System.Void"
-                  }
-                }
-              ]
-            }
-          ],
-          "actions": {
-            "GetListAsyncByInput": {
-              "uniqueName": "GetListAsyncByInput",
-              "name": "GetListAsync",
-              "httpMethod": "GET",
-              "url": "api/question-management/question-answer",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "input",
-                  "typeAsString": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.GetQuestionAnswersInput, SuperAbp.Exam.Admin.Application.Contracts",
-                  "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.GetQuestionAnswersInput",
-                  "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.GetQuestionAnswersInput",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "input",
-                  "name": "QuestionId",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "Sorting",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "SkipCount",
-                  "jsonName": null,
-                  "type": "System.Int32",
-                  "typeSimple": "number",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "MaxResultCount",
-                  "jsonName": null,
-                  "type": "System.Int32",
-                  "typeSimple": "number",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                }
-              ],
-              "returnValue": {
-                "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto>",
-                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto>"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.IQuestionAnswerAdminAppService"
-            },
-            "GetEditorAsyncById": {
-              "uniqueName": "GetEditorAsyncById",
-              "name": "GetEditorAsync",
-              "httpMethod": "GET",
-              "url": "api/question-management/question-answer/{id}/editor",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "id",
-                  "typeAsString": "System.Guid, System.Private.CoreLib",
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "id",
-                  "name": "id",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.GetQuestionAnswerForEditorOutput",
-                "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.GetQuestionAnswerForEditorOutput"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.IQuestionAnswerAdminAppService"
-            },
-            "CreateAsyncByInput": {
-              "uniqueName": "CreateAsyncByInput",
-              "name": "CreateAsync",
-              "httpMethod": "POST",
-              "url": "api/question-management/question-answer",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "input",
-                  "typeAsString": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateDto, SuperAbp.Exam.Admin.Application.Contracts",
-                  "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateDto",
-                  "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateDto",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "input",
-                  "name": "input",
-                  "jsonName": null,
-                  "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateDto",
-                  "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateDto",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "Body",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto",
-                "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.IQuestionAnswerAdminAppService"
-            },
-            "UpdateAsyncByIdAndInput": {
-              "uniqueName": "UpdateAsyncByIdAndInput",
-              "name": "UpdateAsync",
-              "httpMethod": "PUT",
-              "url": "api/question-management/question-answer/{id}",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "id",
-                  "typeAsString": "System.Guid, System.Private.CoreLib",
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                },
-                {
-                  "name": "input",
-                  "typeAsString": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerUpdateDto, SuperAbp.Exam.Admin.Application.Contracts",
-                  "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerUpdateDto",
-                  "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerUpdateDto",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "id",
-                  "name": "id",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
-                  "descriptorName": ""
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "input",
-                  "jsonName": null,
-                  "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerUpdateDto",
-                  "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerUpdateDto",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "Body",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto",
-                "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.IQuestionAnswerAdminAppService"
-            },
-            "DeleteAsyncById": {
-              "uniqueName": "DeleteAsyncById",
-              "name": "DeleteAsync",
-              "httpMethod": "DELETE",
-              "url": "api/question-management/question-answer/{id}",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "id",
-                  "typeAsString": "System.Guid, System.Private.CoreLib",
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "id",
-                  "name": "id",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "System.Void",
-                "typeSimple": "System.Void"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.IQuestionAnswerAdminAppService"
-            }
-          }
-        },
         "SuperAbp.Exam.Admin.Controllers.QuestionBankController": {
           "controllerName": "QuestionBank",
           "controllerGroupName": "QuestionBank",
@@ -3145,6 +2793,31 @@
                     "type": "System.Void",
                     "typeSimple": "System.Void"
                   }
+                },
+                {
+                  "name": "DeleteAnswerAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "answerId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
                 }
               ]
             }
@@ -3435,6 +3108,63 @@
                 {
                   "nameOnMethod": "id",
                   "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Admin.QuestionManagement.Questions.IQuestionAdminAppService"
+            },
+            "DeleteAnswerAsyncByIdAndAnswerId": {
+              "uniqueName": "DeleteAnswerAsyncByIdAndAnswerId",
+              "name": "DeleteAnswerAsync",
+              "httpMethod": "DELETE",
+              "url": "api/question-management/question/{id}/answer/{answerId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "answerId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "answerId",
+                  "name": "answerId",
                   "jsonName": null,
                   "type": "System.Guid",
                   "typeSimple": "string",
@@ -7673,6 +7403,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "Published",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -9033,178 +8775,6 @@
       "genericArguments": null,
       "properties": []
     },
-    "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.GetQuestionAnswerForEditorOutput": {
-      "baseType": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateOrUpdateDtoBase",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": []
-    },
-    "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.GetQuestionAnswersInput": {
-      "baseType": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
-        {
-          "name": "QuestionId",
-          "jsonName": null,
-          "type": "System.Guid",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateDto": {
-      "baseType": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateOrUpdateDtoBase",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
-        {
-          "name": "QuestionId",
-          "jsonName": null,
-          "type": "System.Guid",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateOrUpdateDtoBase": {
-      "baseType": null,
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
-        {
-          "name": "Right",
-          "jsonName": null,
-          "type": "System.Boolean",
-          "typeSimple": "boolean",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Content",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Analysis",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Sort",
-          "jsonName": null,
-          "type": "System.Int32",
-          "typeSimple": "number",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerListDto": {
-      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
-        {
-          "name": "Right",
-          "jsonName": null,
-          "type": "System.Boolean",
-          "typeSimple": "boolean",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Content",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Analysis",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Sort",
-          "jsonName": null,
-          "type": "System.Int32",
-          "typeSimple": "number",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerUpdateDto": {
-      "baseType": "SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers.QuestionAnswerCreateOrUpdateDtoBase",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": []
-    },
     "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.GetQuestionBankForEditorOutput": {
       "baseType": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.QuestionBankCreateOrUpdateDtoBase",
       "isEnum": false,
@@ -9460,6 +9030,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "Answers",
+          "jsonName": null,
+          "type": "[SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionAnswerDto]",
+          "typeSimple": "[SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionAnswerDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -9499,6 +9081,63 @@
           "jsonName": null,
           "type": "[System.Guid]",
           "typeSimple": "[string]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionAnswerDto": {
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Right",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Content",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Analysis",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Sort",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
