@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { QuestionService } from '@proxy/admin/controllers';
 import { QuestionAnswerDto } from '@proxy/admin/question-management/questions';
@@ -30,7 +30,7 @@ interface QuestionAnswerTemp extends QuestionAnswerDto {
   ],
   standalone: true
 })
-export class QuestionManagementAnswerComponent implements AfterViewInit {
+export class QuestionManagementAnswerComponent implements OnChanges {
   @Input()
   questionId: string;
   @Input()
@@ -47,19 +47,37 @@ export class QuestionManagementAnswerComponent implements AfterViewInit {
     protected fb: FormBuilder,
     protected questionService: QuestionService
   ) {}
-  ngAfterViewInit(): void {
-    if (this.answers.length < 0) {
-      this.batchAdd(2);
-    } else {
-      this.answers.forEach(item => {
-        this.add({
-          id: item.id,
-          sort: item.sort,
-          right: item.right,
-          content: item.content,
-          analysis: item.analysis
+  // ngOnInit(): void {
+  //   if (this.answers.length == 0) {
+  //     this.batchAdd(2);
+  //   } else {
+  //     this.answers.forEach(item => {
+  //       this.add({
+  //         id: item.id,
+  //         sort: item.sort,
+  //         right: item.right,
+  //         content: item.content,
+  //         analysis: item.analysis
+  //       });
+  //     });
+  //   }
+  // }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['answers']) {
+      const newValue = changes['answers'].currentValue;
+      if (newValue.length == 0) {
+        this.batchAdd(2);
+      } else {
+        newValue.forEach(item => {
+          this.add({
+            id: item.id,
+            sort: item.sort,
+            right: item.right,
+            content: item.content,
+            analysis: item.analysis
+          });
         });
-      });
+      }
     }
   }
 

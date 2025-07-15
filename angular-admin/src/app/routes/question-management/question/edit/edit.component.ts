@@ -1,5 +1,5 @@
 import { CoreModule, LocalizationService } from '@abp/ng.core';
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
@@ -60,6 +60,7 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
   private questionBankService = inject(QuestionBankService);
   private optionService = inject(OptionService);
   private knowledgePointService = inject(KnowledgePointService);
+  private cdr = inject(ChangeDetectorRef);
 
   loading = false;
   isConfirmLoading = false;
@@ -102,7 +103,7 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
           )
           .subscribe();
       } else {
-        this.question = {} as GetQuestionForEditorOutput;
+        this.question = { answers: [] } as GetQuestionForEditorOutput;
         this.buildForm();
         this.loading = false;
       }
@@ -145,6 +146,8 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
             knowledgePointIds: [this.question.knowledgePointIds || []],
             options: this.fb.array([], [Validators.required])
           });
+          // 修复 ExpressionChangedAfterItHasBeenCheckedError
+          this.cdr.detectChanges();
         })
       )
       .subscribe();
