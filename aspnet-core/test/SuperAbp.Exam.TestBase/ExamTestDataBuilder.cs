@@ -21,7 +21,6 @@ namespace SuperAbp.Exam;
 public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     IQuestionRepository questionRepository,
     IQuestionBankRepository questionBankRepository,
-    IQuestionAnswerRepository questionAnswerRepository,
     IKnowledgePointRepository knowledgePointRepository,
     IExamRepository examRepository,
     IPaperRepository paperRepository,
@@ -40,8 +39,6 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
             await CreateQuestionBankAsync();
 
             await CreateQuestionAsync();
-
-            await CreateQuestionAnswerAsync();
 
             await CreatePaperAsync();
 
@@ -199,42 +196,37 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
         ]);
     }
 
-    private async Task CreateQuestionAnswerAsync()
-    {
-        await questionAnswerRepository.InsertManyAsync([
-            new QuestionAnswer(testData.Answer111Id, testData.Question11Id, testData.Answer111Content, false),
-            new QuestionAnswer(testData.Answer112Id, testData.Question11Id, testData.Answer112Content, true),
-            new QuestionAnswer(testData.Answer113Id, testData.Question11Id, testData.Answer113Content, false),
-            new QuestionAnswer(testData.Answer114Id, testData.Question11Id, testData.Answer114Content, false),
-            new QuestionAnswer(testData.Answer121Id, testData.Question12Id, testData.Answer121Content, false),
-            new QuestionAnswer(testData.Answer122Id, testData.Question12Id, testData.Answer122Content, true),
-            new QuestionAnswer(testData.Answer123Id, testData.Question12Id, testData.Answer123Content, true),
-            new QuestionAnswer(testData.Answer124Id, testData.Question12Id, testData.Answer124Content, false),
-            new QuestionAnswer(testData.Answer131Id, testData.Question13Id, testData.Answer131Content, false),
-            new QuestionAnswer(testData.Answer132Id, testData.Question13Id, testData.Answer132Content, true),
-            new QuestionAnswer(testData.Answer141Id, testData.Question13Id, testData.Answer141Content, true),
-            new QuestionAnswer(testData.Answer211Id, testData.Question21Id, testData.Answer211Content, false),
-            new QuestionAnswer(testData.Answer212Id, testData.Question21Id, testData.Answer212Content, true),
-            new QuestionAnswer(testData.Answer221Id, testData.Question22Id, testData.Answer221Content, false),
-            new QuestionAnswer(testData.Answer222Id, testData.Question22Id, testData.Answer222Content, true),
-            new QuestionAnswer(testData.Answer223Id, testData.Question22Id, testData.Answer223Content, false),
-            new QuestionAnswer(testData.Answer224Id, testData.Question22Id, testData.Answer224Content, false),
-            new QuestionAnswer(testData.Answer231Id, testData.Question13Id, testData.Answer131Content, false),
-            new QuestionAnswer(testData.Answer232Id, testData.Question13Id, testData.Answer132Content, true),
-            new QuestionAnswer(testData.Answer241Id, testData.Question13Id, testData.Answer141Content, true)]);
-    }
-
     private async Task CreateQuestionAsync()
     {
         await questionRepository.InsertManyAsync([
-            new Question(testData.Question11Id, testData.QuestionBank1Id, QuestionType.SingleSelect, testData.Question11Content),
-            new Question(testData.Question12Id, testData.QuestionBank1Id, QuestionType.MultiSelect, testData.Question12Content),
-            new Question(testData.Question13Id, testData.QuestionBank1Id, QuestionType.Judge, testData.Question13Content),
-            new Question(testData.Question14Id, testData.QuestionBank1Id, QuestionType.FillInTheBlanks, testData.Question14Content),
-            new Question(testData.Question21Id, testData.QuestionBank2Id, QuestionType.SingleSelect, testData.Question21Content),
-            new Question(testData.Question22Id, testData.QuestionBank2Id, QuestionType.MultiSelect, testData.Question22Content),
-            new Question(testData.Question23Id, testData.QuestionBank2Id, QuestionType.Judge, testData.Question23Content),
-            new Question(testData.Question24Id, testData.QuestionBank2Id, QuestionType.FillInTheBlanks, testData.Question24Content),
+            new Question(testData.Question11Id, testData.QuestionBank1Id, QuestionType.SingleSelect, testData.Question11Content)
+                .AddAnswer(testData.Answer111Id,testData.Answer111Content, false)
+                .AddAnswer(testData.Answer112Id,testData.Answer112Content, true)
+                .AddAnswer(testData.Answer113Id,testData.Answer113Content, false)
+                .AddAnswer(testData.Answer114Id,testData.Answer114Content, false),
+            new Question(testData.Question12Id, testData.QuestionBank1Id, QuestionType.MultiSelect, testData.Question12Content)
+                .AddAnswer(testData.Answer121Id, testData.Answer121Content, false)
+                .AddAnswer(testData.Answer122Id, testData.Answer122Content, true)
+                .AddAnswer(testData.Answer123Id, testData.Answer123Content, true)
+                .AddAnswer(testData.Answer124Id, testData.Answer124Content, false),
+            new Question(testData.Question13Id, testData.QuestionBank1Id, QuestionType.Judge, testData.Question13Content)
+                .AddAnswer(testData.Answer131Id,testData.Answer131Content, false)
+                .AddAnswer(testData.Answer132Id,testData.Answer132Content, true),
+            new Question(testData.Question14Id, testData.QuestionBank1Id, QuestionType.FillInTheBlanks, testData.Question14Content)
+                .AddAnswer(testData.Answer141Id, testData.Answer141Content, true),
+            new Question(testData.Question21Id, testData.QuestionBank2Id, QuestionType.SingleSelect, testData.Question21Content)
+                .AddAnswer(testData.Answer211Id,testData.Answer211Content, false)
+                .AddAnswer(testData.Answer212Id,testData.Answer212Content, true),
+            new Question(testData.Question22Id, testData.QuestionBank2Id, QuestionType.MultiSelect, testData.Question22Content)
+                .AddAnswer(testData.Answer221Id,testData.Answer221Content, false)
+                .AddAnswer(testData.Answer222Id,testData.Answer222Content, true)
+                .AddAnswer(testData.Answer223Id,testData.Answer223Content, false)
+                .AddAnswer(testData.Answer224Id, testData.Answer224Content, false),
+            new Question(testData.Question23Id, testData.QuestionBank2Id, QuestionType.Judge, testData.Question23Content)
+                .AddAnswer(testData.Answer231Id,testData.Answer231Content, false)
+                .AddAnswer(testData.Answer232Id,testData.Answer232Content, true),
+            new Question(testData.Question24Id, testData.QuestionBank2Id, QuestionType.FillInTheBlanks, testData.Question24Content)
+                .AddAnswer(testData.Answer241Id, testData.Answer241Content, true),
         ]);
     }
 

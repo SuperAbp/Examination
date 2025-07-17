@@ -15,7 +15,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
     public class QuestionAdminAppService(
         QuestionManager questionManager,
         IQuestionRepository questionRepository,
-        IQuestionAnswerRepository questionAnswerRepository,
         Func<int, IQuestionAnalysis> questionAnalysis)
         : ExamAppService, IQuestionAdminAppService
     {
@@ -136,10 +135,10 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         [Authorize(ExamPermissions.Questions.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
-            await questionAnswerRepository.DeleteByQuestionIdAsync(id);
             await questionRepository.DeleteAsync(id);
         }
 
+        [Authorize(ExamPermissions.Questions.Delete)]
         public virtual async Task DeleteAnswerAsync(Guid id, Guid answerId)
         {
             Question question = await questionRepository.GetAsync(id);

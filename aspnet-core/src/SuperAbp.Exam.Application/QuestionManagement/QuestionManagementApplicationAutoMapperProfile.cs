@@ -16,6 +16,6 @@ public class QuestionManagementApplicationAutoMapperProfile : Profile
         CreateMap<Question, QuestionListDto>();
         CreateMap<Question, QuestionDetailDto>();
 
-        CreateMap<QuestionAnswer, QuestionAnswerListDto>();
+        CreateMap<QuestionAnswer, QuestionAnswerDto>();
     }
 }

@@ -1,12 +1,12 @@
 ﻿using System;
 using Volo.Abp.Application.Dtos;
 
-namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers
+namespace SuperAbp.Exam.QuestionManagement.Questions
 {
     /// <summary>
     /// 列表
     /// </summary>
-    public class QuestionAnswerListDto : EntityDto<Guid>
+    public class QuestionAnswerDto : EntityDto<Guid>
     {
         /// <summary>
         /// 是否正确

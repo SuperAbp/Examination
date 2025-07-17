@@ -13,8 +13,6 @@ public class QuestionDetailDto : EntityDto<Guid>
 
     public Guid QuestionBankId { get; set; }
 
-    public IReadOnlyList<string> KnowledgePoints { get; set; } = [];
-
     /// <summary>
     /// 题干
     /// </summary>
@@ -24,4 +22,7 @@ public class QuestionDetailDto : EntityDto<Guid>
     /// 解析
     /// </summary>
     public string Analysis { get; set; }
+
+    public IReadOnlyList<string> KnowledgePoints { get; set; } = [];
+    public IReadOnlyList<QuestionAnswerDto> Answers { get; set; } = [];
 }

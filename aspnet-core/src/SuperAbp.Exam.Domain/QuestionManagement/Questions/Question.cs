@@ -52,7 +52,7 @@ public class Question : FullAuditedAggregateRoot<Guid>
 
     public List<QuestionAnswer> Answers { get; private set; }
 
-    public Question AddAnswer(Guid answerId, string content, bool right, int sort, string? analysis)
+    public Question AddAnswer(Guid answerId, string content, bool right, int sort = 0, string? analysis = null)
     {
         if (Answers.Any(x => x.Content == content))
         {
