@@ -79,7 +79,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             {
                 await questionManager.SetKnowledgePointAsync(question, input.KnowledgePointIds);
             }
-            await CreateOrUpdateAnswer(question, input.Options);
+            CreateOrUpdateAnswer(question, input.Options);
             return ObjectMapper.Map<Question, QuestionListDto>(question);
         }
 
@@ -97,7 +97,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             {
                 await questionManager.SetKnowledgePointAsync(question, input.KnowledgePointIds);
             }
-            await CreateOrUpdateAnswer(question, input.Options);
+            CreateOrUpdateAnswer(question, input.Options);
             return ObjectMapper.Map<Question, QuestionListDto>(question);
         }
 
@@ -115,7 +115,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             }
         }
 
-        protected virtual Task CreateOrUpdateAnswer(Question question, QuestionCreateOrUpdateAnswerDto[] answers)
+        protected virtual void CreateOrUpdateAnswer(Question question, QuestionCreateOrUpdateAnswerDto[] answers)
         {
             foreach (QuestionCreateOrUpdateAnswerDto answer in answers)
             {
@@ -128,8 +128,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
                     question.AddAnswer(GuidGenerator.Create(), answer.Content, answer.Right, answer.Sort, answer.Analysis);
                 }
             }
-
-            return Task.CompletedTask;
         }
 
         [Authorize(ExamPermissions.Questions.Delete)]
