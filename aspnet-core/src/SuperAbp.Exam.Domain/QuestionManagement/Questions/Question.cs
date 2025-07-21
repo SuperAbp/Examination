@@ -1,7 +1,13 @@
-﻿using System;
+﻿using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using System.Linq;
+using System.Xml.Linq;
+using Volo.Abp;
+using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions;
@@ -23,6 +29,8 @@ public class Question : FullAuditedAggregateRoot<Guid>
         QuestionBankId = questionBankId;
         QuestionType = questionType;
         Content = content;
+
+        Answers = [];
     }
 
     public QuestionType QuestionType { get; private set; }
@@ -42,5 +50,50 @@ public class Question : FullAuditedAggregateRoot<Guid>
     /// </summary>
     public Guid QuestionBankId { get; set; }
 
-    public List<QuestionAnswer> Answers { get; set; }
+    public List<QuestionAnswer> Answers { get; private set; }
+
+    public Question AddAnswer(Guid answerId, string content, bool right, int sort = 0, string? analysis = null)
+    {
+        if (Answers.Any(x => x.Content == content))
+        {
+            throw new QuestionAnswerContentAlreadyExistException(content);
+        }
+
+        QuestionAnswer answer = new(answerId, Id, content, right, sort, analysis);
+        Answers.Add(answer);
+
+        return this;
+    }
+
+    public Question UpdateAnswer(Guid answerId, string content, bool right, int sort, string? analysis)
+    {
+        if (Answers.Any(a => a.Content == content && a.Id != answerId))
+        {
+            throw new QuestionAnswerContentAlreadyExistException(content);
+        }
+
+        QuestionAnswer? answer = Answers.SingleOrDefault(a => a.Id == answerId);
+        if (answer is null)
+        {
+            throw new EntityNotFoundException(typeof(QuestionAnswer));
+        }
+
+        answer.Content = content;
+        answer.Right = right;
+        answer.Sort = sort;
+        answer.Analysis = analysis;
+
+        return this;
+    }
+
+    public Question RemoveAnswer(Guid answerId)
+    {
+        QuestionAnswer? answer = Answers.SingleOrDefault(a => a.Id == answerId);
+        if (answer is null)
+        {
+            throw new EntityNotFoundException(typeof(QuestionAnswer));
+        }
+        Answers.Remove(answer);
+        return this;
+    }
 }

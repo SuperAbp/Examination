@@ -9,8 +9,8 @@ using SuperAbp.Exam.EntityFrameworkCore.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.ExamManagement.UserExams;
-using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.Questions;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 

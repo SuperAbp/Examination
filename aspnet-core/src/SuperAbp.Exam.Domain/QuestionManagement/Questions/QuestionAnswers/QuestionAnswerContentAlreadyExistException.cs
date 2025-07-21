@@ -1,6 +1,6 @@
 ﻿using Volo.Abp;
 
-namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+namespace SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
 public class QuestionAnswerContentAlreadyExistException : BusinessException
 {

@@ -28,6 +28,7 @@ using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 

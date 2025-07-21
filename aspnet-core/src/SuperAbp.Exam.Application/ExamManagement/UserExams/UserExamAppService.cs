@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.Jobs.UserExamCreateQuestion;
-using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Timing;
 using Volo.Abp.Users;
@@ -16,6 +15,7 @@ using SuperAbp.Exam.KnowledgePoints;
 using Volo.Abp;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.ObjectMapping;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
@@ -27,8 +27,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         UserExamManager userExamManager,
         IQuestionRepository questionRepository,
         QuestionManager questionManager,
-        IBackgroundJobManager backgroundJobManager,
-        IQuestionAnswerRepository questionAnswerRepository)
+        IBackgroundJobManager backgroundJobManager)
         : ExamAppService, IUserExamAppService
     {
         protected IUserExamRepository UserExamRepository { get; } = userExamRepository;
@@ -168,16 +167,15 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 item.Answers = answer.Answers;
 
                 Question question = await questionRepository.GetAsync(item.QuestionId);
-                List<QuestionAnswer> questionAnswers = await questionAnswerRepository.GetListAsync(item.QuestionId);
                 if ((question.QuestionType == QuestionType.SingleSelect || question.QuestionType == QuestionType.Judge)
-                    && item.Answers == (questionAnswers.SingleOrDefault(a => a.Right)?.Id.ToString() ?? ""))
+                    && item.Answers == (question.Answers.SingleOrDefault(a => a.Right)?.Id.ToString() ?? ""))
                 {
                     totalScore += item.QuestionScore;
                     score = item.QuestionScore;
                     right = true;
                 }
                 else if (question.QuestionType == QuestionType.MultiSelect
-                    && (new HashSet<string>(item.Answers.Split(ExamConsts.Splitter)).SetEquals(questionAnswers.Where(a => a.Right).Select(a => a.Id.ToString()))))
+                    && (new HashSet<string>(item.Answers.Split(ExamConsts.Splitter)).SetEquals(question.Answers.Where(a => a.Right).Select(a => a.Id.ToString()))))
                 {
                     totalScore += item.QuestionScore;
                     score = item.QuestionScore;
@@ -186,7 +184,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 else if (question.QuestionType == QuestionType.FillInTheBlanks)
                 {
                     string[] allAnswers = item.Answers.Split(ExamConsts.Splitter);
-                    if (allAnswers.Length == questionAnswers.Count && allAnswers.SequenceEqual(questionAnswers.Select(a => a.Content)))
+                    if (allAnswers.Length == question.Answers.Count && allAnswers.SequenceEqual(question.Answers.Select(a => a.Content)))
                     {
                         // TODO:一空多项，多空多项，无序
                         right = true;

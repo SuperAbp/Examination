@@ -9,6 +9,7 @@ using Xunit;
 using GetQuestionsInput = SuperAbp.Exam.Admin.QuestionManagement.Questions.GetQuestionsInput;
 using IQuestionAdminAppService = SuperAbp.Exam.Admin.QuestionManagement.Questions.IQuestionAdminAppService;
 using QuestionListDto = SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionListDto;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
 namespace SuperAbp.Exam.Questions;
 

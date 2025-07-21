@@ -12,6 +12,7 @@ export interface ExamCreateOrUpdateDtoBase {
   paperId?: string;
   startTime?: string;
   endTime?: string;
+  published: boolean;
 }
 
 export interface ExamDetailDto extends EntityDto<string> {

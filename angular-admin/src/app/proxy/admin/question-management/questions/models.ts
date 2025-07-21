@@ -2,12 +2,20 @@ import type { EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
 export interface GetQuestionForEditorOutput extends QuestionCreateOrUpdateDtoBase {
   questionType: number;
+  answers: QuestionAnswerDto[];
 }
 
 export interface GetQuestionsInput extends PagedAndSortedResultRequestDto {
   content?: string;
   questionType?: number;
   questionBankIds: string[];
+}
+
+export interface QuestionAnswerDto extends EntityDto<string> {
+  right: boolean;
+  content?: string;
+  analysis?: string;
+  sort: number;
 }
 
 export interface QuestionCreateDto extends QuestionCreateOrUpdateDtoBase {

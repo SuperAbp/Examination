@@ -7,15 +7,14 @@ using Volo.Abp.Application.Dtos;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 {
     [Authorize(ExamPermissions.Questions.Default)]
     public class QuestionAdminAppService(
         QuestionManager questionManager,
-        QuestionAnswerManager questionAnswerManager,
         IQuestionRepository questionRepository,
-        IQuestionAnswerRepository questionAnswerRepository,
         Func<int, IQuestionAnalysis> questionAnalysis)
         : ExamAppService, IQuestionAdminAppService
     {
@@ -36,6 +35,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         {
             Question entity = await questionRepository.GetAsync(id);
             var dto = ObjectMapper.Map<Question, GetQuestionForEditorOutput>(entity);
+            dto.Answers = ObjectMapper.Map<List<QuestionAnswer>, List<QuestionAnswerDto>>(entity.Answers);
             List<Guid> points = await questionManager.GetKnowledgePointIdsAsync(id);
             if (points.Count > 0)
             {
@@ -51,7 +51,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             string[] lines = input.Content.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
             List<QuestionImportModel> items = questionAnalysis(input.QuestionType).Analyse(lines);
             List<Question> questions = [];
-            List<QuestionAnswer> answers = [];
             foreach (QuestionImportModel item in items)
             {
                 Question question = await questionManager.CreateAsync(input.QuestionBankId, QuestionType.FromValue(input.QuestionType), item.Title);
@@ -60,17 +59,13 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
                 for (int i = 0; i < item.Options.Count; i++)
                 {
                     QuestionImportModel.Option option = item.Options[i];
-                    QuestionAnswer questionAnswer =
-                        await questionAnswerManager.CreateAsync(question.Id, option.Content, item.Answers.Contains(i));
-                    questionAnswer.Analysis = option.Analysis;
 
-                    answers.Add(questionAnswer);
+                    question.AddAnswer(GuidGenerator.Create(), option.Content, item.Answers.Contains(i), 0, option.Analysis);
                 }
 
                 questions.Add(question);
             }
             await questionRepository.InsertManyAsync(questions);
-            await questionAnswerRepository.InsertManyAsync(answers);
         }
 
         [Authorize(ExamPermissions.Questions.Create)]
@@ -84,7 +79,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             {
                 await questionManager.SetKnowledgePointAsync(question, input.KnowledgePointIds);
             }
-            await CreateOrUpdateAnswerAsync(question.Id, input.Options);
+            CreateOrUpdateAnswer(question, input.Options);
             return ObjectMapper.Map<Question, QuestionListDto>(question);
         }
 
@@ -102,7 +97,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             {
                 await questionManager.SetKnowledgePointAsync(question, input.KnowledgePointIds);
             }
-            await CreateOrUpdateAnswerAsync(question.Id, input.Options);
+            CreateOrUpdateAnswer(question, input.Options);
             return ObjectMapper.Map<Question, QuestionListDto>(question);
         }
 
@@ -120,40 +115,33 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             }
         }
 
-        protected virtual async Task CreateOrUpdateAnswerAsync(Guid questionId, QuestionCreateOrUpdateAnswerDto[] answers)
+        protected virtual void CreateOrUpdateAnswer(Question question, QuestionCreateOrUpdateAnswerDto[] answers)
         {
-            List<QuestionAnswer> questionAnswers = await questionAnswerRepository.GetListAsync(questionId);
-            List<QuestionAnswer> newQuestionAnswers = [];
-            List<QuestionAnswer> updateQuestionAnswers = [];
             foreach (QuestionCreateOrUpdateAnswerDto answer in answers)
             {
                 if (answer.Id.HasValue)
                 {
-                    QuestionAnswer questionAnswer = questionAnswers.Single(a => a.Id == answer.Id.Value);
-                    await questionAnswerManager.SetContentAsync(questionAnswer, answer.Content);
-                    questionAnswer.Right = answer.Right;
-                    questionAnswer.Analysis = answer.Analysis;
-                    questionAnswer.Sort = answer.Sort;
-                    updateQuestionAnswers.Add(questionAnswer);
+                    question.UpdateAnswer(answer.Id.Value, answer.Content, answer.Right, answer.Sort, answer.Analysis);
                 }
                 else
                 {
-                    QuestionAnswer questionAnswer = await questionAnswerManager.CreateAsync(questionId, answer.Content, answer.Right);
-                    questionAnswer.Sort = answer.Sort;
-                    questionAnswer.Analysis = answer.Analysis;
-                    questionAnswers.Add(questionAnswer);
-                    newQuestionAnswers.Add(questionAnswer);
+                    question.AddAnswer(GuidGenerator.Create(), answer.Content, answer.Right, answer.Sort, answer.Analysis);
                 }
             }
-            await questionAnswerRepository.InsertManyAsync(newQuestionAnswers);
-            await questionAnswerRepository.UpdateManyAsync(updateQuestionAnswers);
         }
 
         [Authorize(ExamPermissions.Questions.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
-            await questionAnswerRepository.DeleteByQuestionIdAsync(id);
             await questionRepository.DeleteAsync(id);
+        }
+
+        [Authorize(ExamPermissions.Questions.Delete)]
+        public virtual async Task DeleteAnswerAsync(Guid id, Guid answerId)
+        {
+            Question question = await questionRepository.GetAsync(id);
+            question.RemoveAnswer(answerId);
+            await questionRepository.UpdateAsync(question);
         }
 
         /// <summary>

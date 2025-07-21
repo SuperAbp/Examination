@@ -112,16 +112,16 @@
       @if (questionType.value != null) {
         @switch (questionType.value) {
           @case (0) {
-            <single-select [questionId]="questionId" [questionForm]="form"></single-select>
+            <single-select [questionId]="questionId" [questionForm]="form" [answers]="question.answers"></single-select>
           }
           @case (1) {
-            <multi-select [questionId]="questionId" [questionForm]="form"></multi-select>
+            <multi-select [questionId]="questionId" [questionForm]="form" [answers]="question.answers"></multi-select>
           }
           @case (2) {
-            <judge [questionId]="questionId" [questionForm]="form"></judge>
+            <judge [questionId]="questionId" [questionForm]="form" [answers]="question.answers"></judge>
           }
           @case (3) {
-            <blank [questionId]="questionId" [questionForm]="form"></blank>
+            <blank [questionId]="questionId" [questionForm]="form" [answers]="question.answers"></blank>
           }
         }
       }

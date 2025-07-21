@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using SuperAbp.Exam.Favorites;
+using SuperAbp.Exam.KnowledgePoints;
+using SuperAbp.Exam.Permissions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using SuperAbp.Exam.Favorites;
-using SuperAbp.Exam.KnowledgePoints;
-using SuperAbp.Exam.Permissions;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions
@@ -64,6 +66,7 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
             Question entity = await QuestionRepository.GetAsync(id);
             List<KnowledgePoint> knowledgePoints = await QuestionManager.GetKnowledgePointsAsync(id);
             var dto = ObjectMapper.Map<Question, QuestionDetailDto>(entity);
+            dto.Answers = ObjectMapper.Map<List<QuestionAnswer>, List<QuestionAnswerDto>>(entity.Answers);
             if (knowledgePoints.Count > 0)
             {
                 dto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();

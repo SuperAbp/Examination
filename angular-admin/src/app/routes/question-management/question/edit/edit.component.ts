@@ -1,16 +1,10 @@
 import { CoreModule, LocalizationService } from '@abp/ng.core';
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderModule } from '@delon/abc/page-header';
-import {
-  KnowledgePointService,
-  OptionService,
-  QuestionAnswerService,
-  QuestionBankService,
-  QuestionService
-} from '@proxy/admin/controllers';
+import { KnowledgePointService, OptionService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
 import { QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
 import { GetQuestionForEditorOutput } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -64,9 +58,9 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
   private localizationService = inject(LocalizationService);
   private questionService = inject(QuestionService);
   private questionBankService = inject(QuestionBankService);
-  private answerService = inject(QuestionAnswerService);
   private optionService = inject(OptionService);
   private knowledgePointService = inject(KnowledgePointService);
+  private cdr = inject(ChangeDetectorRef);
 
   loading = false;
   isConfirmLoading = false;
@@ -109,7 +103,7 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
           )
           .subscribe();
       } else {
-        this.question = {} as GetQuestionForEditorOutput;
+        this.question = { answers: [] } as GetQuestionForEditorOutput;
         this.buildForm();
         this.loading = false;
       }
@@ -152,6 +146,8 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
             knowledgePointIds: [this.question.knowledgePointIds || []],
             options: this.fb.array([], [Validators.required])
           });
+          // 修复 ExpressionChangedAfterItHasBeenCheckedError
+          this.cdr.detectChanges();
         })
       )
       .subscribe();
@@ -193,20 +189,6 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
         )
         .subscribe();
     }
-  }
-  getAnswerSaveService() {
-    var services: Array<Observable<any>> = [];
-    this.options.controls.forEach(answer => {
-      var value = answer.value;
-      if (value.id) {
-        services.push(this.answerService.update(value.id, value));
-      } else {
-        value.questionId = this.questionId;
-        delete value.id;
-        services.push(this.answerService.create(value));
-      }
-    });
-    return services;
   }
   back(e: MouseEvent) {
     e.preventDefault();

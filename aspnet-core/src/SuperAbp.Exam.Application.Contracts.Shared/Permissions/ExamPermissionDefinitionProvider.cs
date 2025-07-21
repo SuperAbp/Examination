@@ -24,11 +24,6 @@ public class ExamPermissionDefinitionProvider : PermissionDefinitionProvider
         knowledgePoints.AddChild(ExamPermissions.KnowledgePoints.Update, L("Permission:Edit"));
         knowledgePoints.AddChild(ExamPermissions.KnowledgePoints.Delete, L("Permission:Delete"));
 
-        var questionAnswers = myGroup.AddPermission(ExamPermissions.QuestionAnswers.Default, L("Permission:QuestionAnswers"));
-        questionAnswers.AddChild(ExamPermissions.QuestionAnswers.Create, L("Permission:Create"));
-        questionAnswers.AddChild(ExamPermissions.QuestionAnswers.Update, L("Permission:Edit"));
-        questionAnswers.AddChild(ExamPermissions.QuestionAnswers.Delete, L("Permission:Delete"));
-
         var questionBanks = myGroup.AddPermission(ExamPermissions.QuestionBanks.Default, L("Permission:QuestionBanks"));
         questionBanks.AddChild(ExamPermissions.QuestionBanks.Management, L("Permission:Management"));
         questionBanks.AddChild(ExamPermissions.QuestionBanks.Create, L("Permission:Create"));

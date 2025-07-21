@@ -121,12 +121,10 @@ else
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages
 @using SuperAbp.Exam.Favorites
-@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using SuperAbp.Exam.TrainingManagement
 @inject NavigationManager Navigation
 @inject IQuestionAppService QuestionAppService
-@inject IQuestionAnswerAppService QuestionAnswerAppService
 @inject ITrainingAppService TrainingAppService
 @inject IFavoriteAppService FavoriteAppService
 @code {
@@ -248,7 +246,7 @@ else
         else
         {
             _question = await QuestionAppService.GetAsync(id);
-            _questionAnswers = (await QuestionAnswerAppService.GetListAsync(id)).Items.Select(i => new QuestionAnswerViewModel
+            _questionAnswers = _question.Answers.Select(i => new QuestionAnswerViewModel
                 {
                     Id = i.Id,
                     Content = i.Content,

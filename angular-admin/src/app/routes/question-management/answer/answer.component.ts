@@ -1,11 +1,9 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { QuestionAnswerService } from '@proxy/admin/controllers';
-import { GetQuestionAnswersInput, QuestionAnswerCreateDto, QuestionAnswerListDto } from '@proxy/admin/question-management/question-answers';
-import { forkJoin, Observable } from 'rxjs';
-import { finalize, tap } from 'rxjs/operators';
+import { QuestionService } from '@proxy/admin/controllers';
+import { QuestionAnswerDto } from '@proxy/admin/question-management/questions';
 
-interface QuestionAnswerTemp extends QuestionAnswerCreateDto {
+interface QuestionAnswerTemp extends QuestionAnswerDto {
   id?: string;
 }
 @Component({
@@ -32,46 +30,59 @@ interface QuestionAnswerTemp extends QuestionAnswerCreateDto {
   ],
   standalone: true
 })
-export class QuestionManagementAnswerComponent {
+export class QuestionManagementAnswerComponent implements OnChanges {
   @Input()
   questionId: string;
   @Input()
   questionType: number;
   @Input()
   questionForm: FormGroup;
+  @Input()
+  answers: QuestionAnswerDto[];
 
-  answers: QuestionAnswerListDto[];
   removeIds: string[] = [];
   loading = false;
-  params: GetQuestionAnswersInput;
 
   constructor(
     protected fb: FormBuilder,
-    protected answerService: QuestionAnswerService
+    protected questionService: QuestionService
   ) {}
+  // ngOnInit(): void {
+  //   if (this.answers.length == 0) {
+  //     this.batchAdd(2);
+  //   } else {
+  //     this.answers.forEach(item => {
+  //       this.add({
+  //         id: item.id,
+  //         sort: item.sort,
+  //         right: item.right,
+  //         content: item.content,
+  //         analysis: item.analysis
+  //       });
+  //     });
+  //   }
+  // }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['answers']) {
+      const newValue = changes['answers'].currentValue;
+      if (newValue.length == 0) {
+        this.batchAdd(2);
+      } else {
+        newValue.forEach(item => {
+          this.add({
+            id: item.id,
+            sort: item.sort,
+            right: item.right,
+            content: item.content,
+            analysis: item.analysis
+          });
+        });
+      }
+    }
+  }
 
   get options() {
     return this.questionForm.get('options') as FormArray;
-  }
-  getList() {
-    this.answerService
-      .getList(this.params)
-      .pipe(
-        tap(res => {
-          res.items.forEach(item => {
-            this.add({
-              id: item.id,
-              sort: item.sort,
-              right: item.right,
-              content: item.content,
-              analysis: item.analysis,
-              questionId: this.questionId
-            });
-          });
-        }),
-        finalize(() => (this.loading = false))
-      )
-      .subscribe();
   }
   batchAdd(length) {
     this.options.clear();
@@ -87,7 +98,6 @@ export class QuestionManagementAnswerComponent {
   createAttribute(item: QuestionAnswerTemp) {
     return this.fb.group({
       id: [item.id || null],
-      questionId: [item.questionId || this.questionId],
       right: [item.right || false],
       content: [item.content || null, [Validators.required]],
       analysis: [item.analysis || null],
@@ -96,34 +106,11 @@ export class QuestionManagementAnswerComponent {
   }
   delete(index: number, item: AbstractControl) {
     if (item.value.id && item.value.id !== null) {
-      this.answerService.delete(item.value.id).subscribe(() => {
+      this.questionService.deleteAnswer(this.questionId, item.value.id).subscribe(() => {
         this.options.removeAt(index);
       });
     } else {
       this.options.removeAt(index);
     }
-  }
-
-  resetParameters(): GetQuestionAnswersInput {
-    return {
-      skipCount: 0,
-      maxResultCount: 10,
-      questionId: this.questionId
-    };
-  }
-
-  save(questionId) {
-    var services: Array<Observable<any>> = [];
-    this.options.controls.forEach(answer => {
-      var value = answer.value;
-      if (value.id) {
-        services.push(this.answerService.update(value.id, value));
-      } else {
-        value.questionId = questionId;
-        delete value.id;
-        services.push(this.answerService.create(value));
-      }
-    });
-    return forkJoin(services);
   }
 }

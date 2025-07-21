@@ -1,12 +1,11 @@
-﻿using SuperAbp.Exam.Admin.QuestionManagement.QuestionAnswers;
-using SuperAbp.Exam.Admin.QuestionManagement.Questions;
+﻿using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using AutoMapper;
 using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.Questions;
-using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.Admin.KnowledgePoints;
 using SuperAbp.Exam.KnowledgePoints;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement;
 
@@ -30,17 +29,9 @@ public class QuestionManagementAdminApplicationAutoMapperProfile : Profile
         CreateMap<QuestionCreateDto, Question>();
         CreateMap<QuestionUpdateDto, Question>();
 
+        CreateMap<QuestionAnswer, QuestionAnswerDto>();
+
         #endregion 问题
-
-        #region 答案
-
-        CreateMap<QuestionAnswer, GetQuestionAnswerForEditorOutput>();
-        CreateMap<QuestionAnswer, QuestionAnswerListDto>();
-        CreateMap<QuestionAnswer, QuestionAnswerDetailDto>();
-        CreateMap<QuestionAnswerCreateDto, QuestionAnswer>();
-        CreateMap<QuestionAnswerUpdateDto, QuestionAnswer>();
-
-        #endregion 答案
 
         #region 题库
 
