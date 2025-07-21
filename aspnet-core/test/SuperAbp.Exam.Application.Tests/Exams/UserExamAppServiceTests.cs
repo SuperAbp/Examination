@@ -4,6 +4,7 @@ using SuperAbp.Exam.ExamManagement.UserExams;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Modularity;
 using Volo.Abp.Security.Claims;
@@ -82,8 +83,9 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
             {
                 ExamId = _testData.Examination31Id
             };
-            await Should.ThrowAsync<OutOfExamTimeException>(async () =>
+            var exception = await Should.ThrowAsync<BusinessException>(async () =>
                 await _userExamAppService.CreateAsync(input));
+            exception.Code.ShouldBe(ExamDomainErrorCodes.Exams.OutOfExamTime);
         }
     }
 
@@ -94,10 +96,11 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
         {
             ExamId = _testData.Examination11Id
         };
-        await Should.ThrowAsync<UnfinishedAlreadyExistException>(async () =>
+        var exception = await Should.ThrowAsync<BusinessException>(async () =>
         {
             await _userExamAppService.CreateAsync(input);
         });
+        exception.Code.ShouldBe(ExamDomainErrorCodes.UserExams.UnfinishedAlreadyExists);
     }
 
     [Fact]

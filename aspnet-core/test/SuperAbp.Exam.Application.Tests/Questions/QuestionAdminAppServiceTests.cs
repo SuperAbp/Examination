@@ -1,7 +1,9 @@
-﻿using SuperAbp.Exam.Admin.QuestionManagement.Questions;
-using System.Threading.Tasks;
-using Shouldly;
+﻿using Shouldly;
+using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using SuperAbp.Exam.QuestionManagement.Questions;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Modularity;
@@ -9,7 +11,6 @@ using Xunit;
 using GetQuestionsInput = SuperAbp.Exam.Admin.QuestionManagement.Questions.GetQuestionsInput;
 using IQuestionAdminAppService = SuperAbp.Exam.Admin.QuestionManagement.Questions.IQuestionAdminAppService;
 using QuestionListDto = SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionListDto;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
 namespace SuperAbp.Exam.Questions;
 
@@ -71,8 +72,9 @@ public abstract class QuestionAdminAppServiceTests<TStartupModule> : ExamApplica
             Content = "New_Content",
             Analysis = "New_Analysis"
         };
-        await Should.ThrowAsync<QuestionAnswerCorrectCountErrorException>(
-            async () => await _questionAppService.CreateAsync(input));
+        var exception = await Should.ThrowAsync<BusinessException>(
+             async () => await _questionAppService.CreateAsync(input));
+        exception.Code.ShouldBe(ExamDomainErrorCodes.Questions.CorrectCountError);
     }
 
     [Fact]

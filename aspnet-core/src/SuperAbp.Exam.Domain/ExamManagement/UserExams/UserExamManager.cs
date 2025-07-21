@@ -7,6 +7,7 @@ using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.Questions;
+using Volo.Abp;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 using Volo.Abp.EventBus.Local;
@@ -37,12 +38,12 @@ public class UserExamManager(
     /// </summary>
     /// <param name="userId">用户Id</param>
     /// <returns></returns>
-    /// <exception cref="UnfinishedAlreadyExistException"></exception>
+    /// <exception cref="BusinessException"></exception>
     private async Task CheckUnfinishedAsync(Guid userId)
     {
         if (await userExamRepository.UnfinishedExistsAsync(userId))
         {
-            throw new UnfinishedAlreadyExistException();
+            throw new BusinessException(ExamDomainErrorCodes.UserExams.UnfinishedAlreadyExists);
         }
     }
 

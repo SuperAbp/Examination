@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Domain.Services;
 
 namespace SuperAbp.Exam.ExamManagement.Exams;
@@ -23,7 +24,7 @@ public class ExamManager(
 
         if (exam.StartTime > Clock.Now || exam.EndTime < Clock.Now)
         {
-            throw new OutOfExamTimeException();
+            throw new BusinessException(ExamDomainErrorCodes.Exams.OutOfExamTime);
         }
     }
 }

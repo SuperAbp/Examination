@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
+using Volo.Abp;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Entities.Auditing;
 

@@ -8,6 +8,7 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using Volo.Abp;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 {
@@ -111,7 +112,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
                 _ => true
             }))
             {
-                throw new QuestionAnswerCorrectCountErrorException();
+                throw new BusinessException(ExamDomainErrorCodes.Questions.CorrectCountError);
             }
         }
 

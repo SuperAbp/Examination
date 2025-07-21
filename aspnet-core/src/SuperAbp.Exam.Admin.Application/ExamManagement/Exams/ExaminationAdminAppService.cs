@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.ExamManagement.Exams;
 using Volo.Abp.Application.Dtos;
 using SuperAbp.Exam.Permissions;
+using Volo.Abp;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 {

@@ -11,6 +11,7 @@ using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using Volo.Abp.Identity;
 using Volo.Abp.Users;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using Volo.Abp;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.UserExams;
 
@@ -60,7 +61,7 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
         UserExam userExam = await UserExamRepository.GetAsync(id);
         if (userExam.Status == UserExamStatus.InProgress)
         {
-            throw new UnfinishedException();
+            throw new BusinessException(ExamDomainErrorCodes.UserExams.Unfinished);
         }
         Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
         IdentityUser user = await UserRepository.GetAsync(userExam.UserId);

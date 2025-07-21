@@ -121,7 +121,15 @@
     "Permission:Import": "导入",
     "Permission:Edit": "修改",
     "Permission:Delete": "删除",
-    "SuperAbp.Exam:000001": "存在未完成的考试",
-    "SuperAbp.Exam:000002": "不在考试时间内"
+    "Exam:Question:0001": "问题已存在",
+    "Exam:Question:0002": "问题的正确答案数量不正确",
+    "Exam:QuestionBank:0001": "问题类别已存在",
+    "Exam:QuestionAnswer:0001": "答案已存在",
+    "Exam:Paper:0001": "试卷已存在",
+    "Exam:UserExams:0001": "用户存在未完成的考试",
+    "Exam:UserExams:0002": "用户考试未完成",
+    "Exam:UserExams:0003": "用户考试状态无效",
+    "Exam:Exams:0001": "不在考试时间内",
+    "Exam:Exams:0002": "考试状态无效"
   }
 }
