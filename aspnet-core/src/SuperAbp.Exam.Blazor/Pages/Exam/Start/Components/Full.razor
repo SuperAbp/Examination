@@ -20,7 +20,7 @@
         foreach (UserExamDetailDto.QuestionDto examQuestion in currentQuestions)
         {
             IReadOnlyList<QuestionAnswerViewModel> answers = ToQuestionAnswerViewModels(examQuestion.Options);
-            <h3 class="title">
+            <h3 class="title" id="question-@examQuestion.Id">
                 <span class="number">@(number++)</span>
                 <span>@examQuestion.Content</span>
             </h3>
@@ -56,6 +56,7 @@
 @inject IDistributedCache<List<QuestionAnswerItem>> AnswerCache
 @inject IUserExamAppService UserExamAppService
 @inject IStringLocalizer<ExamResource> L
+@inject IJSRuntime JSRuntime
 @code {
     [Parameter]
     public Guid UserExamId { get; set; }
@@ -98,9 +99,13 @@
             }).ToArray();
     }
 
-    public void ShowQuestionAsync(Guid id)
+    public async Task ShowQuestionAsync(Guid id)
     {
-        
+        // Generate the element ID based on the question ID
+        string elementId = $"question-{id}";
+
+        // Call the JavaScript function to scroll to the element
+        await JSRuntime.InvokeVoidAsync("scrollToElementById", elementId);
     }
 
     /// <summary>
