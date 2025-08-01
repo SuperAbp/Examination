@@ -41,6 +41,7 @@
                            Answered="@examQuestion.Answers"
                            Answers="answers"
                            ShowAnalysis="false"
+                           ShowConfirm="false"
                            OnSubmit="@SubmitAsync"></Blank>
                     break;
             }
@@ -60,12 +61,12 @@
 @code {
     [Parameter]
     public Guid UserExamId { get; set; }
-    [Parameter] 
+    [Parameter]
     public IReadOnlyList<UserExamDetailDto.QuestionDto> Questions { get; set; }
 
     readonly string[] _chineseNumber = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
 
-    public async Task SubmitAsync(QuestionAnswerItem item)
+    public virtual async Task SubmitAsync(QuestionAnswerItem item)
     {
         var question = Questions.FirstOrDefault(q => q.Id == item.QuestionId);
         if (question != null)

@@ -8,6 +8,7 @@
                  <div>
                      <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
                      <span class="content">@answer.Content</span>
+                    @_selectedAnswerId
                  </div>
                  @if (answer.Right.HasValue && answer.Right.Value)
                  {
