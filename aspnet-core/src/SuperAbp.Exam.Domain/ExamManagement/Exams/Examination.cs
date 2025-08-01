@@ -58,6 +58,13 @@ public class Examination : FullAuditedAggregateRoot<Guid>
 
     public ExaminationStatus Status { get; set; }
 
+    public AnswerMode AnswerMode { get; set; }
+
+    /// <summary>
+    /// 选项乱序
+    /// </summary>
+    public bool RandomOrderOfOption { get; set; }
+
     /// <summary>
     /// 开始时间
     /// </summary>

@@ -58,8 +58,9 @@
                  <div>
                      <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
                      <span class="content">@answer.Content</span>
+                    @_selectedAnswerId
                  </div>
-                 @if (answer.Right)
+                 @if (answer.Right.HasValue && answer.Right.Value)
                  {
                      <div class="@GetResultClass(answer)">
                          <Icon Type="check-circle" Theme="IconThemeType.TwoTone" TwotoneColor="#52c41a"/>
@@ -71,8 +72,6 @@
  </RadioGroup>
 
 @using SuperAbp.Exam.TrainingManagement
-@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
-@using System.Diagnostics
 @using JetBrains.Annotations
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages
@@ -92,16 +91,13 @@
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 
-    Guid _selectedAnswerId = Guid.Empty;
-
-    protected override void OnInitialized()
+    Guid _selectedAnswerId;
+    protected override async Task OnParametersSetAsync()
     {
-        _selectedAnswerId = Guid.Empty;
-        if (!Answered.IsNullOrWhiteSpace())
-        {
-            _selectedAnswerId = new Guid(Answered);
-        }
+        _selectedAnswerId = !String.IsNullOrEmpty(Answered) ? Guid.Parse(Answered) : Guid.Empty;
+        await base.OnParametersSetAsync();
     }
+
     public string GetBorderColor(QuestionAnswerViewModel answer)
     {
         List<string> classes = ["choose-item"];
@@ -114,7 +110,7 @@
     string GetResultClass(QuestionAnswerViewModel answer)
     {
         List<string> classes = ["result"];
-        if (ShowAnalysis && answer.Right)
+        if (ShowAnalysis && answer.Right.HasValue && answer.Right.Value)
         {
             classes.Add("show");
         }
@@ -129,7 +125,8 @@
             await UiNotificationService.Error("请先选择答案");
             return;
         }
-        var right = answer.Right;
+
+        bool right = answer.Right ?? false;
         await OnSubmit.InvokeAsync(new QuestionAnswerItem()
             {
                 QuestionId = QuestionId,

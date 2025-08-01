@@ -1,0 +1,121 @@
+﻿@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.ExamManagement.UserExams
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using Volo.Abp.Caching
+@{
+    var questionTypes = Questions.GroupBy(q => q.QuestionType).Select(q => new
+    {
+        QuestionType = q.Key,
+        Count = q.Count()
+    }).ToArray();
+    int number = 1;
+    for (int i = 0; i < questionTypes.Length; i++)
+    {
+        var questionType = questionTypes[i];
+
+        var currentQuestions = Questions.Where(q => q.QuestionType == questionType.QuestionType).ToArray();
+        <h2>@_chineseNumber[i]、@L["QuestionType:" + questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q => q.QuestionScore))分）</h2>
+        foreach (UserExamDetailDto.QuestionDto examQuestion in currentQuestions)
+        {
+            IReadOnlyList<QuestionAnswerViewModel> answers = ToQuestionAnswerViewModels(examQuestion.Options);
+            <h3 class="title">
+                <span class="number">@(number++)</span>
+                <span>@examQuestion.Content</span>
+            </h3>
+            @switch (QuestionType.FromValue(examQuestion.QuestionType).Name)
+            {
+                case nameof(QuestionType.SingleSelect):
+                case nameof(QuestionType.Judge):
+                    <SingleSelect QuestionId="examQuestion.Id"
+                                  Answered="@examQuestion.Answers"
+                                  Answers="answers"
+                                  OnSubmit="@SubmitAsync"></SingleSelect>
+                    break;
+                case nameof(QuestionType.MultiSelect):
+                    <MultiSelect QuestionId="examQuestion.Id"
+                                 Answered="@examQuestion.Answers"
+                                 Answers="answers"
+                                 ShowAnalysis="false"
+                                 OnSelect="@SelectAsync"></MultiSelect>
+                    break;
+                case nameof(QuestionType.FillInTheBlanks):
+                    <Blank QuestionId="examQuestion.Id"
+                           Answered="@examQuestion.Answers"
+                           Answers="answers"
+                           ShowAnalysis="false"
+                           ShowConfirm="false"
+                           OnSubmit="@SubmitAsync"></Blank>
+                    break;
+            }
+        }
+    }
+}
+
+
+@inject IDistributedCache<List<QuestionAnswerItem>> AnswerCache
+@inject IUserExamAppService UserExamAppService
+@inject IStringLocalizer<ExamResource> L
+@code {
+    [Parameter]
+    public Guid UserExamId { get; set; }
+    [Parameter]
+    public string QuestionAnswerStorageKey { get; set; }
+    [Parameter] 
+    public IReadOnlyList<UserExamDetailDto.QuestionDto> Questions { get; set; }
+
+    readonly string[] _chineseNumber = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+
+    public virtual async Task SubmitAsync(QuestionAnswerItem item)
+    {
+        // 更新缓存中的答案
+        List<QuestionAnswerItem> answerItems = await AnswerCache.GetAsync(QuestionAnswerStorageKey) ?? [];
+        answerItems = answerItems.Where(x => x.QuestionId != item.QuestionId).ToList();
+        answerItems.Add(item);
+        await AnswerCache.SetAsync(QuestionAnswerStorageKey, answerItems);
+
+        // 更新 Questions 列表中对应题目的 Answers 字段
+        var question = Questions.FirstOrDefault(q => q.Id == item.QuestionId);
+        if (question != null)
+        {
+            question.Answers = item.Answer;
+        }
+    }
+
+    public virtual async Task SelectAsync(QuestionAnswerSelectEventArgs item)
+    {
+        await Answer(item.QuestionId, item.Answer);
+    }
+
+    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamDetailDto.QuestionDto.OptionDto> answers)
+    {
+        return answers
+            .Select(qa => new QuestionAnswerViewModel
+            {
+                Id = qa.Id,
+                Content = qa.Content,
+                Right = false
+            }).ToArray();
+    }
+
+    public void ShowQuestionAsync(Guid id)
+    {
+        
+    }
+
+    /// <summary>
+    /// 答题
+    /// </summary>
+    /// <param name="questionId">题目Id</param>
+    /// <param name="answer">答案</param>
+    /// <returns></returns>
+    protected async Task Answer(Guid questionId, string answer)
+    {
+        await UserExamAppService.AnswerAsync(UserExamId, new UserExamAnswerDto()
+        {
+            QuestionId = questionId,
+            Answers = answer
+        });
+    }
+}

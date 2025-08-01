@@ -64,7 +64,7 @@ else
                     else
                     {
                         <QuestionItem Number="_questionIndex + 1"
-                                      Question="_question"
+                                      Question="ObjectMapper.Map<QuestionDetailDto, QuestionViewModel>(_question)"
                                       QuestionAnswers="_questionAnswers"
                                       ShowAnalysis="_showAnalysis"
                                       Answered="@GetAnswered()"
@@ -123,10 +123,12 @@ else
 @using SuperAbp.Exam.Favorites
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using SuperAbp.Exam.TrainingManagement
+@using Volo.Abp.ObjectMapping
 @inject NavigationManager Navigation
 @inject IQuestionAppService QuestionAppService
 @inject ITrainingAppService TrainingAppService
 @inject IFavoriteAppService FavoriteAppService
+@inject IObjectMapper ObjectMapper
 @code {
     [Parameter]
     public int? TrainType { get; set; }
@@ -218,9 +220,10 @@ else
     }
     public async Task ShowQuestionAsync(Guid id)
     {
-        _questionIndex = _questionIds.ToList().IndexOf(id);
+        
         loadingQuestion = true;
         _showAnalysis = false;
+        _questionIndex = _questionIds.ToList().IndexOf(id);
         favorited = await FavoriteAppService.GetByQuestionIdAsync(id);
         await LoadQuestionAsync(id);
         if (TrainType is 1 || _selectedQuestionAnswers.Any(a => a.QuestionId == id))
@@ -254,6 +257,8 @@ else
                 }).ToArray();
             _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>(_question, _questionAnswers));
         }
+
+        var s = ObjectMapper.Map<QuestionDetailDto, QuestionViewModel>(_question);
     }
     public async Task SubmitAsync(QuestionAnswerItem item)
     {

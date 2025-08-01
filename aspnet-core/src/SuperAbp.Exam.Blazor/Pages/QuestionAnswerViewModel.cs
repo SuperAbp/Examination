@@ -9,7 +9,7 @@ public class QuestionAnswerViewModel
     /// <summary>
     /// 是否正确
     /// </summary>
-    public bool Right { get; set; }
+    public bool? Right { get; set; }
 
     /// <summary>
     /// 内容
