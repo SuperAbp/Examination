@@ -75,7 +75,7 @@
 {
     if (OnSubmit.HasDelegate)
     {
-        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
+        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync" Loading="_validateLoading" style="margin-bottom: 10px;">确认答案</Button>
     }
 }
 
@@ -97,8 +97,8 @@
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 
-
-    List<Guid> _selectedAnswerIds = new List<Guid>();
+    List<Guid> _selectedAnswerIds = [];
+    bool _validateLoading = false;
     protected override void OnInitialized()
     {
         if (!Answered.IsNullOrWhiteSpace())
@@ -109,7 +109,7 @@
 
     public string GetBorderColor(QuestionAnswerViewModel answer)
     {
-        List<string> classes = new List<string>() { "choose-item" };
+        List<string> classes = ["choose-item"];
         if (_selectedAnswerIds.Contains(answer.Id))
         {
             classes.Add("primary");
@@ -164,6 +164,8 @@
             await UiNotificationService.Error("请先选择答案");
             return;
         }
+
+        _validateLoading = true;
         var rightIds = Answers
             .Where(a => a.Right.HasValue && a.Right.Value)
             .Select(a => a.Id)
@@ -180,5 +182,6 @@
                     Right = right
                 });
         }
+        _validateLoading = false;
     }
 }

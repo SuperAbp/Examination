@@ -26,7 +26,8 @@ else
                             QuestionAnswerStorageKey="@_questionAnswerStorageKey"
                             Questions="_examQuestions"
                             QuestionIds="_questionIds"
-                            OnAnswered="OnAnswered" />
+                            OnAnswered="OnAnswered"
+                            OnQuestionChanged="ChangeQuestion" />
                     }
                     else
                     {
@@ -165,7 +166,6 @@ else
         }
     }
 
-    // 答题回调，更新已答题ID（同步方法）
     public void OnAnswered(Guid id)
     {
         if (!_answerIds.Contains(id))

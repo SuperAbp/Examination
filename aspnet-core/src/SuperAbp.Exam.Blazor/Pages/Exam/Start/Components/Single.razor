@@ -47,6 +47,8 @@ else
     public IReadOnlyList<UserExamDetailDto.QuestionDto> Questions { get; set; }
     [Parameter]
     public Guid[] QuestionIds { get; set; }
+    [Parameter]
+    public EventCallback<Guid> OnQuestionChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -67,7 +69,10 @@ else
             return;
         }
 
-        await ShowQuestionAsync(QuestionIds[_questionIndex - 1]);
+        if (OnQuestionChanged.HasDelegate)
+        {
+            await OnQuestionChanged.InvokeAsync(QuestionIds[_questionIndex - 1]);
+        }
     }
 
     public async Task NextAsync()
@@ -78,7 +83,10 @@ else
             return;
         }
 
-        await ShowQuestionAsync(QuestionIds[_questionIndex + 1]);
+        if (OnQuestionChanged.HasDelegate)
+        {
+            await OnQuestionChanged.InvokeAsync(QuestionIds[_questionIndex + 1]);
+        }
     }
 
     public async Task ShowQuestionAsync(Guid id)
@@ -99,4 +107,3 @@ else
         return string.Join(ExamConsts.Splitter, answerItems.Where(c => c.QuestionId == id).Select(c => c.Answer));
     }
 }
-B
