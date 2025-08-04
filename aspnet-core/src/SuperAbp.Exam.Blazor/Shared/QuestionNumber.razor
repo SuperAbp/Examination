@@ -1,7 +1,4 @@
-﻿@using Microsoft.Extensions.Localization
-@using SuperAbp.Exam.Localization
-@using SuperAbp.Exam.QuestionManagement.Questions
-﻿<Card>
+﻿﻿<Card>
     <ChildContent>
         <Space Direction="SpaceDirection.Vertical" Style="width: 100%;">
             @{
@@ -21,14 +18,14 @@
                             </span>
                         </Flex>
                         <Space Size="@(("0", "8"))" Wrap>
-                        @foreach (QuestionNumberVo.QuestionIndex question in numbers.Questions)
-                        {
-                            string color = GetNumberColor(question.QuestionId);
-                            int currentIndex = i++;
-                            <SpaceItem>
-                                <Tag Color="@color" Style="cursor: pointer;" OnClick="async () => await ClickAsync(question.QuestionId)">@currentIndex</Tag>
-                            </SpaceItem>
-                        }
+                            @foreach (QuestionNumberVo.QuestionIndex question in numbers.Questions)
+                            {
+                                string color = GetNumberColor(question.QuestionId);
+                                int currentIndex = i++;
+                                <SpaceItem>
+                                    <Tag Color="@color" Style="cursor: pointer;" OnClick="async () => await ClickAsync(question.QuestionId)">@currentIndex</Tag>
+                                </SpaceItem>
+                            }
                         </Space>
                     </SpaceItem>
                 }
@@ -36,6 +33,9 @@
         </Space>
     </ChildContent>
 </Card>
+
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Localization
 @inject IStringLocalizer<ExamResource> L
 @code {
     [Parameter]
@@ -49,13 +49,15 @@
     [Parameter]
     public IReadOnlyList<Guid> ErrorIds { get; set; } = Array.Empty<Guid>();
     [Parameter]
+    public IReadOnlyList<Guid> AnswerIds { get; set; } = Array.Empty<Guid>();
+    [Parameter]
     public EventCallback<Guid> OnChanged { get; set; }
 
     string GetNumberColor(Guid id)
     {
         if (CurrentId == id)
         {
-            return "processing";
+            return "warning";
         }
         if (SuccessIds.Contains(id))
         {
@@ -64,6 +66,10 @@
         if (ErrorIds.Contains(id))
         {
             return "error";
+        }
+        if (AnswerIds.Contains(id))
+        {
+            return "processing";
         }
         return "default";
     }

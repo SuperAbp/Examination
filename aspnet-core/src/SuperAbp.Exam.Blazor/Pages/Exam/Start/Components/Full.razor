@@ -1,10 +1,4 @@
-﻿@using Microsoft.Extensions.Localization
-@using SuperAbp.Exam.Blazor.Model
-@using SuperAbp.Exam.ExamManagement.UserExams
-@using SuperAbp.Exam.Localization
-@using SuperAbp.Exam.QuestionManagement.Questions
-@using Volo.Abp.Caching
-@{
+﻿@{
     var questionTypes = Questions.GroupBy(q => q.QuestionType).Select(q => new
     {
         QuestionType = q.Key,
@@ -38,7 +32,7 @@
                                  Answered="@examQuestion.Answers"
                                  Answers="answers"
                                  ShowAnalysis="false"
-                                 OnSelect="@SelectAsync"></MultiSelect>
+                                 OnSubmit="@SubmitAsync"></MultiSelect>
                     break;
                 case nameof(QuestionType.FillInTheBlanks):
                     <Blank QuestionId="examQuestion.Id"
@@ -53,39 +47,31 @@
     }
 }
 
-@inject IDistributedCache<List<QuestionAnswerItem>> AnswerCache
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.ExamManagement.UserExams
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.Questions
+@inherits ExamQuestionBase
 @inject IUserExamAppService UserExamAppService
 @inject IStringLocalizer<ExamResource> L
 @inject IJSRuntime JSRuntime
 @code {
     [Parameter]
     public Guid UserExamId { get; set; }
-    [Parameter]
-    public string QuestionAnswerStorageKey { get; set; }
     [Parameter] 
     public IReadOnlyList<UserExamDetailDto.QuestionDto> Questions { get; set; }
 
     readonly string[] _chineseNumber = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
 
-    public virtual async Task SubmitAsync(QuestionAnswerItem item)
+    public async Task SubmitAsync(QuestionAnswerItem item)
     {
-        // 更新缓存中的答案
-        List<QuestionAnswerItem> answerItems = await AnswerCache.GetAsync(QuestionAnswerStorageKey) ?? [];
-        answerItems = answerItems.Where(x => x.QuestionId != item.QuestionId).ToList();
-        answerItems.Add(item);
-        await AnswerCache.SetAsync(QuestionAnswerStorageKey, answerItems);
-
-        // 更新 Questions 列表中对应题目的 Answers 字段
         var question = Questions.FirstOrDefault(q => q.Id == item.QuestionId);
         if (question != null)
         {
             question.Answers = item.Answer;
         }
-    }
-
-    public virtual async Task SelectAsync(QuestionAnswerSelectEventArgs item)
-    {
-        await Answer(item.QuestionId, item.Answer);
+        await SaveAnswerAsync(item);
     }
 
     protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamDetailDto.QuestionDto.OptionDto> answers)
@@ -101,25 +87,7 @@
 
     public async Task ShowQuestionAsync(Guid id)
     {
-        // Generate the element ID based on the question ID
         string elementId = $"question-{id}";
-
-        // Call the JavaScript function to scroll to the element
         await JSRuntime.InvokeVoidAsync("scrollToElementById", elementId);
-    }
-
-    /// <summary>
-    /// 答题
-    /// </summary>
-    /// <param name="questionId">题目Id</param>
-    /// <param name="answer">答案</param>
-    /// <returns></returns>
-    protected async Task Answer(Guid questionId, string answer)
-    {
-        await UserExamAppService.AnswerAsync(UserExamId, new UserExamAnswerDto()
-        {
-            QuestionId = questionId,
-            Answers = answer
-        });
     }
 }

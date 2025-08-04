@@ -33,9 +33,8 @@ else
 
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.ExamManagement.UserExams
-@using Volo.Abp.Caching
 @using Volo.Abp.ObjectMapping
-@inject IDistributedCache<List<QuestionAnswerItem>> AnswerCache
+@inherits ExamQuestionBase
 @inject IObjectMapper ObjectMapper
 @code {
     int _questionIndex;
@@ -45,25 +44,19 @@ else
     IReadOnlyList<QuestionAnswerViewModel> _questionAnswers = Array.Empty<QuestionAnswerViewModel>();
 
     [Parameter]
-    public string QuestionAnswerStorageKey { get; set; }
-    [Parameter]
     public IReadOnlyList<UserExamDetailDto.QuestionDto> Questions { get; set; }
     [Parameter]
     public Guid[] QuestionIds { get; set; }
-
 
     protected override async Task OnInitializedAsync()
     {
         await ShowQuestionAsync(QuestionIds[0]);
     }
 
-    public virtual async Task SubmitAsync(QuestionAnswerItem item)
+    public async Task SubmitAsync(QuestionAnswerItem item)
     {
         _answered = item.Answer;
-        List<QuestionAnswerItem> answerItems = await AnswerCache.GetAsync(QuestionAnswerStorageKey) ?? [];
-        answerItems = answerItems.Where(x => x.QuestionId != item.QuestionId).ToList();
-        answerItems.Add(item);
-        await AnswerCache.SetAsync(QuestionAnswerStorageKey, answerItems);
+        await SaveAnswerAsync(item);
     }
 
     public async Task PrevAsync()
@@ -102,7 +95,8 @@ else
 
     protected async Task<string> GetAnswered(Guid id)
     {
-        List<QuestionAnswerItem> answerItems = await AnswerCache.GetAsync(QuestionAnswerStorageKey) ?? [];
+        List<QuestionAnswerItem> answerItems = await LocalStorage.GetItemAsync<List<QuestionAnswerItem>>(QuestionAnswerStorageKey) ?? [];
         return string.Join(ExamConsts.Splitter, answerItems.Where(c => c.QuestionId == id).Select(c => c.Answer));
     }
 }
+B

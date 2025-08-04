@@ -1,5 +1,8 @@
 using System;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +39,12 @@ public class ExamBlazorModule : AbpModule
         ConfigureUI(builder);
         ConfigureMenu(context);
         ConfigureAutoMapper(context);
+        ConfigureLocalStorage(builder);
+    }
+
+    private void ConfigureLocalStorage(WebAssemblyHostBuilder builder)
+    {
+        builder.Services.AddBlazoredLocalStorage();
     }
 
     private void ConfigureRouter(ServiceConfigurationContext context)
