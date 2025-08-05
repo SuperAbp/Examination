@@ -4,19 +4,21 @@
         QuestionType = q.Key,
         Count = q.Count()
     }).ToArray();
-    int number = 1;
-    for (int i = 0; i < questionTypes.Length; i++)
+    int number = 1, bigNumber = 0;
+    foreach (var questionType in questionTypes)
     {
-        var questionType = questionTypes[i];
 
         var currentQuestions = Questions.Where(q => q.QuestionType == questionType.QuestionType).ToArray();
-        <h2>@_chineseNumber[i]、@L["QuestionType:" + questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q => q.QuestionScore))分）</h2>
+        <Title Level="2">@_chineseNumber[bigNumber++]、@L["QuestionType:" + questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q => q.QuestionScore))分）</Title>
         foreach (UserExamDetailDto.QuestionDto examQuestion in currentQuestions)
         {
             IReadOnlyList<QuestionAnswerViewModel> answers = ToQuestionAnswerViewModels(examQuestion.Options);
+            @* <Title Level="3" class="title" id="@($"question-{examQuestion.Id}")"> *@
+            @*     <span class="number">@(number++)</span> *@
+            @*     <span>@examQuestion.Content</span> *@
+            @* </Title> *@
             <h3 class="title" id="question-@examQuestion.Id">
-                <span class="number">@(number++)</span>
-                <span>@examQuestion.Content</span>
+                <span class="number">@(number++)、</span><span>@examQuestion.Content</span>
             </h3>
             @switch (QuestionType.FromValue(examQuestion.QuestionType).Name)
             {

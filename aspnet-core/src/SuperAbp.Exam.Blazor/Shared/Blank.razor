@@ -1,25 +1,9 @@
-﻿﻿<style>
-     .block {
-         background-color: #f5f5f5;
-         padding: 5px 10px;
-         margin-bottom: 16px;
-     }
-
-         .block .title {
-             color: red;
-         }
-
-         .block .body {
-             font-size: 0.75rem;
-             margin-left: 15px;
-         }
-</style>
-@if (!ShowAnalysis || (ShowAnalysis && !AnswersNullOrWhiteSpace()))
+﻿@if (!ShowAnalysis || (ShowAnalysis && !AnswersNullOrWhiteSpace()))
 {
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
-        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="@ShowAnalysis" onblur="ValidateAsync" />
+        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="@ShowAnalysis"/>
         <br />
         <br />
     }
@@ -28,7 +12,7 @@
 {
     if (ShowConfirm)
     {
-        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
+        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" Loading="_validateLoading" OnClick="ValidateAsync" style="margin-bottom: 10px;">确认答案</Button>
     }
 }
 
@@ -54,6 +38,7 @@
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 
     string[] _answerItems = [];
+    bool _validateLoading = false;
 
 
     protected override void OnInitialized()
@@ -70,7 +55,7 @@
 
     private bool AnswersNullOrWhiteSpace()
     {
-        return _answerItems.Any(a => a.IsNullOrWhiteSpace());
+        return _answerItems.All(a => a.IsNullOrWhiteSpace());
     }
     private async Task ValidateAsync()
     {
@@ -79,13 +64,19 @@
             await UiNotificationService.Error("请先填写答案");
             return;
         }
+        _validateLoading = true;
         var answerContents = Answers.Select(a => a.Content).ToArray();
         var right = _answerItems.Length == answerContents.Length && !_answerItems.Except(answerContents).Any();
-        await OnSubmit.InvokeAsync(new QuestionAnswerItem()
+        if (OnSubmit.HasDelegate)
+        {
+            await OnSubmit.InvokeAsync(new QuestionAnswerItem()
             {
                 QuestionId = QuestionId,
                 Answer = String.Join(ExamConsts.Splitter, _answerItems),
                 Right = right
             });
+        }
+
+        _validateLoading = false;
     }
 }

@@ -24,7 +24,6 @@ public class AntDesignUiNotificationService : IUiNotificationService, IScopedDep
 
     public async Task Info(string message, string title = null, Action<UiNotificationOptions> options = null)
     {
-
         var uiNotificationOptions = CreateDefaultOptions();
         options?.Invoke(uiNotificationOptions);
 
@@ -57,7 +56,7 @@ public class AntDesignUiNotificationService : IUiNotificationService, IScopedDep
 
     protected virtual async Task Notify(string title, string message, MessageType messageType)
     {
-        await MessageService.Open(new MessageConfig
+        await MessageService.OpenAsync(new MessageConfig
         {
             Content = message,
             Type = messageType

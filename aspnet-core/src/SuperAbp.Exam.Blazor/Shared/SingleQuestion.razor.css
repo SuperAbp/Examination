@@ -1,0 +1,23 @@
+.question-content .title {
+  font-size: 18px;
+}
+.question-content .title .number {
+  font-weight: bold;
+}
+.question-content .chooses {
+  width: 100%;
+}
+.bottom {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.analysis {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.ant-tag.current {
+  color: #389e0d;
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}

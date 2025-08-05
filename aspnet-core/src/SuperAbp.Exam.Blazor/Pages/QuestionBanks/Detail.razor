@@ -1,36 +1,30 @@
 ﻿@page "/question-bank/{id:guid}"
-
-<style>
-    h3{
-        font-weight: 700;
-    }
-</style>
-
 @if(_questionBank is not null)
 {
-    <Card>
+    <Card class="question-banks">
         <TitleTemplate>
-            <span @onclick="GoDetail" style="cursor: pointer">
-                <Icon Type="arrow-left" Theme="IconThemeType.Outline" />返回
-            </span>
-            <Divider Type="DividerType.Vertical" />@_questionBank.Title
+                <span @onclick="GoDetail" style="cursor: pointer">
+                    <Icon Type="arrow-left" Theme="IconThemeType.Outline"/>返回
+                </span>
+                <Divider Type="DividerType.Vertical"/>
+                <Title Level="2">@_questionBank.Title</Title>
         </TitleTemplate>
         <ChildContent>
             @if (!_questionBank.Remark.IsNullOrWhiteSpace())
             {
-                <h3>简介：</h3>
+                <Title Level="3">简介：</Title>
                 <p>@_questionBank.Remark</p>
                 <Divider />
             }
 
-            <h3>自由练习</h3>
+            <Title Level="3">自由练习</Title>
             <Button OnClick="() => StartTraining(0)">顺序练习</Button>
             <Button OnClick="() => StartTraining(1)">背题模式</Button>
             
         @if (_questionTypes.Count > 0)
         {
             <Divider/>
-            <h3>题型练习</h3>
+            <Title Level="3">题型练习</Title>
             @foreach (var questionType in _questionTypes)
             {
                 <Button OnClick="() => StartTraining(0, (int)questionType)">@L["QuestionType:" + questionType]</Button>
