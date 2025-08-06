@@ -9,7 +9,8 @@ else
                   QuestionAnswers="_questionAnswers"
                   ShowAnalysis="false"
                   Answered="@_answered"
-                  OnSubmit="@SubmitAsync"></QuestionItem>
+                  OnSubmit="@SubmitAsync"
+                  OnChange="ChangeAsync"></QuestionItem>
     <div class="bottom">
         @if (_questionIndex <= 0)
         {
@@ -59,6 +60,14 @@ else
     {
         _answered = item.Answer;
         await SaveAnswerAsync(item);
+    }
+    public async Task ChangeAsync(QuestionAnswerChangeEventArgs arg)
+    {
+        await SubmitAsync(new QuestionAnswerItem()
+        {
+            QuestionId = arg.QuestionId,
+            Answer = arg.Answer
+        });
     }
 
     public async Task PrevAsync()

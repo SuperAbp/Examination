@@ -17,14 +17,16 @@
                      Answers="QuestionAnswers"
                      Answered="@Answered"
                      ShowAnalysis="ShowAnalysis"
-                     OnSubmit="@SubmitAsync"></MultiSelect>
+                     OnSubmit="@SubmitAsync"
+                     OnChange="OnChange"></MultiSelect>
         break;
     case nameof(QuestionType.FillInTheBlanks):
         <Blank QuestionId="Question.Id"
                Answers="QuestionAnswers"
                Answered="@Answered"
                ShowAnalysis="ShowAnalysis"
-               OnSubmit="@SubmitAsync"></Blank>
+               OnSubmit="@SubmitAsync"
+               OnChange="OnChange"></Blank>
         break;
 }
 @if (ShowAnalysis)
@@ -67,6 +69,8 @@
     public string Answered { get; set; }
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
+    [Parameter]
+    public EventCallback<QuestionAnswerChangeEventArgs> OnChange { get; set; }
 
     public async Task SubmitAsync(QuestionAnswerItem item)
     {

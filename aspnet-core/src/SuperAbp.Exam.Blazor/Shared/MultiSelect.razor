@@ -19,12 +19,9 @@
         </div>
     }
 </div>
-@if (!ShowAnalysis)
+@if (OnSubmit.HasDelegate && !ShowAnalysis && ShowConfirm)
 {
-    if (OnSubmit.HasDelegate)
-    {
-        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync" Loading="_validateLoading" style="margin-bottom: 10px;">确认答案</Button>
-    }
+    <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync" Loading="_validateLoading" style="margin-bottom: 10px;">确认答案</Button>
 }
 
 @using JetBrains.Annotations
@@ -39,9 +36,11 @@
     public IReadOnlyList<QuestionAnswerViewModel> Answers { get; set; }
     [Parameter]
     public bool ShowAnalysis { get; set; }
+    [Parameter]
+    public bool ShowConfirm { get; set; } = true;
     [Parameter] [CanBeNull] public string Answered { get; set; }
     [Parameter]
-    public EventCallback<QuestionAnswerSelectEventArgs> OnSelect { get; set; }
+    public EventCallback<QuestionAnswerChangeEventArgs> OnChange { get; set; }
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 
@@ -92,18 +91,14 @@
         {
             _selectedAnswerIds.Add(answer.Id);
         }
-        if (OnSelect.HasDelegate)
+        if (OnChange.HasDelegate)
         {
-            await OnSelect.InvokeAsync(new QuestionAnswerSelectEventArgs()
+            await OnChange.InvokeAsync(new QuestionAnswerChangeEventArgs()
                 {
-                    QuestionId = QuestionId,
+                QuestionId = QuestionId,
                     Answer = String.Join(ExamConsts.Splitter, _selectedAnswerIds),
                 });
         }
-    }
-    void OnChange(string[] checkedValues)
-    {
-        _selectedAnswerIds = checkedValues.Select(v => new Guid(v)).ToList();
     }
     async Task ValidateAsync()
     {

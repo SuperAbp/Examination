@@ -3,17 +3,16 @@
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
-        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="@ShowAnalysis"/>
+        <Input Placeholder="@L["Answer"]" @bind-Value="_answerItems[tempIndex]" Disabled="@ShowAnalysis" OnBlur="ChangeAsync"/>
         <br />
         <br />
     }
 }
-@if (!ShowAnalysis)
+@if (OnSubmit.HasDelegate && !ShowAnalysis && ShowConfirm)
 {
     <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" Loading="_validateLoading" OnClick="ValidateAsync" style="margin-bottom: 10px;">确认答案</Button>
 }
 
-@using JetBrains.Annotations
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages
@@ -28,8 +27,10 @@
     public IReadOnlyList<QuestionAnswerViewModel> Answers { get; set; }
     [Parameter]
     public bool ShowAnalysis { get; set; }
-
-    [Parameter] [CanBeNull] public string Answered { get; set; }
+    [Parameter] public bool ShowConfirm { get; set; } = true;
+    [Parameter] public string Answered { get; set; }
+    [Parameter]
+    public EventCallback<QuestionAnswerChangeEventArgs> OnChange{ get; set; }
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 
@@ -60,6 +61,27 @@
             await UiNotificationService.Error("请先填写答案");
             return;
         }
+
+        await SubmitAsync();
+    }
+
+    private async Task ChangeAsync()
+    {
+        if (AnswersNullOrWhiteSpace())
+        {
+            return;
+        }
+        if (OnChange.HasDelegate)
+        {
+            await OnChange.InvokeAsync(new QuestionAnswerChangeEventArgs()
+            {
+                QuestionId = QuestionId,
+                Answer = String.Join(ExamConsts.Splitter, _answerItems),
+            });
+        }
+    }
+    private async Task SubmitAsync()
+    {
         _validateLoading = true;
         var answerContents = Answers.Select(a => a.Content).ToArray();
         var right = _answerItems.Length == answerContents.Length && !_answerItems.Except(answerContents).Any();
@@ -75,4 +97,6 @@
 
         _validateLoading = false;
     }
+
+   
 }
