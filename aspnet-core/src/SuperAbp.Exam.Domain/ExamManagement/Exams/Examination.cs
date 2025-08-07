@@ -16,7 +16,7 @@ public class Examination : FullAuditedAggregateRoot<Guid>
     { Name = String.Empty; }
 
     [SetsRequiredMembers]
-    public Examination(Guid id, Guid paperId, string name, decimal score, decimal passingScore, int totalTime) : base(id)
+    public Examination(Guid id, Guid paperId, string name, decimal score, decimal passingScore, int totalTime, AnswerMode answerMode) : base(id)
     {
         Name = name;
         Score = score;
@@ -24,6 +24,7 @@ public class Examination : FullAuditedAggregateRoot<Guid>
         TotalTime = totalTime;
         PaperId = paperId;
         Status = ExaminationStatus.Draft;
+        AnswerMode = answerMode;
     }
 
     /// <summary>

@@ -53,7 +53,8 @@ public abstract class ExaminationAdminAppServiceTests<TStartupModule> : ExamAppl
             PassingScore = 60,
             TotalTime = 100,
             StartTime = DateTime.Now.AddDays(1),
-            EndTime = DateTime.Now.AddDays(2)
+            EndTime = DateTime.Now.AddDays(2),
+            AnswerMode = AnswerMode.All
         };
         ExamListDto dto = await _examinationAppService.CreateAsync(input);
         Examination examination = await _examRepository.GetAsync(dto.Id);
@@ -65,6 +66,7 @@ public abstract class ExaminationAdminAppServiceTests<TStartupModule> : ExamAppl
         examination.PassingScore.ShouldBe(input.PassingScore);
         examination.StartTime.ShouldBe(input.StartTime);
         examination.EndTime.ShouldBe(input.EndTime);
+        examination.AnswerMode.ShouldBe(input.AnswerMode);
         examination.Status.Value.ShouldBe(ExaminationStatus.Draft.Value);
     }
 
@@ -80,7 +82,8 @@ public abstract class ExaminationAdminAppServiceTests<TStartupModule> : ExamAppl
             PassingScore = int.MaxValue,
             TotalTime = int.MaxValue,
             StartTime = DateTime.MaxValue.AddDays(-1),
-            EndTime = DateTime.MaxValue
+            EndTime = DateTime.MaxValue,
+            AnswerMode = AnswerMode.All
         };
         await _examinationAppService.UpdateAsync(_testData.Examination11Id, input);
         Examination examination = await _examRepository.GetAsync(_testData.Examination11Id);
@@ -92,6 +95,7 @@ public abstract class ExaminationAdminAppServiceTests<TStartupModule> : ExamAppl
         examination.PassingScore.ShouldBe(input.PassingScore);
         examination.StartTime.ShouldBe(input.StartTime);
         examination.EndTime.ShouldBe(input.EndTime);
+        examination.AnswerMode.ShouldBe(input.AnswerMode);
         examination.Status.Value.ShouldBe(ExaminationStatus.Draft.Value);
     }
 
