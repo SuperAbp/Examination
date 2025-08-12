@@ -8,7 +8,7 @@
 }
 else
 {
-    <SingleQuestion Title="@L["QuestionBank"]"
+    <SingleQuestion Title="@_questionBank.Title"
                 TrainType="TrainType"
                     BackUrl="@($"/question-bank/{QuestionBankId}")"
                 Questions="_questions"></SingleQuestion>
@@ -17,9 +17,10 @@ else
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.QuestionManagement.Questions
-@using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.QuestionManagement.QuestionBanks
 @using Volo.Abp.Application.Dtos
 @inject IStringLocalizer<ExamResource> L
+@inject IQuestionBankAppService QuestionBankAppService
 @inject IQuestionAppService QuestionAppService
 @code {
     [Parameter]
@@ -32,8 +33,11 @@ else
 
     bool loading = true;
     List<QuestionNumberVo> _questions = [];
+    QuestionBankDetailDto _questionBank;
+
     protected override async Task OnInitializedAsync()
     {
+        _questionBank = await QuestionBankAppService.GetAsync(QuestionBankId);
         PagedResultDto<QuestionListDto> result = await QuestionAppService.GetListAsync(new GetQuestionsInput()
         {
             QuestionBankId = QuestionBankId, 

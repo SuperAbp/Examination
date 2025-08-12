@@ -16,7 +16,7 @@ public class Examination : FullAuditedAggregateRoot<Guid>
     { Name = String.Empty; }
 
     [SetsRequiredMembers]
-    public Examination(Guid id, Guid paperId, string name, decimal score, decimal passingScore, int totalTime) : base(id)
+    public Examination(Guid id, Guid paperId, string name, decimal score, decimal passingScore, int totalTime, AnswerMode answerMode, bool randomOrderOfOption) : base(id)
     {
         Name = name;
         Score = score;
@@ -24,6 +24,8 @@ public class Examination : FullAuditedAggregateRoot<Guid>
         TotalTime = totalTime;
         PaperId = paperId;
         Status = ExaminationStatus.Draft;
+        AnswerMode = answerMode;
+        RandomOrderOfOption = randomOrderOfOption;
     }
 
     /// <summary>
@@ -57,6 +59,13 @@ public class Examination : FullAuditedAggregateRoot<Guid>
     public Guid PaperId { get; set; }
 
     public ExaminationStatus Status { get; set; }
+
+    public AnswerMode AnswerMode { get; set; }
+
+    /// <summary>
+    /// 选项乱序
+    /// </summary>
+    public bool RandomOrderOfOption { get; set; }
 
     /// <summary>
     /// 开始时间

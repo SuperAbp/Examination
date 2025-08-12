@@ -1,56 +1,4 @@
-﻿﻿
-
-<style>
-    .multi-chooses .disabled {
-        cursor: not-allowed;
-    }
-
-    .multi-chooses .choose-item {
-        padding: 9px 20px 9px 5px;
-        -ms-border-radius: 4px;
-        border-radius: 4px;
-        border: 1px solid #d9d9d9;
-        margin-bottom: 10px;
-    }
-
-    .multi-chooses .tag {
-        width: 10px;
-        font-weight: bold;
-        color: #1890ff;
-    }
-
-    .multi-chooses .choose-item.primary {
-        border-color: #1890ff;
-    }
-
-    .multi-chooses .choose-item .body {
-        padding: 0 8px;
-        display: flex;
-        -o-justify-content: space-between;
-        -webkit-justify-content: space-between;
-        justify-content: space-between;
-    }
-
-    .multi-chooses .choose-item .content {
-        color: #000;
-        margin-left: 5px;
-    }
-
-    .multi-chooses .choose-item .result {
-        display: none;
-    }
-
-        .multi-chooses .choose-item .result.show {
-            display: block;
-        }
-
-        .multi-chooses .choose-item .result span {
-            vert-align: middle;
-            font-size: 1rem;
-        }
-</style>
-
-<div class="multi-chooses">
+﻿<div class="multi-chooses">
     @for (int i = 0; i < Answers.Count; i++)
     {
         var tempIndex = i;
@@ -61,7 +9,7 @@
                     <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
                     <span class="content">@answer.Content</span>
                 </div>
-                @if (answer.Right)
+                @if (answer.Right.HasValue && answer.Right.Value)
                 {
                     <div class="@GetResultClass(answer)">
                         <Icon Type="check-circle" Theme="IconThemeType.TwoTone" TwotoneColor="#52c41a" />
@@ -75,12 +23,11 @@
 {
     if (OnSubmit.HasDelegate)
     {
-        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync">确认答案</Button>
+        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" OnClick="ValidateAsync" Loading="_validateLoading" style="margin-bottom: 10px;">确认答案</Button>
     }
 }
 
 @using JetBrains.Annotations
-@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages
 @using Volo.Abp.AspNetCore.Components.Notifications
@@ -98,8 +45,8 @@
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 
-
-    List<Guid> _selectedAnswerIds = new List<Guid>();
+    List<Guid> _selectedAnswerIds = [];
+    bool _validateLoading = false;
     protected override void OnInitialized()
     {
         if (!Answered.IsNullOrWhiteSpace())
@@ -110,7 +57,7 @@
 
     public string GetBorderColor(QuestionAnswerViewModel answer)
     {
-        List<string> classes = new List<string>() { "choose-item" };
+        List<string> classes = ["choose-item"];
         if (_selectedAnswerIds.Contains(answer.Id))
         {
             classes.Add("primary");
@@ -124,7 +71,7 @@
     string GetResultClass(QuestionAnswerViewModel answer)
     {
         List<string> classes = ["result"];
-        if (ShowAnalysis && answer.Right)
+        if (ShowAnalysis && answer.Right.HasValue && answer.Right.Value)
         {
             classes.Add("show");
         }
@@ -165,8 +112,10 @@
             await UiNotificationService.Error("请先选择答案");
             return;
         }
+
+        _validateLoading = true;
         var rightIds = Answers
-            .Where(a => a.Right)
+            .Where(a => a.Right.HasValue && a.Right.Value)
             .Select(a => a.Id)
             .ToArray();
         bool right = _selectedAnswerIds.Count == rightIds.Length
@@ -181,5 +130,6 @@
                     Right = right
                 });
         }
+        _validateLoading = false;
     }
 }

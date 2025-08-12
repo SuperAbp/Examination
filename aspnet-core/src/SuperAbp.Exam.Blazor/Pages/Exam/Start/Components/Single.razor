@@ -1,0 +1,109 @@
+﻿@if (_loadingQuestion)
+{
+    <Spin/>
+}
+else
+{   
+    <QuestionItem Number="_questionIndex + 1"
+                  Question="_question"
+                  QuestionAnswers="_questionAnswers"
+                  ShowAnalysis="false"
+                  Answered="@_answered"
+                  OnSubmit="@SubmitAsync"></QuestionItem>
+    <div class="bottom">
+        @if (_questionIndex <= 0)
+        {
+            <Button OnClick="PrevAsync" Disabled Icon="@IconType.Outline.ArrowLeft">上一题</Button>
+        }
+        else
+        {
+            <Button OnClick="PrevAsync" Icon="@IconType.Outline.ArrowLeft">上一题</Button>
+        }
+
+        @if (_questionIndex >= QuestionIds.Length - 1)
+        {
+            <Button OnClick="NextAsync" Disabled Icon="@IconType.Outline.ArrowRight">下一题</Button>
+        }
+        else
+        {
+            <Button OnClick="NextAsync" Icon="@IconType.Outline.ArrowRight">下一题</Button>
+        }
+    </div>
+}
+
+@using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.ExamManagement.UserExams
+@using Volo.Abp.ObjectMapping
+@inherits ExamQuestionBase
+@inject IObjectMapper ObjectMapper
+@code {
+    int _questionIndex;
+    QuestionViewModel _question;
+    bool _loadingQuestion = false;
+    string _answered;
+    IReadOnlyList<QuestionAnswerViewModel> _questionAnswers = Array.Empty<QuestionAnswerViewModel>();
+
+    [Parameter]
+    public IReadOnlyList<UserExamDetailDto.QuestionDto> Questions { get; set; }
+    [Parameter]
+    public Guid[] QuestionIds { get; set; }
+    [Parameter]
+    public EventCallback<Guid> OnQuestionChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ShowQuestionAsync(QuestionIds[0]);
+    }
+
+    public async Task SubmitAsync(QuestionAnswerItem item)
+    {
+        _answered = item.Answer;
+        await SaveAnswerAsync(item);
+    }
+
+    public async Task PrevAsync()
+    {
+        if (_questionIndex < 0)
+        {
+            _questionIndex = 0;
+            return;
+        }
+
+        if (OnQuestionChanged.HasDelegate)
+        {
+            await OnQuestionChanged.InvokeAsync(QuestionIds[_questionIndex - 1]);
+        }
+    }
+
+    public async Task NextAsync()
+    {
+        if (_questionIndex >= QuestionIds.Length)
+        {
+            _questionIndex = QuestionIds.Length - 1;
+            return;
+        }
+
+        if (OnQuestionChanged.HasDelegate)
+        {
+            await OnQuestionChanged.InvokeAsync(QuestionIds[_questionIndex + 1]);
+        }
+    }
+
+    public async Task ShowQuestionAsync(Guid id)
+    {
+        _loadingQuestion = true;
+        _answered = await GetAnswered(id);
+        _questionIndex = QuestionIds.ToList().IndexOf(id);
+        UserExamDetailDto.QuestionDto question = Questions.Single(q => q.Id == id);
+        _question = ObjectMapper.Map<UserExamDetailDto.QuestionDto, QuestionViewModel>(question);
+        _questionAnswers = question.Options.Select(a => ObjectMapper.Map<UserExamDetailDto.QuestionDto.OptionDto, QuestionAnswerViewModel>(a)).ToArray();
+        _loadingQuestion = false;
+    }
+
+
+    protected async Task<string> GetAnswered(Guid id)
+    {
+        List<QuestionAnswerItem> answerItems = await LocalStorage.GetItemAsync<List<QuestionAnswerItem>>(QuestionAnswerStorageKey) ?? [];
+        return string.Join(ExamConsts.Splitter, answerItems.Where(c => c.QuestionId == id).Select(c => c.Answer));
+    }
+}

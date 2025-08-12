@@ -52,7 +52,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         [Authorize(ExamPermissions.Exams.Create)]
         public virtual async Task<ExamListDto> CreateAsync(ExamCreateDto input)
         {
-            Examination examination = new(GuidGenerator.Create(), input.PaperId, input.Name, input.Score, input.PassingScore, input.TotalTime)
+            Examination examination = new(GuidGenerator.Create(), input.PaperId, input.Name, input.Score, input.PassingScore, input.TotalTime, AnswerMode.FromValue(input.AnswerMode), input.RandomOrderOfOption)
             {
                 Description = input.Description
             };
@@ -83,6 +83,8 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             examination.PassingScore = input.PassingScore;
             examination.TotalTime = input.TotalTime;
             examination.Description = input.Description;
+            examination.AnswerMode = AnswerMode.FromValue(input.AnswerMode);
+            examination.RandomOrderOfOption = input.RandomOrderOfOption;
             examination.SetTime(input.StartTime, input.EndTime);
             examination = await ExamRepository.UpdateAsync(examination);
             return ObjectMapper.Map<Examination, ExamListDto>(examination);

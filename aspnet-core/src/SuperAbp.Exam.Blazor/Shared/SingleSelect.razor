@@ -1,54 +1,4 @@
-﻿﻿<style>
-    .chooses{
-        width: 100%;
-    }
-     .chooses .choose-item {
-         width: 100%;
-         padding: 9px 20px 9px 5px;
-         -ms-border-radius: 4px;
-         border-radius: 4px;
-         border: 1px solid #d9d9d9;
-         margin-bottom: 10px;
-     }
-
-         .chooses .choose-item.primary {
-             border-color: #1890ff;
-         }
-
-     .chooses .ant-radio {
-         display: none;
-     }
-
-         .chooses .ant-radio + * {
-             width: 100%;
-         }
-
-     .chooses .choose-item .tag {
-         width: 10px;
-         font-weight: bold;
-         color: #1890ff;
-     }
-
-     .chooses .choose-item .content {
-         color: #000;
-         margin-left: 5px;
-     }
-
-     .chooses .result {
-         display: none;
-     }
-
-         .chooses .result.show {
-             display: block;
-         }
-
-         .chooses .result span {
-             vert-align: middle;
-             font-size: 1rem;
-         }
-
-</style>
- <RadioGroup class="chooses" @bind-Value="_selectedAnswerId" Size="InputSize.Large" TValue="Guid" OnChange="ValidateAsync" Disabled="ShowAnalysis">
+﻿ <RadioGroup class="chooses" @bind-Value="_selectedAnswerId" Size="InputSize.Large" TValue="Guid" OnChange="ValidateAsync" Disabled="ShowAnalysis">
      @for (int i = 0; i < Answers.Count; i++)
      {
          var tempIndex = i;
@@ -59,7 +9,7 @@
                      <span class="tag">@Convert.ToChar(65 + tempIndex)</span>
                      <span class="content">@answer.Content</span>
                  </div>
-                 @if (answer.Right)
+                 @if (answer.Right.HasValue && answer.Right.Value)
                  {
                      <div class="@GetResultClass(answer)">
                          <Icon Type="check-circle" Theme="IconThemeType.TwoTone" TwotoneColor="#52c41a"/>
@@ -71,8 +21,6 @@
  </RadioGroup>
 
 @using SuperAbp.Exam.TrainingManagement
-@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
-@using System.Diagnostics
 @using JetBrains.Annotations
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Blazor.Pages
@@ -92,16 +40,13 @@
     [Parameter]
     public EventCallback<QuestionAnswerItem> OnSubmit { get; set; }
 
-    Guid _selectedAnswerId = Guid.Empty;
-
-    protected override void OnInitialized()
+    Guid _selectedAnswerId;
+    protected override async Task OnParametersSetAsync()
     {
-        _selectedAnswerId = Guid.Empty;
-        if (!Answered.IsNullOrWhiteSpace())
-        {
-            _selectedAnswerId = new Guid(Answered);
-        }
+        _selectedAnswerId = !String.IsNullOrEmpty(Answered) ? Guid.Parse(Answered) : Guid.Empty;
+        await base.OnParametersSetAsync();
     }
+
     public string GetBorderColor(QuestionAnswerViewModel answer)
     {
         List<string> classes = ["choose-item"];
@@ -114,7 +59,7 @@
     string GetResultClass(QuestionAnswerViewModel answer)
     {
         List<string> classes = ["result"];
-        if (ShowAnalysis && answer.Right)
+        if (ShowAnalysis && answer.Right.HasValue && answer.Right.Value)
         {
             classes.Add("show");
         }
@@ -129,7 +74,8 @@
             await UiNotificationService.Error("请先选择答案");
             return;
         }
-        var right = answer.Right;
+
+        bool right = answer.Right ?? false;
         await OnSubmit.InvokeAsync(new QuestionAnswerItem()
             {
                 QuestionId = QuestionId,

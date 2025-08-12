@@ -43,9 +43,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public virtual async Task<UserExamDetailDto> GetAsync(Guid id)
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
+            Examination exam = await examRepository.GetAsync(userExam.ExamId);
             List<Guid> questionIds = userExam.Questions.Select(q => q.QuestionId).ToList();
             List<Question> questions = await questionRepository.GetByIdsAsync(questionIds);
             UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
+            dto.AnswerMode = exam.AnswerMode;
             List<UserExamDetailDto.QuestionDto> questionDtos = [];
             foreach (Question question in questions)
             {
@@ -61,7 +63,12 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                     questionDto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
                 }
                 List<OptionDto> answerDtos = [];
-                foreach (QuestionAnswer answer in question.Answers)
+                List<QuestionAnswer> answers = question.Answers;
+                if (exam.RandomOrderOfOption)
+                {
+                    answers = answers.OrderBy(_ => Guid.NewGuid()).ToList();
+                }
+                foreach (QuestionAnswer answer in answers)
                 {
                     OptionDto optionDto = new()
                     {

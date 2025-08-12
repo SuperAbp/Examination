@@ -68,6 +68,25 @@
             </nz-form-control>
           </nz-form-item>
         </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>{{ 'Exam::AnswerMode' | abpLocalization }}</nz-form-label>
+            <nz-form-control>
+              <nz-radio-group formControlName="answerMode">
+                <label nz-radio [nzValue]="0">{{ 'Exam::AnswerMode:0' | abpLocalization }}</label>
+                <label nz-radio [nzValue]="1">{{ 'Exam::AnswerMode:1' | abpLocalization }}</label>
+              </nz-radio-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>{{ 'Exam::RandomOrderOfOption' | abpLocalization }}</nz-form-label>
+            <nz-form-control>
+              <label nz-checkbox formControlName="randomOrderOfOption"></label>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
       </div>
 
       <nz-form-item>

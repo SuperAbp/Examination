@@ -1,5 +1,8 @@
 using System;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,17 +16,16 @@ using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.AspNetCore.Components.Web.BasicTheme;
-using Autofac.Core;
-using Blazored.LocalStorage;
 
 namespace SuperAbp.Exam.Blazor;
 
 [DependsOn(
     typeof(AbpAutofacWebAssemblyModule),
+    typeof(AbpAutoMapperModule),
     typeof(ExamHttpApiClientModule),
-    typeof(AbpAspNetCoreComponentsWebAssemblyBasicThemeModule)
+    typeof(AbpAspNetCoreComponentsWebAssemblyBasicThemeModule),
+    typeof(AbpAspNetCoreComponentsWebBasicThemeModule)
 )]
-[DependsOn(typeof(AbpAspNetCoreComponentsWebBasicThemeModule))]
 public class ExamBlazorModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -37,7 +39,11 @@ public class ExamBlazorModule : AbpModule
         ConfigureUI(builder);
         ConfigureMenu(context);
         ConfigureAutoMapper(context);
+        ConfigureLocalStorage(builder);
+    }
 
+    private void ConfigureLocalStorage(WebAssemblyHostBuilder builder)
+    {
         builder.Services.AddBlazoredLocalStorage();
     }
 

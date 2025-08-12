@@ -1,37 +1,4 @@
-﻿<style>
-    .question-content .title {
-        font-size: 18px;
-    }
-
-        .question-content .title .number {
-            font-weight: bold;
-        }
-
-    .question-content .chooses {
-        width: 100%;
-    }
-
-    .bottom {
-        margin-top: 10px;
-        display: flex;
-        -o-justify-content: space-between;
-        -webkit-justify-content: space-between;
-        justify-content: space-between;
-    }
-
-    .analysis {
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-
-    .ant-tag.current {
-        color: #389e0d;
-        background: #f6ffed;
-        border-color: #b7eb8f;
-    }
-
-</style>
-
+﻿
 @if (loading)
 {
     <div style=" text-align: center;margin: 50px 0;">
@@ -64,7 +31,7 @@ else
                     else
                     {
                         <QuestionItem Number="_questionIndex + 1"
-                                      Question="_question"
+                                      Question="ObjectMapper.Map<QuestionDetailDto, QuestionViewModel>(_question)"
                                       QuestionAnswers="_questionAnswers"
                                       ShowAnalysis="_showAnalysis"
                                       Answered="@GetAnswered()"
@@ -123,10 +90,12 @@ else
 @using SuperAbp.Exam.Favorites
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using SuperAbp.Exam.TrainingManagement
+@using Volo.Abp.ObjectMapping
 @inject NavigationManager Navigation
 @inject IQuestionAppService QuestionAppService
 @inject ITrainingAppService TrainingAppService
 @inject IFavoriteAppService FavoriteAppService
+@inject IObjectMapper ObjectMapper
 @code {
     [Parameter]
     public int? TrainType { get; set; }
@@ -218,9 +187,10 @@ else
     }
     public async Task ShowQuestionAsync(Guid id)
     {
-        _questionIndex = _questionIds.ToList().IndexOf(id);
+        
         loadingQuestion = true;
         _showAnalysis = false;
+        _questionIndex = _questionIds.ToList().IndexOf(id);
         favorited = await FavoriteAppService.GetByQuestionIdAsync(id);
         await LoadQuestionAsync(id);
         if (TrainType is 1 || _selectedQuestionAnswers.Any(a => a.QuestionId == id))
@@ -254,6 +224,8 @@ else
                 }).ToArray();
             _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>(_question, _questionAnswers));
         }
+
+        var s = ObjectMapper.Map<QuestionDetailDto, QuestionViewModel>(_question);
     }
     public async Task SubmitAsync(QuestionAnswerItem item)
     {

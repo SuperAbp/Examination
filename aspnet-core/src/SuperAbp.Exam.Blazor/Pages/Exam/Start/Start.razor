@@ -1,0 +1,182 @@
+﻿@page "/exam/start/{id:guid}"
+
+@if (_loading)
+{
+    <div style=" text-align: center;margin: 50px 0;">
+        <Spin />
+    </div>
+}
+else
+{
+    <GridRow Gutter="16">
+        <GridCol Span="4">
+            <Affix OffsetTop="10">
+                <QuestionNumber CurrentId="_currentId"
+                                Numbers="_questions"
+                                AnswerIds="_answerIds"
+                                OnChanged="ChangeQuestion"></QuestionNumber>
+            </Affix>
+        </GridCol>
+        <GridCol Span="16">
+            <Card class="question-content">
+                <ChildContent>
+                    @if (_userExam.AnswerMode == AnswerMode.Single)
+                    {
+                    <Single @ref="_singleComponent"
+                            QuestionAnswerStorageKey="@_questionAnswerStorageKey"
+                            Questions="_examQuestions"
+                            QuestionIds="_questionIds"
+                            OnAnswered="OnAnswered"
+                            OnQuestionChanged="ChangeQuestion" />
+                    }
+                    else
+                    {
+                    <Full @ref="_fullComponent"
+                          UserExamId="Id"
+                          QuestionAnswerStorageKey="@_questionAnswerStorageKey"
+                          Questions="_examQuestions"
+                          OnAnswered="OnAnswered" />
+                    }
+                </ChildContent>
+            </Card>
+        </GridCol>
+        <GridCol Span="4">
+            <Affix OffsetTop="10">
+                <Card style="text-align: center;">
+                    <ChildContent>
+                        <Button AutoLoading Type="@ButtonType.Primary" OnClick="SubmitPaperAsync" style="width:100%">提交试卷</Button>
+                    </ChildContent>
+                </Card>
+            </Affix>
+        </GridCol>
+    </GridRow>
+}
+
+@using SuperAbp.Exam.Blazor.Pages.Exam.Start.Components
+@using SuperAbp.Exam.ExamManagement.UserExams
+@using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.Localization
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.ExamManagement.Exams
+@using Single = SuperAbp.Exam.Blazor.Pages.Exam.Start.Components.Single
+@inject NavigationManager Navigation
+@inject IStringLocalizer<ExamResource> L
+@inject IUserExamAppService UserExamAppService
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    bool _loading = true;
+    IReadOnlyList<UserExamDetailDto.QuestionDto> _examQuestions = Array.Empty<UserExamDetailDto.QuestionDto>();
+    Dictionary<int, int> _questionTypes = new();
+    readonly List<QuestionNumberVo> _questions = [];
+    UserExamDetailDto _userExam;
+    Guid _currentId;
+
+    Guid[] _questionIds = [];
+    private string _questionAnswerStorageKey;
+
+    private Single _singleComponent;
+    private Full _fullComponent;
+
+    // 新增：答过的题目ID列表
+    private readonly List<Guid> _answerIds = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _questionAnswerStorageKey = $"question_answers_{Id}";
+        _userExam = await UserExamAppService.GetAsync(Id);
+        _examQuestions = _userExam.Questions;
+        List<QuestionAnswerItem> answerItems = await LocalStorage.GetItemAsync<List<QuestionAnswerItem>>(_questionAnswerStorageKey) ?? [];
+        if (answerItems.Count > 0)
+        {
+            foreach (var item in answerItems)
+            {
+                var question = _examQuestions.SingleOrDefault(q => q.Id == item.QuestionId);
+                if (question is null)
+                {
+                    continue;
+                }
+                question.Answers = item.Answer;
+                if (!_answerIds.Contains(item.QuestionId))
+                {
+                    _answerIds.Add(item.QuestionId);
+                }
+            }
+        }
+
+        _questionTypes = _examQuestions.GroupBy(q => q.QuestionType).Select(q => new
+        {
+            QuestionType = q.Key,
+            Count = q.Count()
+        }).ToDictionary(key => key.QuestionType, value => value.Count);
+        foreach (KeyValuePair<int, int> item in _questionTypes)
+        {
+            QuestionNumberVo vo = new QuestionNumberVo()
+            {
+                QuestionType = item.Key,
+                    Questions = _examQuestions.Where(q => q.QuestionType == item.Key)
+                    .Select(q => new QuestionNumberVo.QuestionIndex()
+                    {
+                        QuestionId = q.Id,
+                        QuestionScore = q.QuestionScore
+                    }).ToArray()
+            };
+            vo.TotalScore = vo.Questions.Sum(q => q.QuestionScore ?? 0);
+            _questions.Add(vo);
+        }
+        _questionIds = _questions.SelectMany(q => q.Questions.Select(i => i.QuestionId)).ToArray();
+        _currentId = _questions[0].Questions[0].QuestionId;
+        _loading = false;
+    }
+    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamDetailDto.QuestionDto.OptionDto> answers)
+    {
+        return answers
+            .Select(qa => new QuestionAnswerViewModel
+            {
+                Id = qa.Id,
+                Content = qa.Content,
+                Right = false
+            }).ToArray();
+    }
+
+    public virtual async Task SubmitPaperAsync()
+    {
+        List<QuestionAnswerItem> answerItems = await LocalStorage.GetItemAsync<List<QuestionAnswerItem>>(_questionAnswerStorageKey) ?? [];
+        await UserExamAppService.FinishedAsync(Id, answerItems.Select(a => new UserExamAnswerDto
+        {
+            QuestionId = a.QuestionId,
+            Answers = a.Answer
+        }).ToList());
+        await LocalStorage.RemoveItemAsync(_questionAnswerStorageKey);
+        Navigation.NavigateTo("/exam/result");
+    }
+
+    public async Task ChangeQuestion(Guid id)
+    {
+        _currentId = id;
+        if (_userExam.AnswerMode == AnswerMode.Single)
+        {
+            await _singleComponent.ShowQuestionAsync(id);
+        }
+        else
+        {
+            await _fullComponent.ShowQuestionAsync(id);
+        }
+    }
+
+    public void OnAnswered(Guid id)
+    {
+        if (!_answerIds.Contains(id))
+        {
+            _answerIds.Add(id);
+            StateHasChanged();
+        }
+    }
+
+    protected virtual void GoDetail()
+    {
+        Navigation.NavigateTo($"/exam");
+    }
+}

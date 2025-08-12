@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuperAbp.Exam.ExamManagement.Exams;
+using System;
 using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
 
@@ -12,6 +13,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public Guid UserId { get; set; }
         public Guid ExamId { get; set; }
         public int Status { get; set; }
+
+        public required AnswerMode AnswerMode { get; set; }
 
         public IReadOnlyList<QuestionDto> Questions { get; set; } = [];
 

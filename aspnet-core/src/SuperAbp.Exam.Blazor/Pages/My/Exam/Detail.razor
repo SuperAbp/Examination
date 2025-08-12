@@ -1,8 +1,5 @@
 ﻿@page "/my/exam/{id:guid}"
-@using Microsoft.Extensions.Localization
-@using SuperAbp.Exam.ExamManagement.UserExams
-@using SuperAbp.Exam.Localization
-@using SuperAbp.Exam.QuestionManagement.Questions
+
 
 @if (loading)
 {
@@ -13,25 +10,29 @@ else
     <GridRow Gutter="16">
         <GridCol Span="4">
             <Affix OffsetTop="10">
-                <QuestionNumber CurrentId="_questions[0].Questions[0].QuestionId"
-                                Numbers="_questions"></QuestionNumber>
+                <QuestionNumber CurrentId="_currentId"
+                                Numbers="_questions"
+                                OnChanged="ChangeQuestion"></QuestionNumber>
             </Affix>
         </GridCol>
         <GridCol Span="16">
             <Card class="question-content">
                 <ChildContent>
                     @{
-                        int number = 1, bigNumber = 1;
+                        int number = 1, bigNumber = 0;
                         foreach (KeyValuePair<int, int> questionType in _questionTypes)
                         {
                             var currentQuestions = _examQuestions.Where(q => q.QuestionType == questionType.Key).ToArray();
-                            <h2>@chineseNumber[bigNumber++]、@L["QuestionType:" + questionType.Key]题（共@(questionType.Value)题，合计@(currentQuestions.Sum(q => q.Score))分）</h2>
+                            <Title Level="2">@chineseNumber[bigNumber++]、@L["QuestionType:" + questionType.Key]题（共@(questionType.Value)题，合计@(currentQuestions.Sum(q => q.Score))分）</Title>
                             foreach (UserExamDetailDto.QuestionDto examQuestion in currentQuestions)
                             {
                                 IReadOnlyList<QuestionAnswerViewModel> answers = ToQuestionAnswerViewModels(examQuestion.Options);
-                                <h3 class="title">
-                                    <span class="number">@(number++)</span>
-                                    <span>@examQuestion.Content</span>
+                                @* <Title Level="3" class="title" Id="@($"question-{examQuestion.Id}")"> *@
+                                @*     <span class="number">@(number++)</span> *@
+                                @*     <span>@examQuestion.Content</span> *@
+                                @* </Title> *@
+                                <h3 class="title" Id="@($"question-{examQuestion.Id}")">
+                                    <span class="number">@(number++)、</span><span>@examQuestion.Content</span>
                                 </h3>
                                 @switch (QuestionType.FromValue(examQuestion.QuestionType).Name)
                                 {
@@ -52,8 +53,7 @@ else
                                         <Blank QuestionId="examQuestion.Id"
                                                Answered="@examQuestion.Answers"
                                                Answers="answers"
-                                               ShowAnalysis="true"
-                                               ShowConfirm="false"></Blank>
+                                               ShowAnalysis="true"></Blank>
                                         break;
                                 }
 
@@ -105,9 +105,15 @@ else
         </GridCol>
     </GridRow>
 }
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.ExamManagement.UserExams
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using Volo.Abp.AspNetCore.Components.Messages
 @inject IStringLocalizer<ExamResource> L
 @inject NavigationManager Navigation
 @inject IUserExamAppService UserExamAppService
+@inject IJSRuntime JSRuntime
 @code {
     [Parameter]
     public Guid Id { get; set; }
@@ -117,6 +123,7 @@ else
     IReadOnlyList<UserExamDetailDto.QuestionDto> _examQuestions = Array.Empty<UserExamDetailDto.QuestionDto>();
     Dictionary<int, int> _questionTypes = new();
     List<QuestionNumberVo> _questions = [];
+    Guid _currentId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -146,6 +153,8 @@ else
             vo.TotalScore = vo.Questions.Sum(q => q.QuestionScore ?? 0);
             _questions.Add(vo);
         }
+
+        _currentId = _questions[0].Questions[0].QuestionId;
         loading = false;
     }
     protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamDetailDto.QuestionDto.OptionDto> answers)
@@ -166,5 +175,17 @@ else
             .Select(a => answers.ToArray().FindIndex(b => b.Id.ToString() == a))
             .Where(a => a > -1)
             .Select(a => Convert.ToChar(65 + a)));
+    }
+
+    protected async Task ChangeQuestion(Guid id)
+    {
+        _currentId = id;
+        await ShowQuestionAsync(id);
+    }
+
+    protected async Task ShowQuestionAsync(Guid id)
+    {
+        string elementId = $"question-{id}";
+        await JSRuntime.InvokeVoidAsync("scrollToElementById", elementId);
     }
 }
