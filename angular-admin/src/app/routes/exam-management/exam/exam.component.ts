@@ -61,6 +61,8 @@ export class ExamManagementExamComponent implements OnInit {
       index: 'totalTime'
     },
     { title: this.localizationService.instant('Exam::Status'), render: 'status' },
+    { title: this.localizationService.instant('Exam::AnswerMode'), render: 'answerMode' },
+    { title: this.localizationService.instant('Exam::RandomOrderOfOption'), type: 'yn', index: 'randomOrderOfOption' },
     { title: this.localizationService.instant('Exam::StartTime'), index: 'startTime' },
     { title: this.localizationService.instant('Exam::EndTime'), index: 'endTime' },
     {

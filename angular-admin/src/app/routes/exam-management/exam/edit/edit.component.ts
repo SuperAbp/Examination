@@ -2,6 +2,7 @@ import { CoreModule, LocalizationService } from '@abp/ng.core';
 import { Component, OnInit, Input, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { I18NService } from '@core';
+import { r } from '@delon/mock';
 import { dateTimePickerUtil } from '@delon/util';
 import { ExaminationService, PaperService } from '@proxy/admin/controllers';
 import { GetExamForEditorOutput } from '@proxy/admin/exam-management/exams';
@@ -15,6 +16,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, tap } from 'rxjs/operators';
@@ -46,6 +48,7 @@ import { finalize, tap } from 'rxjs/operators';
     NzCheckboxModule,
     NzDatePickerModule,
     NzButtonModule,
+    NzRadioModule,
     EditorComponent
   ]
 })
@@ -137,6 +140,8 @@ export class ExamManagementExamEditComponent implements OnInit {
             startTime: [new Date()],
             endTime: [new Date()],
             isLimitedTime: [false],
+            randomOrderOfOption: [this.exam.randomOrderOfOption || false],
+            answerMode: [this.exam.answerMode || 0],
             examTimes: [[]]
           });
           if (this.exam.startTime && this.exam.endTime) {

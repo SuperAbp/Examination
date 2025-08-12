@@ -15,6 +15,6 @@ public class ExamCreateOrUpdateDtoBase
     public DateTime? EndTime { get; set; }
 
     public bool Published { get; set; }
-
-    public required AnswerMode AnswerMode { get; set; }
+    public bool RandomOrderOfOption { get; set; }
+    public int AnswerMode { get; set; }
 }

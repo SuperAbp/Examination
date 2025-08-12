@@ -1,5 +1,4 @@
-﻿using SuperAbp.Exam.ExamManagement.Exams;
-using System;
+﻿using System;
 using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.Exams
@@ -17,5 +16,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         public DateTime? EndTime { get; set; }
 
         public int Status { get; set; }
+        public bool RandomOrderOfOption { get; set; }
+        public int AnswerMode { get; set; }
     }
 }
