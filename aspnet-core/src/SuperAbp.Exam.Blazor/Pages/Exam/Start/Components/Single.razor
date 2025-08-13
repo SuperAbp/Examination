@@ -60,6 +60,14 @@ else
         _answered = item.Answer;
         await SaveAnswerAsync(item);
     }
+    public async Task ChangeAsync(QuestionAnswerChangeEventArgs arg)
+    {
+        await SubmitAsync(new QuestionAnswerItem()
+        {
+            QuestionId = arg.QuestionId,
+            Answer = arg.Answer
+        });
+    }
 
     public async Task PrevAsync()
     {

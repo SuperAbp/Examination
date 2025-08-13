@@ -183,7 +183,7 @@ export class ExamManagementExamEditComponent implements OnInit {
     this.showExamTime = e;
   }
 
-  save(publish: boolean = false) {
+  save(published: boolean = false) {
     if (!this.form.valid || this.isConfirmLoading) {
       for (const key of Object.keys(this.form.controls)) {
         this.form.controls[key].markAsDirty();
@@ -194,7 +194,7 @@ export class ExamManagementExamEditComponent implements OnInit {
     this.isConfirmLoading = true;
 
     var dynamicPara = {
-      publish: publish
+      published: published
     };
     if (!this.isLimitedTime.value) {
       this.form.removeControl('examTimes');
