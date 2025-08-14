@@ -48,6 +48,16 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             List<Question> questions = await questionRepository.GetByIdsAsync(questionIds);
             UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
             dto.AnswerMode = exam.AnswerMode;
+            if (userExam.StartTime.HasValue)
+            {
+                dto.EndTime = userExam.StartTime.Value.AddMinutes(exam.TotalTime);
+            }
+            else
+            {
+                userExam.StartTime = clock.Now;
+                await UserExamRepository.UpdateAsync(userExam);
+            }
+
             List<UserExamDetailDto.QuestionDto> questionDtos = [];
             foreach (Question question in questions)
             {
@@ -127,6 +137,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 throw new InvalidUserExamStatusException(userExam.Status);
             }
             userExam.Status = UserExamStatus.InProgress;
+            userExam.StartTime = Clock.Now;
             await UserExamRepository.UpdateAsync(userExam);
         }
 

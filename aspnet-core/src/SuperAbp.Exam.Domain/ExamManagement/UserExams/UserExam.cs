@@ -38,6 +38,8 @@ public class UserExam : FullAuditedAggregateRoot<Guid>
     /// </summary>
     public DateTime? FinishedTime { get; set; }
 
+    public DateTime? StartTime { get; set; }
+
     public UserExamStatus Status { get; set; }
 
     public List<UserExamQuestion> Questions { get; set; }

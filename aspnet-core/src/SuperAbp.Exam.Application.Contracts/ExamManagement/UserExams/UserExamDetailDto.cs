@@ -14,6 +14,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public Guid ExamId { get; set; }
         public int Status { get; set; }
 
+        public DateTime EndTime { get; set; }
+
         public required AnswerMode AnswerMode { get; set; }
 
         public IReadOnlyList<QuestionDto> Questions { get; set; } = [];

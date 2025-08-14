@@ -3,6 +3,7 @@ using SuperAbp.Exam.ExamManagement.UserExams;
 using AutoMapper;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.QuestionManagement.Questions;
+using Volo.Abp.AutoMapper;
 
 namespace SuperAbp.Exam.ExamManagement
 {
@@ -28,15 +29,13 @@ namespace SuperAbp.Exam.ExamManagement
             CreateMap<UserExam, UserExamListDto>();
             CreateMap<UserExamWithDetails, UserExamListDto>();
             CreateMap<UserExam, UserExamDetailDto>()
-                .ForMember(s => s.Questions,
-                opt => opt.Ignore());
+                .Ignore(s => s.EndTime)
+                .Ignore(s => s.Questions);
             CreateMap<UserExamCreateDto, UserExam>();
 
             CreateMap<Question, UserExamDetailDto.QuestionDto>()
-                .ForMember(s => s.Right,
-                    opt => opt.Ignore())
-                .ForMember(s => s.Options,
-                    opt => opt.Ignore());
+                .Ignore(s => s.Right)
+                .Ignore(s => s.Options);
 
             #endregion 用户考试
         }
