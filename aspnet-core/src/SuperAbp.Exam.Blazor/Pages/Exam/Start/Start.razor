@@ -44,6 +44,8 @@ else
             <Affix OffsetTop="10">
                 <Card style="text-align: center;">
                     <ChildContent>
+                        <CountDown Title="@L["TimeLeft"]" Value="@_userExam.EndTime" ValueStyle="color:red; font-size: 22px" Format="mm 分 ss 秒" OnFinish="SubmitPaperAsync" />
+                        <Divider Type="DividerType.Horizontal" />
                         <Button AutoLoading Type="@ButtonType.Primary" OnClick="SubmitPaperAsync" style="width:100%">提交试卷</Button>
                     </ChildContent>
                 </Card>
@@ -82,6 +84,7 @@ else
 
     // 新增：答过的题目ID列表
     private readonly List<Guid> _answerIds = new();
+
 
     protected override async Task OnInitializedAsync()
     {
