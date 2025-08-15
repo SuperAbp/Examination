@@ -20,7 +20,10 @@
         <PropertyColumn Property="c=>c.TotalTime" Title="@L["TotalTime"]" />
         <PropertyColumn Title="@L["ExamTime"]" Field="@($"{context.StartTime} ~ {context.EndTime}")" />
         <ActionColumn Title="@L["Action"]">
-            @if (context.StartTime.HasValue && context.EndTime.HasValue && (Clock.Now > context.StartTime.Value && Clock.Now < context.EndTime.Value))
+            @if (context.StartTime.HasValue 
+                 && context.EndTime.HasValue
+                 && Clock.Now > context.StartTime.Value 
+                 && Clock.Now.AddMinutes(context.TotalTime + bufferTime) < context.EndTime.Value)
             {
                 <Space>
                     <SpaceItem>
@@ -38,9 +41,11 @@
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Localization
 @using Volo.Abp.AspNetCore.Components.Notifications
+@using Volo.Abp.Settings
 @using Volo.Abp.Timing
 @attribute [Authorize]
 @inject NavigationManager Navigation
+@inject ISettingProvider SettingProvider
 @inject IClock Clock
 @inject IExaminationAppService ExamAppService
 @inject IUserExamAppService UserExamAppService
@@ -53,9 +58,11 @@
     int PageSize = 10;
     int TotalCount = 0;
     bool Loading = true;
+    int bufferTime;
 
     protected override async Task OnInitializedAsync()
     {
+        bufferTime = await SettingProvider.GetAsync<int>("Exam.BufferTime");
         UnfinishedUserExamId = await UserExamAppService.GetUnfinishedAsync();
     }
     public async Task Change(QueryModel model)

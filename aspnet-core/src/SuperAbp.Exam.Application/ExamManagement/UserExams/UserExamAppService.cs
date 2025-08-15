@@ -50,7 +50,12 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             dto.AnswerMode = exam.AnswerMode;
             if (userExam.StartTime.HasValue)
             {
-                dto.EndTime = userExam.StartTime.Value.AddMinutes(exam.TotalTime);
+                DateTime endTime = userExam.StartTime.Value.AddMinutes(exam.TotalTime);
+                if (exam.EndTime.HasValue && endTime > exam.EndTime)
+                {
+                    endTime = exam.EndTime.Value;
+                }
+                dto.EndTime = endTime;
             }
             else
             {
