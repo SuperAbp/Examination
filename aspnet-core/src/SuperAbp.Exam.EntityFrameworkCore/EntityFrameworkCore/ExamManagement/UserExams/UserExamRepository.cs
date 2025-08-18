@@ -145,7 +145,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
             var query = from ue in userExamQueryable
                         join e in examQueryable on ue.ExamId equals e.Id
                         where
-                            ue.Status == UserExamStatus.InProgress &&
+                            (ue.Status == UserExamStatus.Waiting || ue.Status == UserExamStatus.InProgress) &&
                             (e.EndTime.HasValue && e.EndTime.Value < now)
                             ||
                             (ue.StartTime.HasValue && !ue.FinishedTime.HasValue && ue.StartTime.Value.AddMinutes(e.TotalTime) < now)
