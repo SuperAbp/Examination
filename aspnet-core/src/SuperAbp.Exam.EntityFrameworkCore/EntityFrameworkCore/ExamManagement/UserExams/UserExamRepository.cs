@@ -135,5 +135,22 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
                 .Take(maxResultCount)
                 .ToListAsync(cancellationToken);
         }
+
+        public async Task<List<UserExam>> GetTimeoutUserExamsAsync(DateTime now, CancellationToken cancellationToken = default)
+        {
+            var dbContext = await GetDbContextAsync();
+            var userExamQueryable = await GetQueryableAsync();
+            var examQueryable = dbContext.Set<Examination>().AsQueryable();
+
+            var query = from ue in userExamQueryable
+                        join e in examQueryable on ue.ExamId equals e.Id
+                        where
+                            ue.Status == UserExamStatus.InProgress &&
+                            (e.EndTime.HasValue && e.EndTime.Value < now)
+                            ||
+                            (ue.StartTime.HasValue && !ue.FinishedTime.HasValue && ue.StartTime.Value.AddMinutes(e.TotalTime) < now)
+                        select ue;
+            return await query.ToListAsync(cancellationToken);
+        }
     }
 }
