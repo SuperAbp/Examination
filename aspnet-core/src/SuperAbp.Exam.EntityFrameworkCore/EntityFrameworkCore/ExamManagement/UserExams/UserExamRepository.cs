@@ -146,9 +146,11 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
                         join e in examQueryable on ue.ExamId equals e.Id
                         where
                             (ue.Status == UserExamStatus.Waiting || ue.Status == UserExamStatus.InProgress) &&
-                            (e.EndTime.HasValue && e.EndTime.Value < now)
-                            ||
-                            (ue.StartTime.HasValue && !ue.FinishedTime.HasValue && ue.StartTime.Value.AddMinutes(e.TotalTime) < now)
+                            (
+                                (e.EndTime.HasValue && e.EndTime.Value < now)
+                                || (ue.StartTime.HasValue && !ue.FinishedTime.HasValue && ue.StartTime.Value.AddMinutes(e.TotalTime) < now)
+                                || (!ue.StartTime.HasValue && ue.CreationTime.AddMinutes(e.TotalTime) < now)
+                            )
                         select ue;
             return await query.ToListAsync(cancellationToken);
         }
