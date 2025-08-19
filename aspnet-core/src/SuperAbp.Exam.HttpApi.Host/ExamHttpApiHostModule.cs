@@ -65,11 +65,6 @@ public class ExamHttpApiHostModule : AbpModule
         ConfigureDistributedLocking(context, configuration);
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
-
-        Configure<AbpBackgroundWorkerOptions>(options =>
-        {
-            options.IsEnabled = false;
-        });
     }
 
     private void ConfigureCache(IConfiguration configuration)

@@ -85,17 +85,20 @@ else
 
         await HubConnection.StartAsync();
         UserExamListDto dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = Id });
-        
-        
+
+
         if (dto.Status == UserExamStatus.InProgress)
         {
             Navigation.NavigateTo($"/exam/start/{dto.Id}");
+            return;
         }
-        else
+
+        if (dto.Status == UserExamStatus.Waiting)
         {
-            _userExamId = dto.Id;
+            _progress = 100;
         }
-        
+        _userExamId = dto.Id;
+
         _loading = false;
     }
 

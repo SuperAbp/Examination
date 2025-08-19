@@ -20,10 +20,11 @@
         <PropertyColumn Property="c=>c.TotalTime" Title="@L["TotalTime"]" />
         <PropertyColumn Title="@L["ExamTime"]" Field="@($"{context.StartTime} ~ {context.EndTime}")" />
         <ActionColumn Title="@L["Action"]">
-            @if (context.StartTime.HasValue 
-                 && context.EndTime.HasValue
-                 && Clock.Now > context.StartTime.Value 
-                 && Clock.Now.AddMinutes(context.TotalTime + bufferTime) < context.EndTime.Value)
+            @if ((!context.StartTime.HasValue && !context.EndTime.HasValue)
+                        || (context.StartTime.HasValue
+                            && context.EndTime.HasValue
+                            && Clock.Now > context.StartTime.Value 
+                            && Clock.Now.AddMinutes(context.TotalTime + bufferTime) < context.EndTime.Value))
             {
                 <Space>
                     <SpaceItem>
@@ -40,6 +41,7 @@
 @using SuperAbp.Exam.ExamManagement.Exams
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Localization
+@using Volo.Abp.Application.Dtos
 @using Volo.Abp.AspNetCore.Components.Notifications
 @using Volo.Abp.Settings
 @using Volo.Abp.Timing
@@ -72,7 +74,7 @@
     protected async Task GetListAsync(int pageIndex, int pageSize, string sorting = null)
     {
         this.Loading = true;
-        var result = await ExamAppService
+        PagedResultDto<ExamListDto> result = await ExamAppService
             .GetListAsync(new GetExamsInput()
                 { SkipCount = (pageIndex - 1) * pageSize, MaxResultCount = pageSize, Sorting = sorting });
         Exams = result.Items;
