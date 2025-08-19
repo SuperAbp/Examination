@@ -26,7 +26,7 @@ namespace SuperAbp.Exam.Controllers
         /// </summary>
         /// <returns>考试Id（没有则为null）</returns>
         [HttpGet("unfinished")]
-        public async Task<Guid?> GetUnfinishedAsync()
+        public async Task<UserExamDetailDto?> GetUnfinishedAsync()
         {
             return await _userExamAppService.GetUnfinishedAsync();
         }

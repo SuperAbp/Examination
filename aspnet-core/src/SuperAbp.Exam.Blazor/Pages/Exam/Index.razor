@@ -1,9 +1,18 @@
 ﻿@page "/exam"
-@if (UnfinishedUserExamId.HasValue && UnfinishedUserExamId.Value != Guid.Empty)
+@if (UnfinishedUserExam is not null)
 {
-    <a href="/Exam/Start/@UnfinishedUserExamId.Value" style="display: block;margin-bottom: 20px;">
-    <Alert Message="存在未完成的考试，立即进入" Type="@AlertType.Warning" ShowIcon="true" />
-    </a>
+    if (UnfinishedUserExam.Status == UserExamStatus.Waiting)
+    {
+        <a href="/Exam/Welcome/@UnfinishedUserExam.ExamId" style="display: block;margin-bottom: 20px;">
+            <Alert Message="存在未开始的考试，立即进入" Type="@AlertType.Warning" ShowIcon="true" />
+        </a>
+    }
+    else if (UnfinishedUserExam.Status == UserExamStatus.InProgress)
+    {
+        <a href="/Exam/Start/@UnfinishedUserExam.ExamId" style="display: block;margin-bottom: 20px;">
+            <Alert Message="存在未完成的考试，立即进入" Type="@AlertType.Warning" ShowIcon="true" />
+            </a>
+    }
 }
 <Card Title="@L["OnlineExam"]">
     <Table 
@@ -21,10 +30,10 @@
         <PropertyColumn Title="@L["ExamTime"]" Field="@($"{context.StartTime} ~ {context.EndTime}")" />
         <ActionColumn Title="@L["Action"]">
             @if ((!context.StartTime.HasValue && !context.EndTime.HasValue)
-                        || (context.StartTime.HasValue
-                            && context.EndTime.HasValue
-                            && Clock.Now > context.StartTime.Value 
-                            && Clock.Now.AddMinutes(context.TotalTime + bufferTime) < context.EndTime.Value))
+                 || (context.StartTime.HasValue
+                     && context.EndTime.HasValue
+                     && Clock.Now > context.StartTime.Value 
+                     && Clock.Now.AddMinutes(context.TotalTime + bufferTime) < context.EndTime.Value))
             {
                 <Space>
                     <SpaceItem>
@@ -55,7 +64,7 @@
 @inject IStringLocalizer<ExamResource> L
 @code {
     IReadOnlyList<ExamListDto> Exams;
-    Guid? UnfinishedUserExamId;
+    UserExamDetailDto? UnfinishedUserExam;
     int CurrentPage = 1;
     int PageSize = 10;
     int TotalCount = 0;
@@ -65,7 +74,7 @@
     protected override async Task OnInitializedAsync()
     {
         bufferTime = await SettingProvider.GetAsync<int>("Exam.BufferTime");
-        UnfinishedUserExamId = await UserExamAppService.GetUnfinishedAsync();
+        UnfinishedUserExam = await UserExamAppService.GetUnfinishedAsync();
     }
     public async Task Change(QueryModel model)
     {

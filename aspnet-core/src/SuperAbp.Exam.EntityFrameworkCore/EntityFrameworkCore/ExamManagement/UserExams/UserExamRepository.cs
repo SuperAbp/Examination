@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -24,8 +25,18 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
     {
         public async Task<bool> UnfinishedExistsAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            // TODO:change check logic
-            return await (await GetQueryableAsync()).AnyAsync(x => x.UserId == userId && x.Status == UserExamStatus.InProgress, cancellationToken);
+            return await (await GetQueryableAsync()).AnyAsync(GetUnfinishedFilterExpression(userId), cancellationToken);
+        }
+
+        public async Task<UserExam?> GetUnfinishedAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            return await (await GetQueryableAsync())
+                .SingleOrDefaultAsync(GetUnfinishedFilterExpression(userId), cancellationToken);
+        }
+
+        private Expression<Func<UserExam, bool>> GetUnfinishedFilterExpression(Guid userId)
+        {
+            return x => x.UserId == userId && new[] { UserExamStatus.Waiting, UserExamStatus.InProgress }.Contains(x.Status);
         }
 
         public async Task<UserExamWithDetails> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)

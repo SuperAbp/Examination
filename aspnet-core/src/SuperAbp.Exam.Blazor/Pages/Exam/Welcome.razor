@@ -57,6 +57,29 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        UserExamDetailDto unfinishedUserExam = await UserExamAppService.GetUnfinishedAsync();
+        if (unfinishedUserExam is not null)
+        {
+            if (unfinishedUserExam.Status == UserExamStatus.InProgress.Value)
+            {
+                var content = "存在未完成的考试，点击确认进入";
+                var title = ConfirmIcon.Warning.ToString();
+                var confirmResult = await ConfirmService.Show(content, title, ConfirmButtons.OK, ConfirmIcon.Warning);
+                Navigation.NavigateTo($"/exam/start/{unfinishedUserExam.ExamId}");
+                return;
+            }
+            if (unfinishedUserExam.Status == UserExamStatus.Waiting.Value)
+            {
+                if (unfinishedUserExam.ExamId != Id)
+                {   // TODO:跳转当前页如何加载数据？
+                    Navigation.NavigateTo("/exam/");
+                    return;
+                }
+                _progress = 100;
+                _userExamId = unfinishedUserExam.Id;
+            }
+        }
+
         int bufferTime = await SettingProvider.GetAsync<int>("Exam.BufferTime");
         _exam = await ExamAppService.GetAsync(Id);
         if (_exam.StartTime.HasValue 
@@ -84,21 +107,12 @@ else
         });
 
         await HubConnection.StartAsync();
-        UserExamListDto dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = Id });
 
-
-        if (dto.Status == UserExamStatus.InProgress)
+        if (unfinishedUserExam is null)
         {
-            Navigation.NavigateTo($"/exam/start/{dto.Id}");
-            return;
+            UserExamListDto dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = Id });
+            _userExamId = dto.Id;
         }
-
-        if (dto.Status == UserExamStatus.Waiting)
-        {
-            _progress = 100;
-        }
-        _userExamId = dto.Id;
-
         _loading = false;
     }
 
@@ -106,5 +120,10 @@ else
     {
         await UserExamAppService.StartAsync(_userExamId!.Value);
         Navigation.NavigateTo($"/exam/start/{_userExamId}");
+    }
+
+    private async Task ShowConfirmAndNavigation(ConfirmIcon confirmIcon, string targetUrl)
+    {
+        
     }
 }

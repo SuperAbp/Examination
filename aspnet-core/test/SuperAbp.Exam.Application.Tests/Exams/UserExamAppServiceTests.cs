@@ -45,7 +45,7 @@ public abstract class UserExamAppServiceTests<TStartupModule> : ExamApplicationT
     [Fact]
     public async Task Should_Get_Unfinished()
     {
-        Guid? result = await _userExamAppService.GetUnfinishedAsync();
+        UserExamDetailDto? result = await _userExamAppService.GetUnfinishedAsync();
         result.ShouldNotBeNull();
     }
 
