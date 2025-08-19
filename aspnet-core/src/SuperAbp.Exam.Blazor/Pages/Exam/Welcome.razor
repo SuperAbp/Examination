@@ -27,11 +27,17 @@ else
 @using SuperAbp.Exam.ExamManagement.Exams
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Localization
+@using Volo.Abp
 @using Volo.Abp.AspNetCore.Components.Notifications
+@using Volo.Abp.Settings
+@inherits ExamComponentBase
 @inject NavigationManager Navigation
-@inject IStringLocalizer<ExamResource> L
+@* @inject IStringLocalizer<ExamResource> L *@
 @inject IUserExamAppService UserExamAppService
+@inject IUiNotificationService NotificationService
 @inject IExaminationAppService ExamAppService
+@inject ISettingProvider SettingProvider
+@inject IConfirmService ConfirmService
 
 @code {
     [Inject]
@@ -51,7 +57,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        int bufferTime = await SettingProvider.GetAsync<int>("Exam.BufferTime");
         _exam = await ExamAppService.GetAsync(Id);
+        if (_exam.StartTime.HasValue 
+            && _exam.EndTime.HasValue
+            && (Clock.Now < _exam.StartTime.Value 
+                || Clock.Now.AddMinutes(_exam.TotalTime + bufferTime) > _exam.EndTime.Value))
+        {
+            Navigation.NavigateTo("/exam");
+            return;
+        }
+
         (await AccessTokenProvider.RequestAccessToken()).TryGetToken(out var accessToken);
         string signalRUrl = Configuration["SignalRUrl"] ?? "";
         HubConnection = new HubConnectionBuilder()
@@ -68,17 +84,21 @@ else
         });
 
         await HubConnection.StartAsync();
+        UserExamListDto dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = Id });
 
-        var dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = Id });
+
         if (dto.Status == UserExamStatus.InProgress)
         {
             Navigation.NavigateTo($"/exam/start/{dto.Id}");
+            return;
         }
-        else
+
+        if (dto.Status == UserExamStatus.Waiting)
         {
-            _userExamId = dto.Id;
+            _progress = 100;
         }
-        
+        _userExamId = dto.Id;
+
         _loading = false;
     }
 

@@ -60,6 +60,7 @@ else
 @using SuperAbp.Exam.Localization
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.ExamManagement.Exams
+@using Volo.Abp.Http.Client
 @using Single = SuperAbp.Exam.Blazor.Pages.Exam.Start.Components.Single
 @inject NavigationManager Navigation
 @inject IStringLocalizer<ExamResource> L
@@ -89,7 +90,19 @@ else
     protected override async Task OnInitializedAsync()
     {
         _questionAnswerStorageKey = $"question_answers_{Id}";
-        _userExam = await UserExamAppService.GetAsync(Id);
+        try
+        {
+            _userExam = await UserExamAppService.GetAsync(Id);
+        }
+        catch (AbpRemoteCallException e)
+        {
+            if (e.HttpStatusCode == 404)
+            {
+                Navigation.NavigateTo("/exam");
+            }
+            return;
+        }
+
         _examQuestions = _userExam.Questions;
         List<QuestionAnswerItem> answerItems = await LocalStorage.GetItemAsync<List<QuestionAnswerItem>>(_questionAnswerStorageKey) ?? [];
         if (answerItems.Count > 0)

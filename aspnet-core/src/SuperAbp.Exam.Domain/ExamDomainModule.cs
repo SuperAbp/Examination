@@ -2,9 +2,13 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SuperAbp.AuditLogging;
 using SuperAbp.Exam.MultiTenancy;
+using SuperAbp.Exam.Workers;
 using SuperAbp.MenuManagement;
+using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
+using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.Emailing;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
@@ -68,5 +72,10 @@ public class ExamDomainModule : AbpModule
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
+    }
+
+    public override async Task OnApplicationInitializationAsync(ApplicationInitializationContext context)
+    {
+        await context.AddBackgroundWorkerAsync<SubmittedUserExamWorker>();
     }
 }

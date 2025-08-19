@@ -57,7 +57,7 @@ public class ExamDomainSharedModule : AbpModule
         Configure<AbpExceptionLocalizationOptions>(options =>
 
         {
-            options.MapCodeNamespace("SuperAbp.Exam", typeof(ExamResource));
+            options.MapCodeNamespace("Exam", typeof(ExamResource));
         });
     }
 }

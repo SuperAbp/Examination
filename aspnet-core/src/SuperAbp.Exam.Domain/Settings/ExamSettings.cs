@@ -4,6 +4,5 @@ public static class ExamSettings
 {
     private const string Prefix = "Exam";
 
-    //Add your own setting names here. Example:
-    //public const string MySetting1 = Prefix + ".MySetting1";
+    public const string BufferTime = Prefix + ".BufferTime";
 }
