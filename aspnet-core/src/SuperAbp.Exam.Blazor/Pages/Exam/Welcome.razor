@@ -9,7 +9,7 @@ else
 {
     <Card>
         <h3 style="text-align: center;">@L["ExamInstructions"]</h3>
-        <div style="height: 500px;overflow-y: scroll;margin: 20px;border-top: 1px dashed #ddd;border-bottom: 1px dashed #ddd;">
+        <div>
             @if (!String.IsNullOrWhiteSpace(_exam.Description))
             {
                 @(new MarkupString(_exam.Description))
