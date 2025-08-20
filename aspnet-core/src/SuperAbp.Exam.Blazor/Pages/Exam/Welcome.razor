@@ -15,9 +15,8 @@ else
                 @(new MarkupString(_exam.Description))
             }
         </div>
-        @_progress
         <Progress Percent="@_progress" ShowInfo="false"></Progress>
-        <Button Type="ButtonType.Primary" Disabled="!_userExamId.HasValue" OnClick="async () => await StartAsync()">@L["StartExam"]</Button>
+        <Button Type="ButtonType.Primary" Disabled="_btnLoading" OnClick="async () => await StartAsync()">@L["StartExam"]</Button>
     </Card>
 }
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
@@ -50,12 +49,19 @@ else
     public Guid Id { get; set; }
 
     public HubConnection HubConnection { get; set; } = default!;
-    private Guid? _userExamId;
     private ExamDetailDto _exam;
-    private bool _loading = true;
     private int _progress = 0;
+    private bool _btnLoading = false;
+    private bool _loading = true;
+
 
     protected override async Task OnInitializedAsync()
+    {
+        _exam = await ExamAppService.GetAsync(Id);
+        _loading = false;
+    }
+
+    private async Task StartAsync()
     {
         UserExamDetailDto unfinishedUserExam = await UserExamAppService.GetUnfinishedAsync();
         if (unfinishedUserExam is not null)
@@ -65,31 +71,17 @@ else
                 var content = "存在未完成的考试，点击确认进入";
                 var title = ConfirmIcon.Warning.ToString();
                 var confirmResult = await ConfirmService.Show(content, title, ConfirmButtons.OK, ConfirmIcon.Warning);
-                Navigation.NavigateTo($"/exam/start/{unfinishedUserExam.ExamId}");
+                Navigation.NavigateTo($"/exam/start/{unfinishedUserExam.Id}");
                 return;
             }
             if (unfinishedUserExam.Status == UserExamStatus.Waiting.Value)
             {
-                if (unfinishedUserExam.ExamId != Id)
-                {   // TODO:跳转当前页如何加载数据？
-                    Navigation.NavigateTo("/exam/");
-                    return;
-                }
-                _progress = 100;
-                _userExamId = unfinishedUserExam.Id;
+                Navigation.NavigateTo("/exam/");
             }
         }
 
-        int bufferTime = await SettingProvider.GetAsync<int>("Exam.BufferTime");
-        _exam = await ExamAppService.GetAsync(Id);
-        if (_exam.StartTime.HasValue 
-            && _exam.EndTime.HasValue
-            && (Clock.Now < _exam.StartTime.Value 
-                || Clock.Now.AddMinutes(_exam.TotalTime + bufferTime) > _exam.EndTime.Value))
-        {
-            Navigation.NavigateTo("/exam");
-            return;
-        }
+        _btnLoading = true;
+        UserExamListDto dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = Id });
 
         (await AccessTokenProvider.RequestAccessToken()).TryGetToken(out var accessToken);
         string signalRUrl = Configuration["SignalRUrl"] ?? "";
@@ -103,27 +95,14 @@ else
         HubConnection.On<int>("ReceiveProgress", async message =>
         {
             _progress = message;
+            if (_progress >= 100)
+            {
+                await HubConnection.StopAsync();
+                Navigation.NavigateTo($"/exam/start/{dto.Id}");
+            }
             await InvokeAsync(StateHasChanged);
         });
 
         await HubConnection.StartAsync();
-
-        if (unfinishedUserExam is null)
-        {
-            UserExamListDto dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = Id });
-            _userExamId = dto.Id;
-        }
-        _loading = false;
-    }
-
-    private async Task StartAsync()
-    {
-        await UserExamAppService.StartAsync(_userExamId!.Value);
-        Navigation.NavigateTo($"/exam/start/{_userExamId}");
-    }
-
-    private async Task ShowConfirmAndNavigation(ConfirmIcon confirmIcon, string targetUrl)
-    {
-        
     }
 }

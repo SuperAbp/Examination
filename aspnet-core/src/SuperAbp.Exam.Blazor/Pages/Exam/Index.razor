@@ -1,15 +1,9 @@
 ﻿@page "/exam"
 @if (UnfinishedUserExam is not null)
 {
-    if (UnfinishedUserExam.Status == UserExamStatus.Waiting)
+    if (UnfinishedUserExam.Status == UserExamStatus.InProgress)
     {
-        <a href="/Exam/Welcome/@UnfinishedUserExam.ExamId" style="display: block;margin-bottom: 20px;">
-            <Alert Message="存在未开始的考试，立即进入" Type="@AlertType.Warning" ShowIcon="true" />
-        </a>
-    }
-    else if (UnfinishedUserExam.Status == UserExamStatus.InProgress)
-    {
-        <a href="/Exam/Start/@UnfinishedUserExam.ExamId" style="display: block;margin-bottom: 20px;">
+        <a href="/Exam/Start/@UnfinishedUserExam.Id" style="display: block;margin-bottom: 20px;">
             <Alert Message="存在未完成的考试，立即进入" Type="@AlertType.Warning" ShowIcon="true" />
             </a>
     }
