@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using static SuperAbp.Exam.ExamDomainErrorCodes;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
@@ -16,7 +17,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         /// 获取未完成的考试
         /// </summary>
         /// <returns>考试Id（没有则为null）</returns>
-        Task<Guid?> GetUnfinishedAsync();
+        Task<UserExamDetailDto?> GetUnfinishedAsync();
 
         /// <summary>
         /// 详情

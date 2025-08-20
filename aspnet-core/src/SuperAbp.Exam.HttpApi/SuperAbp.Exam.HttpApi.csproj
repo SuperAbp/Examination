@@ -5,6 +5,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>SuperAbp.Exam</RootNamespace>
+	  <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

@@ -8,35 +8,26 @@
 else
 {
     <Card>
-        <h3 style="text-align: center;">考试须知</h3>
-        <div style="height: 500px;overflow-y: scroll;margin: 20px;border-top: 1px dashed #ddd;border-bottom: 1px dashed #ddd;">
+        <h3 style="text-align: center;">@L["ExamInstructions"]</h3>
+        <div>
             @if (!String.IsNullOrWhiteSpace(_exam.Description))
             {
                 @(new MarkupString(_exam.Description))
             }
         </div>
-        @_progress
         <Progress Percent="@_progress" ShowInfo="false"></Progress>
-        <Button Type="ButtonType.Primary" Disabled="!_userExamId.HasValue" OnClick="async () => await StartAsync()">@L["StartExam"]</Button>
+        <Button Type="ButtonType.Primary" Disabled="_btnLoading" OnClick="async () => await StartAsync()">@L["StartExam"]</Button>
     </Card>
 }
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.SignalR.Client
 @using Microsoft.Extensions.Configuration
-@using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.ExamManagement.Exams
 @using SuperAbp.Exam.ExamManagement.UserExams
-@using SuperAbp.Exam.Localization
-@using Volo.Abp
-@using Volo.Abp.AspNetCore.Components.Notifications
-@using Volo.Abp.Settings
 @inherits ExamComponentBase
 @inject NavigationManager Navigation
-@* @inject IStringLocalizer<ExamResource> L *@
 @inject IUserExamAppService UserExamAppService
-@inject IUiNotificationService NotificationService
 @inject IExaminationAppService ExamAppService
-@inject ISettingProvider SettingProvider
 @inject IConfirmService ConfirmService
 
 @code {
@@ -50,23 +41,39 @@ else
     public Guid Id { get; set; }
 
     public HubConnection HubConnection { get; set; } = default!;
-    private Guid? _userExamId;
     private ExamDetailDto _exam;
-    private bool _loading = true;
     private int _progress = 0;
+    private bool _btnLoading = false;
+    private bool _loading = true;
+
 
     protected override async Task OnInitializedAsync()
     {
-        int bufferTime = await SettingProvider.GetAsync<int>("Exam.BufferTime");
         _exam = await ExamAppService.GetAsync(Id);
-        if (_exam.StartTime.HasValue 
-            && _exam.EndTime.HasValue
-            && (Clock.Now < _exam.StartTime.Value 
-                || Clock.Now.AddMinutes(_exam.TotalTime + bufferTime) > _exam.EndTime.Value))
+        _loading = false;
+    }
+
+    private async Task StartAsync()
+    {
+        UserExamDetailDto unfinishedUserExam = await UserExamAppService.GetUnfinishedAsync();
+        if (unfinishedUserExam is not null)
         {
-            Navigation.NavigateTo("/exam");
-            return;
+            if (unfinishedUserExam.Status == UserExamStatus.InProgress.Value)
+            {
+                var content = "存在未完成的考试，点击确认进入";
+                var title = ConfirmIcon.Warning.ToString();
+                var confirmResult = await ConfirmService.Show(content, title, ConfirmButtons.OK, ConfirmIcon.Warning);
+                Navigation.NavigateTo($"/exam/start/{unfinishedUserExam.Id}");
+                return;
+            }
+            if (unfinishedUserExam.Status == UserExamStatus.Waiting.Value)
+            {
+                Navigation.NavigateTo("/exam/");
+            }
         }
+
+        _btnLoading = true;
+        UserExamListDto dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = Id });
 
         (await AccessTokenProvider.RequestAccessToken()).TryGetToken(out var accessToken);
         string signalRUrl = Configuration["SignalRUrl"] ?? "";
@@ -80,31 +87,14 @@ else
         HubConnection.On<int>("ReceiveProgress", async message =>
         {
             _progress = message;
+            if (_progress >= 100)
+            {
+                await HubConnection.StopAsync();
+                Navigation.NavigateTo($"/exam/start/{dto.Id}");
+            }
             await InvokeAsync(StateHasChanged);
         });
 
         await HubConnection.StartAsync();
-        UserExamListDto dto = await UserExamAppService.CreateAsync(new UserExamCreateDto() { ExamId = Id });
-
-
-        if (dto.Status == UserExamStatus.InProgress)
-        {
-            Navigation.NavigateTo($"/exam/start/{dto.Id}");
-            return;
-        }
-
-        if (dto.Status == UserExamStatus.Waiting)
-        {
-            _progress = 100;
-        }
-        _userExamId = dto.Id;
-
-        _loading = false;
-    }
-
-    private async Task StartAsync()
-    {
-        await UserExamAppService.StartAsync(_userExamId!.Value);
-        Navigation.NavigateTo($"/exam/start/{_userExamId}");
     }
 }

@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SuperAbp.Exam.ExamManagement.Exams;
+﻿using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.Questions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 using Volo.Abp.EventBus.Local;
+using static SuperAbp.Exam.ExamDomainErrorCodes;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams;
 
@@ -45,6 +46,16 @@ public class UserExamManager(
         {
             throw new BusinessException(ExamDomainErrorCodes.UserExams.UnfinishedAlreadyExists);
         }
+    }
+
+    public void Start(UserExam userExam)
+    {
+        if (userExam.Status != UserExamStatus.Waiting)
+        {
+            throw new InvalidUserExamStatusException(userExam.Status);
+        }
+        userExam.Status = UserExamStatus.InProgress;
+        userExam.StartTime = Clock.Now;
     }
 
     /// <summary>
@@ -97,12 +108,12 @@ public class UserExamManager(
             });
         }
 
+        Start(userExam);
         await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto
         {
             Progress = 100,
             UserId = userExam.UserId,
         });
-
         async Task<List<Question>> GetRandomQuestions(Guid questionRepositoryId, QuestionType questionType, int count)
         {
             return await questionRepository.GetRandomListAsync(questionRepositoryId: questionRepositoryId,

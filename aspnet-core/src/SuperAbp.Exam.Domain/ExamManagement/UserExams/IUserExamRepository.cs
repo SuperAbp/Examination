@@ -13,6 +13,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     {
         Task<bool> UnfinishedExistsAsync(Guid userId, CancellationToken cancellationToken = default);
 
+        Task<UserExam?> GetUnfinishedAsync(Guid userId, CancellationToken cancellationToken = default);
+
         /// <summary>
         /// 详情
         /// </summary>
