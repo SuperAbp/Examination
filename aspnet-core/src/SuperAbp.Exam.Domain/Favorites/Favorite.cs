@@ -8,7 +8,7 @@ namespace SuperAbp.Exam.Favorites;
 /// <summary>
 /// 我的收藏夹
 /// </summary>
-public class Favorite : Entity<Guid>, IHasCreationTime
+public class Favorite : AggregateRoot<Guid>, IHasCreationTime
 {
     protected Favorite()
     {

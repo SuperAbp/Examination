@@ -66,6 +66,12 @@ public class ExamMenuContributor : IMenuContributor
                 "/my/favorite",
                 icon: IconType.Outline.Star
             ));
+            identityMenuItem.Items.Add(new ApplicationMenuItem(
+                ExamMenus.MyMistakeReview,
+                l["Menu:MyMistakeReview"],
+                "/my/mistake",
+                icon: IconType.Outline.Star
+            ));
             context.Menu.Items.Add(new ApplicationMenuItem(
                 ExamMenus.QuestionBank,
                 l["Menu:QuestionBank"],

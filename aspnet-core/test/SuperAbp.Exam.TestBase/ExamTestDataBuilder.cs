@@ -67,12 +67,11 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
 
     private async Task CreateTrainingAsync()
     {
-        await trainingRepository.InsertManyAsync([
-            new Training(testData.Training1Id, testData.User1Id, testData.QuestionBank1Id,
-                testData.Question11Id, false, TrainingSource.QuestionBank),
-            new Training(testData.Training2Id, testData.User1Id, testData.QuestionBank1Id,
-                testData.Question11Id, false, TrainingSource.QuestionBank)
-        ]);
+        Training training1 = new Training(testData.Training1Id, testData.User1Id, testData.QuestionBank1Id,
+            testData.Question11Id, TrainingSource.QuestionBank);
+        Training training2 = new Training(testData.Training2Id, testData.User1Id, testData.QuestionBank1Id,
+            testData.Question11Id, TrainingSource.QuestionBank);
+        await trainingRepository.InsertManyAsync([training1, training2]);
     }
 
     private async Task CreateUserExamQuestionAsync()

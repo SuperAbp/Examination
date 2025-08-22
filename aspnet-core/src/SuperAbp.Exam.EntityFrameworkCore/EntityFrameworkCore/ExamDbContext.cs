@@ -27,6 +27,7 @@ using SuperAbp.Exam.ExamManagement.UserExamQuestionReviews;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.KnowledgePoints;
+using SuperAbp.Exam.MistakesReviews;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
@@ -91,6 +92,7 @@ public class ExamDbContext :
     public DbSet<Training> Trains { get; set; }
 
     public DbSet<Favorite> Favorites { get; set; }
+    public DbSet<MistakesReview> MistakesReviews { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
@@ -224,6 +226,12 @@ public class ExamDbContext :
         builder.Entity<Favorite>(b =>
         {
             b.ToTable(ExamConsts.DbTablePrefix + "Favorites", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+        });
+
+        builder.Entity<MistakesReview>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "MistakesReviews", ExamConsts.DbSchema);
             b.ConfigureByConvention();
         });
     }

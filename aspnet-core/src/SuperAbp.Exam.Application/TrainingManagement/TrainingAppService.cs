@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using SuperAbp.Exam.MistakesReviews;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -41,7 +42,8 @@ public class TrainingAppService(
         {
             throw new UserFriendlyException("请勿重复答题");
         }
-        Training training = new(GuidGenerator.Create(), CurrentUser.GetId(), input.QuestionBankId, input.QuestionId, input.Right, input.TrainingSource);
+        Training training = new(GuidGenerator.Create(), CurrentUser.GetId(), input.QuestionBankId, input.QuestionId, input.TrainingSource);
+        training.SetRight(input.Right);
         await trainingRepository.InsertAsync(training);
         return ObjectMapper.Map<Training, TrainingListDto>(training);
     }
@@ -49,7 +51,7 @@ public class TrainingAppService(
     public async Task SetIsRightAsync(Guid id, bool right)
     {
         var training = await trainingRepository.GetAsync(id);
-        training.Right = right;
+        training.SetRight(right);
         await trainingRepository.UpdateAsync(training);
     }
 }

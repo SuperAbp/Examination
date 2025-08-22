@@ -1,6 +1,6 @@
-锘緻page "/my/favorite"
+@page "/my/mistakes-review"
 
-<Card Title="@L["MyFavorite"]">
+<Card Title="@L["Mistake"]">
     <Form style="margin-bottom: 16px;"
           Layout="FormLayout.Inline"
           Model="@parameter"
@@ -34,9 +34,9 @@
         </FormItem>
     </Form>
 
-    <Table TItem="FavoriteListDto"
+    <Table TItem="MistakesReviewListDto"
            @ref="Table"
-           DataSource="@_favorites"
+           DataSource="@_mistakes"
            Total="_totalCount"
            Loading="_loading"
            RowKey="x=>x.Id"
@@ -60,27 +60,29 @@
 
 @using AntDesign.TableModels
 @using Microsoft.Extensions.Localization
-@using SuperAbp.Exam.Favorites
 @using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using System.Text
+@using SuperAbp.Exam.MistakesReviews
 @using Volo.Abp.AspNetCore.Components.Notifications
 @inject IStringLocalizer<ExamResource> L
 @inject NavigationManager Navigation
-@inject IFavoriteAppService FavoriteAppService
+@inject IMistakesReviewAppService MistakeAppService
 @inject IUiNotificationService NotificationService
 @code {
-    Table<FavoriteListDto> Table;
-    IReadOnlyList<FavoriteListDto> _favorites;
+    Table<MistakesReviewListDto> Table;
+    IReadOnlyList<MistakesReviewListDto> _mistakes;
     int _currentPage = 1;
     int _pageSize = 10;
     int _totalCount = 0;
     bool _loading = true;
-    GetFavoritesInput parameter = new();
+    GetMistakesReviewInput parameter = new();
+
     public void Search()
     {
         Table.ReloadData();
     }
+
     public void Reset()
     {
         parameter.QuestionType = null;
@@ -88,29 +90,33 @@
         Table.ResetData();
         Table.ReloadData();
     }
+
     public async Task Change(QueryModel model)
     {
         await GetListAsync(model.PageIndex, model.PageSize);
     }
+
     protected async Task GetListAsync(int pageIndex, int pageSize, string sorting = null)
     {
         _loading = true;
         parameter.SkipCount = (pageIndex - 1) * pageSize;
         parameter.MaxResultCount = pageSize;
-        var result = await FavoriteAppService.GetListAsync(parameter);
-        _favorites = result.Items;
+        var result = await MistakeAppService.GetListAsync(parameter);
+        _mistakes = result.Items;
         _totalCount = (int)result.TotalCount;
         _loading = false;
     }
+
     private async Task StartAsync()
     {
         await StartAsync(null);
     }
+
     private async Task StartAsync(Guid? id)
     {
-        if (_favorites.Count == 0)
+        if (_mistakes.Count == 0)
         {
-            await NotificationService.Error("鏆傛湭鏀惰棌姝ょ被鍨嬬殑棰樼洰");
+            await NotificationService.Error("暂无此类型的错题");
             return;
         }
         List<string> parameters = [];
@@ -122,7 +128,7 @@
         {
             parameters.Add("questionId=" + id.Value);
         }
-        string url = "/my/favorite/training";
+        string url = "/my/mistakes-review/training";
         if (parameters.Count > 0)
         {
             url += $"?{String.Join('&', parameters)}";
