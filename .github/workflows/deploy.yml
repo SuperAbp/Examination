@@ -48,13 +48,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      
-      - name: Debug tagn
-        run: echo "Tag from build: ${{ needs.build.outputs.tag }}"
+        uses: actions/checkout@v3     
 
-      - name: Debug tagi
-        run: echo "Tag from build: ${{ inputs.tag }}"
+      - name: Debug tag
+        run: echo "Tag from build: ${{ needs.build.outputs.tag }}"
 
       - name: Download backend artifacts
         uses: actions/download-artifact@v4
