@@ -1,4 +1,4 @@
-@page "/my/mistake/training/{TrainType:int?}"
+@page "/my/mistakes-review/training/{TrainType:int?}"
 
 @if (loading)
 {
@@ -8,10 +8,10 @@
 }
 else
 {
-    <SingleQuestion Title="@L["MistakeTraining"]"
+    <SingleQuestion Title="@L["MyMistakeReview"]"
                     TrainType="TrainType"
                     TrainingSource="TrainingSource.Mistake"
-                    BackUrl="/my/mistake"
+                    BackUrl="/my/mistakes-review"
                     Questions="_questions"></SingleQuestion>
 }
 
@@ -21,7 +21,6 @@ else
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using Volo.Abp.Application.Dtos
 @using Volo.Abp.AspNetCore.Components.Notifications
-@using SuperAbp.Exam.Mistakes
 @using SuperAbp.Exam.MistakesReviews
 @using SuperAbp.Exam.TrainingManagement
 

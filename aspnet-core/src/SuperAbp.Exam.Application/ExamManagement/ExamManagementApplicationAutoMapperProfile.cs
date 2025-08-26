@@ -27,7 +27,10 @@ namespace SuperAbp.Exam.ExamManagement
             #region 用户考试
 
             CreateMap<UserExam, UserExamListDto>();
-            CreateMap<UserExamWithDetails, UserExamListDto>();
+            CreateMap<UserExamWithDetails, UserExamListDto>()
+                .ForMember(dest => dest.TotalScore,
+                opt => opt.Condition(src => src.Status == 3));
+
             CreateMap<UserExam, UserExamDetailDto>()
                 .Ignore(s => s.EndTime)
                 .Ignore(s => s.Questions);

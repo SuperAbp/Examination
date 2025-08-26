@@ -46,8 +46,8 @@ public class MistakesReviewRepository(IDbContextProvider<IExamDbContext> dbConte
                     QuestionId = question.Id,
                     QuestionContent = question.Content,
                     QuestionType = question.QuestionType,
-                    CreationTime = mistake.CreationTime,
-                    LastModificationTime = mistake.CreationTime // 可扩展为最后一次错误时间
+                    ErrorCount = mistake.ErrorCount,
+                    CreationTime = mistake.CreationTime
                 })
                 .WhereIf(!string.IsNullOrWhiteSpace(questionContent), f => f.QuestionContent.Contains(questionContent))
                 .WhereIf(questionType is not null, f => f.QuestionType == questionType);

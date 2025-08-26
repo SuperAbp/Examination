@@ -38,7 +38,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         protected IUserExamRepository UserExamRepository { get; } = userExamRepository;
         protected IExamRepository ExamRepository { get; } = examRepository;
         protected IBackgroundJobManager BackgroundJobManager { get; } = backgroundJobManager;
-        private readonly ILocalEventBus _localEventBus;
 
         public async Task<UserExamDetailDto?> GetUnfinishedAsync()
         {
@@ -218,7 +217,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 item.Right = right;
                 item.Score = score;
 
-                publishEvents.Add(_localEventBus.PublishAsync(new AnsweredQuestionEvent(
+                publishEvents.Add(localEventBus.PublishAsync(new AnsweredQuestionEvent(
                     item.QuestionId,
                     userExam.UserId,
                     right

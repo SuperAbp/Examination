@@ -20,6 +20,7 @@ public class MistakesReview : AggregateRoot<Guid>, IHasCreationTime
     {
         QuestionId = questionId;
         UserId = userId;
+        ErrorCount = 1;
     }
 
     public Guid QuestionId { get; set; }

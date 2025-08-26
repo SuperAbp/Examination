@@ -1,6 +1,6 @@
 @page "/my/mistakes-review"
 
-<Card Title="@L["Mistake"]">
+<Card Title="@L["MyMistakeReview"]">
     <Form style="margin-bottom: 16px;"
           Layout="FormLayout.Inline"
           Model="@parameter"
@@ -44,10 +44,10 @@
            @bind-PageSize="_pageSize"
            OnChange="Change">
         <PropertyColumn Property="c => c.QuestionContent" Title="@L["QuestionContent"]" />
+        <PropertyColumn Property="c => c.ErrorCount" Title="@L["ErrorCount"]" />
         <PropertyColumn Property="c => c.QuestionType" Title="@L["QuestionType"]" >
             @L["QuestionType:" + context.QuestionType]
         </PropertyColumn>
-        <PropertyColumn Property="c => c.CreationTime" Title="@L["CreationTime"]" />
         <ActionColumn Title="@L["Actions"]">
             <Space>
                 <SpaceItem>

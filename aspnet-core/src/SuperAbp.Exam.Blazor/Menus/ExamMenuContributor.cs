@@ -69,7 +69,7 @@ public class ExamMenuContributor : IMenuContributor
             identityMenuItem.Items.Add(new ApplicationMenuItem(
                 ExamMenus.MyMistakeReview,
                 l["Menu:MyMistakeReview"],
-                "/my/mistake",
+                "/my/mistakes-review",
                 icon: IconType.Outline.Star
             ));
             context.Menu.Items.Add(new ApplicationMenuItem(

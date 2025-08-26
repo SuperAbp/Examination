@@ -9,6 +9,7 @@ public class MistakeWithDetails
     public Guid QuestionId { get; set; }
     public required string QuestionContent { get; set; }
     public required QuestionType QuestionType { get; set; }
+
+    public int ErrorCount { get; set; }
     public DateTime CreationTime { get; set; }
-    public DateTime LastModificationTime { get; set; }
 }
