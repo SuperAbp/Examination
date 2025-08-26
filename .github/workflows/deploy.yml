@@ -44,14 +44,11 @@ jobs:
   
   deploy-all:
     name: "Package and Deploy to Server"
-    needs: [deploy-backend, deploy-frontend]
+    needs: [build, deploy-backend, deploy-frontend]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3     
-
-      - name: Debug tag
-        run: echo "Tag from build: ${{ inputs.tag }}"
+        uses: actions/checkout@v3
 
       - name: Download backend artifacts
         uses: actions/download-artifact@v4
