@@ -72,7 +72,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "deploy.tar.gz"
-          target: "/var/www/deploy/${{ inputs.tag }}"
+          target: "/var/www/deploy/${{ needs.build.outputs.tag }}"
 
       - name: Run Migration & Restart Service
         uses: appleboy/ssh-action@v1.0.0
@@ -81,5 +81,4 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            chmod +x /var/www/deploy.sh
-            /var/www/deploy.sh ${{ inputs.tag }}
+            /var/www/deploy.sh ${{ needs.build.outputs.tag }}
