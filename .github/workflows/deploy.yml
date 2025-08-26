@@ -49,6 +49,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      
+      - name: Debug tag
+        run: echo "Tag from build: ${{ needs.build.outputs.tag }}"
+
+      - name: Debug tag
+        run: echo "Tag from build: ${{ inputs.tag }}"
 
       - name: Download backend artifacts
         uses: actions/download-artifact@v4
@@ -64,12 +70,6 @@ jobs:
 
       - name: Compress publish folder
         run: tar -czf deploy.tar.gz -C publish .
-      
-      - name: Debug tag
-        run: echo "Tag from build: ${{ needs.build.outputs.tag }}"
-
-      - name: Debug tag
-        run: echo "Tag from build: ${{ inputs.tag }}"
 
       - name: Upload compressed file
         uses: appleboy/scp-action@v0.1.4
