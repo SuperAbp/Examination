@@ -50,10 +50,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       
-      - name: Debug tag
+      - name: Debug tagn
         run: echo "Tag from build: ${{ needs.build.outputs.tag }}"
 
-      - name: Debug tag
+      - name: Debug tagi
         run: echo "Tag from build: ${{ inputs.tag }}"
 
       - name: Download backend artifacts
