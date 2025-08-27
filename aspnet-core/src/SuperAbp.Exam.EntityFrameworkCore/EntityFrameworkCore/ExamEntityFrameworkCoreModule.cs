@@ -5,7 +5,6 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
-using Volo.Abp.EntityFrameworkCore.SqlServer;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity.EntityFrameworkCore;
 using Volo.Abp.Modularity;
@@ -15,6 +14,7 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using SuperAbp.MenuManagement.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.DependencyInjection;
+using Volo.Abp.EntityFrameworkCore.MySQL;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -24,7 +24,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore;
     typeof(AbpOpenIddictEntityFrameworkCoreModule),
     typeof(AbpPermissionManagementEntityFrameworkCoreModule),
     typeof(AbpSettingManagementEntityFrameworkCoreModule),
-    typeof(AbpEntityFrameworkCoreSqlServerModule),
+    typeof(AbpEntityFrameworkCoreMySQLModule),
     typeof(AbpBackgroundJobsEntityFrameworkCoreModule),
     typeof(AbpAuditLoggingEntityFrameworkCoreModule),
     typeof(AbpTenantManagementEntityFrameworkCoreModule),
@@ -51,7 +51,7 @@ public class ExamEntityFrameworkCoreModule : AbpModule
         {
             /* The main point to change your DBMS.
              * See also ExamMigrationsDbContextFactory for EF Core tooling. */
-            options.UseSqlServer();
+            options.UseMySQL();
         });
         Configure<AbpEntityOptions>(options =>
         {
