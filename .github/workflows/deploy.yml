@@ -72,7 +72,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            rm -f /var/www/deploy/${{ needs.build.outputs.tag }}
+            rm -rf /var/www/deploy/${{ needs.build.outputs.tag }}
 
       - name: Upload compressed file
         uses: appleboy/scp-action@v0.1.4
