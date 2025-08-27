@@ -9,7 +9,8 @@
 else
 {
     <SingleQuestion Title="@_questionBank.Title"
-                TrainType="TrainType"
+                    TrainType="TrainType"
+                    TrainingSource="TrainingSource.QuestionBank"
                     BackUrl="@($"/question-bank/{QuestionBankId}")"
                 Questions="_questions"></SingleQuestion>
 }
@@ -18,6 +19,7 @@ else
 @using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using SuperAbp.Exam.QuestionManagement.QuestionBanks
+@using SuperAbp.Exam.TrainingManagement
 @using Volo.Abp.Application.Dtos
 @inject IStringLocalizer<ExamResource> L
 @inject IQuestionBankAppService QuestionBankAppService

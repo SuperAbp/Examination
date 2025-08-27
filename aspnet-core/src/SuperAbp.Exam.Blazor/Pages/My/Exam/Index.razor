@@ -11,7 +11,20 @@
            OnChange="Change">
         <PropertyColumn Property="c => c.ExamName" Title="@L["ExamName"]"/>
         <PropertyColumn Field="@L["UserExamStatus:" + context.Status]"  Title="@L["Status"]" />
-        <PropertyColumn Property="c => c.TotalScore" Title="@L["TotalScore"]" />
+        <PropertyColumn Property="c => c.TotalScore">
+            @if (context.Status == 3)
+            {
+                @context.TotalScore
+            }
+            else if(context.Status <= UserExamStatus.Submitted)
+            {
+                <span>未出分</span>
+            }
+            else
+            {
+                <span>0</span>
+            }
+        </PropertyColumn>
         <PropertyColumn Property="c => c.CreationTime" Title="@L["StartTime"]" />
         <PropertyColumn Property="c => c.FinishedTime" Title="@L["EndTime"]" />
         <ActionColumn Title="@L["Actions"]">
@@ -20,6 +33,14 @@
                 <Space>
                     <SpaceItem>
                         <Button Type="@ButtonType.Primary" OnClick="()=>Detail(context.Id)">@L["Detail"]</Button>
+                    </SpaceItem>
+                </Space>
+            }
+            @if (context.Status == UserExamStatus.InProgress)
+            {
+                <Space>
+                    <SpaceItem>
+                        <NavLink href="@($"/exam/start/{context.Id}")">@L["StartExam"]</NavLink>
                     </SpaceItem>
                 </Space>
             }
@@ -49,7 +70,12 @@
     protected async Task GetListAsync(int pageIndex, int pageSize, string sorting = null)
     {
         _loading = true;
-        var result = await UserExamAppService.GetListAsync(new GetUserExamsInput() { SkipCount = 0, MaxResultCount = _pageSize });
+        var skipCount = (pageIndex - 1) * pageSize;
+        var result = await UserExamAppService.GetListAsync(new GetUserExamsInput() 
+        { 
+            SkipCount = skipCount, 
+            MaxResultCount = pageSize 
+        });
         _userExams = result.Items;
         _totalCount = (int)result.TotalCount;
         _loading = false;

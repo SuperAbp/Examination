@@ -26,8 +26,4 @@
     <PackageReference Include="Volo.Abp.PermissionManagement.Domain.OpenIddict" Version="9.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="TrainingManagement\" />
-  </ItemGroup>
-
 </Project>

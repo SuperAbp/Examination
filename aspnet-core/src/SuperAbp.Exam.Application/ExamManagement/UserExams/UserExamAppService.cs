@@ -12,10 +12,13 @@ using Volo.Abp.Timing;
 using Volo.Abp.Users;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.QuestionDto;
 using SuperAbp.Exam.KnowledgePoints;
+using SuperAbp.Exam.MistakesReviews;
 using Volo.Abp;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.ObjectMapping;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using Volo.Abp.EventBus.Local;
+using SuperAbp.Exam.MistakesReviews.Events;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
@@ -27,7 +30,9 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         UserExamManager userExamManager,
         IQuestionRepository questionRepository,
         QuestionManager questionManager,
-        IBackgroundJobManager backgroundJobManager)
+        IMistakesReviewRepository mistakesReviewRepository,
+        IBackgroundJobManager backgroundJobManager,
+        ILocalEventBus localEventBus)
         : ExamAppService, IUserExamAppService
     {
         protected IUserExamRepository UserExamRepository { get; } = userExamRepository;
@@ -169,6 +174,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             userExam.Status = UserExamStatus.Submitted;
 
             decimal totalScore = 0;
+            List<Task> publishEvents = [];
             foreach (UserExamQuestion item in userExam.Questions)
             {
                 bool right = false;
@@ -210,7 +216,15 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
                 item.Right = right;
                 item.Score = score;
+
+                publishEvents.Add(localEventBus.PublishAsync(new AnsweredQuestionEvent(
+                    item.QuestionId,
+                    userExam.UserId,
+                    right
+                )));
             }
+
+            await Task.WhenAll(publishEvents);
 
             userExam.TotalScore = totalScore;
             await UserExamRepository.UpdateAsync(userExam);

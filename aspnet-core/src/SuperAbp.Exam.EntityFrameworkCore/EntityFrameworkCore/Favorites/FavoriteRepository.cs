@@ -19,7 +19,7 @@ public class FavoriteRepository(IDbContextProvider<IExamDbContext> dbContextProv
         Guid? creatorId = null, string? questionContent = null, QuestionType? questionType = null, CancellationToken cancellationToken = default)
     {
         var query = (await GetQueryableAsync(creatorId, questionContent, questionType))
-            .OrderBy(string.IsNullOrWhiteSpace(sorting) ? QuestionConsts.DefaultSorting : sorting)
+            .OrderBy(string.IsNullOrWhiteSpace(sorting) ? FavoriteConsts.DefaultSorting : sorting)
             .PageBy(skipCount, maxResultCount);
         return await query.ToListAsync(cancellationToken: cancellationToken);
     }

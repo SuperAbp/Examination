@@ -104,6 +104,8 @@ else
     [Parameter]
     public string BackUrl { get; set; }
     [Parameter]
+    public TrainingSource TrainingSource { get; set; }
+    [Parameter]
     public List<QuestionNumberVo> Questions { get; set; }
 
     bool favorited = false;
@@ -236,7 +238,7 @@ else
         {
             await TrainingAppService.CreateAsync(new TrainingCreateDto()
                 {
-                    TrainingSource = TrainingSource.Favorite,
+                TrainingSource = TrainingSource,
                     QuestionBankId = _question.QuestionBankId,
                     QuestionId = item.QuestionId,
                     Right = right

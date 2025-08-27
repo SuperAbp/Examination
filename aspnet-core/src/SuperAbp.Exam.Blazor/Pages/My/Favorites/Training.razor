@@ -9,7 +9,8 @@
 else
 {
     <SingleQuestion Title="@L["MyFavorite"]"
-    TrainType="TrainType"
+                    TrainType="TrainType"
+                    TrainingSource="TrainingSource.Favorite"
     BackUrl="/my/favorite"
     Questions="_questions"></SingleQuestion>
 }
@@ -17,6 +18,7 @@ else
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.QuestionManagement.Questions
+@using SuperAbp.Exam.TrainingManagement
 @using Volo.Abp.Application.Dtos
 @using Volo.Abp.AspNetCore.Components.Notifications
 

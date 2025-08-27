@@ -6,6 +6,7 @@ using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.Favorites;
 using SuperAbp.Exam.KnowledgePoints;
+using SuperAbp.Exam.MistakesReviews;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
@@ -57,6 +58,7 @@ public class ExamDbContextInUnitTest : AbpDbContext<ExamDbContextInUnitTest>, IE
     public DbSet<UserExamQuestionReview> UserExamQuestionReviews { get; set; }
     public DbSet<Training> Trains { get; set; }
     public DbSet<Favorite> Favorites { get; set; }
+    public DbSet<MistakesReview> MistakesReviews { get; set; }
 
     public ExamDbContextInUnitTest(DbContextOptions<ExamDbContextInUnitTest> options) : base(options)
     {
@@ -189,6 +191,11 @@ public class ExamDbContextInUnitTest : AbpDbContext<ExamDbContextInUnitTest>, IE
         builder.Entity<Favorite>(b =>
         {
             b.ToTable(ExamConsts.DbTablePrefix + "Favorites", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+        });
+        builder.Entity<MistakesReview>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "MistakesReviews", ExamConsts.DbSchema);
             b.ConfigureByConvention();
         });
     }

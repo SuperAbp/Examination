@@ -1,0 +1,84 @@
+@page "/my/mistakes-review/training/{TrainType:int?}"
+
+@if (loading)
+{
+    <div style=" text-align: center;margin: 50px 0;">
+        <Spin />
+    </div>
+}
+else
+{
+    <SingleQuestion Title="@L["MyMistakeReview"]"
+                    TrainType="TrainType"
+                    TrainingSource="TrainingSource.Mistake"
+                    BackUrl="/my/mistakes-review"
+                    Questions="_questions"></SingleQuestion>
+}
+
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Blazor.Model
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using Volo.Abp.Application.Dtos
+@using Volo.Abp.AspNetCore.Components.Notifications
+@using SuperAbp.Exam.MistakesReviews
+@using SuperAbp.Exam.TrainingManagement
+
+@inject IUiNotificationService NotificationService
+@inject IStringLocalizer<ExamResource> L
+@inject IQuestionAppService QuestionAppService
+@inject IMistakesReviewAppService MistakesReviewAppService
+
+@code {
+    [Parameter]
+    public int? TrainType { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "QuestionType")]
+    public int? CurrentQuestionType { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public Guid? QuestionId { get; set; }
+
+    bool loading = true;
+    List<QuestionNumberVo> _questions = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        // 先获取错题 QuestionId 列表
+        var mistakeResult = await MistakesReviewAppService.GetListAsync(new GetMistakesReviewInput()
+        {
+            QuestionType = CurrentQuestionType,
+            QuestionContent = null,
+            SkipCount = 0,
+            MaxResultCount = 1000
+        });
+        var mistakeIds = mistakeResult.Items.Select(x => x.QuestionId).ToHashSet();
+        if (mistakeIds.Count == 0)
+        {
+            loading = false;
+            return;
+        }
+        // 获取所有题目（可根据需要优化为只查错题）
+        PagedResultDto<QuestionListDto> result = await QuestionAppService.GetListAsync(new GetQuestionsInput()
+            {
+                QuestionId = QuestionId,
+                QuestionType = CurrentQuestionType
+            });
+        var filteredQuestions = result.Items.Where(q => mistakeIds.Contains(q.Id)).ToList();
+        foreach (var type in filteredQuestions
+                     .GroupBy(q => q.QuestionType).Select(q => q.Key).Distinct().OrderBy(q => q))
+        {
+            QuestionNumberVo vo = new QuestionNumberVo()
+                {
+                    QuestionType = type,
+                    Questions = filteredQuestions.Where(q => q.QuestionType == type)
+                        .Select(q => new QuestionNumberVo.QuestionIndex()
+                        {
+                            QuestionId = q.Id
+                        }).ToArray()
+                };
+            _questions.Add(vo);
+        }
+        loading = false;
+    }
+}
