@@ -28,7 +28,8 @@ public class ExamDbContextFactory : IDesignTimeDbContextFactory<ExamDbContext>
     {
         var builder = new ConfigurationBuilder()
             .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../SuperAbp.Exam.DbMigrator/"))
-            .AddJsonFile("appsettings.secrets.json", optional: false);
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile("appsettings.secrets.json", optional: true);
 
         return builder.Build();
     }
