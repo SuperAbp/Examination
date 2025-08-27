@@ -7,9 +7,7 @@ using Volo.Abp.EntityFrameworkCore;
 using SuperAbp.Exam.KnowledgePoints;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
-using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.KnowledgePoints;
 

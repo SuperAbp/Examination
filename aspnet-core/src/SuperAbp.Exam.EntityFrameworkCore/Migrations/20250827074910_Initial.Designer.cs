@@ -13,90 +13,98 @@ using Volo.Abp.EntityFrameworkCore;
 namespace SuperAbp.Exam.Migrations
 {
     [DbContext(typeof(ExamDbContext))]
-    [Migration("20231112131543_Update_Abp_7_4")]
-    partial class Update_Abp_7_4
+    [Migration("20250827074910_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("_Abp_DatabaseProvider", EfCoreDatabaseProvider.SqlServer)
-                .HasAnnotation("ProductVersion", "7.0.13")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("_Abp_DatabaseProvider", EfCoreDatabaseProvider.MySql)
+                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("SuperAbp.Exam.ExamManagement.Exams.Examination", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("AnswerMode")
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("DeleterId");
 
                     b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime?>("EndTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
                     b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("LastModificationTime");
 
                     b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<Guid>("PaperId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<decimal>("PassingScore")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<bool>("RandomOrderOfOption")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<decimal>("Score")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTime?>("StartTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<int>("TotalTime")
                         .HasColumnType("int");
@@ -108,31 +116,122 @@ namespace SuperAbp.Exam.Migrations
                     b.ToTable("AppExamination", (string)null);
                 });
 
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestionReviews.UserExamQuestionReview", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("DeletionTime");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(512)
+                        .HasColumnType("varchar(512)");
+
+                    b.Property<bool>("Right")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<decimal>("Score")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<Guid>("UserExamQuestionId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserExamQuestionId");
+
+                    b.ToTable("AppUserExamQuestionReview", (string)null);
+                });
+
             modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestions.UserExamQuestion", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Answers")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("DeletionTime");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("LastModifierId");
 
                     b.Property<Guid>("QuestionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<decimal>("QuestionScore")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(512)
+                        .HasColumnType("varchar(512)");
 
                     b.Property<bool?>("Right")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<decimal?>("Score")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<Guid>("UserExamId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserExamId");
 
                     b.ToTable("AppUserExamQuestion", (string)null);
                 });
@@ -140,62 +239,218 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExams.UserExam", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("DeletionTime");
+
                     b.Property<Guid>("ExamId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
-                    b.Property<bool>("Finished")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime?>("FinishedTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<DateTime?>("StartTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalScore")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
                     b.ToTable("AppUserExam", (string)null);
                 });
 
-            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperRepos.PaperRepo", b =>
+            modelBuilder.Entity("SuperAbp.Exam.Favorites.Favorite", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppFavorites", (string)null);
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.KnowledgePoints.KnowledgePoint", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("DeletionTime");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppKnowledgePoints", (string)null);
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.MistakesReviews.MistakesReview", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<int>("ErrorCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppMistakesReviews", (string)null);
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperQuestionRules.PaperQuestionRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
 
                     b.Property<int?>("BlankCount")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("BlankScore")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
@@ -203,92 +458,92 @@ namespace SuperAbp.Exam.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal?>("JudgeScore")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int?>("MultiCount")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("MultiScore")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<Guid>("PaperId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<decimal?>("Proportion")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<Guid>("QuestionRepositoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<Guid>("QuestionBankId")
+                        .HasColumnType("char(36)");
 
                     b.Property<int?>("SingleCount")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("SingleScore")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppPaperRepositories", (string)null);
+                    b.ToTable("AppPaperQuestionRules", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.PaperManagement.Papers.Paper", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("DeleterId");
 
                     b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
                     b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("LastModificationTime");
 
                     b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<decimal>("Score")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("TotalQuestionCount")
                         .HasColumnType("int");
@@ -298,185 +553,143 @@ namespace SuperAbp.Exam.Migrations
                     b.ToTable("AppPapers", (string)null);
                 });
 
-            modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.QuestionAnswers.QuestionAnswer", b =>
+            modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.QuestionBanks.QuestionBank", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Analysis")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreationTime");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("CreatorId");
-
-                    b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DeleterId");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("DeletionTime");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("LastModificationTime");
-
-                    b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("LastModifierId");
-
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Right")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Sort")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AppQuestionAnswers", (string)null);
-                });
-
-            modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.QuestionRepos.QuestionRepo", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("DeleterId");
 
                     b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
                     b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("LastModificationTime");
 
                     b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
                     b.Property<string>("Remark")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppQuestionRepositories", (string)null);
+                    b.ToTable("AppQuestionBanks", (string)null);
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints.QuestionKnowledgePoint", b =>
+                {
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("KnowledgePointId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("QuestionId", "KnowledgePointId");
+
+                    b.HasIndex("QuestionId", "KnowledgePointId");
+
+                    b.ToTable("AppQuestionKnowledgePoints", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.Questions.Question", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Analysis")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("varchar(2000)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("varchar(2000)");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("DeleterId");
 
                     b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
                     b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("LastModificationTime");
 
                     b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<Guid>("QuestionRepositoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<Guid>("QuestionBankId")
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("QuestionType")
                         .HasColumnType("int");
@@ -486,38 +699,103 @@ namespace SuperAbp.Exam.Migrations
                     b.ToTable("AppQuestions", (string)null);
                 });
 
+            modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers.QuestionAnswer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Analysis")
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("DeletionTime");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("Right")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Sort")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("AppQuestionAnswers", (string)null);
+                });
+
             modelBuilder.Entity("SuperAbp.Exam.TrainingManagement.Training", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<Guid>("QuestionBankId")
+                        .HasColumnType("char(36)");
 
-                    b.Property<Guid>("QuestionRepositoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("char(36)");
 
                     b.Property<bool>("Right")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("TrainingSource")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -528,67 +806,67 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("DeleterId");
 
                     b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
                     b.Property<bool>("Group")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("HideInBreadcrumb")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Icon")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
                     b.Property<string>("Key")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("LastModificationTime");
 
                     b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<Guid?>("ParentId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Permission")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Route")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("Sort")
                         .ValueGeneratedOnAdd()
@@ -606,68 +884,68 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ApplicationName")
                         .HasMaxLength(96)
-                        .HasColumnType("nvarchar(96)")
+                        .HasColumnType("varchar(96)")
                         .HasColumnName("ApplicationName");
 
                     b.Property<string>("BrowserInfo")
                         .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)")
+                        .HasColumnType("varchar(512)")
                         .HasColumnName("BrowserInfo");
 
                     b.Property<string>("ClientId")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("ClientId");
 
                     b.Property<string>("ClientIpAddress")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("ClientIpAddress");
 
                     b.Property<string>("ClientName")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)")
+                        .HasColumnType("varchar(128)")
                         .HasColumnName("ClientName");
 
                     b.Property<string>("Comments")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("Comments");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<string>("CorrelationId")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("CorrelationId");
 
                     b.Property<string>("Exceptions")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("ExecutionDuration")
                         .HasColumnType("int")
                         .HasColumnName("ExecutionDuration");
 
                     b.Property<DateTime>("ExecutionTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<string>("HttpMethod")
                         .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)")
+                        .HasColumnType("varchar(16)")
                         .HasColumnName("HttpMethod");
 
                     b.Property<int?>("HttpStatusCode")
@@ -675,44 +953,44 @@ namespace SuperAbp.Exam.Migrations
                         .HasColumnName("HttpStatusCode");
 
                     b.Property<Guid?>("ImpersonatorTenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("ImpersonatorTenantId");
 
                     b.Property<string>("ImpersonatorTenantName")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("ImpersonatorTenantName");
 
                     b.Property<Guid?>("ImpersonatorUserId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("ImpersonatorUserId");
 
                     b.Property<string>("ImpersonatorUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("ImpersonatorUserName");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.Property<string>("TenantName")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("TenantName");
 
                     b.Property<string>("Url")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("Url");
 
                     b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("UserId");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("UserName");
 
                     b.HasKey("Id");
@@ -728,10 +1006,10 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("AuditLogId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("AuditLogId");
 
                     b.Property<int>("ExecutionDuration")
@@ -739,30 +1017,30 @@ namespace SuperAbp.Exam.Migrations
                         .HasColumnName("ExecutionDuration");
 
                     b.Property<DateTime>("ExecutionTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("ExecutionTime");
 
                     b.Property<string>("ExtraProperties")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<string>("MethodName")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)")
+                        .HasColumnType("varchar(128)")
                         .HasColumnName("MethodName");
 
                     b.Property<string>("Parameters")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)")
+                        .HasColumnType("varchar(2000)")
                         .HasColumnName("Parameters");
 
                     b.Property<string>("ServiceName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("ServiceName");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.HasKey("Id");
@@ -778,41 +1056,40 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("AuditLogId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("AuditLogId");
 
                     b.Property<DateTime>("ChangeTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("ChangeTime");
 
                     b.Property<byte>("ChangeType")
-                        .HasColumnType("tinyint")
+                        .HasColumnType("tinyint unsigned")
                         .HasColumnName("ChangeType");
 
                     b.Property<string>("EntityId")
-                        .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)")
+                        .HasColumnType("varchar(128)")
                         .HasColumnName("EntityId");
 
                     b.Property<Guid?>("EntityTenantId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("EntityTypeFullName")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)")
+                        .HasColumnType("varchar(128)")
                         .HasColumnName("EntityTypeFullName");
 
                     b.Property<string>("ExtraProperties")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.HasKey("Id");
@@ -828,35 +1105,35 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("EntityChangeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("NewValue")
                         .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)")
+                        .HasColumnType("varchar(512)")
                         .HasColumnName("NewValue");
 
                     b.Property<string>("OriginalValue")
                         .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)")
+                        .HasColumnType("varchar(512)")
                         .HasColumnName("OriginalValue");
 
                     b.Property<string>("PropertyName")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)")
+                        .HasColumnType("varchar(128)")
                         .HasColumnName("PropertyName");
 
                     b.Property<string>("PropertyTypeFullName")
                         .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("PropertyTypeFullName");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.HasKey("Id");
@@ -870,48 +1147,48 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsAbandoned")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false);
 
                     b.Property<string>("JobArgs")
                         .IsRequired()
                         .HasMaxLength(1048576)
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("JobName")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<DateTime?>("LastTryTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("NextTryTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<byte>("Priority")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
+                        .HasColumnType("tinyint unsigned")
                         .HasDefaultValue((byte)15);
 
                     b.Property<short>("TryCount")
@@ -930,52 +1207,52 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("AllowedProviders")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("DefaultValue")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("ExtraProperties")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<string>("GroupName")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<bool>("IsAvailableToHost")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsVisibleToClients")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("ParentName")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("ValueType")
                         .HasMaxLength(2048)
-                        .HasColumnType("nvarchar(2048)");
+                        .HasColumnType("varchar(2048)");
 
                     b.HasKey("Id");
 
@@ -991,21 +1268,21 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("ExtraProperties")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.HasKey("Id");
 
@@ -1019,31 +1296,30 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("ProviderKey")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<string>("ProviderName")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Name", "ProviderName", "ProviderKey")
-                        .IsUnique()
-                        .HasFilter("[ProviderName] IS NOT NULL AND [ProviderKey] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("AbpFeatureValues", (string)null);
                 });
@@ -1051,42 +1327,42 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.IdentityClaimType", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<string>("Description")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsStatic")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("Regex")
                         .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
+                        .HasColumnType("varchar(512)");
 
                     b.Property<string>("RegexDescription")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<bool>("Required")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("ValueType")
                         .HasColumnType("int");
@@ -1099,25 +1375,24 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.IdentityLinkUser", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("SourceTenantId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("SourceUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("TargetTenantId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("TargetUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SourceUserId", "SourceTenantId", "TargetUserId", "TargetTenantId")
-                        .IsUnique()
-                        .HasFilter("[SourceTenantId] IS NOT NULL AND [TargetTenantId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("AbpLinkUsers", (string)null);
                 });
@@ -1125,13 +1400,13 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.IdentityRole", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<int>("EntityVersion")
@@ -1139,33 +1414,33 @@ namespace SuperAbp.Exam.Migrations
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("IsDefault");
 
                     b.Property<bool>("IsPublic")
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("IsPublic");
 
                     b.Property<bool>("IsStatic")
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("IsStatic");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedName")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.HasKey("Id");
@@ -1178,22 +1453,22 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.IdentityRoleClaim", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ClaimType")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("ClaimValue")
                         .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
+                        .HasColumnType("varchar(1024)");
 
                     b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.HasKey("Id");
@@ -1206,65 +1481,65 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.IdentitySecurityLog", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Action")
                         .HasMaxLength(96)
-                        .HasColumnType("nvarchar(96)");
+                        .HasColumnType("varchar(96)");
 
                     b.Property<string>("ApplicationName")
                         .HasMaxLength(96)
-                        .HasColumnType("nvarchar(96)");
+                        .HasColumnType("varchar(96)");
 
                     b.Property<string>("BrowserInfo")
                         .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
+                        .HasColumnType("varchar(512)");
 
                     b.Property<string>("ClientId")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<string>("ClientIpAddress")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<string>("CorrelationId")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<string>("Identity")
                         .HasMaxLength(96)
-                        .HasColumnType("nvarchar(96)");
+                        .HasColumnType("varchar(96)");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.Property<string>("TenantName")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
@@ -1279,10 +1554,65 @@ namespace SuperAbp.Exam.Migrations
                     b.ToTable("AbpSecurityLogs", (string)null);
                 });
 
+            modelBuilder.Entity("Volo.Abp.Identity.IdentitySession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ClientId")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("Device")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("DeviceInfo")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("ExtraProperties")
+                        .HasColumnType("longtext")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<string>("IpAddresses")
+                        .HasMaxLength(2048)
+                        .HasColumnType("varchar(2048)");
+
+                    b.Property<DateTime?>("LastAccessed")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("SessionId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
+
+                    b.Property<DateTime>("SignedIn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("TenantId");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Device");
+
+                    b.HasIndex("SessionId");
+
+                    b.HasIndex("TenantId", "UserId");
+
+                    b.ToTable("AbpSessions", (string)null);
+                });
+
             modelBuilder.Entity("Volo.Abp.Identity.IdentityUser", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("AccessFailedCount")
                         .ValueGeneratedOnAdd()
@@ -1294,34 +1624,34 @@ namespace SuperAbp.Exam.Migrations
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("DeleterId");
 
                     b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("Email");
 
                     b.Property<bool>("EmailConfirmed")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("EmailConfirmed");
 
@@ -1330,106 +1660,106 @@ namespace SuperAbp.Exam.Migrations
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("IsActive");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
                     b.Property<bool>("IsExternal")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsExternal");
 
                     b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("LastModificationTime");
 
                     b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
                     b.Property<DateTimeOffset?>("LastPasswordChangeTime")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("LockoutEnabled")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("Name");
 
                     b.Property<string>("NormalizedEmail")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("NormalizedEmail");
 
                     b.Property<string>("NormalizedUserName")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("NormalizedUserName");
 
                     b.Property<string>("PasswordHash")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("PasswordHash");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)")
+                        .HasColumnType("varchar(16)")
                         .HasColumnName("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("PhoneNumberConfirmed");
 
                     b.Property<string>("SecurityStamp")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("SecurityStamp");
 
                     b.Property<bool>("ShouldChangePasswordOnNextLogin")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Surname")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .HasColumnType("varchar(64)")
                         .HasColumnName("Surname");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("UserName");
 
                     b.HasKey("Id");
@@ -1448,23 +1778,23 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.IdentityUserClaim", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ClaimType")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("ClaimValue")
                         .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
+                        .HasColumnType("varchar(1024)");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -1476,22 +1806,22 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.IdentityUserDelegation", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("SourceUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("TargetUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.HasKey("Id");
@@ -1502,23 +1832,23 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.IdentityUserLogin", b =>
                 {
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("ProviderKey")
                         .IsRequired()
                         .HasMaxLength(196)
-                        .HasColumnType("nvarchar(196)");
+                        .HasColumnType("varchar(196)");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.HasKey("UserId", "LoginProvider");
@@ -1531,21 +1861,21 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.IdentityUserOrganizationUnit", b =>
                 {
                     b.Property<Guid>("OrganizationUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.HasKey("OrganizationUnitId", "UserId");
@@ -1558,13 +1888,13 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.IdentityUserRole", b =>
                 {
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.HasKey("UserId", "RoleId");
@@ -1577,22 +1907,22 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.IdentityUserToken", b =>
                 {
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -1602,41 +1932,41 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.OrganizationUnit", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(95)
-                        .HasColumnType("nvarchar(95)")
+                        .HasColumnType("varchar(95)")
                         .HasColumnName("Code");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("DeleterId");
 
                     b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)")
+                        .HasColumnType("varchar(128)")
                         .HasColumnName("DisplayName");
 
                     b.Property<int>("EntityVersion")
@@ -1644,28 +1974,28 @@ namespace SuperAbp.Exam.Migrations
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
                     b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("LastModificationTime");
 
                     b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
                     b.Property<Guid?>("ParentId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.HasKey("Id");
@@ -1680,21 +2010,21 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.Identity.OrganizationUnitRole", b =>
                 {
                     b.Property<Guid>("OrganizationUnitId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.HasKey("OrganizationUnitId", "RoleId");
@@ -1708,91 +2038,101 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ApplicationType")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("ClientId")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("ClientSecret")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ClientType")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("ClientUri")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<string>("ConsentType")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("DeleterId");
 
                     b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
                     b.Property<string>("DisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("DisplayNames")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
+                    b.Property<string>("JsonWebKeySet")
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("LastModificationTime");
 
                     b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
                     b.Property<string>("LogoUri")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Permissions")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PostLogoutRedirectUris")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Properties")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("RedirectUris")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Requirements")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("Type")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("Settings")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -1805,73 +2145,43 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreationTime");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("CreatorId");
-
-                    b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DeleterId");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("DeletionTime");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("LastModificationTime");
-
-                    b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("LastModifierId");
-
                     b.Property<string>("Properties")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Scopes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Subject")
                         .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
+                        .HasColumnType("varchar(400)");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("Id");
 
@@ -1884,71 +2194,71 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("DeleterId");
 
                     b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Descriptions")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("DisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("DisplayNames")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
                     b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("LastModificationTime");
 
                     b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
                     b.Property<string>("Name")
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Properties")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Resources")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -1961,86 +2271,56 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("AuthorizationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreationTime");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("CreatorId");
-
-                    b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DeleterId");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("DeletionTime");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime?>("ExpirationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("LastModificationTime");
-
-                    b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("LastModifierId");
-
                     b.Property<string>("Payload")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Properties")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime?>("RedemptionDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ReferenceId")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Subject")
                         .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
+                        .HasColumnType("varchar(400)");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("Id");
 
@@ -2057,44 +2337,44 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("ExtraProperties")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<string>("GroupName")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<bool>("IsEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<byte>("MultiTenancySide")
-                        .HasColumnType("tinyint");
+                        .HasColumnType("tinyint unsigned");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("ParentName")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("Providers")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("StateCheckers")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
@@ -2110,32 +2390,31 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("ProviderKey")
                         .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<string>("ProviderName")
                         .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TenantId", "Name", "ProviderName", "ProviderKey")
-                        .IsUnique()
-                        .HasFilter("[TenantId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("AbpPermissionGrants", (string)null);
                 });
@@ -2144,21 +2423,21 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("ExtraProperties")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.HasKey("Id");
 
@@ -2172,31 +2451,30 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("ProviderKey")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<string>("ProviderName")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasMaxLength(2048)
-                        .HasColumnType("nvarchar(2048)");
+                        .HasColumnType("varchar(2048)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Name", "ProviderName", "ProviderKey")
-                        .IsUnique()
-                        .HasFilter("[ProviderName] IS NOT NULL AND [ProviderKey] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("AbpSettings", (string)null);
                 });
@@ -2205,42 +2483,42 @@ namespace SuperAbp.Exam.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("DefaultValue")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasMaxLength(2048)
+                        .HasColumnType("varchar(2048)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
+                        .HasColumnType("varchar(512)");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("ExtraProperties")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsEncrypted")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsInherited")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsVisibleToClients")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("Providers")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasMaxLength(1024)
+                        .HasColumnType("varchar(1024)");
 
                     b.HasKey("Id");
 
@@ -2253,29 +2531,29 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.TenantManagement.Tenant", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("CreationTime");
 
                     b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("DeleterId");
 
                     b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
                     b.Property<int>("EntityVersion")
@@ -2283,31 +2561,38 @@ namespace SuperAbp.Exam.Migrations
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
                     b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("LastModificationTime");
 
                     b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Name");
+
+                    b.HasIndex("NormalizedName");
 
                     b.ToTable("AbpTenants", (string)null);
                 });
@@ -2315,20 +2600,51 @@ namespace SuperAbp.Exam.Migrations
             modelBuilder.Entity("Volo.Abp.TenantManagement.TenantConnectionString", b =>
                 {
                     b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("varchar(64)");
 
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
+                        .HasColumnType("varchar(1024)");
 
                     b.HasKey("TenantId", "Name");
 
                     b.ToTable("AbpTenantConnectionStrings", (string)null);
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestionReviews.UserExamQuestionReview", b =>
+                {
+                    b.HasOne("SuperAbp.Exam.ExamManagement.UserExamQuestions.UserExamQuestion", "Question")
+                        .WithMany("QuestionReviews")
+                        .HasForeignKey("UserExamQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestions.UserExamQuestion", b =>
+                {
+                    b.HasOne("SuperAbp.Exam.ExamManagement.UserExams.UserExam", null)
+                        .WithMany("Questions")
+                        .HasForeignKey("UserExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers.QuestionAnswer", b =>
+                {
+                    b.HasOne("SuperAbp.Exam.QuestionManagement.Questions.Question", "Question")
+                        .WithMany("Answers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("SuperAbp.MenuManagement.Menus.Menu", b =>
@@ -2480,6 +2796,21 @@ namespace SuperAbp.Exam.Migrations
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestions.UserExamQuestion", b =>
+                {
+                    b.Navigation("QuestionReviews");
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExams.UserExam", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.Questions.Question", b =>
+                {
+                    b.Navigation("Answers");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLog", b =>

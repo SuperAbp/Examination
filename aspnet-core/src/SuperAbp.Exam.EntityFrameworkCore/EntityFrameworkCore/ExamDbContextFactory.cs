@@ -8,6 +8,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore;
 
 /* This class is needed for EF Core console commands
  * (like Add-Migration and Update-Database commands) */
+
 public class ExamDbContextFactory : IDesignTimeDbContextFactory<ExamDbContext>
 {
     public ExamDbContext CreateDbContext(string[] args)
@@ -16,8 +17,9 @@ public class ExamDbContextFactory : IDesignTimeDbContextFactory<ExamDbContext>
 
         var configuration = BuildConfiguration();
 
+        string connectionString = configuration.GetConnectionString("Default") ?? String.Empty;
         var builder = new DbContextOptionsBuilder<ExamDbContext>()
-            .UseSqlServer(configuration.GetConnectionString("Default"));
+            .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 
         return new ExamDbContext(builder.Options);
     }
