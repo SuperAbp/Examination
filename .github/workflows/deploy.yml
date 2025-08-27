@@ -65,6 +65,15 @@ jobs:
       - name: Compress publish folder
         run: tar -czf deploy.tar.gz -C publish .
 
+      - name: Remove existing file
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            rm -f /var/www/deploy/${{ needs.build.outputs.tag }}
+
       - name: Upload compressed file
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -73,6 +82,16 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "deploy.tar.gz"
           target: "/var/www/deploy/${{ needs.build.outputs.tag }}"
+
+      - name: Extract file on server
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /var/www/deploy/${{ needs.build.outputs.tag }}
+            tar -xzvf deploy.tar.gz
 
       - name: Run Migration & Restart Service
         uses: appleboy/ssh-action@v1.0.0
