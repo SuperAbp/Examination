@@ -102,4 +102,5 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           envs: CONNECTIONSTRINGS__DEFAULT
           script: |
+            CONNECTIONSTRINGS__DEFAULT="${{ secrets.CONNECTIONSTRINGS__DEFAULT }}"
             /var/www/deploy.sh ${{ needs.build.outputs.tag }}
