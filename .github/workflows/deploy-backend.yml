@@ -27,22 +27,28 @@ jobs:
         run: |
           cd aspnet-core/src
 
-          echo "Publishing Admin API..."
+          echo "Install Libs Admin API..."
           cd SuperAbp.Exam.Admin.HttpApi.Host
           abp install-libs
           cd ..
+
+          echo "Publishing Admin API..."
           dotnet publish SuperAbp.Exam.Admin.HttpApi.Host/SuperAbp.Exam.Admin.HttpApi.Host.csproj -c Release -o ../publish/AdminApi
 
-          echo "Publishing API..."
+          echo "Install Libs API..."
           cd SuperAbp.Exam.HttpApi.Host
           abp install-libs
           cd ..
+          
+          echo "Publishing API..."
           dotnet publish SuperAbp.Exam.HttpApi.Host/SuperAbp.Exam.HttpApi.Host.csproj -c Release -o ../publish/Api
 
-          echo "Publishing Auth Server..."
+          echo "Install Libs Auth Server..."
           cd SuperAbp.Exam.AuthServer
           abp install-libs
-          cd..
+          cd ..
+          
+          echo "Publishing Auth Server..."
           dotnet publish SuperAbp.Exam.AuthServer/SuperAbp.Exam.AuthServer.csproj -c Release -o ../publish/AuthServer
 
           echo "Publishing Web UI..."
