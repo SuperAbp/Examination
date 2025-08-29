@@ -21,7 +21,7 @@ jobs:
 
       - name: Install ABP CLI
         run: |
-          npm install -g @abp/cli
+          dotnet tool install -g Volo.Abp.Studio.Cli
 
       - name: Publish .NET Core Project
         run: |
