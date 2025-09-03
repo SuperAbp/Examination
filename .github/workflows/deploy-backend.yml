@@ -51,8 +51,13 @@ jobs:
           echo "Publishing Auth Server..."
           dotnet publish SuperAbp.Exam.AuthServer/SuperAbp.Exam.AuthServer.csproj -c Release -o ../publish/AuthServer
 
+          echo "Install Libs Web..."
+          cd SuperAbp.Exam.Blazor
+          abp install-libs
+          cd ..
+
           echo "Publishing Web UI..."
-          dotnet publish SuperAbp.Exam.Blazor/SuperAbp.Exam.Blazor.csproj -c Release -o ../../publish/Web
+          dotnet publish SuperAbp.Exam.Blazor/SuperAbp.Exam.Blazor.csproj -c Release -o ../publish/Web
 
           echo "Publishing Db Migrator..."
           dotnet publish SuperAbp.Exam.DbMigrator/SuperAbp.Exam.DbMigrator.csproj -c Release -o ../publish/DbMigrator
