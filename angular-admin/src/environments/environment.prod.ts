@@ -7,7 +7,7 @@ import { Environment } from 'src/Environment';
 
 import * as MOCKDATA from '../../_mock';
 
-const baseUrl = 'http://admin.examimg.superabp.com/';
+const baseUrl = 'http://121.41.239.155:8084/';
 export const environment = {
   application: {
     baseUrl,
@@ -15,7 +15,7 @@ export const environment = {
     logoUrl: ''
   },
   oAuthConfig: {
-    issuer: 'http://auth.examimg.superabp.com/',
+    issuer: 'http://121.41.239.155:8082/',
     redirectUri: baseUrl,
     clientId: 'Exam_Admin_App',
     responseType: 'code',
@@ -24,13 +24,13 @@ export const environment = {
   },
   apis: {
     default: {
-      url: 'http://api.admin.examimg.superabp.com',
+      url: 'http://121.41.239.155:8081',
       rootNamespace: 'SuperAbp.Exam'
     }
   },
   resource: {
-    mediaUrl: 'http://api.admin.examimg.superabp.com/api/super-abp/media',
-    userUrl: 'https://auth.examimg.superabp.com'
+    mediaUrl: 'http://121.41.239.155:8081/api/super-abp/media',
+    userUrl: 'http://121.41.239.155:8082'
   },
   api: {
     baseUrl: './',
