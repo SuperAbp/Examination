@@ -24,12 +24,12 @@ export const environment = {
   },
   apis: {
     default: {
-      url: 'http://121.41.239.155:8081',
+      url: 'http://121.41.239.155:8080',
       rootNamespace: 'SuperAbp.Exam'
     }
   },
   resource: {
-    mediaUrl: 'http://121.41.239.155:8081/api/super-abp/media',
+    mediaUrl: 'http://121.41.239.155:8080/api/super-abp/media',
     userUrl: 'http://121.41.239.155:8082'
   },
   api: {
