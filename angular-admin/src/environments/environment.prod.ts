@@ -7,7 +7,7 @@ import { Environment } from 'src/Environment';
 
 import * as MOCKDATA from '../../_mock';
 
-const baseUrl = 'http://121.41.239.155:8084/';
+const baseUrl = 'http://121.41.239.155:8084';
 export const environment = {
   application: {
     baseUrl,
