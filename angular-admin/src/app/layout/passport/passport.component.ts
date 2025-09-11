@@ -23,7 +23,7 @@ import { HeaderI18nComponent } from '../basic/widgets/i18n.component';
         <router-outlet />
         <global-footer [links]="links">
           Copyright
-          <i nz-icon nzType="copyright"></i> 2023 <a href="//github.com/cipchk" target="_blank">卡色</a>出品
+          <i nz-icon nzType="copyright"></i> 2023 <a href="//github.com/SuperAbp" target="_blank">SuperAbp</a>出品
         </global-footer>
       </div>
     </div>

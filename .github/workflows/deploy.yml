@@ -1,0 +1,106 @@
+name: Deploy on Tag
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get_tag.outputs.TAG }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get Tag Name
+        id: get_tag
+        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Run Unit Tests
+        working-directory: aspnet-core
+        run: |
+          dotnet test --nologo --verbosity normal
+
+  deploy-backend:
+    needs: build
+    uses: ./.github/workflows/deploy-backend.yml
+    with:
+      tag: ${{ needs.build.outputs.tag }}
+    secrets: inherit
+
+  deploy-frontend:
+    needs: build
+    uses: ./.github/workflows/deploy-frontend.yml
+    with:
+      tag: ${{ needs.build.outputs.tag }}
+    secrets: inherit
+  
+  deploy-all:
+    name: "Package and Deploy to Server"
+    needs: [build, deploy-backend, deploy-frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download backend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: backend
+          path: ./publish
+      
+      - name: Download frontend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend
+          path: ./publish/Admin
+
+      - name: Compress publish folder
+        run: tar -czf deploy.tar.gz -C publish .
+
+      - name: Remove existing file
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            rm -rf /var/www/deploy/${{ needs.build.outputs.tag }}
+
+      - name: Upload compressed file
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "deploy.tar.gz"
+          target: "/var/www/deploy/${{ needs.build.outputs.tag }}"
+
+      - name: Extract file on server
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /var/www/deploy/${{ needs.build.outputs.tag }}
+            tar -xzvf deploy.tar.gz
+            rm deploy.tar.gz
+
+      - name: Run Migration & Restart Service
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: CONNECTIONSTRINGS__DEFAULT
+          script: |
+            export CONNECTIONSTRINGS__DEFAULT="${{ secrets.CONNECTIONSTRINGS__DEFAULT }}"
+            /var/www/deploy.sh ${{ needs.build.outputs.tag }}

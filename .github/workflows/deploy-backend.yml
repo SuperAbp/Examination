@@ -1,0 +1,69 @@
+name: Deploy Backend
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Install ABP CLI
+        run: |
+          dotnet tool install -g Volo.Abp.Studio.Cli
+
+      - name: Publish .NET Core Project
+        run: |
+          cd aspnet-core/src
+
+          echo "Install Libs Admin API..."
+          cd SuperAbp.Exam.Admin.HttpApi.Host
+          abp install-libs
+          cd ..
+
+          echo "Publishing Admin API..."
+          dotnet publish SuperAbp.Exam.Admin.HttpApi.Host/SuperAbp.Exam.Admin.HttpApi.Host.csproj -c Release -o ../publish/AdminApi
+
+          echo "Install Libs API..."
+          cd SuperAbp.Exam.HttpApi.Host
+          abp install-libs
+          cd ..
+          
+          echo "Publishing API..."
+          dotnet publish SuperAbp.Exam.HttpApi.Host/SuperAbp.Exam.HttpApi.Host.csproj -c Release -o ../publish/Api
+
+          echo "Install Libs Auth Server..."
+          cd SuperAbp.Exam.AuthServer
+          abp install-libs
+          cd ..
+          
+          echo "Publishing Auth Server..."
+          dotnet publish SuperAbp.Exam.AuthServer/SuperAbp.Exam.AuthServer.csproj -c Release -o ../publish/AuthServer
+
+          echo "Install Libs Web..."
+          cd SuperAbp.Exam.Blazor
+          abp install-libs
+          cd ..
+
+          echo "Publishing Web UI..."
+          dotnet publish SuperAbp.Exam.Blazor/SuperAbp.Exam.Blazor.csproj -c Release -o ../publish/Web
+
+          echo "Publishing Db Migrator..."
+          dotnet publish SuperAbp.Exam.DbMigrator/SuperAbp.Exam.DbMigrator.csproj -c Release -o ../publish/DbMigrator
+      
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend
+          path: aspnet-core/publish/*
