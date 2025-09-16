@@ -65,7 +65,10 @@ public class ExamHttpApiHostModule : AbpModule
         ConfigureDataProtection(context, configuration, hostingEnvironment);
         ConfigureDistributedLocking(context, configuration);
         ConfigureCors(context, configuration);
-        ConfigureSwaggerServices(context, configuration);
+        if (hostingEnvironment.IsDevelopment())
+        {
+            ConfigureSwaggerServices(context, configuration);
+        }
 
         Configure<AbpBackgroundWorkerOptions>(options =>
         {
