@@ -9,13 +9,14 @@ using System.Xml.Linq;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Entities.Auditing;
+using Volo.Abp.MultiTenancy;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions;
 
 /// <summary>
 /// 题目
 /// </summary>
-public class Question : FullAuditedAggregateRoot<Guid>
+public class Question : FullAuditedAggregateRoot<Guid>, IMultiTenant
 {
     protected Question()
     {
@@ -49,6 +50,8 @@ public class Question : FullAuditedAggregateRoot<Guid>
     /// 所属题库
     /// </summary>
     public Guid QuestionBankId { get; set; }
+
+    public Guid? TenantId { get; set; }
 
     public List<QuestionAnswer> Answers { get; private set; }
 

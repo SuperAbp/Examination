@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
+using Volo.Abp.MultiTenancy;
 using Volo.Abp.Timing;
 
 namespace SuperAbp.Exam.ExamManagement.Exams;
@@ -10,7 +11,7 @@ namespace SuperAbp.Exam.ExamManagement.Exams;
 /// <summary>
 /// 考试
 /// </summary>
-public class Examination : FullAuditedAggregateRoot<Guid>
+public class Examination : FullAuditedAggregateRoot<Guid>, IMultiTenant
 {
     protected Examination()
     { Name = String.Empty; }
@@ -76,6 +77,8 @@ public class Examination : FullAuditedAggregateRoot<Guid>
     /// 结束时间
     /// </summary>
     public DateTime? EndTime { get; private set; }
+
+    public Guid? TenantId { get; set; }
 
     public void SetTime(DateTime? startTime, DateTime? endTime)
     {

@@ -2806,6 +2806,13 @@
   dependencies:
     tslib "^2.3.0"
 
+"@super-abp/ng.tenant-management@~0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@super-abp/ng.tenant-management/-/ng.tenant-management-0.0.3.tgz#18c04d8cca37db3a64fcb46b98e25d744349f847"
+  integrity sha512-5AgQZ2cqDxHNVr9mGTwKCFNaxIX1JfVFgJ+s1UDhWUhwRBJtAxBaIDhbuC7WTGrKZ6507IOTRRyqtM540rmVEA==
+  dependencies:
+    tslib "^2.3.0"
+
 "@szmarczak/http-timer@^4.0.5":
   version "4.0.6"
   resolved "https://registry.npmjs.org/@szmarczak/http-timer/-/http-timer-4.0.6.tgz"

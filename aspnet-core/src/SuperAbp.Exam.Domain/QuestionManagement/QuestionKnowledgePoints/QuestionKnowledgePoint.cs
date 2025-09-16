@@ -1,9 +1,10 @@
 ﻿using System;
 using Volo.Abp.Domain.Entities;
+using Volo.Abp.MultiTenancy;
 
 namespace SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 
-public class QuestionKnowledgePoint : Entity<Guid>
+public class QuestionKnowledgePoint : Entity<Guid>, IMultiTenant
 {
     protected QuestionKnowledgePoint()
     {
@@ -22,4 +23,6 @@ public class QuestionKnowledgePoint : Entity<Guid>
     {
         return [QuestionId, KnowledgePointId];
     }
+
+    public Guid? TenantId { get; set; }
 }

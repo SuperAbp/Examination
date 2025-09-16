@@ -116,6 +116,10 @@ export class StartupService {
                 link: '/identity/user'
               },
               {
+                text: '租户管理',
+                link: '/tenant-management/tenant'
+              },
+              {
                 text: '角色管理',
                 link: '/identity/role'
               },

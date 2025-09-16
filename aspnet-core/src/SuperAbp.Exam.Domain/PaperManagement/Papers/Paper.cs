@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Volo.Abp.Domain.Entities.Auditing;
+using Volo.Abp.MultiTenancy;
 
 namespace SuperAbp.Exam.PaperManagement.Papers;
 
 /// <summary>
 /// 试卷
 /// </summary>
-public class Paper : FullAuditedAggregateRoot<Guid>
+public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
 {
     protected Paper()
     {
@@ -40,4 +41,6 @@ public class Paper : FullAuditedAggregateRoot<Guid>
     /// 分数
     /// </summary>
     public decimal Score { get; set; }
+
+    public Guid? TenantId { get; set; }
 }
