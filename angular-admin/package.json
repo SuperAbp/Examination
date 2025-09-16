@@ -66,6 +66,7 @@
     "@super-abp/ng.identity": "~0.6.0",
     "@super-abp/ng.menu-management": "~0.6.0",
     "@super-abp/ng.permission-management": "~0.6.0",
+    "@super-abp/ng.tenant-management": "~0.0.3",
     "@types/jasmine": "~5.1.0",
     "@types/jasminewd2": "~2.0.13",
     "@typescript-eslint/eslint-plugin": "^8.8.0",

@@ -30,6 +30,10 @@ export const routes: Routes = [
         loadChildren: () => import('@super-abp/ng.identity').then(m => m.IdentityModule.forLazy())
       },
       {
+        path: 'tenant-management',
+        loadChildren: () => import('@super-abp/ng.tenant-management').then(m => m.routes)
+      },
+      {
         path: 'menu-management',
         loadChildren: () => import('@super-abp/ng.menu-management').then(m => m.routes)
       },
