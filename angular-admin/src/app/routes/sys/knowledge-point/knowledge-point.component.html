@@ -38,7 +38,7 @@
                   [nzPopconfirmTitle]="'Exam::AreYouSure' | abpLocalization"
                   nz-button
                   nzType="link"
-                  (click)="delete(item)"
+                  (nzOnConfirm)="delete(item)"
                   *abpPermission="'Exam.KnowledgePoint.Delete'"
                 >
                   <i nz-icon nzType="delete"></i>

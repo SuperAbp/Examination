@@ -103,7 +103,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
       buttons: [
         {
           icon: 'edit',
-          tooltip: this.localizationService.instant('Exam::Edit'),
+          type: 'link',
           iif: () => {
             return this.permissionService.getGrantedPolicy('Exam.Question.Update');
           },
@@ -114,7 +114,6 @@ export class QuestionManagementQuestionComponent implements OnInit {
         {
           icon: 'delete',
           type: 'del',
-          tooltip: this.localizationService.instant('Exam::Delete'),
           pop: {
             title: this.localizationService.instant('Exam::AreYouSure'),
             okType: 'danger',

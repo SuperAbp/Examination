@@ -5,6 +5,7 @@ using System.Linq;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Entities.Auditing;
+using Volo.Abp.MultiTenancy;
 using Volo.Abp.Timing;
 using static SuperAbp.Exam.ExamDomainErrorCodes;
 
@@ -13,7 +14,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams;
 /// <summary>
 /// 用户考试
 /// </summary>
-public class UserExam : FullAuditedAggregateRoot<Guid>
+public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
 {
     protected UserExam()
     {
@@ -43,6 +44,8 @@ public class UserExam : FullAuditedAggregateRoot<Guid>
     public DateTime? StartTime { get; set; }
 
     public UserExamStatus Status { get; set; }
+
+    public Guid? TenantId { get; set; }
 
     public List<UserExamQuestion> Questions { get; set; }
 

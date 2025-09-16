@@ -51,79 +51,6 @@ export class SysKnowledgePointComponent implements OnInit {
   page: STPage = {
     show: false
   };
-  searchSchema: SFSchema = {
-    properties: {
-      name: {
-        type: 'string',
-        title: '',
-        ui: {
-          placeholder: this.localizationService.instant('Exam::Placeholder', this.localizationService.instant('Exam::Name'))
-        } as SFStringWidgetSchema
-      }
-    }
-  };
-  @ViewChild('st', { static: false }) st: STComponent;
-  columns: STColumn[] = [
-    { title: this.localizationService.instant('Exam::Name'), index: 'name' },
-    {
-      title: this.localizationService.instant('Exam::Actions'),
-      buttons: [
-        {
-          icon: 'plus',
-          type: 'modal',
-          tooltip: this.localizationService.instant('Exam::Add'),
-          iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.NewKnowledgePoint.Create');
-          },
-          modal: {
-            component: SysKnowledgePointEditComponent,
-            params: (record: any) => ({
-              knowledgePointId: '',
-              parentId: record.id
-            })
-          },
-          click: () => {
-            this.getList();
-          }
-        },
-        {
-          icon: 'edit',
-          type: 'modal',
-          tooltip: this.localizationService.instant('Exam::Edit'),
-          iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.KnowledgePoint.Update');
-          },
-          modal: {
-            component: SysKnowledgePointEditComponent,
-            params: (record: any) => ({
-              knowledgePointId: record.id
-            })
-          },
-          click: 'reload'
-        },
-        {
-          icon: 'delete',
-          type: 'del',
-          tooltip: this.localizationService.instant('Exam::Delete'),
-          pop: {
-            title: this.localizationService.instant('Exam::AreYouSure'),
-            okType: 'danger',
-            icon: 'star'
-          },
-          iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.KnowledgePoint.Delete');
-          },
-          click: (record, _modal, component) => {
-            this.knowledgePointService.delete(record.id).subscribe(response => {
-              this.messageService.success(this.localizationService.instant('Exam::DeletedSuccessfully', record.name));
-              // tslint:disable-next-line: no-non-null-assertion
-              component!.removeRow(record);
-            });
-          }
-        }
-      ]
-    }
-  ];
 
   mapOfExpandedData: { [key: string]: TreeNodeInterface[] } = {};
 
@@ -137,10 +64,8 @@ export class SysKnowledgePointComponent implements OnInit {
       .getAll(this.params)
       .pipe(tap(() => (this.loading = false)))
       .subscribe(response => {
-        // 直接使用后端返回的树形结构数据
         this.knowledgePoints = response.items;
 
-        // 将树形结构数据转换为前端可用的展开数据
         this.mapOfExpandedData = {};
         this.knowledgePoints.forEach(item => {
           this.mapOfExpandedData[item.id] = this.convertTreeToList(item);

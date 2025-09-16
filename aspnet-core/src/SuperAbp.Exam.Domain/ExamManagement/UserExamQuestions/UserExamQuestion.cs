@@ -4,6 +4,7 @@ using SuperAbp.Exam.MistakesReviews.Events;
 using System;
 using System.Collections.Generic;
 using Volo.Abp.Domain.Entities.Auditing;
+using Volo.Abp.MultiTenancy;
 using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 
 namespace SuperAbp.Exam.ExamManagement.UserExamQuestions;
@@ -11,7 +12,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions;
 /// <summary>
 /// 用户考试题目
 /// </summary>
-public class UserExamQuestion : FullAuditedEntity<Guid>
+public class UserExamQuestion : FullAuditedEntity<Guid>, IMultiTenant
 {
     protected UserExamQuestion()
     { }
@@ -45,6 +46,8 @@ public class UserExamQuestion : FullAuditedEntity<Guid>
     public decimal? Score { get; set; }
 
     public string? Reason { get; set; }
+
+    public Guid? TenantId { get; set; }
 
     public List<UserExamQuestionReview> QuestionReviews { get; set; }
 

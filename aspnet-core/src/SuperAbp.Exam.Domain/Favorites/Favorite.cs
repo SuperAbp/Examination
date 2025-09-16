@@ -2,13 +2,14 @@
 using System.Diagnostics.CodeAnalysis;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
+using Volo.Abp.MultiTenancy;
 
 namespace SuperAbp.Exam.Favorites;
 
 /// <summary>
 /// 我的收藏夹
 /// </summary>
-public class Favorite : AggregateRoot<Guid>, IHasCreationTime
+public class Favorite : AggregateRoot<Guid>, IHasCreationTime, IMultiTenant
 {
     protected Favorite()
     {
@@ -28,4 +29,5 @@ public class Favorite : AggregateRoot<Guid>, IHasCreationTime
     public Guid CreatorId { get; set; }
 
     public DateTime CreationTime { get; }
+    public Guid? TenantId { get; set; }
 }

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Volo.Abp.Domain.Entities.Auditing;
+using Volo.Abp.MultiTenancy;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 
 /// <summary>
 /// 答案
 /// </summary>
-public class QuestionAnswer : FullAuditedEntity<Guid>
+public class QuestionAnswer : FullAuditedEntity<Guid>, IMultiTenant
 {
     protected QuestionAnswer()
     { Content = string.Empty; }
@@ -44,4 +45,5 @@ public class QuestionAnswer : FullAuditedEntity<Guid>
 
     public Guid QuestionId { get; set; }
     public Question Question { get; set; }
+    public Guid? TenantId { get; set; }
 }

@@ -1,14 +1,15 @@
-﻿using System;
+﻿using SuperAbp.Exam.MistakesReviews.Events;
+using System;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
-using SuperAbp.Exam.MistakesReviews.Events;
+using Volo.Abp.MultiTenancy;
 
 namespace SuperAbp.Exam.TrainingManagement;
 
 /// <summary>
 /// 训练
 /// </summary>
-public class Training : AggregateRoot<Guid>, IHasCreationTime
+public class Training : AggregateRoot<Guid>, IHasCreationTime, IMultiTenant
 {
     protected Training()
     { }
@@ -44,4 +45,6 @@ public class Training : AggregateRoot<Guid>, IHasCreationTime
         Right = right;
         AddLocalEvent(new AnsweredQuestionEvent(QuestionId, UserId, right));
     }
+
+    public Guid? TenantId { get; set; }
 }

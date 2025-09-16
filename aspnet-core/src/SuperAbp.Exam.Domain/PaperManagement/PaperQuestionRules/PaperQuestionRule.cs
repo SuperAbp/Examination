@@ -2,13 +2,14 @@
 using Volo.Abp;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
+using Volo.Abp.MultiTenancy;
 
 namespace SuperAbp.Exam.PaperManagement.PaperQuestionRules
 {
     /// <summary>
     /// 抽题规则
     /// </summary>
-    public class PaperQuestionRule : Entity<Guid>, IHasCreationTime, ISoftDelete
+    public class PaperQuestionRule : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiTenant
     {
         protected PaperQuestionRule()
         { }
@@ -77,5 +78,6 @@ namespace SuperAbp.Exam.PaperManagement.PaperQuestionRules
         public DateTime CreationTime { get; set; }
 
         public bool IsDeleted { get; set; }
+        public Guid? TenantId { get; set; }
     }
 }

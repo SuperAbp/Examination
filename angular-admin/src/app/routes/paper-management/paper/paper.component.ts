@@ -55,7 +55,6 @@ export class PaperManagementPaperComponent implements OnInit {
         {
           icon: 'edit',
           type: 'link',
-          tooltip: this.localizationService.instant('Exam::Edit'),
           iif: () => {
             return this.permissionService.getGrantedPolicy('Exam.Paper.Update');
           },
@@ -66,7 +65,6 @@ export class PaperManagementPaperComponent implements OnInit {
         {
           icon: 'delete',
           type: 'del',
-          tooltip: this.localizationService.instant('Exam::Delete'),
           pop: {
             title: this.localizationService.instant('Exam::AreYouSure'),
             okType: 'danger',

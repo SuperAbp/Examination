@@ -60,7 +60,6 @@ export class QuestionManagementQuestionBankComponent implements OnInit {
         {
           icon: 'edit',
           type: 'modal',
-          tooltip: this.localizationService.instant('Exam::Edit'),
           iif: () => {
             return this.permissionService.getGrantedPolicy('Exam.QuestionBank.Update');
           },
@@ -75,7 +74,6 @@ export class QuestionManagementQuestionBankComponent implements OnInit {
         {
           icon: 'delete',
           type: 'del',
-          tooltip: this.localizationService.instant('Exam::Delete'),
           pop: {
             title: this.localizationService.instant('Exam::AreYouSure'),
             okType: 'danger',
