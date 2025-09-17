@@ -90,7 +90,7 @@ public class ExamAuthServerModule : AbpModule
         Configure<AbpAntiForgeryOptions>(options =>
         {
             options.TokenCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            options.TokenCookie.SameSite = SameSiteMode.Strict;
+            options.TokenCookie.SameSite = SameSiteMode.Lax;
         });
         Configure<OpenIddictServerAspNetCoreOptions>(options =>
         {
