@@ -4,6 +4,7 @@ using Medallion.Threading.Redis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenIddict.Server.AspNetCore;
@@ -18,6 +19,7 @@ using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Localization;
 using Volo.Abp.Account.Web;
+using Volo.Abp.AspNetCore.Mvc.AntiForgery;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Bundling;
@@ -85,6 +87,11 @@ public class ExamAuthServerModule : AbpModule
         var hostingEnvironment = context.Services.GetHostingEnvironment();
         var configuration = context.Services.GetConfiguration();
 
+        Configure<AbpAntiForgeryOptions>(options =>
+        {
+            options.TokenCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            options.TokenCookie.SameSite = SameSiteMode.Strict;
+        });
         Configure<OpenIddictServerAspNetCoreOptions>(options =>
         {
             options.DisableTransportSecurityRequirement = true;
