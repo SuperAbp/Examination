@@ -2422,6 +2422,13 @@
   resolved "https://registry.npmjs.org/@ngtools/webpack/-/webpack-18.2.12.tgz"
   integrity sha512-FFJAwtWbtpncMOVNuULPBwFJB7GSjiUwO93eGTzRp8O4EPQ8lCQeFbezQm/NP34+T0+GBLGzPSuQT+muob8YKw==
 
+"@ngx-validate/core@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@ngx-validate/core/-/core-0.2.0.tgz#5b3d9bb963c2fcb5cb6d745ca2f553d411082a3f"
+  integrity sha512-04iGHPCXyFCykAyCGehxetziOt69Lhk/6yWifhC/vc8PZJ0S8m3hIn6tI63pEdVoV95+Hc1GQ1K/wMRtRD0uLQ==
+  dependencies:
+    tslib "^2.0.0"
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz"
@@ -2785,10 +2792,10 @@
   resolved "https://registry.npmjs.org/@socket.io/component-emitter/-/component-emitter-3.1.2.tgz"
   integrity sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==
 
-"@super-abp/ng.identity@~0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@super-abp/ng.identity/-/ng.identity-0.6.0.tgz#de7860f9ff494910f930c6c9c49e408b6c687a33"
-  integrity sha512-OoE+u2DGzlovDNqX7eMeHNSddowXX8KBVAwGuhytLCY/INChj8+JcDI0JDYsoSVSEnVHevzVQC8RDrCbqWrMHA==
+"@super-abp/ng.identity@~0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@super-abp/ng.identity/-/ng.identity-0.6.1.tgz#3b69b7292ebfb63434c0cc35849d1dfe38b364f3"
+  integrity sha512-H+l/WlKUYinPQO2qW24EUQgr3rEGkdrCXnY2kBsNdIDrjI5AHynV1UxtdRAapDrm207/2h8RMTWppzg0caY90w==
   dependencies:
     tslib "^2.3.0"
 
