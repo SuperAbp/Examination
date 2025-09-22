@@ -54,7 +54,8 @@ import {
   WeiboCircleOutline,
   DeleteOutline,
   EditOutline,
-  PlusOutline
+  PlusOutline,
+  EyeInvisibleOutline
 } from '@ant-design/icons-angular/icons';
 
 export const ICONS_AUTO = [
@@ -108,5 +109,6 @@ export const ICONS_AUTO = [
   WeiboCircleOutline,
   DeleteOutline,
   EditOutline,
-  PlusOutline
+  PlusOutline,
+  EyeInvisibleOutline
 ];
