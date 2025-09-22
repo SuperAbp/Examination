@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.EntityFramewo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.TestBase", "test\SuperAbp.Exam.TestBase\SuperAbp.Exam.TestBase.csproj", "{75CA5F13-BAF0-43FF-A45D-9B81A2062C06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.InitialData", "src\SuperAbp.Exam.InitialData\SuperAbp.Exam.InitialData.csproj", "{5B21A566-E68F-667A-3EC5-3184EBE45C5E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -157,6 +159,10 @@ Global
 		{75CA5F13-BAF0-43FF-A45D-9B81A2062C06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75CA5F13-BAF0-43FF-A45D-9B81A2062C06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75CA5F13-BAF0-43FF-A45D-9B81A2062C06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B21A566-E68F-667A-3EC5-3184EBE45C5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B21A566-E68F-667A-3EC5-3184EBE45C5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B21A566-E68F-667A-3EC5-3184EBE45C5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B21A566-E68F-667A-3EC5-3184EBE45C5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -188,6 +194,7 @@ Global
 		{BF733DD8-1E17-4413-981E-AE3DF11EDFEA} = {04DBDB01-70F4-4E06-B468-8F87850B22BE}
 		{019B80A6-3AC1-4782-9509-12FE6F01BAF1} = {04DBDB01-70F4-4E06-B468-8F87850B22BE}
 		{75CA5F13-BAF0-43FF-A45D-9B81A2062C06} = {04DBDB01-70F4-4E06-B468-8F87850B22BE}
+		{5B21A566-E68F-667A-3EC5-3184EBE45C5E} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}

@@ -1,0 +1,280 @@
+{
+    "QuesiontBanks": [
+        {
+            "Name": "驾考科目一",
+            "Description": "驾考科目一",
+            "Questions": [
+                {
+                    "Title": "驾驶机动车应当随身携带哪种证件？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "工作证",
+                            "Right": false
+                        },
+                        {
+                            "Content": "驾驶证",
+                            "Right": true
+                        },
+                        {
+                            "Content": "身份证",
+                            "Right": false
+                        },
+                        {
+                            "Content": "职业资格证",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "在实习期内驾驶机动车的，应当在车身后部粘贴或者悬挂哪种标志？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "注意新手标志",
+                            "Right": false
+                        },
+                        {
+                            "Content": "注意避让标志",
+                            "Right": false
+                        },
+                        {
+                            "Content": "统一式样的实习标志",
+                            "Right": true
+                        },
+                        {
+                            "Content": "注意车距标志",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列哪种标志是驾驶机动车上路行驶应当在车上放置的标志？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "产品合格标志",
+                            "Right": false
+                        },
+                        {
+                            "Content": "保持车距标志",
+                            "Right": false
+                        },
+                        {
+                            "Content": "提醒危险标志",
+                            "Right": false
+                        },
+                        {
+                            "Content": "检验合格标志",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "申请人以欺骗、贿赂等不正当手段取得驾驶证的（被撤销的），申请人在（）内不得再次申领驾驶证？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "3年",
+                            "Right": true
+                        },
+                        {
+                            "Content": "2年",
+                            "Right": false
+                        },
+                        {
+                            "Content": "1年",
+                            "Right": false
+                        },
+                        {
+                            "Content": "6个月",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶报废机动车上路行驶的驾驶人，除按规定罚款外，还要受到哪种处理？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "撤销驾驶许可",
+                            "Right": false
+                        },
+                        {
+                            "Content": "收缴驾驶证",
+                            "Right": false
+                        },
+                        {
+                            "Content": "强制恢复车况",
+                            "Right": false
+                        },
+                        {
+                            "Content": "吊销驾驶证",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "对驾驶已达到报废标准的机动车上路行驶的驾驶人，会受到下列哪种处罚？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "处15日以下拘留",
+                            "Right": false
+                        },
+                        {
+                            "Content": "吊销机动车驾驶证",
+                            "Right": true
+                        },
+                        {
+                            "Content": "处20以上200元以下罚款",
+                            "Right": false
+                        },
+                        {
+                            "Content": "追究刑事责任",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "公安交通管理部门对驾驶人的交通违法行为除依法给予行政处罚外，实行下列哪种制度？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "违法登记制度",
+                            "Right": false
+                        },
+                        {
+                            "Content": "奖励里程制度",
+                            "Right": false
+                        },
+                        {
+                            "Content": "累积记分制度",
+                            "Right": true
+                        },
+                        {
+                            "Content": "强制报废制度",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车驾驶证遗失后，驾驶人可以继续驾驶机动车。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "对未取得驾驶证驾驶机动车的，追究其法律责任。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶机动车上路前应当检查车辆安全技术性能。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶机动车上路行驶应当按规定悬挂号牌。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "不得驾驶具有安全隐患的机动车上道路行驶。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "拼装的机动车只要认为安全就可以上路行驶。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "已经达到报废标准的机动车经大修后可以上路行驶。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶人要按照驾驶证载明的准驾车型驾驶车辆。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "驾考科目二",
+            "Description": "驾考科目二"
+        }
+    ]
+}
