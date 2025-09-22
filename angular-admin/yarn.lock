@@ -2792,10 +2792,10 @@
   resolved "https://registry.npmjs.org/@socket.io/component-emitter/-/component-emitter-3.1.2.tgz"
   integrity sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==
 
-"@super-abp/ng.identity@~0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@super-abp/ng.identity/-/ng.identity-0.6.1.tgz#3b69b7292ebfb63434c0cc35849d1dfe38b364f3"
-  integrity sha512-H+l/WlKUYinPQO2qW24EUQgr3rEGkdrCXnY2kBsNdIDrjI5AHynV1UxtdRAapDrm207/2h8RMTWppzg0caY90w==
+"@super-abp/ng.identity@~0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@super-abp/ng.identity/-/ng.identity-0.6.2.tgz#4fd68107511797efd8034346b192031093d6fcad"
+  integrity sha512-aYXwgwZvkTYFTH+c8XCPddmyiPqq+IvLUlks+9/NODBi8U32G+pX/Ketlw3WeusoBiR/wBrWbh6uKwCaw6NUcw==
   dependencies:
     tslib "^2.3.0"
 
@@ -2813,10 +2813,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@super-abp/ng.tenant-management@~0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@super-abp/ng.tenant-management/-/ng.tenant-management-0.0.3.tgz#18c04d8cca37db3a64fcb46b98e25d744349f847"
-  integrity sha512-5AgQZ2cqDxHNVr9mGTwKCFNaxIX1JfVFgJ+s1UDhWUhwRBJtAxBaIDhbuC7WTGrKZ6507IOTRRyqtM540rmVEA==
+"@super-abp/ng.tenant-management@~0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@super-abp/ng.tenant-management/-/ng.tenant-management-0.0.4.tgz#ffccf7d246c4f3904126fab95b69e6cc04a0253d"
+  integrity sha512-lXzvO7qjsgn1x9P4pF08yT2PsWi9MglTSL1VMAn4TKcAZ3NzLjqWCPnPiobDs018ncT6ChLRNuzz7NwBgd/PrQ==
   dependencies:
     tslib "^2.3.0"
 
