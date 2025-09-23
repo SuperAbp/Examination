@@ -159,6 +159,300 @@
                     ]
                 },
                 {
+                    "Title": "初次申领机动车驾驶证的，可以申请下列哪种准驾车型？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "中型客车",
+                            "Right": false
+                        },
+                        {
+                            "Content": "大型客车",
+                            "Right": false
+                        },
+                        {
+                            "Content": "普通三轮摩托车",
+                            "Right": true
+                        },
+                        {
+                            "Content": "重型牵引挂车",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "年满20周岁，可以初次申请下列哪种准驾车型？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "大型货车",
+                            "Right": true
+                        },
+                        {
+                            "Content": "大型客车",
+                            "Right": false
+                        },
+                        {
+                            "Content": "重型牵引挂车",
+                            "Right": false
+                        },
+                        {
+                            "Content": "所有车型",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "在学习驾驶证明的有效期内，科目二和科目三道路驾驶技能考试预约考试的次数分别不得超过多少次？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "3次",
+                            "Right": false
+                        },
+                        {
+                            "Content": "4次",
+                            "Right": false
+                        },
+                        {
+                            "Content": "5次",
+                            "Right": true
+                        },
+                        {
+                            "Content": "6次",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "学习驾驶证明的有效期是（）年。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "1年",
+                            "Right": false
+                        },
+                        {
+                            "Content": "2年",
+                            "Right": false
+                        },
+                        {
+                            "Content": "3年",
+                            "Right": true
+                        },
+                        {
+                            "Content": "4年",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车号牌灭失、丢失或者损毁的，机动车所有人应当向哪个部门申请补领、换领？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "住地交警支队车辆管理所",
+                            "Right": false
+                        },
+                        {
+                            "Content": "驾驶证核发地车辆管理所",
+                            "Right": false
+                        },
+                        {
+                            "Content": "登记地车辆管理所",
+                            "Right": true
+                        },
+                        {
+                            "Content": "当地公安局",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车购买后尚未注册登记，需要临时上道路行驶的，可以凭什么临时上道路行驶？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "合法来源凭证",
+                            "Right": false
+                        },
+                        {
+                            "Content": "临时行驶车号牌",
+                            "Right": true
+                        },
+                        {
+                            "Content": "借用的机动车号牌",
+                            "Right": false
+                        },
+                        {
+                            "Content": "法人单位证明",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "申请人以欺骗、贿赂等不正当手段取得机动车驾驶证的（被撤销的），申请人在多长时间内不得再次申领机动车驾驶证？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "6个月",
+                            "Right": false
+                        },
+                        {
+                            "Content": "1年",
+                            "Right": false
+                        },
+                        {
+                            "Content": "2年",
+                            "Right": false
+                        },
+                        {
+                            "Content": "3年",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶人驾驶有达到报废标准嫌疑机动车上路的，交通警察依法予以拘留。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "申请人在考试过程中有贿赂、舞弊行为的，取消考试资格，已经通过考试的其他科目成绩无效。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "有执行社区戒毒、强制隔离戒毒、社区康复措施记录的，车辆管理所将注销其驾驶证。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "有吸食、注射毒品后驾驶驾车行为的机动车驾驶人，不会被注销驾驶证。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车驾驶证遗失、损毁无法辨认时，机动车驾驶人应当向机动车驾驶证核发地车辆管理所申请补发。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "申请人因故不能按照预约时间参加考试时，应当提前一日申请取消预约。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "科目三考试分为道路驾驶技能考试和安全文明驾驶常识考试两部分。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "初次申领的机动车驾驶证的有效期为6年。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "准驾车型为小型汽车的，可以驾驶小型自动挡载客汽车。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车驾驶证有效期分为6年、10年、20年。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
                     "Title": "机动车驾驶证遗失后，驾驶人可以继续驾驶机动车。",
                     "Type": 2,
                     "Options": [
@@ -269,12 +563,2746 @@
                             "Right": false
                         }
                     ]
+                },
+                {
+                    "Title": "机动车在道路上遇到前方发生交通事故无法通行时，应当如何做？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "随意绕行",
+                            "Right": false
+                        },
+                        {
+                            "Content": "停车避让并听从现场指挥",
+                            "Right": true
+                        },
+                        {
+                            "Content": "鸣喇叭强行通过",
+                            "Right": false
+                        },
+                        {
+                            "Content": "倒车原路返回",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "遇到学校门口时，驾驶人应当怎样行驶？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "加速通过",
+                            "Right": false
+                        },
+                        {
+                            "Content": "减速慢行并注意避让行人",
+                            "Right": true
+                        },
+                        {
+                            "Content": "停车等待直到无行人",
+                            "Right": false
+                        },
+                        {
+                            "Content": "随意变道通过",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "车辆发生侧滑时，应当如何处置以恢复稳定？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "猛打方向盘反向纠正",
+                            "Right": false
+                        },
+                        {
+                            "Content": "顺着侧滑方向缓打方向并适当减速",
+                            "Right": true
+                        },
+                        {
+                            "Content": "立即猛踩刹车",
+                            "Right": false
+                        },
+                        {
+                            "Content": "挂空挡自由滑行",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "酒后驾驶机动车属于哪种违法行为？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "交通违法行为",
+                            "Right": true
+                        },
+                        {
+                            "Content": "仅道德问题",
+                            "Right": false
+                        },
+                        {
+                            "Content": "轻微违规可忽略",
+                            "Right": false
+                        },
+                        {
+                            "Content": "非法律问题",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车在慢速车道行驶时遇到后方车辆闪灯要求让行，应如何处理？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "立即加速不予理会",
+                            "Right": false
+                        },
+                        {
+                            "Content": "保持速度并占用车道",
+                            "Right": false
+                        },
+                        {
+                            "Content": "条件允许安全变道让行",
+                            "Right": true
+                        },
+                        {
+                            "Content": "停车让行",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "遇到红灯时，禁止车辆怎样行驶？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "左转弯通过",
+                            "Right": true
+                        },
+                        {
+                            "Content": "在路口停车等候",
+                            "Right": false
+                        },
+                        {
+                            "Content": "直行停车等待",
+                            "Right": false
+                        },
+                        {
+                            "Content": "按标志指示行驶",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "高速公路上车辆发生故障不能正常行驶，应当怎样做？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "停在行车道上等待救援",
+                            "Right": false
+                        },
+                        {
+                            "Content": "尽快驶离行车道并设置警示标志",
+                            "Right": true
+                        },
+                        {
+                            "Content": "立即下车检查发动机",
+                            "Right": false
+                        },
+                        {
+                            "Content": "继续以低速行驶至下一个出口",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车在夜间会车时，应如何使用灯光？",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "使用远光灯长时间照射对方",
+                            "Right": false
+                        },
+                        {
+                            "Content": "会车时改用近光灯并减速让行",
+                            "Right": true
+                        },
+                        {
+                            "Content": "熄灭所有灯光以避免眩目",
+                            "Right": false
+                        },
+                        {
+                            "Content": "仅用示廓灯通过",
+                            "Right": false
+                        }
+                    ]
                 }
             ]
         },
         {
-            "Name": "驾考科目二",
-            "Description": "驾考科目二"
+            "Name": "驾考科目四",
+            "Description": "驾考科目四",
+            "Questions": [
+                {
+                    "Title": "车辆在交叉路口绿灯亮后，遇非机动车抢道行驶时，可以不让行。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "掉头过程中，应严格控制车速，仔细观察车前后方情况，确认安全后可前进或倒车。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车在环形路口内行驶，遇有其他车辆强行驶入时，只要有优先权就可以不避让。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶人在观察后方无来车的情况下，未开转向灯就变更车道也是合理的。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶机动车超车时，被超越车辆未减速让路，应迅速提速超越前方车辆完成超车。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "行车前一定要对照明、信号装置进行检查。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车临时靠边停车后准备起步时，驾驶人应鸣喇叭示意左侧车道机动车让道。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "通过有人看守的铁路道口时，服从道口管理人员指挥，不要与火车抢道。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶机动车在道路变窄的路段可以跟在任何一辆车后汇入车流。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶机动车向右变更车道前开启右转向灯。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车通过没有交通信号灯控制也没有交通警察指挥的交叉路口，相对方向行驶的右转弯的机动车让左转弯的车辆先行。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶机动车向左变更车道前开启左转向灯。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车行经交叉路口时，在快车道行驶的机动车可以不变更车道右转弯。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶机动车进入环岛时不用开启转向灯。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车通过铁路道口时可以超车。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "遇前方道路上有机动车掉头时，应在其停车换挡的过程中迅速超越。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "遇机动车超越本车时，应加速行驶，不让其超越。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "遇机动车超越本车时，不允许向左转向或紧急制动，以免后车反应不及时发生追尾或侧撞事故。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "变更车道时，从后视镜中看到后方来车快速变大，说明后方来车没有减速。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "左右两侧车道的车辆向同一车道变更时，右侧车道车辆让左侧车道车辆先行。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "超车时遇到“三点一线”，即本车、被超车与对面来车在一条横向的直线上，仍然可以超车。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "汽车的制动距离，会随着车速的升高而变短。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "行驶过程中如果后车跟车过近时，可以采用轻踩制动踏板的方式警告后车，不需用力踩踏，只要能使制动灯亮起即可。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "上车前绕车检查时，要以顺时针方向绕车检查车辆，确认安全后方可上车。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "倒车时转向盘的转动方向与倒车方向一致。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶新能源汽车停车下车前，应确认挡位处于停车挡并关闭电源开关。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "不同品牌新能源汽车的踏板性能、安装位置可能有所差异，驾驶前应熟悉踏板情况。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "新能源汽车扭矩大，车速能够瞬间到达极值，驾驶新能源汽车起步时，要缓踩加速踏板，防止急加速造成事故。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "汽车座椅安全头枕高度应调整到头枕中心与头部平齐。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶新能源汽车在路口起步时，要先观察周围的交通情况，不应急踩踏板加速通过。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾车时遇电子显示屏故障，应缓慢减速停至安全区域，并尽快报修。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶人频繁变更车道不属于驾驶陋习。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "行车中前方遇自行车影响通行时，可鸣喇叭提示，加速绕行。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶车辆时，长时间左臂搭在车门窗上，或者长时间右手抓住变速器操纵杆是一种驾驶陋习。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "客车在起步前，驾驶人要告知乘客不要将手、头部以及其他部位伸出窗外。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车灯光的作用仅仅是为了在夜间照明。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "机动车灯光一个重要的作用是提示其他机动车驾驶人和行人。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶机动车临近人行横道，遇行人正在横穿道路，尽量从行人后方绕过。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": false
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "超越进站停驶正在上下乘客的公交车时，一定要谨慎通过，防止盲区处有行人横过道路。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "驾驶机动车遇到盲人横过道路时，要停车礼让。",
+                    "Type": 2,
+                    "Options": [
+                        {
+                            "Content": "正确",
+                            "Right": true
+                        },
+                        {
+                            "Content": "错误",
+                            "Right": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "注册会计师",
+            "Description": "注册会计师",
+            "Questions": [
+                {
+                    "Title": "下列关于同一控制下吸收合并的表述中不正确的是（　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "合并方对付出的资产应以账面价值进行结转",
+                            "Right": false
+                        },
+                        {
+                            "Content": "发生的审计、评估费应计入管理费用",
+                            "Right": false
+                        },
+                        {
+                            "Content": "合并方取得的资产、负债应以公允价值入账",
+                            "Right": true
+                        },
+                        {
+                            "Content": "合并方付出的资产不确认处置损益",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "同一控制下吸收合并，合并方在合并中取得的净资产的入账价值相对于为进行企业合并支付的对价账面价值之间的差额（　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "调整所有者权益相关项目",
+                            "Right": true
+                        },
+                        {
+                            "Content": "作为资产的处置损益，计入合并当期损益",
+                            "Right": false
+                        },
+                        {
+                            "Content": "取得的净资产的入账价值大于合并对价账面价值之间的差额计入所有者权益相关项目；取得的净资产的入账价值小于合并对价账面价值之间的差额计入合并当期损益",
+                            "Right": false
+                        },
+                        {
+                            "Content": "取得的净资产的入账价值大于合并对价账面价值之间的差额计入合并当期损益；取得的净资产的入账价值小于合并对价账面价值之间的差额确认为商誉",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "甲公司将一台闲置机器设备以经营租赁方式租给乙公司使用。租赁合同约定:租赁期开始日为2×24年7月1日，租赁期4年，年租金为120万元，租金每年7月1日支付。租赁期开始日起的前3个月免收租金。2×24年7月1日，甲公司收到乙公司支付的扣除免租期后的租金90万元。不考虑其他因素，甲公司2×24年应确认的租金收入是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "56.25万元",
+                            "Right": true
+                        },
+                        {
+                            "Content": "60.00万元",
+                            "Right": false
+                        },
+                        {
+                            "Content": "90.00万元",
+                            "Right": false
+                        },
+                        {
+                            "Content": "120.00万元",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "纳税人发生的下列应税行为中，按“生活服务”计征增值税的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "银行兑换货币",
+                            "Right": false
+                        },
+                        {
+                            "Content": "物流公司收派快件",
+                            "Right": false
+                        },
+                        {
+                            "Content": "餐馆销售外卖食品",
+                            "Right": true
+                        },
+                        {
+                            "Content": "专业机构提供鉴证服务",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "无论是固定成本还是变动成本，其固定性与变动性均体现在特定的期间内，其金额的大小也是在特定的期间内加以计量得到的。这一观点体现的本量利分析基本模型的假设是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "期间假设",
+                            "Right": true
+                        },
+                        {
+                            "Content": "业务量假设",
+                            "Right": false
+                        },
+                        {
+                            "Content": "固定成本不变假设",
+                            "Right": false
+                        },
+                        {
+                            "Content": "产销平衡假设",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "甲汽车制造公司准备到发展中国家M国投资，对M国诸多条件进行了认真的调查分析，以下分析内容不属于钻石模型要素的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "M国汽车零部件产业发展状况",
+                            "Right": false
+                        },
+                        {
+                            "Content": "M国政府对汽车业发展的产业政策",
+                            "Right": true
+                        },
+                        {
+                            "Content": "M国劳动力价格和素质",
+                            "Right": false
+                        },
+                        {
+                            "Content": "M国对汽车的需求状况",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列关于租赁的识别表述中正确的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "已识别的资产应当由合同明确指定",
+                            "Right": false
+                        },
+                        {
+                            "Content": "如果合同仅赋予资产供应方在特定事件发生之后拥有替换资产的权利，则资产的供应方拥有实质性替换权",
+                            "Right": false
+                        },
+                        {
+                            "Content": "已识别资产的使用目的和使用方式在使用期间前已预先确定，则客户不能主导资产的使用",
+                            "Right": false
+                        },
+                        {
+                            "Content": "如果资产的某部分产能与其他部分在物理上不可区分，则该部分不属于已识别资产，除非其实质上代表该资产的全部产能",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "某高档化妆品销售企业2025年3月从国外进口一批高档化妆品，关税计税价格为100000元，缴纳进口环节关税15000元，高档化妆品消费税税率为15%，该企业进口环节应缴纳的增值税是（　　）元。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "14950",
+                            "Right": false
+                        },
+                        {
+                            "Content": "17250",
+                            "Right": false
+                        },
+                        {
+                            "Content": "17588.24",
+                            "Right": true
+                        },
+                        {
+                            "Content": "20294.12",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "已知某企业总成本y是销售额x的函数，二者的函数关系为：y=5000+0.3x，则该企业的边际贡献率为（　　）。%，该企业进口环节应缴纳的增值税是（　　）元。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "30%",
+                            "Right": false
+                        },
+                        {
+                            "Content": "50%",
+                            "Right": false
+                        },
+                        {
+                            "Content": "70%",
+                            "Right": true
+                        },
+                        {
+                            "Content": "80%",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "玉林公司是一家矿泉水生产企业。为评价、提高自身的营销管理能力，该公司聘请一家管理咨询公司对矿泉水行业领先企业的营销模式、客户管理制度和业绩等，进行调查、分析、对比，收获颇丰。下列各项中，属于玉林公司在基准分析中采用的基准类型是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "过程或活动基准",
+                            "Right": false
+                        },
+                        {
+                            "Content": "顾客基准",
+                            "Right": false
+                        },
+                        {
+                            "Content": "一般基准",
+                            "Right": false
+                        },
+                        {
+                            "Content": "竞争性基准",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列有关确定实质性程序的范围的说法中，错误的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "评估的认定层次重大错报风险和实施控制测试的结果是确定实质性程序的范围时的重要考虑因素",
+                            "Right": false
+                        },
+                        {
+                            "Content": "在确定细节测试的范围时，注册会计师需要考虑选取的样本量",
+                            "Right": false
+                        },
+                        {
+                            "Content": "可容忍差异额越大，作为实质性分析程序一部分的进一步调查的范围就越大",
+                            "Right": true
+                        },
+                        {
+                            "Content": "如果对控制测试结果不满意，注册会计师可能需要考虑扩大实质性程序的范围",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列应税服务中，应按照“现代服务”计征增值税的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "文化体育服务",
+                            "Right": false
+                        },
+                        {
+                            "Content": "信息技术服务",
+                            "Right": true
+                        },
+                        {
+                            "Content": "财产保险服务",
+                            "Right": false
+                        },
+                        {
+                            "Content": "植物养护服务",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "甲公司只生产销售一种产品，变动成本率30%，盈亏临界点作业率40%，甲公司销售息税前利润率是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "18%",
+                            "Right": false
+                        },
+                        {
+                            "Content": "12%",
+                            "Right": false
+                        },
+                        {
+                            "Content": "42%",
+                            "Right": true
+                        },
+                        {
+                            "Content": "28%",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "在企业核心能力的识别与评价中，一种既快速又经济的办法就是企业在自己内部收集信息。柏杨公司通过分析自己的绩效趋势来判断与竞争对手相比企业经营是在改善还是在恶化。根据上述信息判断，柏杨公司采取的核心能力识别与评价方法是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "企业的自我评价",
+                            "Right": true
+                        },
+                        {
+                            "Content": "产业内部比较",
+                            "Right": false
+                        },
+                        {
+                            "Content": "基准分析",
+                            "Right": false
+                        },
+                        {
+                            "Content": "收集竞争对手的信息",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "2×24年3月1日，甲公司与乙公司签订租赁合同。协议约定，甲公司从乙公司租入一台设备，租赁期为9个月，起租日为4月1日，每月租金5万元；9个月后，甲公司有权以10万元购买该台设备。2×24年3月10日，乙公司将租赁设备交付给甲公司使用，当日甲公司取得对该设备使用权的控制。假设租赁期开始日甲公司不能合理确定是否会行使购买选择权。2×24年8月，由于设备市场价格上升，购买选择权的行权价格远低于行权时设备的市场价格，甲公司预计租赁到期时将行使该购买选择权。不考虑其他因素，下列表述中正确的是（　　）",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "租赁期开始日为2×24年4月1日",
+                            "Right": false
+                        },
+                        {
+                            "Content": "租赁期开始日购买选择权的行权价格不应计入租赁付款额",
+                            "Right": true
+                        },
+                        {
+                            "Content": "由于租赁期未超过12个月，甲公司可以对租入设备按短期租赁选择简化处理",
+                            "Right": false
+                        },
+                        {
+                            "Content": "2×24年8月，甲公司应将购买选择权的行权价格计入租赁负债，并调整使用权资产的账面价值",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "注册会计师拟利用以前审计获取的有关控制运行有效性的审计证据，确定再次测试控制的时间间隔时，注册会计师应当考虑的因素不包括（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "内部控制其他要素的有效性",
+                            "Right": false
+                        },
+                        {
+                            "Content": "注册会计师拟信赖控制运行有效性的时间长度",
+                            "Right": true
+                        },
+                        {
+                            "Content": "信息技术一般控制的有效性",
+                            "Right": false
+                        },
+                        {
+                            "Content": "对控制的信赖程度",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "2025年3月，某信息技术公司（增值税一般纳税人）提供信息技术服务，取得不含税销售收入150万元；出售自己使用过按规定不得抵扣且未抵扣进项税额的设备，取得含税收入20万元，该公司放弃减税优惠，开具增值税专用发票。为提供信息技术服务支付云服务器使用费、打印机租赁费，取得按适用税率开具的增值税专用发票，注明金额分别为30万元、10万元。该公司当月应纳增值税（ ）万元。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "6.00",
+                            "Right": false
+                        },
+                        {
+                            "Content": "6.40",
+                            "Right": false
+                        },
+                        {
+                            "Content": "6.48",
+                            "Right": true
+                        },
+                        {
+                            "Content": "4.59",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "某公司只生产一种产品，目前息税前利润为-2000万元，单位变动成本为10元，息税前利润对单位变动成本的敏感系数为2。假设其他条件不变，该公司盈亏平衡时的单位变动成本为（　　）元。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "5",
+                            "Right": true
+                        },
+                        {
+                            "Content": "8",
+                            "Right": false
+                        },
+                        {
+                            "Content": "12",
+                            "Right": false
+                        },
+                        {
+                            "Content": "15",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "近年来，国产品牌智能手机企业强势崛起，出货量迅猛增长，与国际品牌智能手机在市场上平分秋色。中低端智能手机市场基本被国产智能手机占领，新进入者难以获得市场地位。同时，由于运营商渠道调整，电商等渠道比重加大，产品“同质化”现象加剧，“价格战”日趋激烈。根据上述情况，国内智能手机产业目前所处的生命周期阶段是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "导入期",
+                            "Right": false
+                        },
+                        {
+                            "Content": "成长期",
+                            "Right": false
+                        },
+                        {
+                            "Content": "成熟期",
+                            "Right": true
+                        },
+                        {
+                            "Content": "衰退期",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列有关注册会计师利用以前审计获取的有关控制运行有效性的审计证据的说法中，错误的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "注册会计师拟信赖以前审计获取的审计证据，则需要实施审计程序获取控制是否发生变化的证据",
+                            "Right": false
+                        },
+                        {
+                            "Content": "如果控制与上年相比发生实质性变化，影响证据的相关性，则不能利用以前控制测试的证据",
+                            "Right": false
+                        },
+                        {
+                            "Content": "对于拟信赖的自上次测试后未发生变化、且不属于旨在减轻特别风险的控制，以前两年均未测试控制的有效性，则本年应当测试其有效性",
+                            "Right": false
+                        },
+                        {
+                            "Content": "信息技术一般控制薄弱，注册会计师不应依赖以前控制运行有效性的证据",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "甲公司为增值税一般纳税人，2024年7月委托运输公司将进口的一批办公设备从海关运回本公司，支付运输公司（一般纳税人）不含税运输费用10万元，取得了增值税专用发票。2024年8月支付销货不含税运输费1万元，取得了运输公司（放弃优惠的小规模纳税人）开具的增值税专用发票。2024年9月单独给丙公司运送货物，收取不含税运费10万元。2024年10月公司销售健身器材100台，每台同时收取运费0.09万元。2024年11月销售一批货物给乙公司，同时甲公司让运输公司为乙公司运输，甲公司为乙公司垫付了运费2万元，运输公司给乙公司开具了发票，甲公司将该发票转交给乙公司。2024年12月，企业将7月进口设备的30%用于公司食堂。假定不考虑其他货物和服务，则甲公司2024年各种运费的增值税应纳税额为（ ）万元。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "1.28",
+                            "Right": true
+                        },
+                        {
+                            "Content": "0",
+                            "Right": false
+                        },
+                        {
+                            "Content": "1.25",
+                            "Right": false
+                        },
+                        {
+                            "Content": "1.08",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "某公司正处于盈利状态，经营杠杆系数为3，则下列说法中正确的是（　　）。.09万元。2024年11月销售一批货物给乙公司，同时甲公司让运输公司为乙公司运输，甲公司为乙公司垫付了运费2万元，运输公司给乙公司开具了发票，甲公司将该发票转交给乙公司。2024年12月，企业将7月进口设备的30%用于公司食堂。假定不考虑其他货物和服务，则甲公司2024年各种运费的增值税应纳税额为（ ）万元。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "安全边际率为2/3",
+                            "Right": false
+                        },
+                        {
+                            "Content": "变动成本率为2/3",
+                            "Right": false
+                        },
+                        {
+                            "Content": "边际贡献率为2/3",
+                            "Right": false
+                        },
+                        {
+                            "Content": "盈亏临界点作业率为2/3",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "晚霞公司是一家研发、生产及销售医疗可穿戴设备的企业，该公司采用了矩阵制的组织结构，营造积极向上、开拓创新的企业文化，并建立起了一套科学的管理体系，逐渐成长为国内医疗可穿戴设备领域首屈一指的高科技企业。从企业价值链分析角度看，以上表述所涉及的企业活动是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "内部后勤",
+                            "Right": false
+                        },
+                        {
+                            "Content": "外部后勤",
+                            "Right": false
+                        },
+                        {
+                            "Content": "服务",
+                            "Right": false
+                        },
+                        {
+                            "Content": "企业基础设施",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列各项关于企业作为出租人从事房产经营租赁业务会计处理表述中正确的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "按照亏损合同的相关规定确认和计算经营租赁的资产的减值",
+                            "Right": false
+                        },
+                        {
+                            "Content": "与经营租赁相关的初始直接费用资本化计入租赁标的资产成本",
+                            "Right": true
+                        },
+                        {
+                            "Content": "经营租赁发生变更的，按照变更后的条款对变更前累计确认的收入进行调整",
+                            "Right": false
+                        },
+                        {
+                            "Content": "提供免租期，从免租期结束后开始确认租赁收入",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "德凯公司拟为新三板上市造势，在无真实交易意图的情况下，短期内以业务合作为由邀请多家公司来其主要办公地点洽谈。其中，真诚公司安排授权代表往返十余次，每次都准备了详尽可操作的合作方案，德凯公司佯装感兴趣并屡次表达将签署合同的意愿，但均在最后一刻推脱拒签。期间，德凯公司还将知悉的真诚公司的部分商业秘密不当泄露。对此，下列说法正确的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "未缔结合同，则德凯公司就磋商事宜无需承担责任",
+                            "Right": false
+                        },
+                        {
+                            "Content": "虽未缔结合同，但德凯公司构成恶意磋商，应赔偿损失",
+                            "Right": true
+                        },
+                        {
+                            "Content": "未缔结合同，则商业秘密属于真诚公司自愿披露，不应禁止外泄",
+                            "Right": false
+                        },
+                        {
+                            "Content": "德凯公司也付出了大量的工作成本，如被对方主张赔偿，则据此可主张抵销",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列关于持有待售类别分类的表述中不正确的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "持有待售类别划分条件中的“出售”包括具有商业实质的非货币性资产交换",
+                            "Right": false
+                        },
+                        {
+                            "Content": "当发生企业无法控制的原因导致出售（非关联方交易）未能在一年内完成，若有充分证据表明企业仍然承诺出售非流动资产的，则允许放松一年期限条件",
+                            "Right": false
+                        },
+                        {
+                            "Content": "企业出售部分对子公司的投资后仍然拥有对子公司的控制权，企业不应将拟出售的部分划分为持有待售类别",
+                            "Right": false
+                        },
+                        {
+                            "Content": "企业对于不再继续使用的非流动资产或处置组应将其划分为持有待售类别",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "注册会计师在识别和评估与收入确认相关的重大错报风险时应当假定收入确认存在舞弊风险，下列有关说法中错误的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "注册会计师应当将与收入确认相关的所有认定都假定为存在舞弊风险",
+                            "Right": true
+                        },
+                        {
+                            "Content": "如果资产重组交易中的重组标的存在业绩承诺或对赌条款，管理层可能有高估收入的动机或压力，因此收入的发生认定存在舞弊风险的可能性较大",
+                            "Right": false
+                        },
+                        {
+                            "Content": "如果管理层有隐瞒收入而降低税负的动机，则注册会计师需要更加关注与收入完整性认定相关的舞弊风险",
+                            "Right": false
+                        },
+                        {
+                            "Content": "如果被审计单位预期难以达到下一年度的销售目标，而已经超额实现了本年度的销售目标，就可能倾向于将本期的收入推迟至下一年度确认，收入的截止认定存在舞弊风险的可能性较大",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "李某向张某借款20万元，李某在履行期届满后未能还款。两人随后签订协议，约定李某以自有的一台挖掘机抵充所欠贷款。该协议中不存在影响合同效力的情形。下列表述中，正确的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "李某向张某转让挖掘机后，李某在借款合同中的债务消灭",
+                            "Right": true
+                        },
+                        {
+                            "Content": "该协议属于实践合同",
+                            "Right": false
+                        },
+                        {
+                            "Content": "李某不履行该协议的，张某只能要求李某转让挖掘机",
+                            "Right": false
+                        },
+                        {
+                            "Content": "李某不履行该协议的，张某只能要求李某偿还贷款",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "以完全成本加成法定价时，有关成本加成的相关表述正确的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "以完全成本加成法定价时，其成本包括单位产品的直接材料、直接人工与变动制造费用",
+                            "Right": false
+                        },
+                        {
+                            "Content": "以完全成本加成法定价时，其成本包括单位产品的直接材料、直接人工与制造费用",
+                            "Right": true
+                        },
+                        {
+                            "Content": "以完全成本加成法定价时，其加成数为目标利润",
+                            "Right": false
+                        },
+                        {
+                            "Content": "以完全成本加成法定价时，其加成数为单位产品的销售费用、管理费用",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "近年来中国公民出境游市场处于高速发展的阶段，实行多元化经营的鸿湖集团于2006年成立了甲旅行社，该旅行社专门提供出境游的服务项目，其市场份额位列第二。根据波士顿矩阵原理，鸿湖集团的甲旅行社业务属于（    ）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "明星业务",
+                            "Right": false
+                        },
+                        {
+                            "Content": "瘦狗业务",
+                            "Right": false
+                        },
+                        {
+                            "Content": "现金牛业务",
+                            "Right": false
+                        },
+                        {
+                            "Content": "问题业务",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "在识别和评估重大错报风险时，下列各项中，注册会计师应当假定存在舞弊风险的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "具有高度估计不确定性的会计估计",
+                            "Right": false
+                        },
+                        {
+                            "Content": "存货的可变现净值",
+                            "Right": false
+                        },
+                        {
+                            "Content": "收入确认",
+                            "Right": true
+                        },
+                        {
+                            "Content": "应付账款的完整性",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据合同法律制度的规定，下列关于缔约过失责任的表述中，不正确的是（　　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "缔约过失责任适用于合同未成立、合同未生效、合同无效等情形",
+                            "Right": false
+                        },
+                        {
+                            "Content": "缔约过失责任赔偿的是可期待利益的损失",
+                            "Right": true
+                        },
+                        {
+                            "Content": "缔约过失责任赔偿的是信赖利益的损失",
+                            "Right": false
+                        },
+                        {
+                            "Content": "可期待利益的损失要大于或者等于信赖利益的损失",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "甲公司生产销售乙、丙、丁三种产品，固定成本50000元。除乙产品外，其余两种产品均盈利。乙产品销量2000件，单价105元，单位成本110元（其中，单位直接材料费用20元，单位直接人工费用35元，单位变动制造费用45元，单位固定制造费用10元）。假定生产能力无法转移，在短期经营决策时，决定继续生产乙产品的理由是（　　）。",
+                    "Type": 0,
+                    "Analysis": "在短期内，如果公司的亏损产品能够提供正的边际贡献，就应该继续生产乙产品。乙产品的单位变动成本=单位直接材料费用+单位直接人工费用+单位变动制造费用=20+35+45=100（元），且生产能力无法转移，因此乙产品单价大于100元，就应该继续生产乙产品。",
+                    "Options": [
+                        {
+                            "Content": "乙产品单价大于55元",
+                            "Right": false
+                        },
+                        {
+                            "Content": "乙产品单价大于20元",
+                            "Right": false
+                        },
+                        {
+                            "Content": "乙产品单价大于100元",
+                            "Right": true
+                        },
+                        {
+                            "Content": "乙产品单价大于80元",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "福门公司是一家汽车玻璃制造商，是多家汽车企业的玻璃供应商。根据波特的产业五种竞争力分析理论，下列各项中，有利于提高福门公司对其客户讨价还价能力的有（　　）。",
+                    "Type": 1,
+                    "Analysis": "本题考查产业五种竞争力中的供应者、购买者讨价还价的能力。选项C：福门公司所在行业吸引了越来越多的企业进入会造成卖方的集中度下降，讨价还价能力变弱。",
+                    "Options": [
+                        {
+                            "Content": "福门公司生产的汽车玻璃物美价廉，性价比高",
+                            "Right": true
+                        },
+                        {
+                            "Content": "福门公司的客户需要在短期内快速交货",
+                            "Right": true
+                        },
+                        {
+                            "Content": "福门公司所在行业吸引了越来越多的企业进入",
+                            "Right": false
+                        },
+                        {
+                            "Content": "福门公司有能力进入整车制造行业",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "纳税人提供的下列应税服务中，应按照“增值电信服务”计征增值税的有（　　）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "互联网接入服务",
+                            "Right": true
+                        },
+                        {
+                            "Content": "使用移动网提供短信服务",
+                            "Right": true
+                        },
+                        {
+                            "Content": "使用互联网提供语音通话服务",
+                            "Right": false
+                        },
+                        {
+                            "Content": "服务器带宽租赁服务",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据增值税纳税义务发生时间的相关规定，下列说法正确的有（　　 ）",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "采取赊销方式销售货物，为实际收款的当天",
+                            "Right": false
+                        },
+                        {
+                            "Content": "视同销售无形资产，为无形资产转让完成的当天",
+                            "Right": true
+                        },
+                        {
+                            "Content": "从事金融商品转让，为金融商品所有权转移的当天",
+                            "Right": true
+                        },
+                        {
+                            "Content": "提供租赁服务采取预收款方式的，为收到预收款的当天",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "天澜酱园是一家拥有近百年历史的调味品企业，多年奉行“守拙择善、务实创新”的理念，利用其所处地域优越的水、高粱、黄米等原料资源和在古法蒸酿技术基础上形成的独特工艺，生产出多种香辛醇厚、回味有余的调味佳品，取得行业领先的经营业绩。下列各项中，属于天澜酱园竞争优势来源的有(    )。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "物理上独特的资源",
+                            "Right": true
+                        },
+                        {
+                            "Content": "具有路径依赖性的资源",
+                            "Right": true
+                        },
+                        {
+                            "Content": "具有因果含糊性的资源",
+                            "Right": true
+                        },
+                        {
+                            "Content": "具有经济制约性的资源",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "关于多品种情况下的保本分析，下列说法正确的有（　　）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "以成本性态分析为基础",
+                            "Right": true
+                        },
+                        {
+                            "Content": "各个品种的销售占比保持不变",
+                            "Right": true
+                        },
+                        {
+                            "Content": "某个品种的产量与销售量可以不相等",
+                            "Right": false
+                        },
+                        {
+                            "Content": "混合成本分解后可能存在非线性成本",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列情形中的增值税专用发票，应列入异常凭证范围的有（　　）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "纳税人被盗的税控设备中未开具的增值税专用发票",
+                            "Right": true
+                        },
+                        {
+                            "Content": "非正常户纳税人未向税务机关申报缴纳税款的增值税专用发票",
+                            "Right": true
+                        },
+                        {
+                            "Content": "自取得发票之日起90日内尚未申报抵扣的增值税专用发票",
+                            "Right": false
+                        },
+                        {
+                            "Content": "经省税务局大数据分析发现纳税人未按规定缴纳消费税的增值税专用发票",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "在设计进一步审计程序时，下列各项因素中，注册会计师应当考虑的有（　　）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "风险的重要性",
+                            "Right": true
+                        },
+                        {
+                            "Content": "重大错报发生的可能性",
+                            "Right": true
+                        },
+                        {
+                            "Content": "被审计单位采用的特定控制的性质",
+                            "Right": true
+                        },
+                        {
+                            "Content": "涉及的各类交易、账户余额和披露的特征",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据物权法律制度的规定，下列各项中，属于用益物权的有（  ）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "建设用地使用权",
+                            "Right": true
+                        },
+                        {
+                            "Content": "居住权",
+                            "Right": true
+                        },
+                        {
+                            "Content": "地役权",
+                            "Right": true
+                        },
+                        {
+                            "Content": "抵押权",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列选项中，可以申请不动产变更登记的有（　　）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "共有人增加",
+                            "Right": false
+                        },
+                        {
+                            "Content": "不动产权利期限发生变化",
+                            "Right": true
+                        },
+                        {
+                            "Content": "抵押担保的主债权数额发生变化",
+                            "Right": true
+                        },
+                        {
+                            "Content": "以不动产作价出资（入股）",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "担保有约定担保和法定担保之分，下列各项中，属于约定担保的有（　　）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "保证",
+                            "Right": true
+                        },
+                        {
+                            "Content": "抵押",
+                            "Right": true
+                        },
+                        {
+                            "Content": "定金",
+                            "Right": true
+                        },
+                        {
+                            "Content": "留置",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列选项中，属于添附的有（　　）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "当地下暴雨将甲家的鲤鱼塘冲毁，导致甲家的鲤鱼游入乙家的鲤鱼塘",
+                            "Right": true
+                        },
+                        {
+                            "Content": "丙误将丁的石头雕刻成工艺品",
+                            "Right": true
+                        },
+                        {
+                            "Content": "戊将不亮的台灯扔进垃圾桶，被己捡回家修好使用",
+                            "Right": false
+                        },
+                        {
+                            "Content": "庚误将辛的涂料刷了自家的墙",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列有关固有风险因素的说法中，正确的有（　　）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "固有风险因素可能通过影响错报发生的可能性以及错报发生时其可能的严重程度，来影响认定易于发生错报的可能性",
+                            "Right": true
+                        },
+                        {
+                            "Content": "某类交易、账户余额和披露由于其复杂性或主观性而导致易于发生错报的可能性，通常与其变化或不确定性的程度密切相关",
+                            "Right": true
+                        },
+                        {
+                            "Content": "某类交易、账户余额和披露由于其复杂性或主观性而导致易于发生错报的可能性越大，注册会计师越有必要保持职业怀疑",
+                            "Right": true
+                        },
+                        {
+                            "Content": "某些事项或情况影响由管理层偏向因素导致易于发生错报的可能性，这些事项也可能影响由其他舞弊风险因素导致易于发生错报的可能性",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "《中华人民共和国民法典》第116条规定：“物权的种类和内容，由法律规定。”下列各项中，属于该条所称“法律”的有（　　）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "《中华人民共和国民法典》",
+                            "Right": true
+                        },
+                        {
+                            "Content": "《中华人民共和国土地管理法》",
+                            "Right": true
+                        },
+                        {
+                            "Content": "《最高人民法院关于适用〈中华人民共和国民法典〉物权编的解释（一）》",
+                            "Right": false
+                        },
+                        {
+                            "Content": "《最高人民法院关于适用〈中华人民共和国民法典〉有关担保制度的解释》",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列有关注册会计师识别和评估重大错报风险的说法中，正确的有（　　）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "如果拟不测试控制运行的有效性，则不存在控制风险，应当将固有风险的评估结果作为重大错报风险的评估结果",
+                            "Right": false
+                        },
+                        {
+                            "Content": "针对识别出的财务报表层次的重大错报风险，注册会计师不应当分别评估固有风险和控制风险",
+                            "Right": false
+                        },
+                        {
+                            "Content": "识别和评估重大错报风险是风险评估阶段的最后步骤",
+                            "Right": true
+                        },
+                        {
+                            "Content": "注册会计师在识别、评估和应对重大错报风险的过程中，应当将管理层的认定用于考虑可能发生的不同类型的错报",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "通过多次交易分步实现非同一控制下企业合并（不属于一揽子交易），原投资采用权益法核算的，下列处理正确的有（　）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "在个别财务报表中，应当以购买日之前所持有被购买方的股权投资的账面价值与购买日新增投资成本之和，作为该项投资的初始投资成本",
+                            "Right": true
+                        },
+                        {
+                            "Content": "在个别财务报表中，购买日之前持有的被购买方的股权投资涉及其他综合收益的，应当在处置该项投资时采用与被投资单位直接处置相关资产或负债相同的基础进行会计处理",
+                            "Right": true
+                        },
+                        {
+                            "Content": "在合并财务报表中，对于购买日之前持有的被购买方的股权投资，应当按照该股权在购买日的公允价值进行重新计量，公允价值与其账面价值的差额计入当期投资收益",
+                            "Right": true
+                        },
+                        {
+                            "Content": "在合并财务报表中，购买日之前持有的被购买方的股权投资涉及其他综合收益的，与其相关的其他综合收益在将来处置股权时转入投资收益",
+                            "Right": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "二级建造师",
+            "Description": "二级建造师",
+            "Questions": [
+                {
+                    "Title": "危险源的风险评价通常采用D=L×E×C来进行判断，该种方法称为（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "头脑风暴法",
+                            "Right": false
+                        },
+                        {
+                            "Content": "德尔菲法",
+                            "Right": false
+                        },
+                        {
+                            "Content": "作业条件危险评价法",
+                            "Right": true
+                        },
+                        {
+                            "Content": "事故树法",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据《公路工程标准施工招标文件》，以下情形不会作为废标的是（　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "投标报价或调整函中报价超过招标人公布的投标控制价上限",
+                            "Right": false
+                        },
+                        {
+                            "Content": "投标文件字迹潦草、模糊、无法辨认",
+                            "Right": false
+                        },
+                        {
+                            "Content": "投标报价大写金额与小写金额不相符，但投标人同意修正",
+                            "Right": true
+                        },
+                        {
+                            "Content": "投标人未在投标函上填写投标总价",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "关于“平安工地”考核评价的说法，错误的是（　）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "考核评价应遵循“分级管理、属地负责”的原则",
+                            "Right": false
+                        },
+                        {
+                            "Content": "考核评价结果分为优秀、达标、不达标三个等级",
+                            "Right": true
+                        },
+                        {
+                            "Content": "考核评价结果纳入企业安全生产信用记录",
+                            "Right": false
+                        },
+                        {
+                            "Content": "施工单位对考核评价结果负主体责任",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "在工程管理曲线中，当实际支付线低于计划线时，表明（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "进度延误",
+                            "Right": true
+                        },
+                        {
+                            "Content": "进度提前",
+                            "Right": false
+                        },
+                        {
+                            "Content": "成本节约",
+                            "Right": false
+                        },
+                        {
+                            "Content": "成本超支",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据《公路工程施工分包分包管理办法》，分包工程最初支付申请应由甲在合同约定的时间，向乙报送该阶段施工的付款清单。上述甲乙分别为（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "甲为分包人、乙为承包人",
+                            "Right": true
+                        },
+                        {
+                            "Content": "甲为承包人、乙为监理",
+                            "Right": false
+                        },
+                        {
+                            "Content": "甲为分包人、乙为监理",
+                            "Right": false
+                        },
+                        {
+                            "Content": "甲为承包人、乙为业主",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "工程施工的仪器仪表摊销及维修费用应计入（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "材料费",
+                            "Right": false
+                        },
+                        {
+                            "Content": "施工机具使用费",
+                            "Right": true
+                        },
+                        {
+                            "Content": "企业管理费",
+                            "Right": false
+                        },
+                        {
+                            "Content": "规费",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "两盘沿近直立断层面作水平移动的断层称为（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "正断层",
+                            "Right": false
+                        },
+                        {
+                            "Content": "逆断层",
+                            "Right": false
+                        },
+                        {
+                            "Content": "平推断层",
+                            "Right": true
+                        },
+                        {
+                            "Content": "构造断层",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "立井井筒采用短段掘砌混合作业时，砌壁模板多采用（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "装配式金属模板",
+                            "Right": false
+                        },
+                        {
+                            "Content": "金属整体移动式模板",
+                            "Right": true
+                        },
+                        {
+                            "Content": "绳捆式模板",
+                            "Right": false
+                        },
+                        {
+                            "Content": "液压滑升模板",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "钢筋电阻点焊的电源电压下降6%时，应（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "增大电源电流",
+                            "Right": false
+                        },
+                        {
+                            "Content": "提高焊接变压器级数",
+                            "Right": true
+                        },
+                        {
+                            "Content": "加快焊接作业速度",
+                            "Right": false
+                        },
+                        {
+                            "Content": "加快焊接作业速度",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "目前我国港道掘进施工的钻眼工作主要采用（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "凿岩台车",
+                            "Right": false
+                        },
+                        {
+                            "Content": "气腿式凿岩机",
+                            "Right": true
+                        },
+                        {
+                            "Content": "风镐",
+                            "Right": false
+                        },
+                        {
+                            "Content": "钻装机",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "关于露天矿浅孔与深孔台阶爆破的说法，正确的是（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "浅孔台阶爆破飞石的危险性更高",
+                            "Right": true
+                        },
+                        {
+                            "Content": "深孔台阶的爆破抵抗线小",
+                            "Right": false
+                        },
+                        {
+                            "Content": "浅孔台阶爆破更适用于大型土方爆破",
+                            "Right": false
+                        },
+                        {
+                            "Content": "深孔台阶爆破适用于露天矿的二次破碎",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "厚大体积普通混凝土工程不宜使用（）水泥。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "矿渣",
+                            "Right": false
+                        },
+                        {
+                            "Content": "火山灰质",
+                            "Right": false
+                        },
+                        {
+                            "Content": "粉煤灰",
+                            "Right": false
+                        },
+                        {
+                            "Content": "硅酸盐",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列进度控制施工中，属于组织管理措施的是（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "优选施工方案",
+                            "Right": false
+                        },
+                        {
+                            "Content": "采用新技术、新工艺",
+                            "Right": false
+                        },
+                        {
+                            "Content": "加强总包与分包单位间的协作关系",
+                            "Right": true
+                        },
+                        {
+                            "Content": "编制资源需求计划",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据《水利水电工程等级划分及洪水标准》(SL252-2000)的规定,某泵站工程等别为Ⅱ等,其次要建筑物级别应为()级。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "2",
+                            "Right": false
+                        },
+                        {
+                            "Content": "3",
+                            "Right": true
+                        },
+                        {
+                            "Content": "4",
+                            "Right": false
+                        },
+                        {
+                            "Content": "5",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据《水利工程建设项目管理规定》(水建[1995]128号),水利水电工程完成建设目标的标志是()。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "合同工程完工验收",
+                            "Right": false
+                        },
+                        {
+                            "Content": "专项验收",
+                            "Right": false
+                        },
+                        {
+                            "Content": "后评价",
+                            "Right": false
+                        },
+                        {
+                            "Content": "竣工验收",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据《水利水电工程施工质量检验与评定规程》(SL 176-2007),某中型水闸工程外观质量评定组人数至少应为()人。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "3",
+                            "Right": false
+                        },
+                        {
+                            "Content": "5",
+                            "Right": true
+                        },
+                        {
+                            "Content": "7",
+                            "Right": false
+                        },
+                        {
+                            "Content": "9",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据水利水电工程施工安全用电要求,在特别潮湿场所的照明电源的最大电压为()V。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "12",
+                            "Right": true
+                        },
+                        {
+                            "Content": "24",
+                            "Right": false
+                        },
+                        {
+                            "Content": "36",
+                            "Right": false
+                        },
+                        {
+                            "Content": "38",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "某水库工程验收工作中,属于政府验收的是()验收。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "分部工程",
+                            "Right": false
+                        },
+                        {
+                            "Content": "单位工程",
+                            "Right": false
+                        },
+                        {
+                            "Content": "合同工程完工",
+                            "Right": false
+                        },
+                        {
+                            "Content": "下闸蓄水",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "水利工程安全生产条件市场准入制度自()年起实施。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "2003",
+                            "Right": false
+                        },
+                        {
+                            "Content": "2004",
+                            "Right": false
+                        },
+                        {
+                            "Content": "2005",
+                            "Right": true
+                        },
+                        {
+                            "Content": "2006",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "钻孔爆破时,衡量浅孔和深孔的临界孔深是()m。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "3",
+                            "Right": false
+                        },
+                        {
+                            "Content": "4",
+                            "Right": false
+                        },
+                        {
+                            "Content": "5",
+                            "Right": true
+                        },
+                        {
+                            "Content": "6",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "某中型泵站工程基础施工期间采用深井降水,此深井降水用电负荷应为()类。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "一",
+                            "Right": true
+                        },
+                        {
+                            "Content": "二",
+                            "Right": false
+                        },
+                        {
+                            "Content": "三",
+                            "Right": false
+                        },
+                        {
+                            "Content": "四",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "关于施工形象进度、产值统计、实际成本三者关系的说法，正确的是（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "施工形象进度与产值统计所依据的工程量是相同的，但与实际成本计算依据的工程量不同",
+                            "Right": false
+                        },
+                        {
+                            "Content": "施工形象进度、产值统计、实际成本所依据的工程量应是相同的数值",
+                            "Right": true
+                        },
+                        {
+                            "Content": "施工形象进度、产值统计、实际成本所依据的工程量都是互不相同的",
+                            "Right": false
+                        },
+                        {
+                            "Content": "产值统计与实际成本所依据的工程量是相同的，但不同于形象进度计算所依据的工作量",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "在影响施工质量的五大因素中，建设主管部门推广的高性能混凝土技术，属于（）的因素。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "方法",
+                            "Right": true
+                        },
+                        {
+                            "Content": "环境",
+                            "Right": false
+                        },
+                        {
+                            "Content": "材料",
+                            "Right": false
+                        },
+                        {
+                            "Content": "机械",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据《建设工程施工合同（示范文本）》（GF-2013-0201）， 项目经理因特殊情况授权其下属人员履行某项工作职责时，应至少提前（）天书面通知监理人。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "5",
+                            "Right": false
+                        },
+                        {
+                            "Content": "7",
+                            "Right": true
+                        },
+                        {
+                            "Content": "14",
+                            "Right": false
+                        },
+                        {
+                            "Content": "28",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据《建设工程工程量清单计价规范》（GB50500-2013)，发包人进度计划的安全文明施工费预付的时间和金额分别为（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "预付时间为工程开工后42天内，金额不低于当年施工进度计划的安全文明施工费总额的60%",
+                            "Right": false
+                        },
+                        {
+                            "Content": "预付时间为工程开工后42天内，金额不低于当年施工进度计划的安全文明施工费总额的50%",
+                            "Right": false
+                        },
+                        {
+                            "Content": "预付时间为工程开工后28天内，金额不低于当年施工进度计划的安全文明施工费总额的60%",
+                            "Right": false
+                        },
+                        {
+                            "Content": "预付时间为工程开工后28天内，金额不低于当年施工进度计划的安全文明施工费总额的50%",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "关于利用时间-成本累积曲线编制施工成本计划的说法，正确的是（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "所有工作都按最迟开始时间，对节约资金不利",
+                            "Right": false
+                        },
+                        {
+                            "Content": "所有工作都按最早开始时间，对节约资金有利",
+                            "Right": false
+                        },
+                        {
+                            "Content": "项目经理通过调整关键工作的最早开始时间，将成本控制在计划范围之内",
+                            "Right": false
+                        },
+                        {
+                            "Content": "所有工作都按最迟开始时间，降低了项目按期竣工的保证率",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据《建设工程工程量清单计价规范》（GB50500—2013），关于工程项目合同类型选择的说法，正确的是（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "对使用工程量清单计价的工程，必须采用单价合同，不适用于总价合同",
+                            "Right": false
+                        },
+                        {
+                            "Content": "采用单价合同时，工程量清单可以不作为合同的组成部分",
+                            "Right": false
+                        },
+                        {
+                            "Content": "采用总价合同时，工程量清单中的工程量不具备合同约束力",
+                            "Right": false
+                        },
+                        {
+                            "Content": "对使用工程量清单计价的工程，宜采用单价合同，但并不排斥总价合同",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "施工企业执业健康安全管理体系的纲领性文件是（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "作业文件",
+                            "Right": false
+                        },
+                        {
+                            "Content": "管理手册",
+                            "Right": true
+                        },
+                        {
+                            "Content": "程序文件",
+                            "Right": false
+                        },
+                        {
+                            "Content": "监测活动准则",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列施工质量保证体系的内容中，属于工作保证体系的是（）。",
+                    "Type": 0,
+                    "Options": [
+                        {
+                            "Content": "建立质量检查制度",
+                            "Right": true
+                        },
+                        {
+                            "Content": "明确施工质量目标",
+                            "Right": false
+                        },
+                        {
+                            "Content": "树立“质量第一”的观点",
+                            "Right": false
+                        },
+                        {
+                            "Content": "建立质量管理组织",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "项目经理部建立施工安全生产管理制度体系时，应遵循的原则有（）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "贯彻“安全第一，预防为主”的方针",
+                            "Right": true
+                        },
+                        {
+                            "Content": "建立健全安全生产责任制度和群防群治制度",
+                            "Right": true
+                        },
+                        {
+                            "Content": "必须符合有关法律、法规及规程的要求",
+                            "Right": true
+                        },
+                        {
+                            "Content": "必须适用于工程施工全过程的安全管理和控制",
+                            "Right": true
+                        },
+                        {
+                            "Content": "遵循安全生产投入最小",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "下列导致施工质量事故发生的原因中，属于施工失误的有（）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "使用不合格的工程材料",
+                            "Right": true
+                        },
+                        {
+                            "Content": "施工人员不具备上岗的技术资质",
+                            "Right": true
+                        },
+                        {
+                            "Content": "边勘察、边设计、边施工",
+                            "Right": false
+                        },
+                        {
+                            "Content": "勘察报告不准、不细",
+                            "Right": false
+                        },
+                        {
+                            "Content": "施工管理混乱",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "在工程建设实施阶段,质量监督机构监督的对象包括()等单位。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "建设",
+                            "Right": true
+                        },
+                        {
+                            "Content": "设计",
+                            "Right": true
+                        },
+                        {
+                            "Content": "施工",
+                            "Right": true
+                        },
+                        {
+                            "Content": "监理",
+                            "Right": true
+                        },
+                        {
+                            "Content": "运行管理",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "土坝坝身控制测量包括()。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "坝轴线测设",
+                            "Right": true
+                        },
+                        {
+                            "Content": "平面控制测量",
+                            "Right": true
+                        },
+                        {
+                            "Content": "坡脚线放样",
+                            "Right": false
+                        },
+                        {
+                            "Content": "高程控制测量",
+                            "Right": true
+                        },
+                        {
+                            "Content": "清基开挖线放样",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "根据招标管理的规定，应视为废标的情形有（）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "标书未密封",
+                            "Right": true
+                        },
+                        {
+                            "Content": "无法定代表人签字",
+                            "Right": false
+                        },
+                        {
+                            "Content": "投标单位未参加开标会议",
+                            "Right": true
+                        },
+                        {
+                            "Content": "标书逾期送达",
+                            "Right": true
+                        },
+                        {
+                            "Content": "投标总价的大小写金额不一致",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "矿井施工项目中应布置在工业广场边缘的临时设施有（）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "临时炸药库",
+                            "Right": true
+                        },
+                        {
+                            "Content": "临时油脂库",
+                            "Right": true
+                        },
+                        {
+                            "Content": "临时锅炉库",
+                            "Right": false
+                        },
+                        {
+                            "Content": "矸石场",
+                            "Right": true
+                        },
+                        {
+                            "Content": "混凝土搅拌站",
+                            "Right": false
+                        }
+                    ]
+                },
+                {
+                    "Title": "深井下沉施工质量检验的主要内容包括（）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "平面扭转角",
+                            "Right": true
+                        },
+                        {
+                            "Content": "深井下沉速度",
+                            "Right": false
+                        },
+                        {
+                            "Content": "深井混凝土速度",
+                            "Right": true
+                        },
+                        {
+                            "Content": "深井刃脚底面标高",
+                            "Right": true
+                        },
+                        {
+                            "Content": "深井的最大纵、横向倾斜度",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "排除滑坡体地下水的设施有（　）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "支撑渗沟",
+                            "Right": true
+                        },
+                        {
+                            "Content": "边坡渗沟",
+                            "Right": true
+                        },
+                        {
+                            "Content": "树枝状排水沟",
+                            "Right": false
+                        },
+                        {
+                            "Content": "平孔",
+                            "Right": true
+                        },
+                        {
+                            "Content": "暗沟",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "关于隧道施工安全技术要求的说法，正确的有（）。",
+                    "Type": 1,
+                    "Options": [
+                        {
+                            "Content": "所有隧道施工前都要制定控制地质超前预报方案和实施细则",
+                            "Right": false
+                        },
+                        {
+                            "Content": "爆破器材管理人员必须穿防静电服装",
+                            "Right": true
+                        },
+                        {
+                            "Content": "炮眼打好后要立即装药",
+                            "Right": false
+                        },
+                        {
+                            "Content": "同一辆汽车运送炸药和雷管时必须隔开一定距离摆放",
+                            "Right": false
+                        },
+                        {
+                            "Content": "不得在隧道内使用内燃抽水机",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "预支拼装连续箱梁桥的预应力钢绞线下料长度，应根据张拉千斤顶长度、张拉伸长值、弹性回缩值以及（）计算确定。",
+                    "Type": 1,
+                    "Analysis": "本题考查的是钢筋施工。预应力筋的下料长度应通过计算确定，计算时应考虑结构的孔道长度或台座长度、锚夹具厚度、千斤顶长度、焊接接头或墩头预留量、冷拉伸长值、弹性回缩值、张拉伸长值和外露长度等因素。",
+                    "Options": [
+                        {
+                            "Content": "台座长度",
+                            "Right": true
+                        },
+                        {
+                            "Content": "预制梁节段长度",
+                            "Right": true
+                        },
+                        {
+                            "Content": "结构的预应力孔道长度",
+                            "Right": true
+                        },
+                        {
+                            "Content": "锚夹具厚度",
+                            "Right": true
+                        },
+                        {
+                            "Content": "钢绞线外露长度",
+                            "Right": true
+                        }
+                    ]
+                },
+                {
+                    "Title": "施工组织设计中，施工总体部署的主要内容有（　）。",
+                    "Type": 1,
+                    "Analysis": "本题考查的是施工组织设计的编制。施工总体部署的主要内容有：建立施工管理机构、施工任务划分、施工顺序。",
+                    "Options": [
+                        {
+                            "Content": "建立施工管理机构",
+                            "Right": true
+                        },
+                        {
+                            "Content": "划分各参与单位的施工任务",
+                            "Right": true
+                        },
+                        {
+                            "Content": "制定主要分项工程的施工方案",
+                            "Right": false
+                        },
+                        {
+                            "Content": "安排施工顺序",
+                            "Right": true
+                        },
+                        {
+                            "Content": "制定资源需求计划",
+                            "Right": false
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
