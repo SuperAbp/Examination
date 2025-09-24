@@ -30,6 +30,7 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
 
         using IDbConnection connection = new MySqlConnection(configuration.GetConnectionString("Default"));
 
+        // TODO:Remove InitialDataExecutionLog Table
         DateTime lastExecutedTime = await connection.ExecuteScalarAsync<DateTime>("SELECT LastExecutedTime FROM InitialDataExecutionLog ORDER BY LastExecutedTime DESC LIMIT 1");
         if (!int.TryParse(configuration["InitialData:IntervalDays"], out int intervalDays))
         {
