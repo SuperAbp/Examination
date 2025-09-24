@@ -90,16 +90,18 @@ export class QuestionManagementQuestionComponent implements OnInit {
   };
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
-    { title: this.localizationService.instant('Exam::QuestionBank'), index: 'questionBank' },
+    { title: this.localizationService.instant('Exam::QuestionBank'), index: 'questionBank', width: 180 },
     {
       title: this.localizationService.instant('Exam::QuestionType'),
-      render: 'questionType'
+      render: 'questionType',
+      width: 60
     },
     { title: this.localizationService.instant('Exam::QuestionContent'), index: 'content' },
-    { title: this.localizationService.instant('Exam::KnowledgePoint'), index: 'knowledgePoints' },
-    { title: this.localizationService.instant('Exam::CreationTime'), index: 'creationTime', type: 'date' },
+    { title: this.localizationService.instant('Exam::KnowledgePoint'), index: 'knowledgePoints', width: 150 },
+    { title: this.localizationService.instant('Exam::CreationTime'), index: 'creationTime', type: 'date', width: 120 },
     {
       title: this.localizationService.instant('Exam::Actions'),
+      width: 100,
       buttons: [
         {
           icon: 'edit',
