@@ -8,11 +8,11 @@ using Serilog;
 using Serilog.Events;
 using Volo.Abp;
 
-namespace SuperAbp.Exam.InitialData;
+namespace SuperAbp.Exam.BackgroundServices;
 
 public class Program
 {
-    public async static Task<int> Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
 #if DEBUG
@@ -29,24 +29,7 @@ public class Program
         try
         {
             Log.Information("Starting console host.");
-
-            var builder = Host.CreateApplicationBuilder(args);
-
-            builder.Configuration.AddAppSettingsSecretsJson();
-            builder.Logging.ClearProviders().AddSerilog();
-
-            builder.ConfigureContainer(builder.Services.AddAutofacServiceProviderFactory());
-
-            builder.Services.AddHostedService<InitialDataHostedService>();
-
-            await builder.Services.AddApplicationAsync<InitialDataModule>();
-
-            var host = builder.Build();
-
-            await host.InitializeAsync();
-
-            await host.RunAsync();
-
+            await CreateHostBuilder(args).RunConsoleAsync();
             return 0;
         }
         catch (Exception ex)
@@ -64,4 +47,14 @@ public class Program
             Log.CloseAndFlush();
         }
     }
+
+    internal static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .AddAppSettingsSecretsJson()
+            .UseAutofac()
+            .UseSerilog()
+            .ConfigureServices((hostContext, services) =>
+            {
+                services.AddApplication<ExamBackgroundServicesModule>();
+            });
 }

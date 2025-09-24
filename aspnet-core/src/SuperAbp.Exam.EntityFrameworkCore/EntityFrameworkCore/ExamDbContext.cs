@@ -173,12 +173,18 @@ public class ExamDbContext :
 
             b.Property(p => p.Name).IsRequired().HasMaxLength(PaperConsts.MaxNameLength);
             b.Property(p => p.Description).HasMaxLength(PaperConsts.MaxDescriptionLength);
+            b.Property(p => p.Score).HasPrecision(18, 2);
         });
 
         builder.Entity<PaperQuestionRule>(b =>
         {
             b.ToTable(ExamConsts.DbTablePrefix + "PaperQuestionRules", ExamConsts.DbSchema);
             b.ConfigureByConvention();
+            b.Property(p => p.Proportion).HasPrecision(18, 2);
+            b.Property(p => p.BlankScore).HasPrecision(18, 2);
+            b.Property(p => p.SingleScore).HasPrecision(18, 2);
+            b.Property(p => p.JudgeScore).HasPrecision(18, 2);
+            b.Property(p => p.MultiScore).HasPrecision(18, 2);
         });
 
         builder.Entity<Examination>(b =>
@@ -188,7 +194,9 @@ public class ExamDbContext :
             b.ConfigureAuditedAggregateRoot();
 
             b.Property(p => p.Name).IsRequired().HasMaxLength(PaperConsts.MaxNameLength);
-
+            b.Property(p => p.Description).HasMaxLength(PaperConsts.MaxDescriptionLength);
+            b.Property(p => p.Score).HasPrecision(18, 2);
+            b.Property(p => p.PassingScore).HasPrecision(18, 2);
             b.HasIndex(p => p.PaperId);
         });
 
@@ -206,6 +214,7 @@ public class ExamDbContext :
 
             b.Property(p => p.Answers).HasMaxLength(UserExamQuestionConsts.MaxAnswersLength);
             b.Property(p => p.Reason).HasMaxLength(UserExamQuestionConsts.MaxReasonLength);
+            b.Property(p => p.QuestionScore).HasPrecision(18, 2);
         });
 
         builder.Entity<UserExamQuestionReview>(b =>
@@ -215,6 +224,7 @@ public class ExamDbContext :
             b.ConfigureFullAudited();
 
             b.Property(p => p.Reason).HasMaxLength(UserExamQuestionReviewConsts.MaxReasonLength);
+            b.Property(p => p.Score).HasPrecision(18, 2);
         });
 
         builder.Entity<Training>(b =>

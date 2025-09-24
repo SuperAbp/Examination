@@ -59,7 +59,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.EntityFramewo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.TestBase", "test\SuperAbp.Exam.TestBase\SuperAbp.Exam.TestBase.csproj", "{75CA5F13-BAF0-43FF-A45D-9B81A2062C06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.InitialData", "src\SuperAbp.Exam.InitialData\SuperAbp.Exam.InitialData.csproj", "{5B21A566-E68F-667A-3EC5-3184EBE45C5E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.BackgroundServices", "src\SuperAbp.Exam.InitialData\SuperAbp.Exam.BackgroundServices.csproj", "{5B21A566-E68F-667A-3EC5-3184EBE45C5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
