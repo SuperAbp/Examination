@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SuperAbp.Exam.InitialData": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

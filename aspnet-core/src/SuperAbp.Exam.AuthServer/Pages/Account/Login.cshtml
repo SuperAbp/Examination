@@ -57,7 +57,7 @@
             </form>
         }
 
-        <button type="button" class="btn btn-link mt-3" onclick="login('teacher')">老师登录</button>
+        <button type="button" class="btn btn-link mt-3" onclick="login('teacher')">管理员登录</button>
         <button type="button" class="btn btn-link mt-3" onclick="login('student')">学生登录</button>
         @if (Model.VisibleExternalProviders.Any())
         {
@@ -83,19 +83,19 @@
     </div>
 </div>
 <script type="text/javascript">
-    function setCookie(obj,time){
+    function setCookie(obj,time) {
         for(var key in obj){
             var t = new Date();
             t.setDate(t.getDate + time);
             document.cookie = `${key}=${obj[key]};expires=${t.toGMTString()};path=/`;
         }
     }
-    function login(type){
-        setCookie({'__tenant': "3a1c5e6c-056e-5709-37d7-3ad4abfa7897"}, 5);
+    function login(type) {
+        setCookie({'__tenant': '@ViewData["TenantId"]'}, 5);
         let username = "";
         let password = "";
-        if(type=='teacher'){
-            username = "teacher";
+        if(type=='admin'){
+            username = "admin";
             password = "1q2w3E*";
         }else if(type=='student'){
             username = "student";

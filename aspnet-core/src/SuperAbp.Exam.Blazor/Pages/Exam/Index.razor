@@ -21,7 +21,7 @@
         <PropertyColumn Property="c=>c.Name" Title="@L["Name"]" />
         <PropertyColumn Title="@L["Score"]" Field="@($"{context.Score}（{L["PassingScore"]}：{context.PassingScore}）")" />
         <PropertyColumn Property="c=>c.TotalTime" Title="@L["TotalTime"]" />
-        <PropertyColumn Title="@L["ExamTime"]" Field="@($"{context.StartTime} ~ {context.EndTime}")" />
+        <PropertyColumn Title="@L["ExamTime"]" Field="@($"{context.StartTime?.ToString("yyyy-MM-dd HH:mm")} ~ {context.EndTime?.ToString("yyyy-MM-dd HH:mm")}")" />
         <ActionColumn Title="@L["Action"]">
             @if ((!context.StartTime.HasValue && !context.EndTime.HasValue)
                  || (context.StartTime.HasValue

@@ -59,6 +59,9 @@ jobs:
           echo "Publishing Web UI..."
           dotnet publish SuperAbp.Exam.Blazor/SuperAbp.Exam.Blazor.csproj -c Release -o ../publish/Web
 
+          echo "Publishing BackgroundServices..."
+          dotnet publish SuperAbp.Exam.BackgroundServices/SuperAbp.Exam.BackgroundServices.csproj -c Release -o ../publish/BackgroundServices
+
           echo "Publishing Db Migrator..."
           dotnet publish SuperAbp.Exam.DbMigrator/SuperAbp.Exam.DbMigrator.csproj -c Release -o ../publish/DbMigrator
       
