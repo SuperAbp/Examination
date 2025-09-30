@@ -1,0 +1,21 @@
+<div class="modal-header">
+  <div class="modal-title">{{ 'Exam::Questions' | abpLocalization }}</div>
+</div>
+<div class="modal-body">
+  <sf mode="search" [schema]="searchSchema" (formSubmit)="search($event)" (formReset)="reset()"></sf>
+  <st
+    #st
+    [data]="questions"
+    [columns]="columns"
+    [loading]="loading"
+    [page]="page"
+    [total]="total"
+    (change)="change($event)"
+    [header]="'Exam::DataStart' | abpLocalization"
+    [footer]="'Exam::DataEnd' | abpLocalization"
+    responsiveHideHeaderFooter
+  ></st>
+</div>
+<div class="modal-footer">
+  {{ 'Exam::Submit' | abpLocalization }}
+</div>

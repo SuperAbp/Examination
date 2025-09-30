@@ -7,7 +7,17 @@ import {
   InfoOutline,
   LinkOutline,
   ProfileOutline,
-  VerifiedOutline
+  VerifiedOutline,
+  DeleteOutline
 } from '@ant-design/icons-angular/icons';
 
-export const ICONS = [InfoOutline, BulbOutline, ProfileOutline, ExceptionOutline, LinkOutline, VerifiedOutline, CheckCircleTwoTone];
+export const ICONS = [
+  InfoOutline,
+  BulbOutline,
+  ProfileOutline,
+  ExceptionOutline,
+  LinkOutline,
+  VerifiedOutline,
+  CheckCircleTwoTone,
+  DeleteOutline
+];

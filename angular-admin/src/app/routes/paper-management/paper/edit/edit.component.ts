@@ -1,5 +1,5 @@
 import { CoreModule } from '@abp/ng.core';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
@@ -9,6 +9,7 @@ import { PaperService } from '@proxy/admin/controllers';
 import { GetPaperForEditorOutput } from '@proxy/admin/paper-management/papers';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
@@ -16,7 +17,19 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, tap } from 'rxjs/operators';
 
 import { PaperManagementPaperQuestionRuleComponent } from '../../paper-question-rule/paper-question-rule.component';
+import { NzSpaceComponent, NzSpaceModule } from 'ng-zorro-antd/space';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { QuestionSearchComponent } from './question-search.component';
+import { ModalHelper } from '@delon/theme';
 
+export class questionTest {
+  name: string;
+  score: number;
+  items: questionItem[];
+}
+export class questionItem {
+  quesiontId: string;
+}
 @Component({
   selector: 'app-exam-management-paper-edit',
   templateUrl: './edit.component.html',
@@ -24,6 +37,9 @@ import { PaperManagementPaperQuestionRuleComponent } from '../../paper-question-
     `
       .ant-form-item-label {
         width: 95px;
+      }
+      .ant-input {
+        width: 120px;
       }
     `
   ],
@@ -38,10 +54,18 @@ import { PaperManagementPaperQuestionRuleComponent } from '../../paper-question-
     NzInputModule,
     NzInputNumberModule,
     NzButtonModule,
+    NzFlexModule,
+    NzSpaceModule,
+    NzModalModule,
     PaperManagementPaperQuestionRuleComponent
   ]
 })
 export class PaperManagementPaperEditComponent implements OnInit {
+  private modal = inject(ModalHelper);
+  private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private paperService = inject(PaperService);
   paperId: string;
   paper: GetPaperForEditorOutput;
 
@@ -51,14 +75,10 @@ export class PaperManagementPaperEditComponent implements OnInit {
   loading = false;
   isConfirmLoading = false;
   showPaperTime: boolean;
+  showQuestionModal = false;
   form: FormGroup = null;
+  questions: questionTest[] = [];
 
-  constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private paperService: PaperService
-  ) {}
   get score() {
     return this.form.get('score');
   }
@@ -102,7 +122,23 @@ export class PaperManagementPaperEditComponent implements OnInit {
       score: [this.paper.score || 0],
       paperQuestionRules: this.fb.array([], [Validators.required])
     });
+    this.addBigQuestion();
   }
+
+  addBigQuestion() {
+    console.log(111);
+
+    this.questions.push({ name: `第${this.questions.length + 1}大题`, score: 0.0 } as questionTest);
+    console.log(this.questions);
+  }
+  addQuestion(index) {
+    this.modal.createStatic(QuestionSearchComponent, { repositoryId: '' }, { size: 'xl' }).subscribe();
+  }
+  randomAdditionQuestion(index) {}
+  trash(index) {
+    this.questions.splice(index, 1);
+  }
+  selectedQuestions() {}
 
   save() {
     if (!this.form.valid || this.isConfirmLoading) {

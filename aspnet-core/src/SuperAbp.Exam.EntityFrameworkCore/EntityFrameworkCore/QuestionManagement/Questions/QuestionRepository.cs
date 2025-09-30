@@ -70,19 +70,20 @@ public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProv
                              join kp in knowledgePointQueryable on qkp.KnowledgePointId equals kp.Id
                              select new { qkp.QuestionId, kp.Name };
 
-        var queryable = from q in questionQueryable
-                        join qb in questionBankQueryable on q.QuestionBankId equals qb.Id
-                        join kp in pointQueryable on q.Id equals kp.QuestionId into kpGroup
-                        select new QuestionWithDetails
-                        {
-                            Id = q.Id,
-                            QuestionBank = qb.Title,
-                            Content = q.Content,
-                            Analysis = q.Analysis,
-                            QuestionType = q.QuestionType,
-                            CreationTime = q.CreationTime,
-                            KnowledgePoints = kpGroup.Select(k => k.Name).ToList()
-                        };
+        var queryable = (from q in questionQueryable
+                         join qb in questionBankQueryable on q.QuestionBankId equals qb.Id
+                         join kp in pointQueryable on q.Id equals kp.QuestionId into kpGroup
+                         select new QuestionWithDetails
+                         {
+                             Id = q.Id,
+                             QuestionBank = qb.Title,
+                             Content = q.Content,
+                             Analysis = q.Analysis,
+                             QuestionType = q.QuestionType,
+                             CreationTime = q.CreationTime,
+                             KnowledgePoints = kpGroup.Select(k => k.Name).ToList()
+                         })
+                        .PageBy(skipCount, maxResultCount);
 
         return await queryable.ToListAsync(cancellationToken);
     }
