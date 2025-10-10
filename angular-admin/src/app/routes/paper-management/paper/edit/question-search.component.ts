@@ -1,13 +1,13 @@
 import { CoreModule, LocalizationService } from '@abp/ng.core';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
+import { Component, EventEmitter, inject, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFStringWidgetSchema } from '@delon/form';
 import { OptionService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
 import { GetQuestionsInput, QuestionListDto } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { map, tap } from 'rxjs';
+import { finalize, map, tap } from 'rxjs';
 
 @Component({
   selector: 'app-question-search',
@@ -20,11 +20,13 @@ export class QuestionSearchComponent implements OnInit {
   private questionBankService = inject(QuestionBankService);
   private questionService = inject(QuestionService);
   private optionService = inject(OptionService);
+  private modal = inject(NzModalRef);
 
   questions: QuestionListDto[];
-  selectedQuestions = [];
+  selectedQuestionIds = [];
   total: number;
   loading = false;
+  isConfirmLoading = false;
   params: GetQuestionsInput;
   page: STPage = {
     show: true,
@@ -85,7 +87,11 @@ export class QuestionSearchComponent implements OnInit {
   };
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
-    { title: '', index: 'id', type: 'checkbox' },
+    {
+      title: '',
+      index: 'id',
+      type: 'checkbox'
+    },
     { title: this.localizationService.instant('Exam::QuestionBank'), index: 'questionBank', width: 180 },
     {
       title: this.localizationService.instant('Exam::QuestionType'),
@@ -93,8 +99,7 @@ export class QuestionSearchComponent implements OnInit {
       width: 60
     },
     { title: this.localizationService.instant('Exam::QuestionContent'), index: 'content' },
-    { title: this.localizationService.instant('Exam::KnowledgePoint'), index: 'knowledgePoints', width: 150 },
-    { title: this.localizationService.instant('Exam::CreationTime'), index: 'creationTime', type: 'date', width: 120 }
+    { title: this.localizationService.instant('Exam::KnowledgePoint'), index: 'knowledgePoints', width: 150 }
   ];
   ngOnInit() {
     this.params = this.resetParameters();
@@ -104,8 +109,19 @@ export class QuestionSearchComponent implements OnInit {
     this.loading = true;
     this.questionService
       .getList(this.params)
-      .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => ((this.questions = response.items), (this.total = response.totalCount)));
+      .pipe(
+        tap(response => {
+          this.questions = response.items.map(i => {
+            i['checked'] = this.selectedQuestionIds.includes(i.id);
+            return i;
+          });
+          this.total = response.totalCount;
+        }),
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe();
   }
   resetParameters(): GetQuestionsInput {
     return {
@@ -123,7 +139,14 @@ export class QuestionSearchComponent implements OnInit {
       this.params.sorting = `${e.sort?.column?.index as string} ${e.sort.value === 'ascend' ? 'asc' : 'desc'}`;
       this.getList();
     } else if (e.type === 'checkbox') {
-      this.selectedQuestions.push(...e.checkbox);
+      this.selectedQuestionIds = this.selectedQuestionIds.filter(i => !this.questions.map(q => q.id).includes(i));
+      e.checkbox.forEach(element => {
+        if (this.selectedQuestionIds.includes(element.id)) {
+          return;
+        }
+        this.selectedQuestionIds.push(element.id);
+      });
+      console.log(this.selectedQuestionIds);
     }
   }
   reset() {
@@ -147,5 +170,8 @@ export class QuestionSearchComponent implements OnInit {
       delete this.params.questionType;
     }
     this.st.load(1);
+  }
+  save() {
+    this.modal.close(this.selectedQuestionIds);
   }
 }

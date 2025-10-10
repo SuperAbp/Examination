@@ -1,4 +1,3 @@
-
 <div class="modal-header">
   <div class="modal-title" *ngIf="form && !repositoryId">{{ 'Exam::NewRepository' | abpLocalization }}</div>
   <div class="modal-title" *ngIf="form && repositoryId">{{ 'Exam::Edit' | abpLocalization }}</div>
@@ -10,12 +9,8 @@
   <form *ngIf="form; else loaderRef" nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
     <nz-form-item>
       <nz-form-label nzRequired>{{ 'Exam::Title' | abpLocalization }}</nz-form-label>
-      <nz-form-control
-        nzHasFeedback
-        [nzValidatingTip]="'Exam::Validating' | abpLocalization"
-        [nzErrorTip]="nameErrorTpl"
-      >
-        <input formControlName="title" nz-input [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Title' | abpLocalization)"/>
+      <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="nameErrorTpl">
+        <input formControlName="title" nz-input [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Title' | abpLocalization)" />
         <ng-template #nameErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
             {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
@@ -26,7 +21,12 @@
     <nz-form-item>
       <nz-form-label>{{ 'Exam::Remark' | abpLocalization }}</nz-form-label>
       <nz-form-control>
-        <textarea rows="4" formControlName="remark" nz-input [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Remark' | abpLocalization)"></textarea> 
+        <textarea
+          rows="4"
+          formControlName="remark"
+          nz-input
+          [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Remark' | abpLocalization)"
+        ></textarea>
       </nz-form-control>
     </nz-form-item>
   </form>
@@ -36,4 +36,3 @@
     {{ 'Exam::Submit' | abpLocalization }}
   </button>
 </div>
-

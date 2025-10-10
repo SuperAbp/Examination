@@ -1,7 +1,10 @@
 // Components
 
+import { from } from 'rxjs';
+
 // Utils
 export * from './utils/yuan';
+export * from './utils/simplifiedOrdinary';
 
 export * from './pipes';
 

@@ -50,23 +50,68 @@
       <span>题目列表</span>
       <button nz-button nzType="primary" (click)="addBigQuestion()">添加题型</button>
     </div>
-    @for (item of questions; track $index) {
+    @for (question of questions; track $index) {
       <nz-card [nzTitle]="titleTemplate" [nzExtra]="extraTemplate">
         <ng-template #titleTemplate>
           <nz-space>
-            <input *nzSpaceItem nz-input [(ngModel)]="item.name" />
-            <nz-input-group *nzSpaceItem nzAddOnBefore="每题" nzAddOnAfter="分">
-              <nz-input-number nz-input [(ngModel)]="item.score" />
-            </nz-input-group>
-            <button *nzSpaceItem nz-button nzType="primary" (click)="addQuestion($index)">添加题目</button>
-            <button *nzSpaceItem nz-button nzType="primary" (click)="randomAdditionQuestion($index)">抽取题目</button>
+            <input *nzSpaceItem nz-input [(ngModel)]="question.name" />
+            <span *nzSpaceItem>共{{ question.items.length }}题 每题 <nz-input-number nz-input [(ngModel)]="question.score" /> 分</span>
+            <button *nzSpaceItem nz-button nzType="primary" (click)="addQuestion(question)">添加题目</button>
+            <button *nzSpaceItem nz-button nzType="primary" (click)="randomAdditionQuestion(question)">抽取题目</button>
           </nz-space>
         </ng-template>
         <ng-template #extraTemplate>
-          <button nz-button nzType="primary" nzDanger (click)="trash($index)">
+          <button nz-button nzType="primary" nzDanger (click)="trashBigQuestion($index)">
             <span nz-icon nzType="delete" nzTheme="outline"></span>
           </button>
         </ng-template>
+        @if (question.items.length > 0) {
+          <nz-list nzItemLayout="horizontal" [nzLoading]="loading">
+            @for (item of question.items; track $index) {
+              <nz-list-item>
+                <ng-container>
+                  <div class="width-100">
+                    <h3>{{ $index + 1 }} {{ item.content }}</h3>
+                    @if (item.questionType === 0) {
+                      @for (answer of item.answers; track $index) {
+                        <div class="box" nz-flex nzJustify="space-between">
+                          <div>
+                            <span style="color: #1890ff">{{ 65 + $index | char }}</span> {{ answer.content }}
+                          </div>
+                          @if (answer.right) {
+                            <div nz-icon nzType="check-circle" nzTheme="twotone" nzTwotoneColor="#52c41a"></div>
+                          }
+                        </div>
+                      }
+                    }
+                    @if (item.analysis) {
+                      <nz-descriptions nzLayout="vertical">
+                        <nz-descriptions-item [nzTitle]="'Exam::Analysis' | abpLocalization">
+                          {{ item.analysis }}
+                        </nz-descriptions-item>
+                      </nz-descriptions>
+                    }
+                  </div>
+                  <div style="width: 150px; text-align: center">
+                    <button nz-button nzType="primary" nzDanger (click)="trashQuestion(question.items, $index)">
+                      <span nz-icon nzType="delete" nzTheme="outline"></span>
+                    </button>
+                    @if ($index !== 0) {
+                      <button nz-button (click)="up(question.items, $index)">
+                        <span nz-icon nzType="arrow-up" nzTheme="outline"></span>
+                      </button>
+                    }
+                    @if ($index !== question.items.length - 1) {
+                      <button nz-button (click)="down(question.items, $index)">
+                        <span nz-icon nzType="arrow-down" nzTheme="outline"></span>
+                      </button>
+                    }
+                  </div>
+                </ng-container>
+              </nz-list-item>
+            }
+          </nz-list>
+        }
       </nz-card>
     }
     <nz-modal

@@ -14,8 +14,14 @@
     [header]="'Exam::DataStart' | abpLocalization"
     [footer]="'Exam::DataEnd' | abpLocalization"
     responsiveHideHeaderFooter
-  ></st>
+  >
+    <ng-template st-row="questionType" let-item>
+      <span>{{ 'Exam::QuestionType:' + item.questionType | abpLocalization }}</span>
+    </ng-template>
+  </st>
 </div>
 <div class="modal-footer">
-  {{ 'Exam::Submit' | abpLocalization }}
+  <button nz-button nzType="primary" [nzLoading]="isConfirmLoading" (click)="save()">
+    {{ 'Exam::Submit' | abpLocalization }}<span>已选({{ selectedQuestionIds.length }})题</span>
+  </button>
 </div>

@@ -4,59 +4,84 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderModule } from '@delon/abc/page-header';
+import { ModalHelper } from '@delon/theme';
 import { dateTimePickerUtil } from '@delon/util';
-import { PaperService } from '@proxy/admin/controllers';
+import { PaperService, QuestionService } from '@proxy/admin/controllers';
 import { GetPaperForEditorOutput } from '@proxy/admin/paper-management/papers';
+import { QuestionDetailDto } from '@proxy/admin/question-management/questions';
+import { SharedModule, simplifiedOrdinary } from '@shared';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzListModule } from 'ng-zorro-antd/list';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NzSpaceComponent, NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, tap } from 'rxjs/operators';
 
 import { PaperManagementPaperQuestionRuleComponent } from '../../paper-question-rule/paper-question-rule.component';
-import { NzSpaceComponent, NzSpaceModule } from 'ng-zorro-antd/space';
-import { NzModalModule } from 'ng-zorro-antd/modal';
+import { QuestionRandomComponent } from './question-random.component';
 import { QuestionSearchComponent } from './question-search.component';
-import { ModalHelper } from '@delon/theme';
 
 export class questionTest {
+  constructor(name: string, score: number, items: QuestionDetailDto[]) {
+    this.name = name;
+    this.score = score;
+    this.items = items;
+  }
   name: string;
   score: number;
-  items: questionItem[];
-}
-export class questionItem {
-  quesiontId: string;
+  items: QuestionDetailDto[];
 }
 @Component({
   selector: 'app-exam-management-paper-edit',
   templateUrl: './edit.component.html',
   styles: [
     `
+      [nz-radio] {
+        display: block;
+        height: 32px;
+        line-height: 32px;
+      }
       .ant-form-item-label {
         width: 95px;
       }
       .ant-input {
         width: 120px;
       }
+      .box {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin: 15px 0;
+        border-radius: 4px;
+      }
     `
   ],
   standalone: true,
   imports: [
+    SharedModule,
     CoreModule,
     PageHeaderModule,
     FooterToolbarModule,
     NzSpinModule,
     NzCardModule,
     NzFormModule,
+    NzIconModule,
     NzInputModule,
+    NzListModule,
     NzInputNumberModule,
     NzButtonModule,
     NzFlexModule,
     NzSpaceModule,
     NzModalModule,
+    NzRadioModule,
+    NzDescriptionsModule,
     PaperManagementPaperQuestionRuleComponent
   ]
 })
@@ -66,6 +91,7 @@ export class PaperManagementPaperEditComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private paperService = inject(PaperService);
+  private questionService = inject(QuestionService);
   paperId: string;
   paper: GetPaperForEditorOutput;
 
@@ -78,6 +104,7 @@ export class PaperManagementPaperEditComponent implements OnInit {
   showQuestionModal = false;
   form: FormGroup = null;
   questions: questionTest[] = [];
+  questionIds: string[] = [];
 
   get score() {
     return this.form.get('score');
@@ -126,17 +153,41 @@ export class PaperManagementPaperEditComponent implements OnInit {
   }
 
   addBigQuestion() {
-    console.log(111);
-
-    this.questions.push({ name: `第${this.questions.length + 1}大题`, score: 0.0 } as questionTest);
-    console.log(this.questions);
+    this.questions.push(new questionTest(`第${simplifiedOrdinary(this.questions.length + 1)}大题`, 0.0, []));
   }
-  addQuestion(index) {
-    this.modal.createStatic(QuestionSearchComponent, { repositoryId: '' }, { size: 'xl' }).subscribe();
+  addQuestion(item: questionTest) {
+    this.modal.createStatic(QuestionSearchComponent, { repositoryId: '' }, { size: 'xl' }).subscribe(res => {
+      let newQuestionIds = res.filter(i => !this.questionIds.includes(i));
+      this.questionService
+        .getDetailByIds(newQuestionIds)
+        .pipe(
+          tap(res => {
+            item.items = res;
+          })
+        )
+        .subscribe();
+    });
   }
-  randomAdditionQuestion(index) {}
-  trash(index) {
+  randomAdditionQuestion(index) {
+    this.modal.createStatic(QuestionRandomComponent, { repositoryId: '' }, { size: 'xl' }).subscribe();
+  }
+  trashBigQuestion(index) {
     this.questions.splice(index, 1);
+  }
+  trashQuestion(questions: QuestionDetailDto[], index: number) {
+    questions.splice(index, 1);
+  }
+  up(items, index) {
+    if (index === 0) {
+      return;
+    }
+    items[index] = items.splice(index - 1, 1, items[index])[0];
+  }
+  down(items, index) {
+    if (index === items.length - 1) {
+      return;
+    }
+    items[index] = items.splice(index + 1, 1, items[index])[0];
   }
   selectedQuestions() {}
 

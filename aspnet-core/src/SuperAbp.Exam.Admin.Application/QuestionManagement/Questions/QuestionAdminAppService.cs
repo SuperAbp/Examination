@@ -34,9 +34,9 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 
         public virtual async Task<GetQuestionForEditorOutput> GetEditorAsync(Guid id)
         {
-            Question entity = await questionRepository.GetAsync(id);
-            var dto = ObjectMapper.Map<Question, GetQuestionForEditorOutput>(entity);
-            dto.Answers = ObjectMapper.Map<List<QuestionAnswer>, List<QuestionAnswerDto>>(entity.Answers);
+            Question question = await questionRepository.GetAsync(id);
+            var dto = ObjectMapper.Map<Question, GetQuestionForEditorOutput>(question);
+            dto.Answers = ObjectMapper.Map<List<QuestionAnswer>, List<QuestionAnswerDto>>(question.Answers);
             List<Guid> points = await questionManager.GetKnowledgePointIdsAsync(id);
             if (points.Count > 0)
             {
@@ -44,6 +44,19 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             }
 
             return dto;
+        }
+
+        public virtual async Task<IReadOnlyList<QuestionDetailDto>> GetDetailByIdsAsync(List<Guid> ids)
+        {
+            List<Question> questions = await questionRepository.GetByIdsAsync(ids);
+            List<QuestionDetailDto> dtos = [];
+            foreach (Question question in questions)
+            {
+                var dto = ObjectMapper.Map<Question, QuestionDetailDto>(question);
+                dto.Answers = ObjectMapper.Map<List<QuestionAnswer>, List<QuestionAnswerDto>>(question.Answers);
+                dtos.Add(dto);
+            }
+            return dtos;
         }
 
         [Authorize(ExamPermissions.Questions.Import)]

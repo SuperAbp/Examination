@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -23,6 +24,13 @@ public interface IQuestionAdminAppService : IApplicationService
     /// <param name="id">主键</param>
     /// <returns></returns>
     Task<GetQuestionForEditorOutput> GetEditorAsync(Guid id);
+
+    /// <summary>
+    /// 批量获取详情
+    /// </summary>
+    /// <param name="ids">主键集合</param>
+    /// <returns></returns>
+    Task<IReadOnlyList<QuestionDetailDto>> GetDetailByIdsAsync(List<Guid> ids);
 
     /// <summary>
     /// 导入

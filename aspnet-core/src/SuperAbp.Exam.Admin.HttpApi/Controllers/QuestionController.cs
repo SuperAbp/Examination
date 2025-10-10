@@ -4,6 +4,7 @@ using Volo.Abp.Application.Dtos;
 
 using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using System;
+using System.Collections.Generic;
 
 namespace SuperAbp.Exam.Admin.Controllers;
 
@@ -33,6 +34,17 @@ public class QuestionController(IQuestionAdminAppService questionAppService) : E
     public virtual async Task<GetQuestionForEditorOutput> GetEditorAsync(Guid id)
     {
         return await questionAppService.GetEditorAsync(id);
+    }
+
+    /// <summary>
+    /// 批量获取详情
+    /// </summary>
+    /// <param name="ids">主键集合</param>
+    /// <returns></returns>
+    [HttpPost("details")]
+    public async Task<IReadOnlyList<QuestionDetailDto>> GetDetailByIdsAsync(List<Guid> ids)
+    {
+        return await questionAppService.GetDetailByIdsAsync(ids);
     }
 
     /// <summary>

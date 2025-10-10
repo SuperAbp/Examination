@@ -2,6 +2,7 @@ import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
 import type {
+  QuestionDetailDto,
   GetQuestionForEditorOutput,
   GetQuestionsInput,
   QuestionCreateDto,
@@ -49,6 +50,16 @@ export class QuestionService {
       {
         method: 'GET',
         url: `/api/question-management/question/${id}/editor`
+      },
+      { apiName: this.apiName, ...config }
+    );
+
+  getDetailByIds = (ids: string[], config?: Partial<Rest.Config>) =>
+    this.restService.request<any, QuestionDetailDto[]>(
+      {
+        method: 'POST',
+        url: `/api/question-management/question/details`,
+        body: ids
       },
       { apiName: this.apiName, ...config }
     );

@@ -52,7 +52,12 @@ export interface QuestionListDto extends EntityDto<string> {
   analysis?: string;
   creationTime?: string;
 }
-
+export interface QuestionDetailDto {
+  content?: string;
+  analysis?: string;
+  questionType: number;
+  answers: QuestionAnswerDto[];
+}
 export interface QuestionUpdateDto extends QuestionCreateOrUpdateDtoBase {
   options: QuestionCreateOrUpdateAnswerDto[];
 }
