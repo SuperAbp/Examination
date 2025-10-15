@@ -156,13 +156,14 @@ export class PaperManagementPaperEditComponent implements OnInit {
     this.questions.push(new questionTest(`第${simplifiedOrdinary(this.questions.length + 1)}大题`, 0.0, []));
   }
   addQuestion(item: questionTest) {
-    this.modal.createStatic(QuestionSearchComponent, { repositoryId: '' }, { size: 'xl' }).subscribe(res => {
-      let newQuestionIds = res.filter(i => !this.questionIds.includes(i));
+    this.modal.createStatic(QuestionSearchComponent, { questionIds: this.questionIds }, { size: 'xl' }).subscribe(selectedQuestionIds => {
+      let newQuestionIds = selectedQuestionIds.filter(i => !this.questionIds.includes(i));
       this.questionService
         .getDetailByIds(newQuestionIds)
         .pipe(
           tap(res => {
-            item.items = res;
+            item.items = [...item.items, ...res];
+            this.questionIds = selectedQuestionIds;
           })
         )
         .subscribe();

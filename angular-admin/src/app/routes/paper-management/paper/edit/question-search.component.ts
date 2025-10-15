@@ -16,6 +16,9 @@ import { finalize, map, tap } from 'rxjs';
   imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, STModule, DelonFormModule]
 })
 export class QuestionSearchComponent implements OnInit {
+  @Input()
+  questionIds: string[] = [];
+
   private localizationService = inject(LocalizationService);
   private questionBankService = inject(QuestionBankService);
   private questionService = inject(QuestionService);
@@ -102,6 +105,7 @@ export class QuestionSearchComponent implements OnInit {
     { title: this.localizationService.instant('Exam::KnowledgePoint'), index: 'knowledgePoints', width: 150 }
   ];
   ngOnInit() {
+    this.selectedQuestionIds = this.questionIds;
     this.params = this.resetParameters();
     this.getList();
   }
@@ -146,7 +150,6 @@ export class QuestionSearchComponent implements OnInit {
         }
         this.selectedQuestionIds.push(element.id);
       });
-      console.log(this.selectedQuestionIds);
     }
   }
   reset() {
