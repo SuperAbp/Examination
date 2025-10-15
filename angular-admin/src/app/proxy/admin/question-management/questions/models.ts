@@ -1,4 +1,4 @@
-import type { EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
+import type { EntityDto, LimitedResultRequestDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
 export interface GetQuestionForEditorOutput extends QuestionCreateOrUpdateDtoBase {
   questionType: number;
@@ -9,6 +9,15 @@ export interface GetQuestionsInput extends PagedAndSortedResultRequestDto {
   content?: string;
   questionType?: number;
   questionBankIds: string[];
+  excludeIds?: string[];
+}
+
+export interface GetQuestionWithDetailInput {
+  includeIds?: string[];
+  excludeIds?: string[];
+  questionType?: number;
+  questionBankId: string;
+  count: number;
 }
 
 export interface QuestionAnswerDto extends EntityDto<string> {
@@ -52,10 +61,11 @@ export interface QuestionListDto extends EntityDto<string> {
   analysis?: string;
   creationTime?: string;
 }
-export interface QuestionDetailDto {
+export interface QuestionDetailDto extends EntityDto<string> {
   content?: string;
   analysis?: string;
   questionType: number;
+  questionBankId?: string;
   answers: QuestionAnswerDto[];
 }
 export interface QuestionUpdateDto extends QuestionCreateOrUpdateDtoBase {

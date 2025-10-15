@@ -133,6 +133,7 @@
     "Permission:Delete": "删除",
     "Exam:Question:0001": "问题已存在",
     "Exam:Question:0002": "问题的正确答案数量不正确",
+    "Exam:Question:0003": "数量不足，抽提失败",
     "Exam:QuestionBank:0001": "问题类别已存在",
     "Exam:QuestionAnswer:0001": "答案已存在",
     "Exam:Paper:0001": "试卷已存在",

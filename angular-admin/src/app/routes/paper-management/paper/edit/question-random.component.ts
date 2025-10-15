@@ -1,15 +1,15 @@
 import { CoreModule, LocalizationService } from '@abp/ng.core';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFStringWidgetSchema } from '@delon/form';
 import { OptionService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
 import { QuestionBankCountDto, QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
-import { GetQuestionsInput, QuestionListDto } from '@proxy/admin/question-management/questions';
+import { GetQuestionsInput, QuestionDetailDto, QuestionListDto } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
-import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { count, map, tap } from 'rxjs';
@@ -21,17 +21,19 @@ import { count, map, tap } from 'rxjs';
   imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, NzFormModule, NzSelectModule, NzInputNumberModule]
 })
 export class QuestionRandomComponent implements OnInit {
+  @Input()
+  selectedQuestions: QuestionDetailDto[];
+
   private localizationService = inject(LocalizationService);
   private questionBankService = inject(QuestionBankService);
-  private questionService = inject(QuestionService);
   private fb = inject(FormBuilder);
   private optionService = inject(OptionService);
+  private modal = inject(NzModalRef);
 
   questions: QuestionListDto[];
   questionTypes: Array<{ label: string; value: number }> = [];
   questionBanks: QuestionBankListDto[];
   questionBankCount: QuestionBankCountDto;
-  selectedQuestions = [];
   totalQuestionCount: number = 0;
   total: number;
   loading = true;
@@ -78,9 +80,9 @@ export class QuestionRandomComponent implements OnInit {
       )
       .subscribe();
   }
-  getQuestionBankCount(value: string) {
+  getQuestionBankWithQuestionCount(questionBankId: string) {
     this.questionBankService
-      .getQuestionCount(value)
+      .getQuestionCount(questionBankId)
       .pipe(
         tap(res => {
           this.questionBankCount = res;
@@ -109,13 +111,6 @@ export class QuestionRandomComponent implements OnInit {
     this.totalQuestionCount = count;
   }
   save() {
-    if (!this.form.valid || this.isConfirmLoading) {
-      for (const key of Object.keys(this.form.controls)) {
-        this.form.controls[key].markAsDirty();
-        this.form.controls[key].updateValueAndValidity();
-      }
-      return;
-    }
-    this.isConfirmLoading = true;
+    this.modal.close(this.form.value);
   }
 }

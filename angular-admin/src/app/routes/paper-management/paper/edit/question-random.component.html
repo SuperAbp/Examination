@@ -18,7 +18,7 @@
             nzShowSearch
             nzAllowClear
             [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization: ('Exam::QuestionBank' | abpLocalization)"
-            (ngModelChange)="getQuestionBankCount($event)"
+            (ngModelChange)="getQuestionBankWithQuestionCount($event)"
           >
             <nz-option *ngFor="let questionBank of questionBanks" [nzValue]="questionBank.id" [nzLabel]="questionBank.title"></nz-option>
           </nz-select>

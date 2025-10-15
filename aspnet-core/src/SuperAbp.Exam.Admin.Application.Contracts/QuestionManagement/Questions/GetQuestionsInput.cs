@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
@@ -16,4 +17,5 @@ public class GetQuestionsInput : PagedAndSortedResultRequestDto
     public int? QuestionType { get; set; }
 
     public Guid[] QuestionBankIds { get; set; } = [];
+    public List<Guid>? ExcludeIds { get; set; }
 }

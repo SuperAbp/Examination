@@ -8,7 +8,8 @@ import type {
   QuestionCreateDto,
   QuestionImportDto,
   QuestionListDto,
-  QuestionUpdateDto
+  QuestionUpdateDto,
+  GetQuestionWithDetailInput
 } from '../question-management/questions/models';
 
 @Injectable({
@@ -54,12 +55,18 @@ export class QuestionService {
       { apiName: this.apiName, ...config }
     );
 
-  getDetailByIds = (ids: string[], config?: Partial<Rest.Config>) =>
+  getListWithDetail = (input: GetQuestionWithDetailInput, config?: Partial<Rest.Config>) =>
     this.restService.request<any, QuestionDetailDto[]>(
       {
-        method: 'POST',
+        method: 'GET',
         url: `/api/question-management/question/details`,
-        body: ids
+        params: {
+          questionType: input.questionType,
+          questionBankId: input.questionBankId,
+          includeIds: input.includeIds,
+          excludeIds: input.excludeIds,
+          count: input.count
+        }
       },
       { apiName: this.apiName, ...config }
     );
@@ -73,6 +80,7 @@ export class QuestionService {
           content: input.content,
           questionType: input.questionType,
           questionBankIds: input.questionBankIds,
+          excludeIds: input.excludeIds,
           sorting: input.sorting,
           skipCount: input.skipCount,
           maxResultCount: input.maxResultCount

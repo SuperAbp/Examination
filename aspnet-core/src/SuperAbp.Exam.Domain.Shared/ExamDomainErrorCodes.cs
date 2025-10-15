@@ -6,6 +6,7 @@ public static class ExamDomainErrorCodes
     {
         public const string ContentAlreadyExists = "Exam:Question:0001";
         public const string CorrectCountError = "Exam:Question:0002";
+        public const string InsufficientQuantity = "Exam:Question:0003";
     }
 
     public static class QuestionBanks

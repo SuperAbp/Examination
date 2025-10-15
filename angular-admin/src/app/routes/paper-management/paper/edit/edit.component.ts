@@ -8,7 +8,7 @@ import { ModalHelper } from '@delon/theme';
 import { dateTimePickerUtil } from '@delon/util';
 import { PaperService, QuestionService } from '@proxy/admin/controllers';
 import { GetPaperForEditorOutput } from '@proxy/admin/paper-management/papers';
-import { QuestionDetailDto } from '@proxy/admin/question-management/questions';
+import { GetQuestionWithDetailInput, QuestionDetailDto } from '@proxy/admin/question-management/questions';
 import { SharedModule, simplifiedOrdinary } from '@shared';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -27,7 +27,7 @@ import { finalize, tap } from 'rxjs/operators';
 
 import { PaperManagementPaperQuestionRuleComponent } from '../../paper-question-rule/paper-question-rule.component';
 import { QuestionRandomComponent } from './question-random.component';
-import { QuestionSearchComponent } from './question-search.component';
+import { QuestionSelectComponent } from './question-select.component';
 
 export class questionTest {
   constructor(name: string, score: number, items: QuestionDetailDto[]) {
@@ -155,22 +155,36 @@ export class PaperManagementPaperEditComponent implements OnInit {
   addBigQuestion() {
     this.questions.push(new questionTest(`第${simplifiedOrdinary(this.questions.length + 1)}大题`, 0.0, []));
   }
-  addQuestion(item: questionTest) {
-    this.modal.createStatic(QuestionSearchComponent, { questionIds: this.questionIds }, { size: 'xl' }).subscribe(selectedQuestionIds => {
-      let newQuestionIds = selectedQuestionIds.filter(i => !this.questionIds.includes(i));
+  selectQuestion(item: questionTest) {
+    this.modal.createStatic(QuestionSelectComponent, { questionIds: this.questionIds }, { size: 'xl' }).subscribe(selectedQuestionIds => {
       this.questionService
-        .getDetailByIds(newQuestionIds)
+        .getListWithDetail({ includeIds: selectedQuestionIds } as GetQuestionWithDetailInput)
         .pipe(
           tap(res => {
             item.items = [...item.items, ...res];
-            this.questionIds = selectedQuestionIds;
+            this.questionIds = [...this.questionIds, ...selectedQuestionIds];
           })
         )
         .subscribe();
     });
   }
-  randomAdditionQuestion(index) {
-    this.modal.createStatic(QuestionRandomComponent, { repositoryId: '' }, { size: 'xl' }).subscribe();
+  randomAdditionQuestion(item: questionTest) {
+    this.modal.createStatic(QuestionRandomComponent, { selectedQuestions: item.items }, { size: 'xl' }).subscribe(params => {
+      this.questionService
+        .getListWithDetail({
+          questionBankId: params.questionBankId,
+          questionType: params.questionType,
+          count: params.count,
+          excludeIds: this.questionIds
+        } as GetQuestionWithDetailInput)
+        .pipe(
+          tap(res => {
+            item.items = [...item.items, ...res];
+            this.questionIds = [...this.questionIds, ...res.map(x => x.id)];
+          })
+        )
+        .subscribe();
+    });
   }
   trashBigQuestion(index) {
     this.questions.splice(index, 1);

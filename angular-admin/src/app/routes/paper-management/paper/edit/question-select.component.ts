@@ -10,12 +10,12 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, map, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-question-search',
-  templateUrl: './question-search.component.html',
+  selector: 'app-question-select',
+  templateUrl: './question-select.component.html',
   standalone: true,
   imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, STModule, DelonFormModule]
 })
-export class QuestionSearchComponent implements OnInit {
+export class QuestionSelectComponent implements OnInit {
   @Input()
   questionIds: string[] = [];
 
@@ -105,7 +105,6 @@ export class QuestionSearchComponent implements OnInit {
     { title: this.localizationService.instant('Exam::KnowledgePoint'), index: 'knowledgePoints', width: 150 }
   ];
   ngOnInit() {
-    this.selectedQuestionIds = this.questionIds;
     this.params = this.resetParameters();
     this.getList();
   }
@@ -115,10 +114,7 @@ export class QuestionSearchComponent implements OnInit {
       .getList(this.params)
       .pipe(
         tap(response => {
-          this.questions = response.items.map(i => {
-            i['checked'] = this.selectedQuestionIds.includes(i.id);
-            return i;
-          });
+          this.questions = response.items;
           this.total = response.totalCount;
         }),
         finalize(() => {
@@ -131,7 +127,8 @@ export class QuestionSearchComponent implements OnInit {
     return {
       skipCount: 0,
       maxResultCount: 10,
-      questionBankIds: []
+      questionBankIds: [],
+      excludeIds: this.questionIds
     };
   }
   change(e: STChange) {

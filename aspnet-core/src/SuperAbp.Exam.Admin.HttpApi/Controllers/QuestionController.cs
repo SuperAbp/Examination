@@ -26,6 +26,17 @@ public class QuestionController(IQuestionAdminAppService questionAppService) : E
     }
 
     /// <summary>
+    /// 批量获取详情
+    /// </summary>
+    /// <param name="input">查询条件</param>
+    /// <returns></returns>
+    [HttpGet("details")]
+    public async Task<IReadOnlyList<QuestionDetailDto>> GetListWithDetailAsync(GetQuestionWithDetailInput input)
+    {
+        return await questionAppService.GetListWithDetailAsync(input);
+    }
+
+    /// <summary>
     /// 获取修改
     /// </summary>
     /// <param name="id">主键</param>
@@ -34,17 +45,6 @@ public class QuestionController(IQuestionAdminAppService questionAppService) : E
     public virtual async Task<GetQuestionForEditorOutput> GetEditorAsync(Guid id)
     {
         return await questionAppService.GetEditorAsync(id);
-    }
-
-    /// <summary>
-    /// 批量获取详情
-    /// </summary>
-    /// <param name="ids">主键集合</param>
-    /// <returns></returns>
-    [HttpPost("details")]
-    public async Task<IReadOnlyList<QuestionDetailDto>> GetDetailByIdsAsync(List<Guid> ids)
-    {
-        return await questionAppService.GetDetailByIdsAsync(ids);
     }
 
     /// <summary>

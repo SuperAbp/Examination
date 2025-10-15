@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
 
-public class QuestionDetailDto
+public class QuestionDetailDto : EntityDto<Guid>
 {
     /// <summary>
     /// 题干
@@ -12,6 +14,7 @@ public class QuestionDetailDto
     public string? Analysis { get; set; }
 
     public int QuestionType { get; set; }
+    public Guid QuestionBankId { get; set; }
 
     public List<QuestionAnswerDto> Answers { get; set; } = [];
 }

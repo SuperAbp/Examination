@@ -23,13 +23,34 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         {
             await NormalizeMaxResultCountAsync(input);
 
-            int totalCount = await questionRepository.GetCountAsync(input.Content, input.QuestionType, input.QuestionBankIds.ToList());
+            int totalCount = await questionRepository.GetCountAsync(input.Content, input.QuestionType, input.QuestionBankIds.ToList(),
+                excludeIds: input.ExcludeIds);
             List<QuestionWithDetails> questions = await questionRepository.GetListAsync(input.Sorting, input.SkipCount, input.MaxResultCount,
-                input.Content, input.QuestionType, input.QuestionBankIds.ToList());
+                input.Content, input.QuestionType, input.QuestionBankIds.ToList(), excludeIds: input.ExcludeIds);
 
             var dtos = ObjectMapper.Map<List<QuestionWithDetails>, List<QuestionListDto>>(questions);
 
             return new PagedResultDto<QuestionListDto>(totalCount, dtos);
+        }
+
+        public virtual async Task<IReadOnlyList<QuestionDetailDto>> GetListWithDetailAsync(GetQuestionWithDetailInput input)
+        {
+            List<Guid>? questionBankIds = input.QuestionBankId.HasValue ? [input.QuestionBankId.Value] : null;
+            List<QuestionWithDetails> questions = await questionRepository
+                .GetListAsync(maxResultCount: input.Count ?? int.MaxValue, questionBankIds: questionBankIds, questionType: input.QuestionType,
+                    includeIds: input.IncludeIds, excludeIds: input.ExcludeIds);
+            if (questions.Count < input.Count)
+            {
+                throw new BusinessException(ExamDomainErrorCodes.Questions.InsufficientQuantity);
+            }
+            List<QuestionDetailDto> dtos = [];
+            foreach (QuestionWithDetails question in questions)
+            {
+                var dto = ObjectMapper.Map<QuestionWithDetails, QuestionDetailDto>(question);
+                dto.Answers = ObjectMapper.Map<List<QuestionAnswer>, List<QuestionAnswerDto>>(question.Answers);
+                dtos.Add(dto);
+            }
+            return dtos;
         }
 
         public virtual async Task<GetQuestionForEditorOutput> GetEditorAsync(Guid id)
@@ -44,19 +65,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             }
 
             return dto;
-        }
-
-        public virtual async Task<IReadOnlyList<QuestionDetailDto>> GetDetailByIdsAsync(List<Guid> ids)
-        {
-            List<Question> questions = await questionRepository.GetByIdsAsync(ids);
-            List<QuestionDetailDto> dtos = [];
-            foreach (Question question in questions)
-            {
-                var dto = ObjectMapper.Map<Question, QuestionDetailDto>(question);
-                dto.Answers = ObjectMapper.Map<List<QuestionAnswer>, List<QuestionAnswerDto>>(question.Answers);
-                dtos.Add(dto);
-            }
-            return dtos;
         }
 
         [Authorize(ExamPermissions.Questions.Import)]
