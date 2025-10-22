@@ -9,7 +9,7 @@ import { PaperManagementPaperComponent } from './paper/paper.component';
 export const routes: Routes = [
   { path: 'paper', component: PaperManagementPaperComponent },
   {
-    path: 'paper/:id/edit',
+    path: 'paper/:id/edit/:model',
     component: PaperManagementPaperEditComponent,
     canActivate: [authJWTCanActivate, permissionGuard],
     data: {
@@ -17,7 +17,7 @@ export const routes: Routes = [
     }
   },
   {
-    path: 'paper/create',
+    path: 'paper/create/:model',
     component: PaperManagementPaperEditComponent,
     canActivate: [authJWTCanActivate, permissionGuard],
     data: {

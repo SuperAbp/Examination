@@ -4,12 +4,14 @@ import { Router } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFStringWidgetSchema } from '@delon/form';
+import { ModalHelper } from '@delon/theme';
 import { PaperService } from '@proxy/admin/controllers';
 import { GetPapersInput, PaperListDto } from '@proxy/admin/paper-management/papers';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { tap } from 'rxjs/operators';
+import { PaperManagementPaperModelComponent } from './edit/paper-model.component';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-exam-management-paper',
@@ -19,6 +21,7 @@ import { tap } from 'rxjs/operators';
 })
 export class PaperManagementPaperComponent implements OnInit {
   private router = inject(Router);
+  private modal = inject(ModalHelper);
   private localizationService = inject(LocalizationService);
   private messageService = inject(NzMessageService);
   private permissionService = inject(PermissionService);
@@ -59,7 +62,7 @@ export class PaperManagementPaperComponent implements OnInit {
             return this.permissionService.getGrantedPolicy('Exam.Paper.Update');
           },
           click: (record: STData, modal?: any, instance?: STComponent) => {
-            this.router.navigateByUrl(`/paper-management/paper/${record['id']}/edit`);
+            this.router.navigateByUrl(`/paper-management/paper/${record['id']}/edit/1`);
           }
         },
         {
@@ -127,6 +130,8 @@ export class PaperManagementPaperComponent implements OnInit {
     this.st.load(1);
   }
   add() {
-    this.router.navigateByUrl(`/paper-management/paper/create`);
+    this.modal.createStatic(PaperManagementPaperModelComponent, {}, { size: 'sm' }).subscribe(model => {
+      this.router.navigateByUrl(`/paper-management/paper/create/${model}`);
+    });
   }
 }
