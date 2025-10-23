@@ -1,4 +1,4 @@
-﻿namespace SuperAbp.Exam;
+namespace SuperAbp.Exam;
 
 public static class ExamDomainErrorCodes
 {
@@ -22,6 +22,15 @@ public static class ExamDomainErrorCodes
     public static class Papers
     {
         public const string NameAlreadyExists = "Exam:Paper:0001";
+        public const string SectionOrderAlreadyExist = "Exam:Paper:0002";
+    }
+
+    public static class PaperSections
+    {
+    }
+
+    public static class PaperQuestions
+    {
     }
 
     public static class UserExams

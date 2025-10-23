@@ -68,45 +68,47 @@ public class UserExamManager(
         UserExam userExam = await userExamRepository.GetAsync(userExamId);
         Examination exam = await examRepository.GetAsync(userExam.ExamId);
         Paper paper = await paperRepository.GetAsync(exam.PaperId);
-        List<PaperQuestionRule> paperRepos = await paperQuestionRuleRepository.GetListAsync(paperId: paper.Id);
+        // TODO: 重新实现抽题逻辑
+        //List<PaperQuestionRule> paperRepos = await paperQuestionRuleRepository.GetListAsync(paperId: paper.Id);
 
-        await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto
-        {
-            Progress = 10,
-            UserId = userExam.UserId,
-        });
+        //await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto
+        //{
+        //    Progress = 10,
+        //    UserId = userExam.UserId,
+        //});
 
-        int i = 0;
-        foreach (var paperRepo in paperRepos)
-        {
-            i++;
-            if (paperRepo.SingleCount is > 0)
-            {
-                List<Question> questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.SingleSelect, paperRepo.SingleCount.Value);
-                userExam.Questions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExam.Id, q.Id, paperRepo.SingleScore ?? 0)));
-            }
-            if (paperRepo.MultiCount is > 0)
-            {
-                List<Question> questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.MultiSelect, paperRepo.MultiCount.Value);
-                userExam.Questions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExam.Id, q.Id, paperRepo.MultiScore ?? 0)));
-            }
-            if (paperRepo.JudgeCount is > 0)
-            {
-                List<Question> questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.Judge, paperRepo.JudgeCount.Value);
-                userExam.Questions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExam.Id, q.Id, paperRepo.JudgeScore ?? 0)));
-            }
-            if (paperRepo.BlankCount is > 0)
-            {
-                List<Question> questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.FillInTheBlanks, paperRepo.BlankCount.Value);
-                userExam.Questions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExam.Id, q.Id, paperRepo.BlankScore ?? 0)));
-            }
+        //int i = 0;
 
-            await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto
-            {
-                Progress = i / paperRepos.Count * 80,
-                UserId = userExam.UserId,
-            });
-        }
+        //foreach (var paperRepo in paperRepos)
+        //{
+        //    i++;
+        //    if (paperRepo.SingleCount is > 0)
+        //    {
+        //        List<Question> questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.SingleSelect, paperRepo.SingleCount.Value);
+        //        userExam.Questions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExam.Id, q.Id, paperRepo.SingleScore ?? 0)));
+        //    }
+        //    if (paperRepo.MultiCount is > 0)
+        //    {
+        //        List<Question> questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.MultiSelect, paperRepo.MultiCount.Value);
+        //        userExam.Questions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExam.Id, q.Id, paperRepo.MultiScore ?? 0)));
+        //    }
+        //    if (paperRepo.JudgeCount is > 0)
+        //    {
+        //        List<Question> questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.Judge, paperRepo.JudgeCount.Value);
+        //        userExam.Questions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExam.Id, q.Id, paperRepo.JudgeScore ?? 0)));
+        //    }
+        //    if (paperRepo.BlankCount is > 0)
+        //    {
+        //        List<Question> questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.FillInTheBlanks, paperRepo.BlankCount.Value);
+        //        userExam.Questions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExam.Id, q.Id, paperRepo.BlankScore ?? 0)));
+        //    }
+
+        //    await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto
+        //    {
+        //        Progress = i / paperRepos.Count * 80,
+        //        UserId = userExam.UserId,
+        //    });
+        //}
 
         Start(userExam);
         await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto

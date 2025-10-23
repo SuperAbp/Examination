@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.PaperManagement.PaperQuestions;
 using SuperAbp.Exam.PaperManagement.Papers;
-using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;

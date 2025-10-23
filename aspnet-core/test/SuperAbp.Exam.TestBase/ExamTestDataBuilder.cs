@@ -161,38 +161,40 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
 
     private async Task CreatePaperQuestionRuleAsync()
     {
-        await paperQuestionRuleRepository.InsertManyAsync([
-            new PaperQuestionRule(testData.PaperQuestionRule1Id, testData.Paper1Id, testData.QuestionBank1Id)
-            {
-                SingleCount = 1,
-                SingleScore = 1,
-                MultiCount = 1,
-                MultiScore = 1,
-                JudgeCount = 1,
-                JudgeScore = 1,
-                BlankCount = 1,
-                BlankScore = 1
-            },
-            new PaperQuestionRule(testData.PaperQuestionRule2Id, testData.Paper1Id, testData.QuestionBank1Id)
-            {
-                SingleCount = 1,
-                SingleScore = 1,
-                MultiCount = 1,
-                MultiScore = 1,
-                JudgeCount = 1,
-                JudgeScore = 1,
-                BlankCount = 1,
-                BlankScore = 1
-            },
-        ]);
+        // TODO: 创建试卷题目规则测试数据
+        //await paperQuestionRuleRepository.InsertManyAsync([
+        //    new PaperQuestionRule(testData.PaperQuestionRule1Id, testData.Paper1Id, testData.QuestionBank1Id)
+        //    {
+        //        SingleCount = 1,
+        //        SingleScore = 1,
+        //        MultiCount = 1,
+        //        MultiScore = 1,
+        //        JudgeCount = 1,
+        //        JudgeScore = 1,
+        //        BlankCount = 1,
+        //        BlankScore = 1
+        //    },
+        //    new PaperQuestionRule(testData.PaperQuestionRule2Id, testData.Paper1Id, testData.QuestionBank1Id)
+        //    {
+        //        SingleCount = 1,
+        //        SingleScore = 1,
+        //        MultiCount = 1,
+        //        MultiScore = 1,
+        //        JudgeCount = 1,
+        //        JudgeScore = 1,
+        //        BlankCount = 1,
+        //        BlankScore = 1
+        //    },
+        //]);
     }
 
     private async Task CreatePaperAsync()
     {
-        await paperRepository.InsertManyAsync([
-            new Paper(testData.Paper1Id, testData.Paper1Name, 100),
-            new Paper(testData.Paper2Id, testData.Paper2Name, 100),
-        ]);
+        // TODO： 创建试卷测试数据
+        //await paperRepository.InsertManyAsync([
+        //    new Paper(testData.Paper1Id, PaperType.Random, testData.Paper1Name, 100),
+        //    new Paper(testData.Paper2Id, PaperType.Random, testData.Paper2Name, 100),
+        //]);
     }
 
     private async Task CreateQuestionAsync()

@@ -25,8 +25,6 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules
 
             var examRepoQueryable = await paperQuestionRuleRepository.GetQueryableAsync();
 
-            examRepoQueryable = examRepoQueryable.Where(e => e.PaperId == input.PaperId);
-
             var queryable =
                 from er in examRepoQueryable
                 join qr in (await questionBankRepository.GetQueryableAsync()) on er.QuestionBankId equals qr.Id
@@ -35,14 +33,6 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules
                     Id = er.Id,
                     QuestionBank = qr.Title,
                     QuestionBankId = er.QuestionBankId,
-                    SingleCount = er.SingleCount,
-                    SingleScore = er.SingleScore,
-                    MultiCount = er.MultiCount,
-                    MultiScore = er.MultiScore,
-                    JudgeCount = er.JudgeCount,
-                    JudgeScore = er.JudgeScore,
-                    BlankCount = er.BlankCount,
-                    BlankScore = er.BlankScore,
                     CreationTime = er.CreationTime
                 };
 
@@ -67,16 +57,17 @@ namespace SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules
         [Authorize(ExamPermissions.PaperQuestionRules.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
-            PaperQuestionRule paperRepo = await paperQuestionRuleRepository.GetAsync(id);
-            await paperQuestionRuleRepository.DeleteAsync(paperRepo);
+            // TODO: 删除试卷规则时，需同步更新试卷的总分和题目总数，暂时先注释掉删除功能
+            //PaperQuestionRule paperRepo = await paperQuestionRuleRepository.GetAsync(id);
+            //await paperQuestionRuleRepository.DeleteAsync(paperRepo);
 
-            Paper paper = await paperRepository.GetAsync(paperRepo.PaperId);
-            paper.Score = paper.Score - (paperRepo.SingleScore ?? 0) * (paperRepo.SingleCount ?? 0)
-                          + (paperRepo.MultiScore ?? 0) * (paperRepo.MultiCount ?? 0)
-                          + (paperRepo.JudgeScore ?? 0) * (paperRepo.JudgeCount ?? 0)
-                          + (paperRepo.BlankScore ?? 0) * (paperRepo.BlankCount ?? 0);
-            paper.TotalQuestionCount = paper.TotalQuestionCount - (paperRepo.SingleCount ?? 0) + (paperRepo.MultiCount ?? 0) + (paperRepo.JudgeCount ?? 0) + (paperRepo.BlankCount ?? 0);
-            await paperRepository.UpdateAsync(paper);
+            //Paper paper = await paperRepository.GetAsync(paperRepo.PaperId);
+            //paper.Score = paper.Score - (paperRepo.SingleScore ?? 0) * (paperRepo.SingleCount ?? 0)
+            //              + (paperRepo.MultiScore ?? 0) * (paperRepo.MultiCount ?? 0)
+            //              + (paperRepo.JudgeScore ?? 0) * (paperRepo.JudgeCount ?? 0)
+            //              + (paperRepo.BlankScore ?? 0) * (paperRepo.BlankCount ?? 0);
+            //paper.TotalQuestionCount = paper.TotalQuestionCount - (paperRepo.SingleCount ?? 0) + (paperRepo.MultiCount ?? 0) + (paperRepo.JudgeCount ?? 0) + (paperRepo.BlankCount ?? 0);
+            //await paperRepository.UpdateAsync(paper);
         }
 
         /// <summary>

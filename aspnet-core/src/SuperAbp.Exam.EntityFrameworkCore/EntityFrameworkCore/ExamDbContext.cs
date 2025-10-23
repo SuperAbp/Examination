@@ -1,4 +1,4 @@
-﻿using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using Microsoft.EntityFrameworkCore;
 using SuperAbp.Exam.ExamManagement.Exams;
@@ -30,6 +30,11 @@ using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.MistakesReviews;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using SuperAbp.Exam.PaperManagement.PaperQuestions;
+
+using SuperAbp.Exam.PaperManagement.Papers;
+
+using SuperAbp.Exam.PaperManagement.PaperSections;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -82,6 +87,8 @@ public class ExamDbContext :
 
     public DbSet<QuestionKnowledgePoint> QuestionKnowledgePoints { get; set; }
     public DbSet<PaperQuestionRule> PaperQuestionRules { get; set; }
+    public DbSet<PaperSection> PaperSections { get; set; }
+    public DbSet<PaperQuestion> PaperQuestions { get; set; }
 
     public DbSet<Examination> Exams { get; set; }
 
@@ -176,15 +183,29 @@ public class ExamDbContext :
             b.Property(p => p.Score).HasPrecision(18, 2);
         });
 
+        builder.Entity<PaperSection>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "PaperSections", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(p => p.Title).IsRequired().HasMaxLength(PaperSectionConsts.MaxTitleLength);
+            b.Property(p => p.ScoreEach).HasPrecision(18, 2);
+            b.Property(p => p.TotalScore).HasPrecision(18, 2);
+        });
+
+        builder.Entity<PaperQuestion>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "PaperQuestions", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(p => p.Score).HasPrecision(18, 2);
+        });
+
         builder.Entity<PaperQuestionRule>(b =>
         {
             b.ToTable(ExamConsts.DbTablePrefix + "PaperQuestionRules", ExamConsts.DbSchema);
             b.ConfigureByConvention();
-            b.Property(p => p.Proportion).HasPrecision(18, 2);
-            b.Property(p => p.BlankScore).HasPrecision(18, 2);
-            b.Property(p => p.SingleScore).HasPrecision(18, 2);
-            b.Property(p => p.JudgeScore).HasPrecision(18, 2);
-            b.Property(p => p.MultiScore).HasPrecision(18, 2);
+            b.Property(p => p.ScoreEach).HasPrecision(18, 2);
         });
 
         builder.Entity<Examination>(b =>

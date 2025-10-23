@@ -7,10 +7,10 @@ public class PaperManager(IPaperRepository paperRepository) : DomainService
 {
     protected IPaperRepository PaperRepository { get; } = paperRepository;
 
-    public virtual async Task<Paper> CreateAsync(string name, decimal score)
+    public virtual async Task<Paper> CreateAsync(PaperType paperType, string name, decimal score, int totalQuestionCount)
     {
         await CheckNameAsync(name);
-        return new Paper(GuidGenerator.Create(), name, score);
+        return new Paper(GuidGenerator.Create(), paperType, name, score, totalQuestionCount);
     }
 
     public virtual async Task SetNameAsync(Paper question, string name)
