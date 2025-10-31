@@ -68,6 +68,7 @@ public interface IExamDbContext : IEfCoreDbContext
     public DbSet<Examination> Exams { get; set; }
 
     public DbSet<UserExam> UserExams { get; set; }
+    public DbSet<UserExamSection> UserExamSections { get; set; }
     public DbSet<UserExamQuestion> UerExamQuestions { get; set; }
     public DbSet<UserExamQuestionReview> UserExamQuestionReviews { get; set; }
 

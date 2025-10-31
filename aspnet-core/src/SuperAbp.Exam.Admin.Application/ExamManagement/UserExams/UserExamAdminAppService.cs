@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -65,7 +65,7 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
         }
         Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
         IdentityUser user = await UserRepository.GetAsync(userExam.UserId);
-        List<Guid> questionIds = userExam.Questions.Select(q => q.QuestionId).ToList();
+        List<Guid> questionIds = userExam.Sections.SelectMany(s => s.Questions).Select(q => q.QuestionId).ToList();
         List<Question> questions = await QuestionRepository.GetByIdsAsync(questionIds);
         UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
         dto.ExamName = examination.Name;
@@ -75,7 +75,7 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
         foreach (Question question in questions)
         {
             var questionDto = ObjectMapper.Map<Question, UserExamDetailDto.QuestionDto>(question);
-            UserExamQuestion userExamQuestion = userExam.Questions.Single(q => q.QuestionId == question.Id);
+            UserExamQuestion userExamQuestion = userExam.Sections.SelectMany(s => s.Questions).Single(q => q.QuestionId == question.Id);
             questionDto.Right = userExamQuestion.Right;
             questionDto.Reason = userExamQuestion.Reason;
             questionDto.Score = userExamQuestion.Score;

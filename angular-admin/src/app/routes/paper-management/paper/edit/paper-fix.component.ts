@@ -1,15 +1,15 @@
-import { CoreModule } from '@abp/ng.core';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+
+import { CoreModule } from '@abp/ng.core';
+
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { ModalHelper } from '@delon/theme';
 import { dateTimePickerUtil } from '@delon/util';
-import { PaperService, QuestionService } from '@proxy/admin/controllers';
-import { GetPaperForEditorOutput } from '@proxy/admin/paper-management/papers';
-import { GetQuestionWithDetailInput, QuestionDetailDto } from '@proxy/admin/question-management/questions';
-import { SharedModule, simplifiedOrdinary } from '@shared';
+
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
@@ -23,22 +23,23 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzSpaceComponent, NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+
 import { finalize, tap } from 'rxjs/operators';
+
+import { PaperService, QuestionService } from '@proxy/admin/controllers';
+import {
+  GetPaperForEditorOutput,
+  PaperCreateOrUpdateDtoBase_PaperSectionDto,
+  PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionDto
+} from '@proxy/admin/paper-management/papers';
+import { GetQuestionWithDetailInput, QuestionDetailDto } from '@proxy/admin/question-management/questions';
+
+import { SharedModule, simplifiedOrdinary } from '@shared';
 
 import { PaperManagementPaperQuestionRuleComponent } from '../../paper-question-rule/paper-question-rule.component';
 import { QuestionRandomComponent } from './question-random.component';
 import { QuestionSelectComponent } from './question-select.component';
 
-export class questionTest {
-  constructor(name: string, score: number, items: QuestionDetailDto[]) {
-    this.name = name;
-    this.score = score;
-    this.items = items;
-  }
-  name: string;
-  score: number;
-  items: QuestionDetailDto[];
-}
 @Component({
   selector: 'app-paper-fix',
   templateUrl: './paper-fix.component.html',
@@ -51,9 +52,6 @@ export class questionTest {
       }
       .ant-form-item-label {
         width: 95px;
-      }
-      .ant-input {
-        width: 120px;
       }
       .box {
         border: 1px solid #ddd;
@@ -99,15 +97,19 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
   showPaperTime: boolean;
   form: FormGroup = null;
   questionIds: string[] = [];
+  questionDetails = new Map<string, QuestionDetailDto>();
 
   get score() {
     return this.form.get('score');
   }
 
-  // expose questions for template iteration (form is single source of truth)
-  get questions(): questionTest[] {
-    return this.getQuestions();
+  get sections() {
+    return this.form?.get('sections') as FormArray;
   }
+  getQuestionsArray(sectionIndex: number): FormArray {
+    return this.sections.at(sectionIndex).get('paperQuestions') as FormArray;
+  }
+
   range(start: number, end: number): number[] {
     const result: number[] = [];
     for (let i = start; i < end; i++) {
@@ -128,6 +130,8 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
           .pipe(
             tap(response => {
               this.paper = response;
+              this.questionIds = this.paper.sections.flatMap(s => s.paperQuestions.map(q => q.questionId));
+              this.getQuesions(this.questionIds);
               this.buildForm();
               this.loading = false;
             })
@@ -145,30 +149,65 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
     this.form = this.fb.group({
       name: [this.paper.name || '', [Validators.required]],
       description: [this.paper.description || ''],
-      score: [this.paper.score || 0],
-      // store questions array on the form so it will be submitted
-      questions: []
+      paperType: [0],
+      score: [this.paper.score || 0, [Validators.required, Validators.min(1)]],
+      sections: this.fb.array((this.paper.sections || []).map(s => this.createSection(s)))
     });
-    this.addBigQuestion();
+    console.log(this.form.value);
+  }
+  createSection(section?: PaperCreateOrUpdateDtoBase_PaperSectionDto) {
+    return this.fb.group({
+      id: [section?.id || ''],
+      title: [section?.title || '', [Validators.required]],
+      scoreEach: [section?.scoreEach, [Validators.required]],
+      totalScore: [section?.totalScore, [Validators.required]],
+      totalCount: [section?.totalCount, [Validators.required]],
+      order: [section?.order || 0],
+      remark: [section?.remark || ''],
+      paperQuestions: this.fb.array((section?.paperQuestions || []).map(q => this.createQuestion(q)))
+    });
+  }
+  createQuestion(question?: PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionDto) {
+    return this.fb.group({
+      questionId: [question?.questionId || '', [Validators.required]],
+      score: [question?.score, [Validators.required, Validators.min(1)]],
+      order: [question?.order || 0]
+    });
   }
 
-  addBigQuestion() {
-    const qs = this.getQuestions();
-    qs.push(new questionTest(`第${simplifiedOrdinary(qs.length + 1)}大题`, 0.0, []));
-    this.setQuestions(qs);
+  addSection() {
+    this.sections.push(
+      this.createSection({
+        title: `第${simplifiedOrdinary(this.sections.length + 1)}大题`,
+        scoreEach: 0
+      } as PaperCreateOrUpdateDtoBase_PaperSectionDto)
+    );
   }
-  selectQuestion(item: questionTest) {
+  getQuesions(ids: string[]) {
+    this.questionService
+      .getListWithDetail({ includeIds: ids } as GetQuestionWithDetailInput)
+      .pipe(
+        tap(res => {
+          res.forEach(q => this.questionDetails.set(q.id, q));
+        })
+      )
+      .subscribe();
+  }
+  selectQuestion(sectionIndex: number) {
     this.modal.createStatic(QuestionSelectComponent, { questionIds: this.questionIds }, { size: 'xl' }).subscribe(selectedQuestionIds => {
       this.questionService
         .getListWithDetail({ includeIds: selectedQuestionIds } as GetQuestionWithDetailInput)
         .pipe(
           tap(res => {
-            // find and update the question inside form.questions
-            const qs = this.getQuestions();
-            const idx = qs.indexOf(item);
-            if (idx > -1) {
-              qs[idx] = { ...qs[idx], items: [...(qs[idx].items || []), ...res] };
-              this.setQuestions(qs);
+            res.forEach(q => this.questionDetails.set(q.id, q));
+            const sectionsArray = this.sections;
+            if (sectionIndex > -1) {
+              const sectionGroup = sectionsArray.at(sectionIndex);
+              const questionsArray = sectionGroup.get('paperQuestions') as any;
+              const scoreEach = sectionGroup.get('scoreEach')?.value || 0;
+              res.forEach(q => {
+                questionsArray.push(this.createQuestion({ questionId: q.id, score: scoreEach } as any));
+              });
             }
             this.questionIds = [...this.questionIds, ...selectedQuestionIds];
             this.recomputeTotal();
@@ -177,8 +216,9 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
         .subscribe();
     });
   }
-  randomAdditionQuestion(item: questionTest) {
-    this.modal.createStatic(QuestionRandomComponent, { selectedQuestions: item.items }, { size: 'xl' }).subscribe(params => {
+  randomAdditionQuestion(sectionIndex: number) {
+    const section = this.sections.value[sectionIndex];
+    this.modal.createStatic(QuestionRandomComponent, { selectedQuestions: section.paperQuestions }, { size: 'xl' }).subscribe(params => {
       this.questionService
         .getListWithDetail({
           questionBankId: params.questionBankId,
@@ -188,11 +228,15 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
         } as GetQuestionWithDetailInput)
         .pipe(
           tap(res => {
-            const qs = this.getQuestions();
-            const idx = qs.indexOf(item);
-            if (idx > -1) {
-              qs[idx] = { ...qs[idx], items: [...(qs[idx].items || []), ...res] };
-              this.setQuestions(qs);
+            res.forEach(q => this.questionDetails.set(q.id, q));
+            const sectionsArray = this.sections;
+            if (sectionIndex > -1) {
+              const sectionGroup = sectionsArray.at(sectionIndex);
+              const questionsArray = sectionGroup.get('paperQuestions') as any;
+              const scoreEach = sectionGroup.get('scoreEach')?.value || 0;
+              res.forEach(q => {
+                questionsArray.push(this.createQuestion({ questionId: q.id, score: scoreEach } as any));
+              });
             }
             this.questionIds = [...this.questionIds, ...res.map(x => x.id)];
             this.recomputeTotal();
@@ -202,88 +246,84 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
     });
   }
   trashBigQuestion(index) {
-    const qs = this.getQuestions();
-    qs.splice(index, 1);
-    this.setQuestions(qs);
+    const sectionsArray = this.sections;
+    sectionsArray.removeAt(index);
     this.recomputeTotal();
   }
-  trashQuestion(question: questionTest, itemIndex: number) {
-    const qs = this.getQuestions();
-    const questionIndex = qs.indexOf(question);
-    if (questionIndex > -1) {
-      // 直接修改对应大题的 items 数组
-      qs[questionIndex] = {
-        ...qs[questionIndex],
-        items: qs[questionIndex].items.filter((_, index) => index !== itemIndex)
-      };
-      this.setQuestions(qs);
+  trashQuestion(sectionIndex: number, itemIndex: number) {
+    const sectionsArray = this.sections;
+    if (sectionIndex > -1) {
+      const sectionGroup = sectionsArray.at(sectionIndex);
+      const questionsArray = sectionGroup.get('paperQuestions') as any;
+      questionsArray.removeAt(itemIndex);
       this.recomputeTotal();
     }
   }
-  up(items, index) {
-    if (index === 0) {
+  up(sectionIndex: number, questionIndex: number) {
+    if (questionIndex === 0) {
       return;
     }
-    const qs = this.getQuestions();
-    const idx = qs.findIndex(q => q.items === items || q.items === items);
-    if (idx === -1) return;
-    const q = qs[idx];
-    const newItems = [...(q.items || [])];
-    newItems[index] = newItems.splice(index - 1, 1, newItems[index])[0];
-    qs[idx] = { ...q, items: newItems };
-    this.setQuestions(qs);
+    const sectionsArray = this.sections;
+    const sectionGroup = sectionsArray.at(sectionIndex);
+    const questionsArray = sectionGroup.get('paperQuestions') as any;
+    const item = questionsArray.at(questionIndex).value;
+    const prevItem = questionsArray.at(questionIndex - 1).value;
+    questionsArray.at(questionIndex).setValue(prevItem);
+    questionsArray.at(questionIndex - 1).setValue(item);
   }
-  down(items, index) {
-    if (index === items.length - 1) {
+  down(sectionIndex: number, questionIndex: number) {
+    const questionsArray = this.sections.at(sectionIndex).get('paperQuestions') as FormArray;
+    if (questionIndex === questionsArray.length - 1) {
       return;
     }
-    const qs = this.getQuestions();
-    const idx = qs.findIndex(q => q.items === items || q.items === items);
-    if (idx === -1) return;
-    const q = qs[idx];
-    const newItems = [...(q.items || [])];
-    newItems[index] = newItems.splice(index + 1, 1, newItems[index])[0];
-    qs[idx] = { ...q, items: newItems };
-    this.setQuestions(qs);
+    const sectionsArray = this.sections;
+    const section = sectionsArray.at(sectionIndex);
+    const questionsArrayForm = section.get('paperQuestions') as any;
+    const item = questionsArrayForm.at(questionIndex).value;
+    const nextItem = questionsArrayForm.at(questionIndex + 1).value;
+    questionsArrayForm.at(questionIndex).setValue(nextItem);
+    questionsArrayForm.at(questionIndex + 1).setValue(item);
   }
 
-  // Called when a question type's score input changes
-  onQuestionScoreChange() {
+  onQuestionScoreChange(sectionIndex: number) {
+    const sectionsArray = this.sections;
+    const section = sectionsArray.at(sectionIndex);
+    const questions = section.get('paperQuestions') as FormArray;
+    const scoreEach = section.get('scoreEach')?.value;
+    questions.controls.forEach(q => {
+      q.get('score').setValue(scoreEach);
+    });
+
     this.recomputeTotal();
-    // persist any inline changes back to form control
-    this.setQuestions(this.getQuestions());
   }
 
-  // Recompute total score from questions and update the form control
+  // Recompute total score from sections and update the form control
   recomputeTotal() {
-    try {
-      if (!this.form) return;
-      let total = 0;
-      const qs = this.getQuestions();
-      for (const q of qs) {
-        const scorePerQuestion = Number(q.score) || 0;
-        const count = q.items ? q.items.length : 0;
-        total += scorePerQuestion * count;
-      }
-      // update form control without emitting event loop issues
-      if (this.form && this.form.get('score')) {
-        this.form.get('score').setValue(total);
-      }
-      // questions are stored in form; nothing else to sync here
-    } catch (e) {
-      // swallow errors to avoid breaking UI; could log if logger available
-      // console.warn('recomputeTotal error', e);
-    }
-  }
-  // helpers to read/write questions from/to form control
-  private getQuestions(): questionTest[] {
-    if (!this.form) return [];
-    return (this.form.get('questions')?.value as questionTest[]) || [];
-  }
-
-  private setQuestions(qs: questionTest[]) {
     if (!this.form) return;
-    this.form.get('questions').setValue(qs);
+    let totalScore = 0;
+
+    this.sections.controls.forEach((sectionControl, index) => {
+      const questionsArray = sectionControl.get('paperQuestions') as FormArray;
+      const sectionTotalScore = questionsArray.controls.reduce((sum, q) => sum + (q.get('score')?.value || 0), 0);
+      const sectionTotalCount = questionsArray.length;
+
+      sectionControl.get('totalScore')?.setValue(sectionTotalScore);
+      sectionControl.get('totalCount')?.setValue(sectionTotalCount);
+
+      totalScore += sectionTotalScore;
+    });
+
+    this.form.get('score').setValue(totalScore);
+  }
+  // Assign order values to all sections and questions before submission
+  private assignOrderValues(formValue: any) {
+    formValue.sections.forEach((section, sectionIndex) => {
+      section.order = sectionIndex;
+      section.paperQuestions.forEach((question, questionIndex) => {
+        question.order = questionIndex;
+      });
+    });
+    return formValue;
   }
 
   save() {
@@ -296,11 +336,13 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
     }
     this.isConfirmLoading = true;
 
+    const formValue = this.assignOrderValues({ ...this.form.value });
+
     if (this.paperId) {
       this.paperService
         .update(this.paperId, {
           ...this.paper,
-          ...this.form.value
+          ...formValue
         })
         .pipe(
           tap(() => {
@@ -311,9 +353,7 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
         .subscribe();
     } else {
       this.paperService
-        .create({
-          ...this.form.value
-        })
+        .create(formValue)
         .pipe(
           tap(() => {
             this.goback();

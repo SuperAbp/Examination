@@ -151,7 +151,8 @@ export class QuestionManagementQuestionComponent implements OnInit {
     return {
       skipCount: 0,
       maxResultCount: 10,
-      questionBankIds: []
+      questionBankIds: [],
+      excludeIds: []
     };
   }
   change(e: STChange) {

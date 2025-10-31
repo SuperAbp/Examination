@@ -49,7 +49,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
             Examination exam = await examRepository.GetAsync(userExam.ExamId);
-            List<Guid> questionIds = userExam.Questions.Select(q => q.QuestionId).ToList();
+            List<Guid> questionIds = userExam.Sections.SelectMany(s => s.Questions).Select(q => q.QuestionId).ToList();
             List<Question> questions = await questionRepository.GetByIdsAsync(questionIds);
             UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
             dto.AnswerMode = exam.AnswerMode;
@@ -72,7 +72,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             foreach (Question question in questions)
             {
                 var questionDto = ObjectMapper.Map<Question, UserExamDetailDto.QuestionDto>(question);
-                UserExamQuestion userExamQuestion = userExam.Questions.Single(q => q.QuestionId == question.Id);
+                UserExamQuestion userExamQuestion = userExam.Sections.SelectMany(s => s.Questions).Single(q => q.QuestionId == question.Id);
                 questionDto.Right = userExamQuestion.Right;
                 questionDto.Answers = userExamQuestion.Answers;
                 questionDto.QuestionScore = userExamQuestion.QuestionScore;
@@ -175,7 +175,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
             decimal totalScore = 0;
             List<Task> publishEvents = [];
-            foreach (UserExamQuestion item in userExam.Questions)
+            foreach (UserExamQuestion item in userExam.Sections.SelectMany(s => s.Questions))
             {
                 bool right = false;
                 decimal score = 0;

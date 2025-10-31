@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaperQuestionRuleService, QuestionBankService } from '@proxy/admin/controllers';
 import { GetPaperQuestionRulesInput, PaperQuestionRuleListDto } from '@proxy/admin/paper-management/paper-question-rules';
-import { PaperCreateOrUpdatePaperQuestionRuleDto } from '@proxy/admin/paper-management/papers';
+import { PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto } from '@proxy/admin/paper-management/papers';
 import { QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -18,13 +18,10 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { forkJoin, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-export interface PaperQuestionRuleCreateTemp extends PaperCreateOrUpdatePaperQuestionRuleDto {
+export interface PaperQuestionRuleCreateTemp extends PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto {
   id?: string;
   questionBank: string;
-  singleTotalCount: number;
-  multiTotalCount?: number;
-  judgeTotalCount?: number;
-  blankTotalCount?: number;
+  totalCount: number;
 }
 @Component({
   selector: 'app-paper-management-paper-question-rule',
@@ -116,24 +113,15 @@ export class PaperManagementPaperQuestionRuleComponent implements OnInit {
             .getQuestionCount(repo.questionBankId)
             .pipe(
               tap(res => {
-                this.add({
-                  id: repo.id,
-                  paperId: this.paperId,
-                  questionBank: repo.questionBank,
-                  questionBankId: repo.questionBankId,
-                  singleTotalCount: res.singleCount,
-                  singleCount: repo.singleCount,
-                  singleScore: repo.singleScore,
-                  multiTotalCount: res.multiCount,
-                  multiCount: repo.multiCount,
-                  multiScore: repo.multiScore,
-                  judgeTotalCount: res.judgeCount,
-                  judgeCount: repo.judgeCount,
-                  judgeScore: repo.judgeScore,
-                  blankTotalCount: res.blankCount,
-                  blankCount: repo.blankCount,
-                  blankScore: repo.blankScore
-                } as PaperQuestionRuleCreateTemp);
+                // this.add({
+                //   id: repo.id,
+                //   questionBank: repo.questionBank,
+                //   questionBankId: repo.questionBankId,
+                //   questionType: repo.questionType,
+                //   count: repo.count,
+                //   score: repo.score,
+                //   totalCount: res.totalCount
+                // } as PaperQuestionRuleCreateTemp);
               })
             )
             .subscribe();
@@ -143,14 +131,14 @@ export class PaperManagementPaperQuestionRuleComponent implements OnInit {
 
   handleOk(): void {
     let item = this.repositoryItems.find(i => i.id == this.currentQuestionRepositoryId);
-    this.add({
-      questionBankId: item.id,
-      questionBank: item.title,
-      singleTotalCount: item.singleCount,
-      multiTotalCount: item.multiCount,
-      judgeTotalCount: item.judgeCount,
-      blankTotalCount: item.blankCount
-    });
+    // this.add({
+    //   questionBankId: item.id,
+    //   questionBank: item.title,
+    //   singleTotalCount: item.singleCount,
+    //   multiTotalCount: item.multiCount,
+    //   judgeTotalCount: item.judgeCount,
+    //   blankTotalCount: item.blankCount
+    // });
     this.currentQuestionRepositoryId = null;
     this.modalIsShow = false;
   }
@@ -173,14 +161,8 @@ export class PaperManagementPaperQuestionRuleComponent implements OnInit {
     return this.fb.group({
       id: [item.id || null],
       questionBankId: [item.questionBankId || null, [Validators.required]],
-      singleCount: [item.singleCount || 0, [Validators.required]],
-      singleScore: [item.singleScore || 0, [Validators.required]],
-      judgeCount: [item.judgeCount || 0, [Validators.required]],
-      judgeScore: [item.judgeScore || 0, [Validators.required]],
-      multiCount: [item.multiCount || 0, [Validators.required]],
-      multiScore: [item.multiScore || 0, [Validators.required]],
-      blankCount: [item.blankCount || 0, [Validators.required]],
-      blankScore: [item.blankScore || 0, [Validators.required]]
+      singleCount: [item.count || 0, [Validators.required]],
+      singleScore: [item.score || 0, [Validators.required]]
     });
   }
   delete(index: number, item: PaperQuestionRuleCreateTemp) {
@@ -200,11 +182,7 @@ export class PaperManagementPaperQuestionRuleComponent implements OnInit {
   changeScore(e) {
     let totalScore = 0;
     this.paperQuestionRules.controls.forEach(c => {
-      totalScore +=
-        c.get('singleCount').value * c.get('singleScore').value +
-        c.get('judgeCount').value * c.get('judgeScore').value +
-        c.get('multiCount').value * c.get('multiScore').value +
-        c.get('blankCount').value * c.get('blankScore').value;
+      totalScore += c.get('count').value * c.get('score').value;
     });
     this.totalScoreChange.emit(totalScore);
   }

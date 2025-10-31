@@ -93,6 +93,7 @@ public class ExamDbContext :
     public DbSet<Examination> Exams { get; set; }
 
     public DbSet<UserExam> UserExams { get; set; }
+    public DbSet<UserExamSection> UserExamSections { get; set; }
     public DbSet<UserExamQuestion> UerExamQuestions { get; set; }
     public DbSet<UserExamQuestionReview> UserExamQuestionReviews { get; set; }
 
@@ -228,6 +229,16 @@ public class ExamDbContext :
             b.ConfigureAuditedAggregateRoot();
         });
 
+        builder.Entity<UserExamSection>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "UserExamSections", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(p => p.Title).IsRequired().HasMaxLength(PaperSectionConsts.MaxTitleLength);
+            b.Property(p => p.ScoreEach).HasPrecision(18, 2);
+            b.Property(p => p.TotalScore).HasPrecision(18, 2);
+        });
+
         builder.Entity<UserExamQuestion>(b =>
         {
             b.ToTable(ExamConsts.DbTablePrefix + "UserExamQuestion", ExamConsts.DbSchema);
@@ -236,6 +247,7 @@ public class ExamDbContext :
             b.Property(p => p.Answers).HasMaxLength(UserExamQuestionConsts.MaxAnswersLength);
             b.Property(p => p.Reason).HasMaxLength(UserExamQuestionConsts.MaxReasonLength);
             b.Property(p => p.QuestionScore).HasPrecision(18, 2);
+            b.HasIndex(p => p.UserExamSectionId);
         });
 
         builder.Entity<UserExamQuestionReview>(b =>

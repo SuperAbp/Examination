@@ -58,6 +58,7 @@ public class ExamDbContextInUnitTest : AbpDbContext<ExamDbContextInUnitTest>, IE
     public DbSet<PaperQuestion> PaperQuestions { get; set; }
     public DbSet<Examination> Exams { get; set; }
     public DbSet<UserExam> UserExams { get; set; }
+    public DbSet<UserExamSection> UserExamSections { get; set; }
     public DbSet<UserExamQuestion> UerExamQuestions { get; set; }
     public DbSet<UserExamQuestionReview> UserExamQuestionReviews { get; set; }
     public DbSet<Training> Trains { get; set; }

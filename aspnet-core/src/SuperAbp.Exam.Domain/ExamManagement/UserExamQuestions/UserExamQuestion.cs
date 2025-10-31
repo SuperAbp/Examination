@@ -1,4 +1,4 @@
-﻿using SuperAbp.Exam.ExamManagement.UserExamQuestionReviews;
+using SuperAbp.Exam.ExamManagement.UserExamQuestionReviews;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.MistakesReviews.Events;
 using System;
@@ -17,14 +17,17 @@ public class UserExamQuestion : FullAuditedEntity<Guid>, IMultiTenant
     protected UserExamQuestion()
     { }
 
-    public UserExamQuestion(Guid id, Guid userExamId, Guid questionId, decimal questionScore) : base(id)
+    public UserExamQuestion(Guid id, Guid userExamSectionId, Guid questionId, decimal questionScore) : base(id)
     {
-        UserExamId = userExamId;
+        UserExamSectionId = userExamSectionId;
         QuestionId = questionId;
         QuestionScore = questionScore;
     }
 
-    public Guid UserExamId { get; set; }
+    /// <summary>
+    /// 所属的用户考试章节ID
+    /// </summary>
+    public Guid UserExamSectionId { get; set; }
 
     public Guid QuestionId { get; set; }
 

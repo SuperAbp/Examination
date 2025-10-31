@@ -39,40 +39,6 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
             return x => x.UserId == userId && new[] { UserExamStatus.Waiting, UserExamStatus.InProgress }.Contains(x.Status);
         }
 
-        public async Task<UserExamWithDetails> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            var dbContext = await GetDbContextAsync();
-            var userExamQueryable = await GetQueryableAsync();
-            var examQuestionQueryable = dbContext.Set<UserExamQuestion>().AsQueryable();
-            var questionQueryable = dbContext.Set<Question>().AsQueryable();
-            var questionAnswerQueryable = dbContext.Set<QuestionAnswer>().AsQueryable();
-
-            UserExam userExam = await userExamQueryable
-                 .AsNoTracking()
-                 .Include(ue => ue.Questions)
-                .SingleAsync(ue => ue.Id == id, cancellationToken);
-
-            return await (from ue in userExamQueryable
-                          join ueq in examQuestionQueryable on ue.Id equals ueq.UserExamId
-                          join q in questionQueryable on ueq.QuestionId equals q.Id
-                          join a in questionAnswerQueryable on q.Id equals a.QuestionId into questionAnswers
-                          where ue.Id == id
-                          select new UserExamWithDetails()
-                          {
-                              Id = ue.Id,
-                              Answers = ueq.Answers,
-                              Right = ueq.Right,
-                              Score = ueq.Score,
-                              Question = q
-                              // QuestionId = q.Id,
-                              // Question = q.Content,
-                              // QuestionAnalysis = q.Analysis,
-                              // QuestionScore = ueq.QuestionScore,
-                              // QuestionType = q.QuestionType,
-                              // QuestionAnswers = questionAnswers.ToList()
-                          }).SingleAsync(cancellationToken);
-        }
-
         public async Task<int> GetCountAsync(Guid? userId = null,
             Guid? examId = null, CancellationToken cancellationToken = default)
         {

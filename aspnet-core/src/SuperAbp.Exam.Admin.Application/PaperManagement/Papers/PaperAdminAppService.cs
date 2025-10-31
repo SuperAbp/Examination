@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.Data;
 using static SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase;
 using static SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase.PaperSectionDto;
 
@@ -41,7 +40,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         public virtual async Task<GetPaperForEditorOutput> GetEditorAsync(Guid id)
         {
             Paper entity = await paperRepository.GetAsync(id);
-
+            var dto = ObjectMapper.Map<Paper, GetPaperForEditorOutput>(entity);
             return ObjectMapper.Map<Paper, GetPaperForEditorOutput>(entity);
         }
 

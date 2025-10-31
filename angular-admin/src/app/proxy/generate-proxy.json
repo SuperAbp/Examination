@@ -2702,6 +2702,23 @@
                   }
                 },
                 {
+                  "name": "GetListWithDetailAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "SuperAbp.Exam.Admin.QuestionManagement.Questions.GetQuestionWithDetailInput, SuperAbp.Exam.Admin.Application.Contracts",
+                      "type": "SuperAbp.Exam.Admin.QuestionManagement.Questions.GetQuestionWithDetailInput",
+                      "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.Questions.GetQuestionWithDetailInput",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.IReadOnlyList<SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionDetailDto>",
+                    "typeSimple": "[SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionDetailDto]"
+                  }
+                },
+                {
                   "name": "GetEditorAsync",
                   "parametersOnMethod": [
                     {
@@ -2878,6 +2895,18 @@
                 },
                 {
                   "nameOnMethod": "input",
+                  "name": "ExcludeIds",
+                  "jsonName": null,
+                  "type": "System.Collections.Generic.List<System.Guid>",
+                  "typeSimple": "[string]",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
                   "name": "Sorting",
                   "jsonName": null,
                   "type": "System.String",
@@ -2916,6 +2945,91 @@
               "returnValue": {
                 "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionListDto>",
                 "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionListDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Admin.QuestionManagement.Questions.IQuestionAdminAppService"
+            },
+            "GetListWithDetailAsyncByInput": {
+              "uniqueName": "GetListWithDetailAsyncByInput",
+              "name": "GetListWithDetailAsync",
+              "httpMethod": "GET",
+              "url": "api/question-management/question/details",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "SuperAbp.Exam.Admin.QuestionManagement.Questions.GetQuestionWithDetailInput, SuperAbp.Exam.Admin.Application.Contracts",
+                  "type": "SuperAbp.Exam.Admin.QuestionManagement.Questions.GetQuestionWithDetailInput",
+                  "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.Questions.GetQuestionWithDetailInput",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "QuestionBankId",
+                  "jsonName": null,
+                  "type": "System.Guid?",
+                  "typeSimple": "string?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "QuestionType",
+                  "jsonName": null,
+                  "type": "System.Int32?",
+                  "typeSimple": "number?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "IncludeIds",
+                  "jsonName": null,
+                  "type": "System.Collections.Generic.List<System.Guid>",
+                  "typeSimple": "[string]",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "ExcludeIds",
+                  "jsonName": null,
+                  "type": "System.Collections.Generic.List<System.Guid>",
+                  "typeSimple": "[string]",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "Count",
+                  "jsonName": null,
+                  "type": "System.Int32?",
+                  "typeSimple": "number?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.IReadOnlyList<SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionDetailDto>",
+                "typeSimple": "[SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionDetailDto]"
               },
               "allowAnonymous": null,
               "implementFrom": "SuperAbp.Exam.Admin.QuestionManagement.Questions.IQuestionAdminAppService"
@@ -7415,6 +7529,30 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "RandomOrderOfOption",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "AnswerMode",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -7490,6 +7628,30 @@
           "jsonName": null,
           "type": "System.DateTime?",
           "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "AnswerMode",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RandomOrderOfOption",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -7580,6 +7742,30 @@
         },
         {
           "name": "Status",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RandomOrderOfOption",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "AnswerMode",
           "jsonName": null,
           "type": "System.Int32",
           "typeSimple": "number",
@@ -8556,18 +8742,6 @@
       "genericArguments": null,
       "properties": [
         {
-          "name": "PaperQuestionRules",
-          "jsonName": null,
-          "type": "[SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdatePaperQuestionRuleDto]",
-          "typeSimple": "[SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdatePaperQuestionRuleDto]",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
           "name": "Name",
           "jsonName": null,
           "type": "System.String",
@@ -8602,10 +8776,196 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "PaperType",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Sections",
+          "jsonName": null,
+          "type": "[SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase_PaperSectionDto]",
+          "typeSimple": "[SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase_PaperSectionDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
-    "SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdatePaperQuestionRuleDto": {
+    "SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase_PaperSectionDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Title",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ScoreEach",
+          "jsonName": null,
+          "type": "System.Decimal",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TotalScore",
+          "jsonName": null,
+          "type": "System.Decimal",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Order",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TotalCount",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Remark",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "PaperQuestionRules",
+          "jsonName": null,
+          "type": "[SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto]",
+          "typeSimple": "[SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "PaperQuestions",
+          "jsonName": null,
+          "type": "[SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionDto]",
+          "typeSimple": "[SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "QuestionId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Score",
+          "jsonName": null,
+          "type": "System.Decimal",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Order",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto": {
       "baseType": null,
       "isEnum": false,
       "enumNames": null,
@@ -8637,10 +8997,10 @@
           "regex": null
         },
         {
-          "name": "SingleCount",
+          "name": "QuestionType",
           "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
+          "type": "System.Int32",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -8649,10 +9009,10 @@
           "regex": null
         },
         {
-          "name": "SingleScore",
+          "name": "Count",
           "jsonName": null,
-          "type": "System.Decimal?",
-          "typeSimple": "number?",
+          "type": "System.Int32",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -8661,70 +9021,10 @@
           "regex": null
         },
         {
-          "name": "MultiCount",
+          "name": "Score",
           "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "MultiScore",
-          "jsonName": null,
-          "type": "System.Decimal?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "JudgeCount",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "JudgeScore",
-          "jsonName": null,
-          "type": "System.Decimal?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "BlankCount",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "BlankScore",
-          "jsonName": null,
-          "type": "System.Decimal?",
-          "typeSimple": "number?",
+          "type": "System.Decimal",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -9087,6 +9387,87 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "ExcludeIds",
+          "jsonName": null,
+          "type": "[System.Guid]",
+          "typeSimple": "[string]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "SuperAbp.Exam.Admin.QuestionManagement.Questions.GetQuestionWithDetailInput": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "QuestionBankId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "QuestionType",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "IncludeIds",
+          "jsonName": null,
+          "type": "[System.Guid]",
+          "typeSimple": "[string]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ExcludeIds",
+          "jsonName": null,
+          "type": "[System.Guid]",
+          "typeSimple": "[string]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Count",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -9297,6 +9678,75 @@
           "jsonName": null,
           "type": "[System.Guid]",
           "typeSimple": "[string]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionDetailDto": {
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Content",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Analysis",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "QuestionType",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "QuestionBankId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Answers",
+          "jsonName": null,
+          "type": "[SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionAnswerDto]",
+          "typeSimple": "[SuperAbp.Exam.Admin.QuestionManagement.Questions.QuestionAnswerDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

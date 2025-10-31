@@ -37,6 +37,6 @@ public abstract class UserExamManagerTests<TStartupModule> : ExamDomainTestBase<
 
         UserExam userExam = await _userExamRepository.GetAsync(_testData.UserExam31Id);
         userExam.ShouldNotBeNull();
-        userExam.Questions.Count.ShouldBeGreaterThan(0);
+        userExam.Sections.Count.ShouldBeGreaterThan(0);
     }
 }

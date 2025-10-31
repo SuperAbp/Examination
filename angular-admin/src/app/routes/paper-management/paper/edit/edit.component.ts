@@ -51,8 +51,7 @@ export class PaperManagementPaperEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.model = +params['model']; // Convert string to number
-      console.log(this.model);
+      this.model = +params['model'];
     });
   }
 }

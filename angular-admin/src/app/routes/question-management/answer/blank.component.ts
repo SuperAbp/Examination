@@ -1,6 +1,6 @@
 import { CoreModule } from '@abp/ng.core';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { QuestionService } from '@proxy/admin/controllers';
 import { QuestionAnswerDto } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -40,5 +40,15 @@ export class BlankComponent extends QuestionManagementAnswerComponent {
     protected override questionService: QuestionService
   ) {
     super(fb, questionService);
+  }
+
+  override createAttribute(item: QuestionAnswerTemp) {
+    return this.fb.group({
+      id: [item.id || null],
+      right: [true],
+      content: [item.content || null, [Validators.required]],
+      analysis: [item.analysis || null],
+      sort: [item.sort || 0]
+    });
   }
 }

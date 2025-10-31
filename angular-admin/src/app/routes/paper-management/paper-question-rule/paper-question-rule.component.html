@@ -16,28 +16,13 @@
             <label> {{ 'Exam::QuestionBank' | abpLocalization }} </label>
           </th>
           <th>
-            <label> {{ 'Exam::SingleCount' | abpLocalization }} </label>
+            <label> {{ 'Exam::QuestionType' | abpLocalization }} </label>
           </th>
           <th>
-            <label> {{ 'Exam::SingleScore' | abpLocalization }} </label>
+            <label> {{ 'Exam::Count' | abpLocalization }} </label>
           </th>
           <th>
-            <label> {{ 'Exam::JudgeCount' | abpLocalization }} </label>
-          </th>
-          <th>
-            <label> {{ 'Exam::JudgeScore' | abpLocalization }} </label>
-          </th>
-          <th>
-            <label> {{ 'Exam::MultiCount' | abpLocalization }} </label>
-          </th>
-          <th>
-            <label> {{ 'Exam::MultiScore' | abpLocalization }} </label>
-          </th>
-          <th>
-            <label> {{ 'Exam::BlankCount' | abpLocalization }} </label>
-          </th>
-          <th>
-            <label> {{ 'Exam::BlankScore' | abpLocalization }} </label>
+            <label> {{ 'Exam::Score' | abpLocalization }} </label>
           </th>
           <th nzWidth="80px">
             <label> {{ 'Exam::Actions' | abpLocalization }} </label>
@@ -47,111 +32,28 @@
       <tbody>
         <tr *ngFor="let item of paperQuestionRuleTemps; let i = index" [formGroupName]="i">
           <td>{{ item.questionBank }}</td>
+          <td>{{ item.questionType }}</td>
           <td>
             <nz-form-item>
               <nz-form-control>
                 <nz-input-number
-                  formControlName="singleCount"
+                  formControlName="count"
                   [nzMin]="0"
-                  [nzMax]="item.singleTotalCount"
+                  [nzMax]="item.count"
                   [nzStep]="1"
                   (ngModelChange)="changeScore($event)"
                 ></nz-input-number>
-                /{{ item.singleTotalCount }}
+                /{{ item.count }}
               </nz-form-control>
             </nz-form-item>
           </td>
           <td>
             <nz-form-item>
               <nz-form-control>
-                <nz-input-number
-                  formControlName="singleScore"
-                  [nzMin]="0"
-                  [nzStep]="1"
-                  (ngModelChange)="changeScore($event)"
-                ></nz-input-number>
+                <nz-input-number formControlName="score" [nzMin]="0" [nzStep]="1" (ngModelChange)="changeScore($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </td>
-          <td>
-            <nz-form-item>
-              <nz-form-control>
-                <nz-input-number
-                  formControlName="judgeCount"
-                  [nzMin]="0"
-                  [nzMax]="item.judgeTotalCount"
-                  [nzStep]="1"
-                  (ngModelChange)="changeScore($event)"
-                ></nz-input-number>
-                /{{ item.judgeTotalCount }}
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-          <td>
-            <nz-form-item>
-              <nz-form-control>
-                <nz-input-number
-                  formControlName="judgeScore"
-                  [nzMin]="0"
-                  [nzStep]="1"
-                  (ngModelChange)="changeScore($event)"
-                ></nz-input-number>
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-          <td>
-            <nz-form-item>
-              <nz-form-control>
-                <nz-input-number
-                  formControlName="multiCount"
-                  [nzMin]="0"
-                  [nzMax]="item.multiTotalCount"
-                  [nzStep]="1"
-                  (ngModelChange)="changeScore($event)"
-                ></nz-input-number>
-                /{{ item.multiTotalCount }}
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-          <td>
-            <nz-form-item>
-              <nz-form-control>
-                <nz-input-number
-                  formControlName="multiScore"
-                  [nzMin]="0"
-                  [nzStep]="1"
-                  (ngModelChange)="changeScore($event)"
-                ></nz-input-number>
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-          <td>
-            <nz-form-item>
-              <nz-form-control>
-                <nz-input-number
-                  formControlName="blankCount"
-                  [nzMin]="0"
-                  [nzMax]="item.multiTotalCount"
-                  [nzStep]="1"
-                  (ngModelChange)="changeScore($event)"
-                ></nz-input-number>
-                /{{ item.blankTotalCount }}
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-          <td>
-            <nz-form-item>
-              <nz-form-control>
-                <nz-input-number
-                  formControlName="blankScore"
-                  [nzMin]="0"
-                  [nzStep]="1"
-                  (ngModelChange)="changeScore($event)"
-                ></nz-input-number>
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-
           <td nzAlign="center">
             <a
               nz-popconfirm

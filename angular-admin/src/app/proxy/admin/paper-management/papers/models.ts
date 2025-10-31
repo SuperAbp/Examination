@@ -11,23 +11,37 @@ export interface PaperCreateDto extends PaperCreateOrUpdateDtoBase {
 }
 
 export interface PaperCreateOrUpdateDtoBase {
-  paperQuestionRules: PaperCreateOrUpdatePaperQuestionRuleDto[];
   name?: string;
   description?: string;
   score: number;
+  paperType: number;
+  sections: PaperCreateOrUpdateDtoBase_PaperSectionDto[];
 }
 
-export interface PaperCreateOrUpdatePaperQuestionRuleDto {
+export interface PaperCreateOrUpdateDtoBase_PaperSectionDto {
+  id?: string;
+  title?: string;
+  scoreEach: number;
+  totalScore: number;
+  order: number;
+  totalCount: number;
+  remark?: string;
+  paperQuestionRules: PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto[];
+  paperQuestions: PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionDto[];
+}
+
+export interface PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionDto {
+  questionId?: string;
+  score: number;
+  order: number;
+}
+
+export interface PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto {
   id?: string;
   questionBankId?: string;
-  singleCount?: number;
-  singleScore?: number;
-  multiCount?: number;
-  multiScore?: number;
-  judgeCount?: number;
-  judgeScore?: number;
-  blankCount?: number;
-  blankScore?: number;
+  questionType: number;
+  count: number;
+  score: number;
 }
 
 export interface PaperListDto extends EntityDto<string> {

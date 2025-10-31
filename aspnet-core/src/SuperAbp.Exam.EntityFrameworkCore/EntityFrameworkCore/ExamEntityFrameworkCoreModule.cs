@@ -15,6 +15,7 @@ using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using SuperAbp.MenuManagement.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore.MySQL;
+using SuperAbp.Exam.PaperManagement.Papers;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -55,13 +56,19 @@ public class ExamEntityFrameworkCoreModule : AbpModule
         });
         Configure<AbpEntityOptions>(options =>
         {
+            options.Entity<Paper>(questionOption =>
+            {
+                questionOption.DefaultWithDetailsFunc = query => query
+                .Include(o => o.PaperSections).ThenInclude(s => s.PaperQuestions)
+                .Include(o => o.PaperSections).ThenInclude(s => s.PaperQuestionRules);
+            });
             options.Entity<Question>(questionOption =>
             {
                 questionOption.DefaultWithDetailsFunc = query => query.Include(o => o.Answers);
             });
             options.Entity<UserExam>(questionOption =>
             {
-                questionOption.DefaultWithDetailsFunc = query => query.Include(o => o.Questions).ThenInclude(o => o.QuestionReviews);
+                questionOption.DefaultWithDetailsFunc = query => query.Include(o => o.Sections).ThenInclude(o => o.Questions).ThenInclude(q => q.QuestionReviews);
             });
         });
     }

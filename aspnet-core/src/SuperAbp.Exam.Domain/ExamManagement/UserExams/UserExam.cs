@@ -1,4 +1,4 @@
-﻿using SuperAbp.Exam.ExamManagement.UserExamQuestions;
+using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
         UserId = userId;
         ExamId = examId;
         Status = UserExamStatus.Waiting;
-        Questions = [];
+        Sections = new List<UserExamSection>();
     }
 
     public Guid UserId { get; protected set; }
@@ -47,11 +47,16 @@ public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
 
     public Guid? TenantId { get; set; }
 
-    public List<UserExamQuestion> Questions { get; set; }
+    /// <summary>
+    /// 考试的试卷大题
+    /// </summary>
+    public List<UserExamSection> Sections { get; set; }
 
     public void ReviewQuestion(Guid reviewId, Guid questionId, bool right, decimal score, string? comment)
     {
-        UserExamQuestion q = Questions.FirstOrDefault(x => x.QuestionId == questionId) ?? throw new EntityNotFoundException("题目不存在");
+        UserExamQuestion q = Sections
+            .SelectMany(s => s.Questions)
+            .FirstOrDefault(x => x.QuestionId == questionId) ?? throw new EntityNotFoundException("题目不存在");
 
         q.Review(reviewId, right, score, comment);
     }
@@ -62,13 +67,17 @@ public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
         {
             throw new InvalidUserExamStatusException(Status);
         }
-        UserExamQuestion q = Questions.FirstOrDefault(x => x.QuestionId == questionId) ?? throw new EntityNotFoundException("题目不存在");
+        UserExamQuestion q = Sections
+            .SelectMany(s => s.Questions)
+            .FirstOrDefault(x => x.QuestionId == questionId) ?? throw new EntityNotFoundException("题目不存在");
         q.Answers = answers;
     }
 
     public void UpdateTotalScore()
     {
-        TotalScore = Questions.Sum(q => q.Score ?? 0);
+        TotalScore = Sections
+            .SelectMany(s => s.Questions)
+            .Sum(q => q.Score ?? 0);
     }
 
     public bool IsSubmitted()
@@ -78,5 +87,11 @@ public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
             UserExamStatus.Submitted,
             UserExamStatus.Scored
         }.Contains(Status);
+    }
+
+    public UserExam AddSection(UserExamSection section)
+    {
+        Sections.Add(section);
+        return this;
     }
 }
