@@ -1,15 +1,19 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { CoreModule } from '@abp/ng.core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Title } from '@angular/platform-browser';
-
-import { CoreModule } from '@abp/ng.core';
-
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { ModalHelper } from '@delon/theme';
 import { dateTimePickerUtil } from '@delon/util';
-
+import { PaperService, QuestionService } from '@proxy/admin/controllers';
+import {
+  GetPaperForEditorOutput,
+  PaperCreateOrUpdateDtoBase_PaperSectionDto,
+  PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionDto
+} from '@proxy/admin/paper-management/papers';
+import { GetQuestionWithDetailInput, QuestionDetailDto } from '@proxy/admin/question-management/questions';
+import { SharedModule, simplifiedOrdinary } from '@shared';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
@@ -21,22 +25,10 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { NzSpaceComponent, NzSpaceModule } from 'ng-zorro-antd/space';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
-
 import { finalize, tap } from 'rxjs/operators';
 
-import { PaperService, QuestionService } from '@proxy/admin/controllers';
-import {
-  GetPaperForEditorOutput,
-  PaperCreateOrUpdateDtoBase_PaperSectionDto,
-  PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionDto
-} from '@proxy/admin/paper-management/papers';
-import { GetQuestionWithDetailInput, QuestionDetailDto } from '@proxy/admin/question-management/questions';
-
-import { SharedModule, simplifiedOrdinary } from '@shared';
-
-import { PaperManagementPaperQuestionRuleComponent } from '../../paper-question-rule/paper-question-rule.component';
 import { QuestionRandomComponent } from './question-random.component';
 import { QuestionSelectComponent } from './question-select.component';
 
