@@ -120,7 +120,7 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
         rule.QuestionBankId = questionBankId;
         rule.QuestionType = questionType;
         rule.Count = count;
-        rule.ScoreEach = score;
+        rule.Score = score;
         return rule;
     }
 

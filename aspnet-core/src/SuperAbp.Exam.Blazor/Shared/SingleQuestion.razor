@@ -30,12 +30,12 @@ else
                     }
                     else
                     {
-                        <QuestionItem Number="_questionIndex + 1"
+                        @* <QuestionItem Number="_questionIndex + 1"
                                       Question="ObjectMapper.Map<QuestionDetailDto, QuestionViewModel>(_question)"
                                       QuestionAnswers="_questionAnswers"
                                       ShowAnalysis="_showAnalysis"
                                       Answered="@GetAnswered()"
-                                      OnSubmit="@SubmitAsync"></QuestionItem>
+                                      OnSubmit="@SubmitAsync"></QuestionItem> *@
 
                         @if (_showAnalysis && QuestionType.FromValue(_question.QuestionType).Name == QuestionType.FillInTheBlanks.Name)
                         {
@@ -227,7 +227,6 @@ else
             _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>(_question, _questionAnswers));
         }
 
-        var s = ObjectMapper.Map<QuestionDetailDto, QuestionViewModel>(_question);
     }
     public async Task SubmitAsync(QuestionAnswerItem item)
     {

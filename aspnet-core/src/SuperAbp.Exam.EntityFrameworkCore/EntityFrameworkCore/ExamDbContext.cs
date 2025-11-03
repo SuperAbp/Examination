@@ -206,7 +206,7 @@ public class ExamDbContext :
         {
             b.ToTable(ExamConsts.DbTablePrefix + "PaperQuestionRules", ExamConsts.DbSchema);
             b.ConfigureByConvention();
-            b.Property(p => p.ScoreEach).HasPrecision(18, 2);
+            b.Property(p => p.Score).HasPrecision(18, 2);
         });
 
         builder.Entity<Examination>(b =>

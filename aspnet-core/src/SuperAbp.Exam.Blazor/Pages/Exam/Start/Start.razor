@@ -22,20 +22,21 @@ else
                 <ChildContent>
                     @if (_userExam.AnswerMode == AnswerMode.Single)
                     {
-                    <Single @ref="_singleComponent"
-                            QuestionAnswerStorageKey="@_questionAnswerStorageKey"
-                            Questions="_examQuestions"
-                            QuestionIds="_questionIds"
-                            OnAnswered="OnAnswered"
-                            OnQuestionChanged="ChangeQuestion" />
+                      @*   <Single @ref="_singleComponent"
+                                QuestionAnswerStorageKey="@_questionAnswerStorageKey"
+                                Sections="_sections"
+                                QuestionIds="_questionIds"
+                                OnAnswered="OnAnswered"
+                                OnQuestionChanged="ChangeQuestion" /> *@
                     }
                     else
                     {
-                    <Full @ref="_fullComponent"
-                          UserExamId="Id"
-                          QuestionAnswerStorageKey="@_questionAnswerStorageKey"
-                          Questions="_examQuestions"
-                          OnAnswered="OnAnswered" />
+                        <Full @ref="_fullComponent"
+                              UserExamId="Id"
+                              QuestionAnswers="@_questionAnswers"
+                              QuestionAnswerStorageKey="@_questionAnswerStorageKey"
+                              Sections="_sections"
+                              OnAnswered="OnAnswered" />
                     }
                 </ChildContent>
             </Card>
@@ -62,16 +63,24 @@ else
 @using SuperAbp.Exam.ExamManagement.Exams
 @using Volo.Abp.Http.Client
 @using Single = SuperAbp.Exam.Blazor.Pages.Exam.Start.Components.Single
+@using Volo.Abp.ObjectMapping
+@using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel.UserExamQuestionViewModel
+@using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel
+@using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto
+@using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto
 @inject NavigationManager Navigation
 @inject IStringLocalizer<ExamResource> L
 @inject IUserExamAppService UserExamAppService
+@inject IObjectMapper ObjectMapper
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @code {
     [Parameter]
     public Guid Id { get; set; }
 
+    private Dictionary<Guid, string> _questionAnswers = [];
+
     bool _loading = true;
-    IReadOnlyList<UserExamDetailDto.QuestionDto> _examQuestions = Array.Empty<UserExamDetailDto.QuestionDto>();
+    List<UserExamSectionViewModel> _sections = [];
     Dictionary<int, int> _questionTypes = new();
     readonly List<QuestionNumberVo> _questions = [];
     UserExamDetailDto _userExam;
@@ -103,18 +112,12 @@ else
             return;
         }
 
-        _examQuestions = _userExam.Questions;
         List<QuestionAnswerItem> answerItems = await LocalStorage.GetItemAsync<List<QuestionAnswerItem>>(_questionAnswerStorageKey) ?? [];
         if (answerItems.Count > 0)
         {
             foreach (var item in answerItems)
             {
-                var question = _examQuestions.SingleOrDefault(q => q.Id == item.QuestionId);
-                if (question is null)
-                {
-                    continue;
-                }
-                question.Answers = item.Answer;
+                _questionAnswers.Add(item.QuestionId, item.Answer);
                 if (!_answerIds.Contains(item.QuestionId))
                 {
                     _answerIds.Add(item.QuestionId);
@@ -122,31 +125,34 @@ else
             }
         }
 
-        _questionTypes = _examQuestions.GroupBy(q => q.QuestionType).Select(q => new
-        {
-            QuestionType = q.Key,
-            Count = q.Count()
-        }).ToDictionary(key => key.QuestionType, value => value.Count);
-        foreach (KeyValuePair<int, int> item in _questionTypes)
+        foreach (var section in _userExam.Sections)
         {
             QuestionNumberVo vo = new QuestionNumberVo()
             {
-                QuestionType = item.Key,
-                    Questions = _examQuestions.Where(q => q.QuestionType == item.Key)
-                    .Select(q => new QuestionNumberVo.QuestionIndex()
-                    {
-                        QuestionId = q.Id,
-                        QuestionScore = q.QuestionScore
-                    }).ToArray()
+                SectionTitle = section.Title,
+                TotalScore = section.TotalScore,
             };
-            vo.TotalScore = vo.Questions.Sum(q => q.QuestionScore ?? 0);
+            UserExamSectionViewModel sectionVo = ObjectMapper.Map<SectionDto, UserExamSectionViewModel>(section);
+            List<QuestionNumberVo.QuestionIndex> questionIndexes = [];            
+            foreach (var q in section.Questions)
+            {
+                questionIndexes.Add(new QuestionNumberVo.QuestionIndex()
+                {
+                    QuestionId = q.Id,
+                    Score = q.QuestionScore
+                });
+                vo.Questions = questionIndexes;
+                
+            }
+            _sections.Add(sectionVo);
             _questions.Add(vo);
         }
+
         _questionIds = _questions.SelectMany(q => q.Questions.Select(i => i.QuestionId)).ToArray();
         _currentId = _questions[0].Questions[0].QuestionId;
         _loading = false;
     }
-    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamDetailDto.QuestionDto.OptionDto> answers)
+    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamQuestionAnswerViewModel> answers)
     {
         return answers
             .Select(qa => new QuestionAnswerViewModel
@@ -174,7 +180,7 @@ else
         _currentId = id;
         if (_userExam.AnswerMode == AnswerMode.Single)
         {
-            await _singleComponent.ShowQuestionAsync(id);
+            // await _singleComponent.ShowQuestionAsync(id);
         }
         else
         {

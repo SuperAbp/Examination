@@ -16,13 +16,13 @@ public class PaperQuestionRule : Entity<Guid>, IHasCreationTime, ISoftDelete, IM
     protected PaperQuestionRule()
     { }
 
-    public PaperQuestionRule(Guid id, Guid paperSectionId, Guid questionBankId, QuestionType questionType, int count, decimal scoreEach) : base(id)
+    public PaperQuestionRule(Guid id, Guid paperSectionId, Guid questionBankId, QuestionType questionType, int count, decimal score) : base(id)
     {
         PaperSectionId = paperSectionId;
         QuestionBankId = questionBankId;
         QuestionType = questionType;
         Count = count;
-        ScoreEach = scoreEach;
+        Score = score;
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ public class PaperQuestionRule : Entity<Guid>, IHasCreationTime, ISoftDelete, IM
     /// <summary>
     /// 分数
     /// </summary>
-    public decimal ScoreEach { get; set; }
+    public decimal Score { get; set; }
 
     public PaperSection PaperSection { get; set; }
 

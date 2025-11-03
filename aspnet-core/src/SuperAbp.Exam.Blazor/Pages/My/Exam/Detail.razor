@@ -20,11 +20,10 @@ else
                 <ChildContent>
                     @{
                         int number = 1, bigNumber = 0;
-                        foreach (KeyValuePair<int, int> questionType in _questionTypes)
+                        foreach (var sect in _sections)
                         {
-                            var currentQuestions = _examQuestions.Where(q => q.QuestionType == questionType.Key).ToArray();
-                            <Title Level="2">@chineseNumber[bigNumber++]、@L["QuestionType:" + questionType.Key]题（共@(questionType.Value)题，合计@(currentQuestions.Sum(q => q.Score))分）</Title>
-                            foreach (UserExamDetailDto.QuestionDto examQuestion in currentQuestions)
+                            <Title Level="2">@chineseNumber[bigNumber++]、@sect.Title（共@(sect.TotalCount)题，合计@(sect.TotalScore))分）</Title>
+                            foreach (var examQuestion in sect.Questions)
                             {
                                 IReadOnlyList<QuestionAnswerViewModel> answers = ToQuestionAnswerViewModels(examQuestion.Options);
                                 @* <Title Level="3" class="title" Id="@($"question-{examQuestion.Id}")"> *@
@@ -64,12 +63,12 @@ else
                                             <div style="font-size:24px;margin-bottom: 5px;">
                                                 @if (examQuestion.Right.Value)
                                                 {
-                                                    <Icon Type="check-circle" Style="color: green;" Theme="IconThemeType.Outline"/>
+                                                    <Icon Type="check-circle" Style="color: green;" Theme="IconThemeType.Outline" />
                                                     <span>正确</span>
                                                 }
                                                 else
                                                 {
-                                                    <Icon Type="close-circle" Style="color: red;" Theme="IconThemeType.Outline"/>
+                                                    <Icon Type="close-circle" Style="color: red;" Theme="IconThemeType.Outline" />
                                                     <span>错误</span>
                                                 }
                                             </div>
@@ -106,65 +105,51 @@ else
     </GridRow>
 }
 @using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using Volo.Abp.AspNetCore.Components.Messages
+@using Volo.Abp.ObjectMapping
+@using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel.UserExamQuestionViewModel
+@using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto
 @inject IStringLocalizer<ExamResource> L
 @inject NavigationManager Navigation
 @inject IUserExamAppService UserExamAppService
 @inject IJSRuntime JSRuntime
+@inject IObjectMapper ObjectMapper
 @code {
     [Parameter]
     public Guid Id { get; set; }
 
     bool loading = true;
     string[] chineseNumber = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
-    IReadOnlyList<UserExamDetailDto.QuestionDto> _examQuestions = Array.Empty<UserExamDetailDto.QuestionDto>();
+    List<UserExamSectionViewModel> _sections = [];
+    UserExamDetailDto _userExam;
     Dictionary<int, int> _questionTypes = new();
     List<QuestionNumberVo> _questions = [];
     Guid _currentId;
 
     protected override async Task OnInitializedAsync()
     {
-        UserExamDetailDto dto = await UserExamAppService.GetAsync(Id);
-        if (dto.Status != UserExamStatus.Scored)
+        _userExam = await UserExamAppService.GetAsync(Id);
+        if (_userExam.Status != UserExamStatus.Scored)
         {
             Navigation.NavigateTo("/my/exam/");
         }
-        _examQuestions = dto.Questions;
-        _questionTypes = _examQuestions.GroupBy(q => q.QuestionType).Select(q => new
-        {
-            QuestionType = q.Key,
-            Count = q.Count()
-        }).ToDictionary(key => key.QuestionType, value => value.Count);
-        foreach (KeyValuePair<int, int> item in _questionTypes)
-        {
-            QuestionNumberVo vo = new QuestionNumberVo()
-                {
-                    QuestionType = item.Key,
-                    Questions = _examQuestions.Where(q => q.QuestionType == item.Key)
-                        .Select(q => new QuestionNumberVo.QuestionIndex()
-                        {
-                            QuestionId = q.Id,
-                            QuestionScore = q.QuestionScore
-                        }).ToArray()
-                };
-            vo.TotalScore = vo.Questions.Sum(q => q.QuestionScore ?? 0);
-            _questions.Add(vo);
-        }
+        _sections = ObjectMapper.Map<List<SectionDto>, List<UserExamSectionViewModel>>(_userExam.Sections.ToList());
 
         _currentId = _questions[0].Questions[0].QuestionId;
         loading = false;
     }
-    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamDetailDto.QuestionDto.OptionDto> answers)
+    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamQuestionAnswerViewModel> answers)
     {
         return answers
             .Select(qa => new QuestionAnswerViewModel
             {
                 Id = qa.Id,
                 Content = qa.Content,
-                Right = qa.Right ?? false
+                Right = qa.Right
             }).ToArray();
     }
 

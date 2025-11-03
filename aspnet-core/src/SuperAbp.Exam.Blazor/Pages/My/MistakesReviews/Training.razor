@@ -60,23 +60,23 @@ else
         }
         // 获取所有题目（可根据需要优化为只查错题）
         PagedResultDto<QuestionListDto> result = await QuestionAppService.GetListAsync(new GetQuestionsInput()
-            {
-                QuestionId = QuestionId,
-                QuestionType = CurrentQuestionType
-            });
+        {
+            QuestionId = QuestionId,
+            QuestionType = CurrentQuestionType
+        });
         var filteredQuestions = result.Items.Where(q => mistakeIds.Contains(q.Id)).ToList();
         foreach (var type in filteredQuestions
                      .GroupBy(q => q.QuestionType).Select(q => q.Key).Distinct().OrderBy(q => q))
         {
             QuestionNumberVo vo = new QuestionNumberVo()
-                {
-                    QuestionType = type,
-                    Questions = filteredQuestions.Where(q => q.QuestionType == type)
+            {
+                SectionTitle = L["QuestionType:" + type],
+                Questions = filteredQuestions.Where(q => q.QuestionType == type)
                         .Select(q => new QuestionNumberVo.QuestionIndex()
                         {
                             QuestionId = q.Id
                         }).ToArray()
-                };
+            };
             _questions.Add(vo);
         }
         loading = false;

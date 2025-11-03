@@ -6,13 +6,10 @@ using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp;
-using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 using Volo.Abp.EventBus.Local;
-using static SuperAbp.Exam.ExamDomainErrorCodes;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams;
 
@@ -167,7 +164,7 @@ public class UserExamManager(
                     GuidGenerator.Create(),
                     userExamSection.Id,
                     question.Id,
-                    paperRule.ScoreEach);
+                    paperRule.Score);
                 userExamQuestion.TenantId = userExam.TenantId;
                 questions.Add(userExamQuestion);
             }

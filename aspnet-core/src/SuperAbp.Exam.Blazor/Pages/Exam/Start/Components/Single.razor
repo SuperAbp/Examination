@@ -1,4 +1,4 @@
-﻿@if (_loadingQuestion)
+﻿@* @if (_loadingQuestion)
 {
     <Spin/>
 }
@@ -44,7 +44,7 @@ else
     IReadOnlyList<QuestionAnswerViewModel> _questionAnswers = Array.Empty<QuestionAnswerViewModel>();
 
     [Parameter]
-    public IReadOnlyList<UserExamDetailDto.QuestionDto> Questions { get; set; }
+    public List<UserExamSectionViewModel> Sections { get; set; }
     [Parameter]
     public Guid[] QuestionIds { get; set; }
     [Parameter]
@@ -114,4 +114,4 @@ else
         List<QuestionAnswerItem> answerItems = await LocalStorage.GetItemAsync<List<QuestionAnswerItem>>(QuestionAnswerStorageKey) ?? [];
         return string.Join(ExamConsts.Splitter, answerItems.Where(c => c.QuestionId == id).Select(c => c.Answer));
     }
-}
+} *@

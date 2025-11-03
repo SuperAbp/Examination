@@ -12,7 +12,7 @@ else
                     TrainType="TrainType"
                     TrainingSource="TrainingSource.QuestionBank"
                     BackUrl="@($"/question-bank/{QuestionBankId}")"
-                Questions="_questions"></SingleQuestion>
+                    Questions="_questions"></SingleQuestion>
 }
 
 @using Microsoft.Extensions.Localization
@@ -42,24 +42,24 @@ else
         _questionBank = await QuestionBankAppService.GetAsync(QuestionBankId);
         PagedResultDto<QuestionListDto> result = await QuestionAppService.GetListAsync(new GetQuestionsInput()
         {
-            QuestionBankId = QuestionBankId, 
-                QuestionType =CurrentQuestionType.HasValue && QuestionType.TryFromValue(CurrentQuestionType.Value, out _)
+            QuestionBankId = QuestionBankId,
+            QuestionType = CurrentQuestionType.HasValue && QuestionType.TryFromValue(CurrentQuestionType.Value, out _)
                 ? CurrentQuestionType.Value
                 : null
         });
         foreach (int type in result.Items
-                     .GroupBy(q=>q.QuestionType).Select(q=>q.Key).Distinct().OrderBy(q=>q))
+                     .GroupBy(q => q.QuestionType).Select(q => q.Key).Distinct().OrderBy(q => q))
         {
             QuestionNumberVo vo = new QuestionNumberVo()
             {
-                QuestionType = type,
+                SectionTitle = L["QuestionType:" + type],
                 Questions = result.Items.Where(q => q.QuestionType == type)
-                    .Select(q=>new QuestionNumberVo.QuestionIndex()
+                    .Select(q => new QuestionNumberVo.QuestionIndex()
                     {
                         QuestionId = q.Id
                     }).ToArray()
             };
-            vo.TotalScore = vo.Questions.Sum(q => q.QuestionScore ?? 0);
+            vo.TotalScore = vo.Questions.Sum(q => q.Score ?? 0);
             _questions.Add(vo);
         }
         loading = false;

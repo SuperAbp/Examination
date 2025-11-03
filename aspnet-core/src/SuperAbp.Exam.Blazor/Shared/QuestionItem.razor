@@ -55,6 +55,7 @@
 @using SuperAbp.Exam.Blazor.Pages
 @using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.QuestionManagement.Questions
+@using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel
 @inject IStringLocalizer<ExamResource> L
 @code {
     [Parameter]
@@ -62,7 +63,7 @@
     [Parameter]
     public bool ShowAnalysis { get; set; }
     [Parameter]
-    public QuestionViewModel Question { get; set; }
+    public UserExamQuestionViewModel Question { get; set; }
     [Parameter]
     public IReadOnlyList<QuestionAnswerViewModel> QuestionAnswers { get; set; }
     [Parameter]
