@@ -37,11 +37,6 @@ import { QuestionSelectComponent } from './question-select.component';
   templateUrl: './paper-fix.component.html',
   styles: [
     `
-      [nz-radio] {
-        display: block;
-        height: 32px;
-        line-height: 32px;
-      }
       .ant-form-item-label {
         width: 95px;
       }
@@ -101,15 +96,6 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
   getQuestionsArray(sectionIndex: number): FormArray {
     return this.sections.at(sectionIndex).get('paperQuestions') as FormArray;
   }
-
-  range(start: number, end: number): number[] {
-    const result: number[] = [];
-    for (let i = start; i < end; i++) {
-      result.push(i);
-    }
-    return result;
-  }
-  disabledDate = (current: Date): boolean => dateTimePickerUtil.getDiffDays(current, new Date()) < 0;
 
   ngOnInit(): void {
     this.loading = true;

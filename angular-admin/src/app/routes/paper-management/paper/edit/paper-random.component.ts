@@ -1,14 +1,18 @@
-import { CoreModule } from '@abp/ng.core';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CoreModule, LocalizationService } from '@abp/ng.core';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { ModalHelper } from '@delon/theme';
 import { dateTimePickerUtil } from '@delon/util';
-import { PaperService, QuestionService } from '@proxy/admin/controllers';
-import { GetPaperForEditorOutput } from '@proxy/admin/paper-management/papers';
-import { GetQuestionWithDetailInput, QuestionDetailDto } from '@proxy/admin/question-management/questions';
+import { OptionService, PaperService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
+import {
+  GetPaperForEditorOutput,
+  PaperCreateOrUpdateDtoBase_PaperSectionDto,
+  PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto
+} from '@proxy/admin/paper-management/papers';
+import { QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
 import { SharedModule, simplifiedOrdinary } from '@shared';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -19,41 +23,33 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzListModule } from 'ng-zorro-antd/list';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { NzSpaceComponent, NzSpaceModule } from 'ng-zorro-antd/space';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { finalize, tap } from 'rxjs/operators';
 
 import { QuestionRandomComponent } from './question-random.component';
 import { QuestionSelectComponent } from './question-select.component';
-import { PaperManagementPaperQuestionRuleComponent } from '../../paper-question-rule/paper-question-rule.component';
+import { RuleRandomComponent } from './rule-random.component';
 
-export class questionTest {
-  constructor(name: string, score: number, items: QuestionDetailDto[]) {
-    this.name = name;
-    this.score = score;
-    this.items = items;
-  }
-  name: string;
-  score: number;
-  items: QuestionDetailDto[];
+export interface PaperQuestionRuleCreateTemp extends PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto {
+  id?: string;
+  questionBankName: string;
+  questionTypeName: string;
 }
 @Component({
   selector: 'app-paper-random',
   templateUrl: './paper-random.component.html',
   styles: [
     `
-      [nz-radio] {
-        display: block;
-        height: 32px;
-        line-height: 32px;
-      }
       .ant-form-item-label {
         width: 95px;
-      }
-      .ant-input {
-        width: 120px;
       }
       .box {
         border: 1px solid #ddd;
@@ -82,7 +78,10 @@ export class questionTest {
     NzModalModule,
     NzRadioModule,
     NzDescriptionsModule,
-    PaperManagementPaperQuestionRuleComponent
+    NzSelectModule,
+    NzTableModule,
+    NzPopconfirmModule,
+    NzToolTipModule
   ]
 })
 export class PaperManagementPaperRandomEditComponent implements OnInit {
@@ -92,34 +91,43 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
   private router = inject(Router);
   private paperService = inject(PaperService);
   private questionService = inject(QuestionService);
+  private questionBankService = inject(QuestionBankService);
+  private optionService = inject(OptionService);
+  private messageService = inject(NzMessageService);
+  private localizationService = inject(LocalizationService);
+
   paperId: string;
   paper: GetPaperForEditorOutput;
 
   loading = false;
   isConfirmLoading = false;
   showPaperTime: boolean;
-  showQuestionModal = false;
   form: FormGroup = null;
-  questions: questionTest[] = [];
-  questionIds: string[] = [];
 
-  @ViewChild('PaperQuestionRule')
-  paperRepositoryComponent: PaperManagementPaperQuestionRuleComponent;
+  // Modal related
+  currentSectionIndex = -1;
+  questionBanks: QuestionBankListDto[] = [];
 
   get score() {
     return this.form.get('score');
   }
-  range(start: number, end: number): number[] {
-    const result: number[] = [];
-    for (let i = start; i < end; i++) {
-      result.push(i);
-    }
-    return result;
+
+  get sections() {
+    return this.form?.get('sections') as FormArray;
   }
-  disabledDate = (current: Date): boolean => dateTimePickerUtil.getDiffDays(current, new Date()) < 0;
+
+  getRules(sectionIndex: number): FormArray {
+    const section = this.sections.at(sectionIndex);
+    return section.get('paperQuestionRules') as FormArray;
+  }
+
+  getQuestionBankName(questionBankId: string): string {
+    return this.questionBanks.find(b => b.id === questionBankId)?.title || '';
+  }
 
   ngOnInit(): void {
     this.loading = true;
+    this.loadQuestionBanksAndTypes();
     this.route.paramMap.subscribe(params => {
       let id = params.get('id');
       this.paperId = id;
@@ -142,69 +150,160 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
     });
   }
 
+  loadQuestionBanksAndTypes() {
+    this.questionBankService
+      .getList({ skipCount: 0, maxResultCount: 100 })
+      .pipe(
+        tap(res => {
+          this.questionBanks = res.items;
+        })
+      )
+      .subscribe();
+  }
+
   buildForm() {
     this.form = this.fb.group({
       name: [this.paper.name || '', [Validators.required]],
       description: [this.paper.description || ''],
-      score: [this.paper.score || 0],
-      paperQuestionRules: this.fb.array([], [Validators.required])
+      paperType: [1],
+      score: [this.paper.score || 0, [Validators.required, Validators.min(1)]],
+      sections: this.fb.array((this.paper.sections || []).map(s => this.createSection(s)))
     });
-    this.addBigQuestion();
+
+    // Initialize rule scores and compute totals
+    this.onRuleChange();
   }
 
-  addBigQuestion() {
-    this.questions.push(new questionTest(`第${simplifiedOrdinary(this.questions.length + 1)}大题`, 0.0, []));
-  }
-  selectQuestion(item: questionTest) {
-    this.modal.createStatic(QuestionSelectComponent, { questionIds: this.questionIds }, { size: 'xl' }).subscribe(selectedQuestionIds => {
-      this.questionService
-        .getListWithDetail({ includeIds: selectedQuestionIds } as GetQuestionWithDetailInput)
-        .pipe(
-          tap(res => {
-            item.items = [...item.items, ...res];
-            this.questionIds = [...this.questionIds, ...selectedQuestionIds];
-          })
-        )
-        .subscribe();
+  createSection(section?: PaperCreateOrUpdateDtoBase_PaperSectionDto) {
+    return this.fb.group({
+      id: [section?.id || ''],
+      title: [section?.title || '', [Validators.required]],
+      scoreEach: [section?.scoreEach, [Validators.required, Validators.min(1)]],
+      totalScore: [section?.totalScore, [Validators.required, Validators.min(1)]],
+      totalCount: [section?.totalCount, [Validators.required, Validators.min(1)]],
+      order: [section?.order || 0],
+      remark: [section?.remark || ''],
+      paperQuestionRules: this.fb.array((section?.paperQuestionRules || []).map(r => this.createRule(r)))
     });
   }
-  randomAdditionQuestion(item: questionTest) {
-    this.modal.createStatic(QuestionRandomComponent, { selectedQuestions: item.items }, { size: 'xl' }).subscribe(params => {
-      this.questionService
-        .getListWithDetail({
-          questionBankId: params.questionBankId,
-          questionType: params.questionType,
-          count: params.count,
-          excludeIds: this.questionIds
-        } as GetQuestionWithDetailInput)
-        .pipe(
-          tap(res => {
-            item.items = [...item.items, ...res];
-            this.questionIds = [...this.questionIds, ...res.map(x => x.id)];
-          })
-        )
-        .subscribe();
+
+  createRule(rule?: PaperQuestionRuleCreateTemp | PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto) {
+    return this.fb.group({
+      id: [rule?.id || null],
+      questionBankId: [rule?.questionBankId || null, [Validators.required]],
+      questionType: [rule?.questionType !== null && rule?.questionType !== undefined ? rule.questionType : null, [Validators.required]],
+      count: [rule?.count || 0, [Validators.required, Validators.min(1)]],
+      score: [rule?.score || 0, [Validators.required, Validators.min(1)]]
     });
   }
-  trashBigQuestion(index) {
-    this.questions.splice(index, 1);
+
+  addSection() {
+    this.sections.push(
+      this.createSection({
+        title: `第${simplifiedOrdinary(this.sections.length + 1)}大题`,
+        scoreEach: 0
+      } as PaperCreateOrUpdateDtoBase_PaperSectionDto)
+    );
   }
-  trashQuestion(questions: QuestionDetailDto[], index: number) {
-    questions.splice(index, 1);
+
+  openRuleModal(sectionIndex: number) {
+    this.currentSectionIndex = sectionIndex;
+    const section = this.sections.at(sectionIndex);
+    const rulesArray = section.get('paperQuestionRules') as FormArray;
+
+    // Prepare selected rules from FormArray for the modal
+    const selectedRules = rulesArray.controls.map(control => ({
+      questionBankId: control.get('questionBankId').value,
+      questionType: control.get('questionType').value,
+      count: control.get('count').value
+    }));
+
+    this.modal.createStatic(RuleRandomComponent, { selectedRules }, { size: 'lg' }).subscribe(result => {
+      if (result) {
+        // Check for duplicates and merge count if found
+        const duplicateIndex = rulesArray.controls.findIndex(
+          control =>
+            control.get('questionBankId').value === result.questionBankId && control.get('questionType').value === result.questionType
+        );
+
+        if (duplicateIndex > -1) {
+          // Merge count with existing rule
+          const existingControl = rulesArray.at(duplicateIndex);
+          const existingCount = existingControl.get('count').value || 0;
+          existingControl.get('count').setValue(existingCount + result.count);
+        } else {
+          const rule: PaperQuestionRuleCreateTemp = {
+            id: null,
+            questionBankId: result.questionBankId,
+            questionType: result.questionType,
+            count: result.count,
+            score: 0,
+            questionBankName: '',
+            questionTypeName: ''
+          };
+
+          rulesArray.push(this.createRule(rule));
+        }
+
+        this.recomputeTotal();
+      }
+    });
   }
-  up(items, index) {
-    if (index === 0) {
-      return;
-    }
-    items[index] = items.splice(index - 1, 1, items[index])[0];
+
+  deleteRule(sectionIndex: number, ruleIndex: number) {
+    const section = this.sections.at(sectionIndex);
+    const rulesArray = section.get('paperQuestionRules') as FormArray;
+    rulesArray.removeAt(ruleIndex);
+
+    this.recomputeTotal();
   }
-  down(items, index) {
-    if (index === items.length - 1) {
-      return;
-    }
-    items[index] = items.splice(index + 1, 1, items[index])[0];
+
+  trashSection(index) {
+    const sectionsArray = this.sections;
+    sectionsArray.removeAt(index);
+    this.recomputeTotal();
   }
-  selectedQuestions() {}
+
+  onRuleChange() {
+    // Update rule scores based on scoreEach
+    this.sections.controls.forEach(sectionControl => {
+      const scoreEach = sectionControl.get('scoreEach')?.value || 0;
+      const rulesArray = sectionControl.get('paperQuestionRules') as FormArray;
+      rulesArray.controls.forEach(rule => {
+        rule.get('score')?.setValue(scoreEach);
+      });
+    });
+
+    this.recomputeTotal();
+  }
+
+  recomputeTotal() {
+    if (!this.form) return;
+    let totalScore = 0;
+
+    this.sections.controls.forEach(sectionControl => {
+      const rulesArray = sectionControl.get('paperQuestionRules') as FormArray;
+      const scoreEach = sectionControl.get('scoreEach')?.value || 0;
+      const sectionTotalScore = rulesArray.controls.reduce((sum, r) => sum + (r.get('count')?.value || 0) * scoreEach, 0);
+      const sectionTotalCount = rulesArray.controls.reduce((sum, r) => sum + (r.get('count')?.value || 0), 0);
+
+      sectionControl.get('totalScore')?.setValue(sectionTotalScore);
+      sectionControl.get('totalCount')?.setValue(sectionTotalCount);
+
+      totalScore += sectionTotalScore;
+    });
+    this.form.get('score').setValue(totalScore);
+  }
+
+  private assignOrderValues(formValue: any) {
+    formValue.sections.forEach((section, sectionIndex) => {
+      section.order = sectionIndex;
+      section.paperQuestionRules.forEach((rule, ruleIndex) => {
+        rule.order = ruleIndex;
+      });
+    });
+    return formValue;
+  }
 
   save() {
     if (!this.form.valid || this.isConfirmLoading) {
@@ -216,11 +315,13 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
     }
     this.isConfirmLoading = true;
 
+    const formValue = this.assignOrderValues({ ...this.form.value });
+
     if (this.paperId) {
       this.paperService
         .update(this.paperId, {
           ...this.paper,
-          ...this.form.value
+          ...formValue
         })
         .pipe(
           tap(() => {
@@ -231,9 +332,7 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
         .subscribe();
     } else {
       this.paperService
-        .create({
-          ...this.form.value
-        })
+        .create(formValue)
         .pipe(
           tap(() => {
             this.goback();
@@ -242,10 +341,6 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
         )
         .subscribe();
     }
-  }
-
-  changeTotalScore(e) {
-    this.score.setValue(e);
   }
 
   back(e: MouseEvent) {

@@ -62,7 +62,7 @@ export class PaperManagementPaperComponent implements OnInit {
             return this.permissionService.getGrantedPolicy('Exam.Paper.Update');
           },
           click: (record: STData, modal?: any, instance?: STComponent) => {
-            this.router.navigateByUrl(`/paper-management/paper/${record['id']}/edit/1`);
+            this.router.navigateByUrl(`/paper-management/paper/${record['id']}/edit/${record['paperType']}`);
           }
         },
         {

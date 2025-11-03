@@ -1,5 +1,5 @@
-@if (model) {
-  @if (model === 1) {
+@if (model !== undefined && model !== null) {
+  @if (model === 0) {
     <app-paper-fix></app-paper-fix>
   } @else {
     <app-paper-random></app-paper-random>
