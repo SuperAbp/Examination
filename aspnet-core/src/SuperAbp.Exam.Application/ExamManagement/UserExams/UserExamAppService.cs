@@ -78,7 +78,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
                 List<QuestionDto> sectionQuestions = [];
 
-                foreach (var userExamQuestion in section.Questions)
+                foreach (var userExamQuestion in section.Questions.OrderBy(q => q.Order))
                 {
                     if (!questionMap.TryGetValue(userExamQuestion.QuestionId, out var question))
                         continue;

@@ -47,6 +47,7 @@ export interface PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto
 export interface PaperListDto extends EntityDto<string> {
   name?: string;
   score: number;
+  paperType: number;
 }
 
 export interface PaperUpdateDto extends PaperCreateOrUpdateDtoBase {

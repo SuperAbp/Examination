@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SuperAbp.Exam.EntityFrameworkCore.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
+using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
 {
@@ -37,6 +38,13 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
         private Expression<Func<UserExam, bool>> GetUnfinishedFilterExpression(Guid userId)
         {
             return x => x.UserId == userId && new[] { UserExamStatus.Waiting, UserExamStatus.InProgress }.Contains(x.Status);
+        }
+
+        public async Task<List<UserExam>> GetInProgressAsync(Guid examId, CancellationToken cancellationToken = default)
+        {
+            return await (await GetQueryableAsync())
+                .Where(e => e.ExamId == examId && new[] { UserExamStatus.Waiting, UserExamStatus.InProgress }.Contains(e.Status))
+                .ToListAsync(cancellationToken);
         }
 
         public async Task<int> GetCountAsync(Guid? userId = null,

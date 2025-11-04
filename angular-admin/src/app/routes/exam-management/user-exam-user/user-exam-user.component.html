@@ -1,4 +1,8 @@
-<page-header [title]="'Exam::ExamRecord' | abpLocalization"> </page-header>
+<page-header [action]="phActionTpl" [title]="'Exam::ExamRecord' | abpLocalization">
+  <ng-template #phActionTpl>
+    <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
+  </ng-template>
+</page-header>
 <nz-card>
   <sf mode="search" [schema]="searchSchema" (formSubmit)="search($event)" (formReset)="reset()"></sf>
   <st

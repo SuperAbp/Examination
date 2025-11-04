@@ -68,6 +68,14 @@ export class ExaminationService {
     { apiName: this.apiName,...config });
   
 
+  terminate = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, void>({
+      method: 'PATCH',
+      url: `/api/exam/${id}/terminate`,
+    },
+    { apiName: this.apiName,...config });
+  
+
   update = (id: string, input: ExamUpdateDto, config?: Partial<Rest.Config>) =>
     this.restService.request<any, ExamListDto>({
       method: 'PUT',

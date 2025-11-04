@@ -227,6 +227,8 @@ public class ExamDbContext :
             b.ToTable(ExamConsts.DbTablePrefix + "UserExam", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
+
+            b.Property(p => p.TotalScore).HasPrecision(18, 2);
         });
 
         builder.Entity<UserExamSection>(b =>
@@ -247,6 +249,7 @@ public class ExamDbContext :
             b.Property(p => p.Answers).HasMaxLength(UserExamQuestionConsts.MaxAnswersLength);
             b.Property(p => p.Reason).HasMaxLength(UserExamQuestionConsts.MaxReasonLength);
             b.Property(p => p.QuestionScore).HasPrecision(18, 2);
+            b.Property(p => p.Score).HasPrecision(18, 2);
             b.HasIndex(p => p.UserExamSectionId);
         });
 

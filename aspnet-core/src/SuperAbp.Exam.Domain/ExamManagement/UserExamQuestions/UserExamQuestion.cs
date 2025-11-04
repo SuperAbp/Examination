@@ -17,11 +17,12 @@ public class UserExamQuestion : FullAuditedEntity<Guid>, IMultiTenant
     protected UserExamQuestion()
     { }
 
-    public UserExamQuestion(Guid id, Guid userExamSectionId, Guid questionId, decimal questionScore) : base(id)
+    public UserExamQuestion(Guid id, Guid userExamSectionId, Guid questionId, decimal questionScore, int order) : base(id)
     {
         UserExamSectionId = userExamSectionId;
         QuestionId = questionId;
         QuestionScore = questionScore;
+        Order = order;
     }
 
     /// <summary>
@@ -49,6 +50,8 @@ public class UserExamQuestion : FullAuditedEntity<Guid>, IMultiTenant
     public decimal? Score { get; set; }
 
     public string? Reason { get; set; }
+
+    public int Order { get; set; }
 
     public Guid? TenantId { get; set; }
 

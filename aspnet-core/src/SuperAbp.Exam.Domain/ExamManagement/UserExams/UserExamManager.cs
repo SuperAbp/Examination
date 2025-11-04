@@ -120,7 +120,8 @@ public class UserExamManager(
                 GuidGenerator.Create(),
                 userExamSection.Id,
                 paperQuestion.QuestionId,
-                paperQuestion.Score);
+                paperQuestion.Score,
+                paperQuestion.Order);
             userExamQuestion.TenantId = userExam.TenantId;
             questions.Add(userExamQuestion);
         }
@@ -164,7 +165,8 @@ public class UserExamManager(
                     GuidGenerator.Create(),
                     userExamSection.Id,
                     question.Id,
-                    paperRule.Score);
+                    paperRule.Score,
+                    0);
                 userExamQuestion.TenantId = userExam.TenantId;
                 questions.Add(userExamQuestion);
             }
@@ -183,5 +185,22 @@ public class UserExamManager(
     {
         return await questionRepository.GetRandomListAsync(questionRepositoryId: questionRepositoryId,
             questionType: questionType, maxResultCount: count);
+    }
+
+    /// <summary>
+    /// 提交实践
+    /// </summary>
+    /// <param name="examId"></param>
+    /// <returns></returns>
+    public async Task SubmitUserExamAsync(Guid examId)
+    {
+        List<UserExam> userExams = await userExamRepository.GetInProgressAsync(examId);
+        foreach (var userExam in userExams)
+        {
+            await eventBus.PublishAsync(new UserExamSubmittedEto
+            {
+                UserId = userExam.UserId,
+            });
+        }
     }
 }

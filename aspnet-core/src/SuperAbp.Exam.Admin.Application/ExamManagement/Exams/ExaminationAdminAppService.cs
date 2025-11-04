@@ -1,20 +1,27 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.UserExams;
+using SuperAbp.Exam.Jobs.SubmittedUserExam;
+using SuperAbp.Exam.Jobs.UserExamCreateQuestion;
+using SuperAbp.Exam.Permissions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using SuperAbp.Exam.ExamManagement.Exams;
-using Volo.Abp.Application.Dtos;
-using SuperAbp.Exam.Permissions;
 using Volo.Abp;
+using Volo.Abp.Application.Dtos;
+using Volo.Abp.BackgroundJobs;
+using Volo.Abp.VirtualFileSystem;
+using static SuperAbp.Exam.ExamDomainErrorCodes;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 {
     [Authorize(ExamPermissions.Exams.Default)]
-    public class ExaminationAdminAppService(IExamRepository examRepository) : ExamAppService, IExaminationAdminAppService
+    public class ExaminationAdminAppService(IExamRepository examRepository, IBackgroundJobManager backgroundJobManager) : ExamAppService, IExaminationAdminAppService
     {
         protected IExamRepository ExamRepository { get; } = examRepository;
+        public IBackgroundJobManager BackgroundJobManager { get; } = backgroundJobManager;
 
         public virtual async Task<PagedResultDto<ExamListDto>> GetListAsync(GetExamsInput input)
         {
@@ -100,6 +107,23 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             }
             exam.Status = ExaminationStatus.Cancelled;
             await ExamRepository.UpdateAsync(exam);
+        }
+
+        [Authorize(ExamPermissions.Exams.Terminate)]
+        public virtual async Task TerminateAsync(Guid id)
+        {
+            Examination exam = await ExamRepository.GetAsync(id);
+            if (exam.Status != ExaminationStatus.Published)
+            {
+                throw new InvalidExamStatusException(exam.Status);
+            }
+            exam.Status = ExaminationStatus.Grading;
+            await ExamRepository.UpdateAsync(exam);
+            await BackgroundJobManager.EnqueueAsync(new SubmitUserExamArgs()
+            {
+                ExamId = id,
+                TenantId = CurrentTenant.Id
+            });
         }
 
         [Authorize(ExamPermissions.Exams.Publish)]

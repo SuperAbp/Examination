@@ -130,6 +130,7 @@
     "Permission:QuestionAnswers": "答案",
     "Permission:KnowledgePoints": "知识点",
     "Permission:Management": "管理",
+    "Permission:Terminate": "终止",
     "Permission:Create": "创建",
     "Permission:Publish": "发布",
     "Permission:Cancel": "取消",

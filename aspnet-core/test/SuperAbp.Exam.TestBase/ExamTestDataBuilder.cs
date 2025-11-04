@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperAbp.Exam.ExamManagement.Exams;
@@ -77,22 +77,22 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     private async Task CreateUserExamQuestionAsync()
     {
         await userExamQuestionRepository.InsertManyAsync([
-            new UserExamQuestion(testData.UserExamQuestion111Id, testData.UserExam11Id, testData.Question11Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion112Id, testData.UserExam11Id, testData.Question12Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion113Id, testData.UserExam11Id, testData.Question13Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion114Id, testData.UserExam11Id, testData.Question14Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion121Id, testData.UserExam12Id, testData.Question11Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion122Id, testData.UserExam12Id, testData.Question12Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion123Id, testData.UserExam12Id, testData.Question13Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion124Id, testData.UserExam12Id, testData.Question14Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion211Id, testData.UserExam21Id, testData.Question11Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion212Id, testData.UserExam21Id, testData.Question12Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion213Id, testData.UserExam21Id, testData.Question13Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion214Id, testData.UserExam21Id, testData.Question14Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion221Id, testData.UserExam22Id, testData.Question11Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion222Id, testData.UserExam22Id, testData.Question12Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion223Id, testData.UserExam22Id, testData.Question13Id, 100),
-            new UserExamQuestion(testData.UserExamQuestion224Id, testData.UserExam22Id, testData.Question14Id, 100),
+            new UserExamQuestion(testData.UserExamQuestion111Id, testData.UserExam11Id, testData.Question11Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion112Id, testData.UserExam11Id, testData.Question12Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion113Id, testData.UserExam11Id, testData.Question13Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion114Id, testData.UserExam11Id, testData.Question14Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion121Id, testData.UserExam12Id, testData.Question11Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion122Id, testData.UserExam12Id, testData.Question12Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion123Id, testData.UserExam12Id, testData.Question13Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion124Id, testData.UserExam12Id, testData.Question14Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion211Id, testData.UserExam21Id, testData.Question11Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion212Id, testData.UserExam21Id, testData.Question12Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion213Id, testData.UserExam21Id, testData.Question13Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion214Id, testData.UserExam21Id, testData.Question14Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion221Id, testData.UserExam22Id, testData.Question11Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion222Id, testData.UserExam22Id, testData.Question12Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion223Id, testData.UserExam22Id, testData.Question13Id, 100, 0),
+            new UserExamQuestion(testData.UserExamQuestion224Id, testData.UserExam22Id, testData.Question14Id, 100, 0),
         ]);
     }
 

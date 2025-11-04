@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UserExamDetailDto_QuestionDto } from '@proxy/admin/exam-management/user-exams';
+import { UserExamDetailDto_SectionDto_QuestionDto } from '@proxy/admin/exam-management/user-exams';
 
 @Component({
   selector: 'choose',
@@ -26,7 +26,7 @@ import { UserExamDetailDto_QuestionDto } from '@proxy/admin/exam-management/user
 })
 export class ChooseComponent {
   @Input()
-  question: UserExamDetailDto_QuestionDto;
+  question: UserExamDetailDto_SectionDto_QuestionDto;
 
   isSelectedAnswer(answers: string, optionId: string) {
     return answers !== null && answers.split('||').indexOf(optionId) !== -1;

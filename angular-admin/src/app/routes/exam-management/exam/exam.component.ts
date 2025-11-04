@@ -134,6 +134,17 @@ export class ExamManagementExamComponent implements OnInit {
               }
             },
             {
+              text: this.localizationService.instant('Exam::Terminate'),
+              iif: record => {
+                return this.permissionService.getGrantedPolicy('Exam.Exam.Terminate') && record.status === 1;
+              },
+              click: (record, _modal, component) => {
+                this.examService.terminate(record.id).subscribe(response => {
+                  this.st.reload();
+                });
+              }
+            },
+            {
               text: this.localizationService.instant('Exam::Cancel'),
               iif: record => {
                 return this.permissionService.getGrantedPolicy('Exam.Exam.Cancel') && record.status !== 4 && record.status !== 0;

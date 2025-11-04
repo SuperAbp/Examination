@@ -1,4 +1,5 @@
 import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
+import { Location } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import type { CellOptions } from '@delon/abc/cell';
@@ -13,6 +14,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { map, tap } from 'rxjs/operators';
+import { ExamManagementUserExamComponent } from '../user-exam/user-exam.component';
 
 @Component({
   selector: 'app-exam-management-user-exam-user',
@@ -21,12 +23,9 @@ import { map, tap } from 'rxjs/operators';
   imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class ExamManagementUserExamUserComponent implements OnInit {
-  private router = inject(Router);
+  private location = inject(Location);
   private route = inject(ActivatedRoute);
-  private modal = inject(ModalHelper);
   private localizationService = inject(LocalizationService);
-  private messageService = inject(NzMessageService);
-  private permissionService = inject(PermissionService);
   private userExamUserService = inject(UserExamService);
   private userService = inject(IdentityUserService);
 
@@ -70,12 +69,25 @@ export class ExamManagementUserExamUserComponent implements OnInit {
     { title: this.localizationService.instant('Exam::User'), index: 'user' },
     {
       title: this.localizationService.instant('Exam::TotalCount'),
-      index: 'totalCount',
-      cell: record => {
-        return { link: { url: `/exam-management/user-exam?examId=${this.examId}&userId=${record['userId']}` } } as CellOptions;
-      }
+      index: 'totalCount'
     },
-    { title: this.localizationService.instant('Exam::MaxScore'), index: 'maxScore' }
+    { title: this.localizationService.instant('Exam::MaxScore'), index: 'maxScore' },
+    {
+      title: this.localizationService.instant('Exam::Actions'),
+      buttons: [
+        {
+          text: this.localizationService.instant('Exam::ExamRecord'),
+          type: 'modal',
+          modal: {
+            component: ExamManagementUserExamComponent,
+            params: (record: any) => ({
+              examId: this.examId,
+              userId: record.userId
+            })
+          }
+        }
+      ]
+    }
   ];
 
   ngOnInit() {
@@ -120,5 +132,9 @@ export class ExamManagementUserExamUserComponent implements OnInit {
     //  delete this.params.name;
     //}
     this.st.load(1);
+  }
+  back(e: MouseEvent) {
+    e.preventDefault();
+    this.location.back();
   }
 }

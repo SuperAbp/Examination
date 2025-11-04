@@ -22,12 +22,12 @@ else
                 <ChildContent>
                     @if (_userExam.AnswerMode == AnswerMode.Single)
                     {
-                      @*   <Single @ref="_singleComponent"
+                        <Single @ref="_singleComponent"
                                 QuestionAnswerStorageKey="@_questionAnswerStorageKey"
-                                Sections="_sections"
+                                Questions="_sections.SelectMany(s=>s.Questions).ToArray()"
                                 QuestionIds="_questionIds"
                                 OnAnswered="OnAnswered"
-                                OnQuestionChanged="ChangeQuestion" /> *@
+                                OnQuestionChanged="ChangeQuestion" />
                     }
                     else
                     {
@@ -44,8 +44,8 @@ else
         <GridCol Span="4">
             <Affix OffsetTop="10">
                 <Card style="text-align: center;">
-                    <ChildContent>
-                        <CountDown Title="@L["TimeLeft"]" Value="@_userExam.EndTime" ValueStyle="color:red; font-size: 22px" Format="mm 分 ss 秒" OnFinish="SubmitPaperAsync" />
+                    <ChildContent>                        
+                        <CountDown Title="@L["TimeLeft"]" Value="@_userExam.EndTime" ValueStyle="color:red; font-size: 22px" OnFinish="SubmitPaperAsync" />
                         <Divider Type="DividerType.Horizontal" />
                         <Button AutoLoading Type="@ButtonType.Primary" OnClick="SubmitPaperAsync" style="width:100%">提交试卷</Button>
                     </ChildContent>
@@ -55,6 +55,9 @@ else
     </GridRow>
 }
 
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.Extensions.Configuration
 @using SuperAbp.Exam.Blazor.Pages.Exam.Start.Components
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Blazor.Model
@@ -69,9 +72,11 @@ else
 @using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto
 @using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto
 @inject NavigationManager Navigation
+@inject IAccessTokenProvider AccessTokenProvider
 @inject IStringLocalizer<ExamResource> L
 @inject IUserExamAppService UserExamAppService
 @inject IObjectMapper ObjectMapper
+@inject IConfiguration Configuration
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @code {
     [Parameter]
@@ -142,7 +147,7 @@ else
                     Score = q.QuestionScore
                 });
                 vo.Questions = questionIndexes;
-                
+
             }
             _sections.Add(sectionVo);
             _questions.Add(vo);
@@ -150,6 +155,23 @@ else
 
         _questionIds = _questions.SelectMany(q => q.Questions.Select(i => i.QuestionId)).ToArray();
         _currentId = _questions[0].Questions[0].QuestionId;
+
+        (await AccessTokenProvider.RequestAccessToken()).TryGetToken(out var accessToken);
+        string signalRUrl = Configuration["SignalRUrl"] ?? "";
+        HubConnection hubConnection = new HubConnectionBuilder()
+            .WithUrl(signalRUrl.EnsureEndsWith('/') + "signalr-hubs/progress", options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(accessToken!.Value);
+            })
+            .Build();
+
+        hubConnection.On("Submitted", async () =>
+        {
+            // TODO: 状态已更改，无法提交。需要解决
+            await SubmitPaperAsync();
+        });
+
+        await hubConnection.StartAsync();
         _loading = false;
     }
     protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamQuestionAnswerViewModel> answers)
@@ -180,7 +202,7 @@ else
         _currentId = id;
         if (_userExam.AnswerMode == AnswerMode.Single)
         {
-            // await _singleComponent.ShowQuestionAsync(id);
+            await _singleComponent.ShowQuestionAsync(id);
         }
         else
         {

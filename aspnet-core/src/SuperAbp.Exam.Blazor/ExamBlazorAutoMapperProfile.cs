@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using SuperAbp.Exam.Blazor.Model;
+using SuperAbp.Exam.Blazor.Pages;
 using SuperAbp.Exam.ExamManagement.UserExams;
+using SuperAbp.Exam.QuestionManagement.Questions;
 using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel;
 using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel.UserExamQuestionViewModel;
 
@@ -13,5 +15,8 @@ public class ExamBlazorAutoMapperProfile : Profile
         CreateMap<UserExamDetailDto.SectionDto, UserExamSectionViewModel>();
         CreateMap<UserExamDetailDto.SectionDto.QuestionDto, UserExamQuestionViewModel>();
         CreateMap<UserExamDetailDto.SectionDto.QuestionDto.OptionDto, UserExamQuestionAnswerViewModel>();
+        CreateMap<QuestionDetailDto, QuestionViewModel>();
+        CreateMap<UserExamQuestionViewModel, QuestionViewModel>();
+        CreateMap<UserExamQuestionAnswerViewModel, QuestionAnswerViewModel>();
     }
 }

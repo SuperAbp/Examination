@@ -137,7 +137,28 @@ else
         {
             Navigation.NavigateTo("/my/exam/");
         }
-        _sections = ObjectMapper.Map<List<SectionDto>, List<UserExamSectionViewModel>>(_userExam.Sections.ToList());
+        foreach (var section in _userExam.Sections)
+        {
+            QuestionNumberVo vo = new QuestionNumberVo()
+            {
+                SectionTitle = section.Title,
+                TotalScore = section.TotalScore,
+            };
+            UserExamSectionViewModel sectionVo = ObjectMapper.Map<SectionDto, UserExamSectionViewModel>(section);
+            List<QuestionNumberVo.QuestionIndex> questionIndexes = [];
+            foreach (var q in section.Questions)
+            {
+                questionIndexes.Add(new QuestionNumberVo.QuestionIndex()
+                {
+                    QuestionId = q.Id,
+                    Score = q.QuestionScore
+                });
+                vo.Questions = questionIndexes;
+
+            }
+            _sections.Add(sectionVo);
+            _questions.Add(vo);
+        }
 
         _currentId = _questions[0].Questions[0].QuestionId;
         loading = false;

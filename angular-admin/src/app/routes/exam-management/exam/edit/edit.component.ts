@@ -130,20 +130,23 @@ export class ExamManagementExamEditComponent implements OnInit {
         tap(res => {
           this.papers = res.items;
 
-          this.form = this.fb.group({
-            name: [this.exam.name || '', [Validators.required]],
-            description: [this.exam.description || ''],
-            score: [this.exam.score || 0],
-            passingScore: [this.exam.passingScore || 0],
-            totalTime: [this.exam.totalTime || 0],
-            paperId: [this.exam.paperId || ''],
-            startTime: [new Date()],
-            endTime: [new Date()],
-            isLimitedTime: [false],
-            randomOrderOfOption: [this.exam.randomOrderOfOption || false],
-            answerMode: [this.exam.answerMode || 0],
-            examTimes: [[]]
-          });
+          this.form = this.fb.group(
+            {
+              name: [this.exam.name || '', [Validators.required]],
+              description: [this.exam.description || ''],
+              score: [this.exam.score || 0],
+              passingScore: [this.exam.passingScore || 0, [Validators.required, Validators.min(1)]],
+              totalTime: [this.exam.totalTime || 0],
+              paperId: [this.exam.paperId || ''],
+              startTime: [new Date()],
+              endTime: [new Date()],
+              isLimitedTime: [false],
+              randomOrderOfOption: [this.exam.randomOrderOfOption || false],
+              answerMode: [this.exam.answerMode || 0],
+              examTimes: [[]]
+            },
+            { validators: this.passingScoreLessThanScoreValidator }
+          );
           if (this.exam.startTime && this.exam.endTime) {
             this.showExamTime = true;
             this.startTime.setValue(new Date(this.exam.startTime));
@@ -155,7 +158,17 @@ export class ExamManagementExamEditComponent implements OnInit {
       )
       .subscribe();
   }
+  passingScoreLessThanScoreValidator(group: FormGroup) {
+    const score = group.get('score')?.value;
+    const passingScore = group.get('passingScore')?.value;
 
+    if (passingScore != null && score != null && passingScore >= score) {
+      group.get('passingScore')?.setErrors({ passingScoreTooHigh: { max: score - 1 } });
+      return { passingScoreTooHigh: { max: score - 1 } };
+    }
+    group.get('passingScore')?.setErrors(null);
+    return null;
+  }
   searchPaper(value: string): void {
     let params = { skipCount: 0, maxResultCount: 100, name: value };
     if ((value || '') != '') {
