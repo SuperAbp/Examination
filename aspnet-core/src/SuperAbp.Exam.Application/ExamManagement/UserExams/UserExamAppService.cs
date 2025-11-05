@@ -179,7 +179,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
             Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
-            if (examination.Status != ExaminationStatus.Published)
+
+            if (!(examination.Status == ExaminationStatus.Grading ||
+                  examination.Status == ExaminationStatus.Completed) &&
+                examination.EndTime.HasValue &&
+                examination.EndTime.Value.AddMinutes(5) < Clock.Now)
             {
                 throw new InvalidExamStatusException(examination.Status);
             }

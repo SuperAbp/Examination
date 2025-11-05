@@ -101,4 +101,9 @@ public class Examination : FullAuditedAggregateRoot<Guid>, IMultiTenant
             EndTime = endTime;
         }
     }
+
+    public void setEndTime(DateTime endTime)
+    {
+        EndTime = endTime;
+    }
 }

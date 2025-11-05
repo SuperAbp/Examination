@@ -117,6 +117,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             {
                 throw new InvalidExamStatusException(exam.Status);
             }
+            exam.setEndTime(Clock.Now);
             exam.Status = ExaminationStatus.Grading;
             await ExamRepository.UpdateAsync(exam);
             await BackgroundJobManager.EnqueueAsync(new SubmitUserExamArgs()

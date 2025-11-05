@@ -47,7 +47,7 @@ else
                     <ChildContent>                        
                         <CountDown Title="@L["TimeLeft"]" Value="@_userExam.EndTime" ValueStyle="color:red; font-size: 22px" OnFinish="SubmitPaperAsync" />
                         <Divider Type="DividerType.Horizontal" />
-                        <Button AutoLoading Type="@ButtonType.Primary" OnClick="SubmitPaperAsync" style="width:100%">提交试卷</Button>
+                        <Button Loading="@_submitLoading" Type="@ButtonType.Primary" OnClick="SubmitPaperAsync" style="width:100%">提交试卷</Button>
                     </ChildContent>
                 </Card>
             </Affix>
@@ -85,6 +85,7 @@ else
     private Dictionary<Guid, string> _questionAnswers = [];
 
     bool _loading = true;
+    bool _submitLoading = false;
     List<UserExamSectionViewModel> _sections = [];
     Dictionary<int, int> _questionTypes = new();
     readonly List<QuestionNumberVo> _questions = [];
@@ -167,7 +168,6 @@ else
 
         hubConnection.On("Submitted", async () =>
         {
-            // TODO: 状态已更改，无法提交。需要解决
             await SubmitPaperAsync();
         });
 
@@ -187,14 +187,23 @@ else
 
     public virtual async Task SubmitPaperAsync()
     {
+        _submitLoading = true;
         List<QuestionAnswerItem> answerItems = await LocalStorage.GetItemAsync<List<QuestionAnswerItem>>(_questionAnswerStorageKey) ?? [];
-        await UserExamAppService.FinishedAsync(Id, answerItems.Select(a => new UserExamAnswerDto
+        try
         {
-            QuestionId = a.QuestionId,
-            Answers = a.Answer
-        }).ToList());
-        await LocalStorage.RemoveItemAsync(_questionAnswerStorageKey);
-        Navigation.NavigateTo("/exam/result");
+            await UserExamAppService.FinishedAsync(Id, answerItems.Select(a => new UserExamAnswerDto
+                {
+                    QuestionId = a.QuestionId,
+                    Answers = a.Answer
+                }).ToList());
+            await LocalStorage.RemoveItemAsync(_questionAnswerStorageKey);
+            Navigation.NavigateTo("/exam/result");
+        }
+        finally
+        {
+            _submitLoading = false;
+            StateHasChanged();
+        }
     }
 
     public async Task ChangeQuestion(Guid id)

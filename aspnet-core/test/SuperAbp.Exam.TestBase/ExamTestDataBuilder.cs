@@ -23,10 +23,6 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     IQuestionBankRepository questionBankRepository,
     IKnowledgePointRepository knowledgePointRepository,
     IExamRepository examRepository,
-    IPaperRepository paperRepository,
-    IPaperQuestionRuleRepository paperQuestionRuleRepository,
-    IUserExamRepository userExamRepository,
-    IUserExamQuestionRepository userExamQuestionRepository,
     ITrainingRepository trainingRepository,
     ExamTestData testData) : IDataSeedContributor, ITransientDependency
 {
@@ -40,15 +36,7 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
 
             await CreateQuestionAsync();
 
-            await CreatePaperAsync();
-
-            await CreatePaperQuestionRuleAsync();
-
             await CreateExamAsync();
-
-            await CreateUserExamAsync();
-
-            await CreateUserExamQuestionAsync();
 
             await CreateTrainingAsync();
 
@@ -72,51 +60,6 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
         Training training2 = new Training(testData.Training2Id, testData.User1Id, testData.QuestionBank1Id,
             testData.Question11Id, TrainingSource.QuestionBank);
         await trainingRepository.InsertManyAsync([training1, training2]);
-    }
-
-    private async Task CreateUserExamQuestionAsync()
-    {
-        await userExamQuestionRepository.InsertManyAsync([
-            new UserExamQuestion(testData.UserExamQuestion111Id, testData.UserExam11Id, testData.Question11Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion112Id, testData.UserExam11Id, testData.Question12Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion113Id, testData.UserExam11Id, testData.Question13Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion114Id, testData.UserExam11Id, testData.Question14Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion121Id, testData.UserExam12Id, testData.Question11Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion122Id, testData.UserExam12Id, testData.Question12Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion123Id, testData.UserExam12Id, testData.Question13Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion124Id, testData.UserExam12Id, testData.Question14Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion211Id, testData.UserExam21Id, testData.Question11Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion212Id, testData.UserExam21Id, testData.Question12Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion213Id, testData.UserExam21Id, testData.Question13Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion214Id, testData.UserExam21Id, testData.Question14Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion221Id, testData.UserExam22Id, testData.Question11Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion222Id, testData.UserExam22Id, testData.Question12Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion223Id, testData.UserExam22Id, testData.Question13Id, 100, 0),
-            new UserExamQuestion(testData.UserExamQuestion224Id, testData.UserExam22Id, testData.Question14Id, 100, 0),
-        ]);
-    }
-
-    private async Task CreateUserExamAsync()
-    {
-        await userExamRepository.InsertManyAsync([
-            new(testData.UserExam11Id, testData.Examination12Id, testData.User1Id)
-            {
-                Status = UserExamStatus.InProgress
-            },
-            new(testData.UserExam12Id, testData.Examination12Id, testData.User1Id)
-            {
-                Status = UserExamStatus.Submitted
-            },
-            new(testData.UserExam21Id, testData.Examination13Id, testData.User3Id)
-            {
-                Status = UserExamStatus.InProgress
-            },
-            new(testData.UserExam22Id, testData.Examination13Id, testData.User3Id)
-            {
-                Status = UserExamStatus.Submitted
-            },
-            new(testData.UserExam31Id, testData.Examination13Id, testData.User3Id),
-        ]);
     }
 
     private async Task CreateExamAsync()
@@ -157,44 +100,6 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
             new Examination(testData.Examination22Id, testData.Paper2Id, testData.Examination22Name, 100, 60, 60, AnswerMode.All, false),
             timeExam
         ]);
-    }
-
-    private async Task CreatePaperQuestionRuleAsync()
-    {
-        // TODO: 创建试卷题目规则测试数据
-        //await paperQuestionRuleRepository.InsertManyAsync([
-        //    new PaperQuestionRule(testData.PaperQuestionRule1Id, testData.Paper1Id, testData.QuestionBank1Id)
-        //    {
-        //        SingleCount = 1,
-        //        SingleScore = 1,
-        //        MultiCount = 1,
-        //        MultiScore = 1,
-        //        JudgeCount = 1,
-        //        JudgeScore = 1,
-        //        BlankCount = 1,
-        //        BlankScore = 1
-        //    },
-        //    new PaperQuestionRule(testData.PaperQuestionRule2Id, testData.Paper1Id, testData.QuestionBank1Id)
-        //    {
-        //        SingleCount = 1,
-        //        SingleScore = 1,
-        //        MultiCount = 1,
-        //        MultiScore = 1,
-        //        JudgeCount = 1,
-        //        JudgeScore = 1,
-        //        BlankCount = 1,
-        //        BlankScore = 1
-        //    },
-        //]);
-    }
-
-    private async Task CreatePaperAsync()
-    {
-        // TODO： 创建试卷测试数据
-        //await paperRepository.InsertManyAsync([
-        //    new Paper(testData.Paper1Id, PaperType.Random, testData.Paper1Name, 100),
-        //    new Paper(testData.Paper2Id, PaperType.Random, testData.Paper2Name, 100),
-        //]);
     }
 
     private async Task CreateQuestionAsync()
