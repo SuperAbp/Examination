@@ -211,7 +211,7 @@ public class ExamDbContext :
 
         builder.Entity<Examination>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "Examination", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "Examinations", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
 
@@ -224,7 +224,7 @@ public class ExamDbContext :
 
         builder.Entity<UserExam>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "UserExam", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "UserExams", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
 
@@ -243,7 +243,7 @@ public class ExamDbContext :
 
         builder.Entity<UserExamQuestion>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "UserExamQuestion", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "UserExamQuestions", ExamConsts.DbSchema);
             b.ConfigureByConvention();
 
             b.Property(p => p.Answers).HasMaxLength(UserExamQuestionConsts.MaxAnswersLength);
@@ -255,7 +255,7 @@ public class ExamDbContext :
 
         builder.Entity<UserExamQuestionReview>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "UserExamQuestionReview", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "UserExamQuestionReviews", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureFullAudited();
 
@@ -265,7 +265,7 @@ public class ExamDbContext :
 
         builder.Entity<Training>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "Training", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "Trainings", ExamConsts.DbSchema);
             b.ConfigureByConvention();
         });
 
