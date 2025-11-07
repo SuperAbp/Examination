@@ -26,6 +26,7 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
     }
 
     private const int CountForSection = 10;
+    private static readonly Random _rand = new Random();
 
     private Dictionary<int, decimal> QuestionTypeScores = new()
     {
@@ -254,7 +255,7 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
                 TotalTime = 60,
                 PaperId = paper.Id,
                 Status = 1,
-                AnswerMode = 0,
+                AnswerMode = _rand.Next(0, 2),
                 RandomOrderOfOption = true,
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now.AddDays(7),
