@@ -1,12 +1,14 @@
 ﻿﻿<Card>
-    <ChildContent>
-        @if(!String.IsNullOrWhiteSpace(Title))
-        {
-        <Alert Message="@Title" Type="AlertType.Info" style="margin-bottom: 8px;" />
-        }
+    <ChildContent>        
         <Space Direction="SpaceDirection.Vertical" Style="width: 100%;">
             @{
                 int i = 1;
+                @if (!String.IsNullOrWhiteSpace(Title))
+                {
+                    <SpaceItem Style="width: 100%;">
+                        <Alert Message="@Title" Type="AlertType.Info" />
+                    </SpaceItem>
+                }
                 foreach (QuestionNumberVo numbers in Numbers)
                 {
                     <SpaceItem Style="width: 100%;">
