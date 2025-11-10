@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using System;
 using System.Collections.Generic;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions
@@ -18,6 +19,8 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
         /// 分类
         /// </summary>
         public List<string>? KnowledgePoints { get; set; }
+
+        public List<QuestionAnswer> Answers { get; set; }
 
         /// <summary>
         /// 题干

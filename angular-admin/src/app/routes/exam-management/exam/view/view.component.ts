@@ -22,7 +22,6 @@ export class ExamManagementExamViewComponent implements OnInit {
 
   private location = inject(Location);
   private route = inject(ActivatedRoute);
-  public messageService = inject(NzMessageService);
   private examService = inject(ExaminationService);
 
   ngOnInit(): void {

@@ -54,9 +54,24 @@
         </div>
         <div nz-col nzSpan="8">
           <nz-form-item>
-            <nz-form-label>{{ 'Exam::PassingScore' | abpLocalization }}</nz-form-label>
-            <nz-form-control>
+            <nz-form-label nzRequired>{{ 'Exam::PassingScore' | abpLocalization }}</nz-form-label>
+            <nz-form-control
+              nzHasFeedback
+              [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
+              [nzErrorTip]="passingScoreErrorTpl"
+            >
               <nz-input-number formControlName="passingScore" [nzMin]="1" [nzMax]="score.value"></nz-input-number>
+              <ng-template #passingScoreErrorTpl let-control>
+                @if (control.hasError('required')) {
+                  {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+                }
+                @if (control.hasError('passingScoreTooHigh')) {
+                  {{
+                    'AbpValidation::ThisFieldMustBeLessOrEqual{0}'
+                      | abpLocalization: form.get('passingScore')?.getError('passingScoreTooHigh')?.max
+                  }}
+                }
+              </ng-template>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -92,18 +107,15 @@
       <nz-form-item>
         <nz-form-label>{{ 'Exam::ExamTime' | abpLocalization }}</nz-form-label>
         <nz-form-control>
-          <label nz-checkbox formControlName="isLimitedTime" (ngModelChange)="changeExamTimeStatus($event)"></label>
-          @if (showExamTime) {
-            <span style="margin-left: 20px">
-              <nz-range-picker
-                nzFormat="yyyy-MM-dd HH:mm:ss"
-                [nzDisabledDate]="disabledDate"
-                [nzShowTime]="true"
-                formControlName="examTimes"
-                (ngModelChange)="examTimeChange($event)"
-              ></nz-range-picker>
-            </span>
-          }
+          <span style="margin-left: 20px">
+            <nz-range-picker
+              nzFormat="yyyy-MM-dd HH:mm:ss"
+              [nzDisabledDate]="disabledDate"
+              [nzShowTime]="true"
+              formControlName="examTimes"
+              (ngModelChange)="examTimeChange($event)"
+            ></nz-range-picker>
+          </span>
         </nz-form-control>
       </nz-form-item>
     </form>

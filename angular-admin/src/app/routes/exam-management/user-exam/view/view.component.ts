@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderComponent } from '@delon/abc/page-header';
 import { UserExamService } from '@proxy/admin/controllers';
-import { UserExamDetailDto, UserExamDetailDto_QuestionDto } from '@proxy/admin/exam-management/user-exams';
+import { UserExamDetailDto, UserExamDetailDto_SectionDto_QuestionDto } from '@proxy/admin/exam-management/user-exams';
 import { SharedModule } from '@shared';
 import { NzAffixModule } from 'ng-zorro-antd/affix';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -58,28 +58,14 @@ export class ExamManagementUserExamViewComponent implements OnInit {
   get questionForm(): FormArray {
     return this.form.get('questions') as FormArray;
   }
-  get questions() {
-    return this.userExam.questions;
-  }
-
-  get questionTypeMaps() {
-    return this.questions.reduce((acc: { [key: number]: UserExamDetailDto_QuestionDto[] }, item) => {
-      const key = item.questionType;
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(item);
-      return acc;
-    }, {});
-  }
-  get questionTypes() {
-    return Object.keys(this.questionTypeMaps);
+  get sections() {
+    return this.userExam.sections;
   }
 
   get isReview() {
     return this.userExam.status === 3 || this.userExam.status === 2;
   }
-  getOptions(question: UserExamDetailDto_QuestionDto) {
+  getOptions(question: UserExamDetailDto_SectionDto_QuestionDto) {
     return question.options.map(o => o.content).join('||');
   }
   getAnswer(amswers: string) {
@@ -87,23 +73,15 @@ export class ExamManagementUserExamViewComponent implements OnInit {
   }
 
   getQuestionNumbers(): QuestionNumber[] {
-    const questionTypes = this.questionTypes;
-    let questionNumbers: QuestionNumber[] = [];
-    questionTypes.forEach(t => {
-      let questionType = +t;
-      let currentQuestions = this.questions
-        .filter(q => q.questionType == questionType)
-        .map(q => {
-          return { id: q.id, score: q.questionScore };
-        });
-      let questionNumber: QuestionNumber = {
-        questionType: questionType,
-        questions: currentQuestions,
-        totalScore: currentQuestions.reduce((acc, item) => acc + item.score, 0)
+    return this.sections.map(s => {
+      return {
+        title: s.title,
+        totalScore: s.totalScore,
+        questions: s.questions.map(q => {
+          return { id: q.id, score: q.questionScore } as QuestionNumberItem;
+        })
       };
-      questionNumbers.push(questionNumber);
     });
-    return questionNumbers;
   }
 
   ngOnInit(): void {
@@ -121,7 +99,8 @@ export class ExamManagementUserExamViewComponent implements OnInit {
     this.form = this.fb.group({
       questions: this.fb.array([])
     });
-    this.questions
+    this.sections
+      .flatMap(s => s.questions)
       .filter(q => q.questionType == 3)
       .forEach(q => {
         let questionForm = this.fb.group({

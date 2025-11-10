@@ -1,0 +1,153 @@
+@if (form) {
+  @if (paperId) {
+    <page-header [action]="phActionTpl" [title]="'Exam::Edit' | abpLocalization">
+      <ng-template #phActionTpl>
+        <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
+      </ng-template>
+    </page-header>
+  } @else {
+    <page-header [action]="phActionTpl" [title]="'Exam::NewPaper' | abpLocalization">
+      <ng-template #phActionTpl>
+        <button (click)="back($event)" nz-button nzType="primary">{{ 'Exam::Back' | abpLocalization }}</button>
+      </ng-template>
+    </page-header>
+  }
+  <ng-container>
+    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="horizontal">
+      <nz-card [nzTitle]="'Exam::ExamConfig' | abpLocalization">
+        <nz-form-item>
+          <nz-form-label nzRequired>{{ 'Exam::Name' | abpLocalization }}</nz-form-label>
+          <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization" [nzErrorTip]="nameErrorTpl">
+            <input
+              formControlName="name"
+              nz-input
+              [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Name' | abpLocalization)"
+            />
+            <ng-template #nameErrorTpl let-control>
+              @if (control.hasError('required')) {
+                {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+              }
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>{{ 'Exam::Description' | abpLocalization }}</nz-form-label>
+          <nz-form-control>
+            <textarea
+              rows="4"
+              nz-input
+              formControlName="description"
+              [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Description' | abpLocalization)"
+            ></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired>{{ 'Exam::TotalScore' | abpLocalization }}</nz-form-label>
+          <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization" [nzErrorTip]="scoreErrorTpl">
+            <nz-input-number nzDisabled formControlName="score"></nz-input-number>
+            <ng-template #scoreErrorTpl let-control>
+              @if (control.hasError('required')) {
+                {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+              }
+              @if (control.hasError('min')) {
+                {{ 'AbpValidation::ThisFieldMustBeGreaterThanOrEqual{0}' | abpLocalization: '1' }}
+              }
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-card>
+      <div class="mb-md" nz-flex nzJustify="space-between">
+        <span>{{ 'Exam::Questions' | abpLocalization }}</span>
+        <button type="button" nz-button nzType="primary" (click)="addSection()">添加题型</button>
+      </div>
+      <ng-container formArrayName="sections">
+        @for (section of sections.controls; track $index; let i = $index) {
+          <nz-card [nzTitle]="titleTemplate" [nzExtra]="extraTemplate" [formGroupName]="i">
+            <ng-template #titleTemplate>
+              <nz-space>
+                <input *nzSpaceItem nz-input formControlName="title" placeholder="Section Title" />
+                <span *nzSpaceItem>
+                  共{{ sections.value[i].totalCount || 0 }}题 每题
+                  <nz-input-number nz-input formControlName="scoreEach" (ngModelChange)="onQuestionScoreChange(i)"></nz-input-number>
+                  分
+                </span>
+                <button type="button" *nzSpaceItem nz-button nzType="primary" (click)="selectQuestion(i)">
+                  {{ 'Exam::SelectQuestions' | abpLocalization }}
+                </button>
+                <button type="button" *nzSpaceItem nz-button nzType="primary" (click)="randomAdditionQuestion(i)">
+                  {{ 'Exam::RandomlySelectQuestions' | abpLocalization }}
+                </button>
+              </nz-space>
+            </ng-template>
+            <ng-template #extraTemplate>
+              @if ($index !== 0) {
+                <button nz-button nzType="primary" nzDanger (click)="trashBigQuestion($index)">
+                  <span nz-icon nzType="delete" nzTheme="outline"></span>
+                </button>
+              }
+            </ng-template>
+            <ng-container formArrayName="paperQuestions">
+              @if (getQuestionsArray(i).length > 0) {
+                <nz-list nzItemLayout="horizontal" [nzLoading]="loading">
+                  @for (question of getQuestionsArray(i).controls; track $index; let j = $index) {
+                    <nz-list-item>
+                      <ng-container>
+                        <div class="width-100">
+                          @if (questionDetails.get(question.get('questionId').value); as detail) {
+                            <h3>{{ $index + 1 }}、 {{ detail.content }}</h3>
+                            @for (answer of detail.answers; track $index) {
+                              <div class="box" nz-flex nzJustify="space-between">
+                                <div>
+                                  <span style="color: #1890ff" class="font-weight-bold">{{ 65 + $index | char }}</span>
+                                  {{ answer.content }}
+                                </div>
+                                @if (answer.right) {
+                                  <div nz-icon nzType="check-circle" nzTheme="twotone" nzTwotoneColor="#52c41a"></div>
+                                }
+                              </div>
+                            }
+
+                            @if (detail.analysis) {
+                              <nz-descriptions nzLayout="vertical">
+                                <nz-descriptions-item [nzTitle]="'Exam::Analysis' | abpLocalization">
+                                  {{ detail.analysis }}
+                                </nz-descriptions-item>
+                              </nz-descriptions>
+                            }
+                          }
+                        </div>
+                        <div style="width: 150px; text-align: center">
+                          <button type="button" nz-button nzType="primary" nzDanger (click)="trashQuestion(i, $index)">
+                            <span nz-icon nzType="delete" nzTheme="outline"></span>
+                          </button>
+                          @if ($index !== 0) {
+                            <button type="button" nz-button (click)="up(i, j)">
+                              <span nz-icon nzType="arrow-up" nzTheme="outline"></span>
+                            </button>
+                          }
+                          @if ($index !== section.get('paperQuestions').value.length - 1) {
+                            <button type="button" nz-button (click)="down(i, j)">
+                              <span nz-icon nzType="arrow-down" nzTheme="outline"></span>
+                            </button>
+                          }
+                        </div>
+                      </ng-container>
+                    </nz-list-item>
+                  }
+                </nz-list>
+              }
+            </ng-container>
+          </nz-card>
+        }
+      </ng-container>
+    </form>
+  </ng-container>
+
+  <footer-toolbar>
+    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
+      {{ 'Exam::Submit' | abpLocalization }}
+    </button>
+  </footer-toolbar>
+} @else {
+  <nz-spin class="modal-spin"></nz-spin>
+}

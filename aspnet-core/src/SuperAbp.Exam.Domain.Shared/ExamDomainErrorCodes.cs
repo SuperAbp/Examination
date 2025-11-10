@@ -1,4 +1,4 @@
-﻿namespace SuperAbp.Exam;
+namespace SuperAbp.Exam;
 
 public static class ExamDomainErrorCodes
 {
@@ -6,6 +6,7 @@ public static class ExamDomainErrorCodes
     {
         public const string ContentAlreadyExists = "Exam:Question:0001";
         public const string CorrectCountError = "Exam:Question:0002";
+        public const string InsufficientQuantity = "Exam:Question:0003";
     }
 
     public static class QuestionBanks
@@ -21,6 +22,15 @@ public static class ExamDomainErrorCodes
     public static class Papers
     {
         public const string NameAlreadyExists = "Exam:Paper:0001";
+        public const string SectionOrderAlreadyExist = "Exam:Paper:0002";
+    }
+
+    public static class PaperSections
+    {
+    }
+
+    public static class PaperQuestions
+    {
     }
 
     public static class UserExams

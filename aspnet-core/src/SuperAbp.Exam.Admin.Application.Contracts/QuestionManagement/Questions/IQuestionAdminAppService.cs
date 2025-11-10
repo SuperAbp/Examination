@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -16,6 +17,13 @@ public interface IQuestionAdminAppService : IApplicationService
     /// <param name="input">查询条件</param>
     /// <returns>结果</returns>
     Task<PagedResultDto<QuestionListDto>> GetListAsync(GetQuestionsInput input);
+
+    /// <summary>
+    /// 批量获取详情
+    /// </summary>
+    /// <param name="input">查询条件</param>
+    /// <returns></returns>
+    Task<IReadOnlyList<QuestionDetailDto>> GetListWithDetailAsync(GetQuestionWithDetailInput input);
 
     /// <summary>
     /// 获取修改

@@ -1,6 +1,7 @@
 import type { EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
-export interface ExamCreateDto extends ExamCreateOrUpdateDtoBase {}
+export interface ExamCreateDto extends ExamCreateOrUpdateDtoBase {
+}
 
 export interface ExamCreateOrUpdateDtoBase {
   name?: string;
@@ -23,6 +24,8 @@ export interface ExamDetailDto extends EntityDto<string> {
   totalTime: number;
   startTime?: string;
   endTime?: string;
+  answerMode: number;
+  randomOrderOfOption: boolean;
 }
 
 export interface ExamListDto extends EntityDto<string> {
@@ -33,12 +36,15 @@ export interface ExamListDto extends EntityDto<string> {
   startTime?: string;
   endTime?: string;
   status: number;
+  randomOrderOfOption: boolean;
   answerMode: number;
 }
 
-export interface ExamUpdateDto extends ExamCreateOrUpdateDtoBase {}
+export interface ExamUpdateDto extends ExamCreateOrUpdateDtoBase {
+}
 
-export interface GetExamForEditorOutput extends ExamCreateOrUpdateDtoBase {}
+export interface GetExamForEditorOutput extends ExamCreateOrUpdateDtoBase {
+}
 
 export interface GetExamsInput extends PagedAndSortedResultRequestDto {
   name?: string;

@@ -1,5 +1,9 @@
 ﻿﻿<Card>
     <ChildContent>
+        @if(!String.IsNullOrWhiteSpace(Title))
+        {
+        <Alert Message="@Title" Type="AlertType.Info" style="margin-bottom: 8px;" />
+        }
         <Space Direction="SpaceDirection.Vertical" Style="width: 100%;">
             @{
                 int i = 1;
@@ -8,7 +12,7 @@
                     <SpaceItem Style="width: 100%;">
                         <Flex Justify="FlexJustify.SpaceBetween" Align="FlexAlign.Center">
                             <h4 style="margin-bottom: 0;">
-                                <span>@L["QuestionType:" + numbers.QuestionType]</span>
+                                <span>@numbers.SectionTitle</span>
                             </h4>
                             <span>@L["TotalQuestionCount{0}", numbers.Questions.Count]
                                 @if (numbers.TotalScore is > 0)
@@ -40,6 +44,8 @@
 @code {
     [Parameter]
     public Guid CurrentId { get; set; }
+    [Parameter]
+    public string Title { get; set; }
     [Parameter]
     public EventCallback<Guid> CurrentIdChanged { get; set; }
     [Parameter]

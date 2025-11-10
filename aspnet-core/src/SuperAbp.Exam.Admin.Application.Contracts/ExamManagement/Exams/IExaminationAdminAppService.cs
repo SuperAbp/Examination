@@ -54,6 +54,13 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         Task CancelAsync(Guid id);
 
         /// <summary>
+        /// 结束考试
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task TerminateAsync(Guid id);
+
+        /// <summary>
         /// 发布考试
         /// </summary>
         /// <param name="id"></param>

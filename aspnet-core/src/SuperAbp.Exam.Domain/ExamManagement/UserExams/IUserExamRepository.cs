@@ -15,13 +15,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         Task<UserExam?> GetUnfinishedAsync(Guid userId, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// 详情
-        /// </summary>
-        /// <param name="id">Id</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<UserExamWithDetails> GetDetailAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<List<UserExam>> GetInProgressAsync(Guid examId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 数量

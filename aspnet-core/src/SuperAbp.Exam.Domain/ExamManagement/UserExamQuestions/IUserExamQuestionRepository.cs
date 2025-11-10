@@ -11,20 +11,5 @@ namespace SuperAbp.Exam.ExamManagement.UserExamQuestions
     /// </summary>
     public interface IUserExamQuestionRepository : IRepository<UserExamQuestion, Guid>
     {
-        /// <summary>
-        /// 列表
-        /// </summary>
-        /// <param name="sorting"></param>
-        /// <param name="skipCount"></param>
-        /// <param name="maxResultCount"></param>
-        /// <param name="userExamId"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<List<UserExamQuestionWithDetails>> GetListAsync(
-            Guid userExamId,
-            string? sorting = null,
-            int skipCount = 0,
-            int maxResultCount = int.MaxValue,
-            CancellationToken cancellationToken = default);
     }
 }

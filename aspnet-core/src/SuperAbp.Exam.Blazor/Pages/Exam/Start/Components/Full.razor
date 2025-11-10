@@ -1,22 +1,11 @@
-﻿@{
-    var questionTypes = Questions.GroupBy(q => q.QuestionType).Select(q => new
-    {
-        QuestionType = q.Key,
-        Count = q.Count()
-    }).ToArray();
+﻿@{    
     int number = 1, bigNumber = 0;
-    foreach (var questionType in questionTypes)
+    foreach (UserExamSectionViewModel sect in Sections)
     {
-
-        var currentQuestions = Questions.Where(q => q.QuestionType == questionType.QuestionType).ToArray();
-        <Title Level="2">@_chineseNumber[bigNumber++]、@L["QuestionType:" + questionType.QuestionType]题（共@(questionType.Count)题，合计@(currentQuestions.Sum(q => q.QuestionScore))分）</Title>
-        foreach (UserExamDetailDto.QuestionDto examQuestion in currentQuestions)
+        <Title Level="2">@_chineseNumber[bigNumber++]、@sect.Title（共@(sect.TotalCount)题，合计@(sect.TotalScore)分）</Title>
+        foreach (var examQuestion in sect.Questions)
         {
             IReadOnlyList<QuestionAnswerViewModel> answers = ToQuestionAnswerViewModels(examQuestion.Options);
-            @* <Title Level="3" class="title" id="@($"question-{examQuestion.Id}")"> *@
-            @*     <span class="number">@(number++)</span> *@
-            @*     <span>@examQuestion.Content</span> *@
-            @* </Title> *@
             <h3 class="title" id="question-@examQuestion.Id">
                 <span class="number">@(number++)、</span><span>@examQuestion.Content</span>
             </h3>
@@ -25,13 +14,13 @@
                 case nameof(QuestionType.SingleSelect):
                 case nameof(QuestionType.Judge):
                     <SingleSelect QuestionId="examQuestion.Id"
-                                  Answered="@examQuestion.Answers"
+                                  Answered="@GetAnswered(examQuestion.Id)"
                                   Answers="answers"
                                   OnSubmit="SubmitAsync"></SingleSelect>
                     break;
                 case nameof(QuestionType.MultiSelect):
                     <MultiSelect QuestionId="examQuestion.Id"
-                                 Answered="@examQuestion.Answers"
+                                 Answered="@GetAnswered(examQuestion.Id)"
                                  Answers="answers"
                                  ShowAnalysis="false"
                                  ShowConfirm="false"
@@ -40,7 +29,7 @@
                     break;
                 case nameof(QuestionType.FillInTheBlanks):
                     <Blank QuestionId="examQuestion.Id"
-                           Answered="@(examQuestion.Answers ?? String.Empty)"
+                           Answered="@GetAnswered(examQuestion.Id)"
                            Answers="answers"
                            ShowAnalysis="false"
                            ShowConfirm="false"
@@ -57,6 +46,8 @@
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.QuestionManagement.Questions
+@using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel.UserExamQuestionViewModel
+@using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto
 @inherits ExamQuestionBase
 @inject IUserExamAppService UserExamAppService
 @inject IStringLocalizer<ExamResource> L
@@ -65,11 +56,13 @@
     [Parameter]
     public Guid UserExamId { get; set; }
     [Parameter]
-    public IReadOnlyList<UserExamDetailDto.QuestionDto> Questions { get; set; }
+    public List<UserExamSectionViewModel> Sections { get; set; }
+    [Parameter]
+    public Dictionary<Guid, string> QuestionAnswers { get; set; }
 
     readonly string[] _chineseNumber = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
-    
-    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamDetailDto.QuestionDto.OptionDto> answers)
+
+    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamQuestionAnswerViewModel> answers)
     {
         return answers
             .Select(qa => new QuestionAnswerViewModel
@@ -88,14 +81,18 @@
 
     public async Task SubmitAsync(QuestionAnswerItem item)
     {
-        var question = Questions.FirstOrDefault(q => q.Id == item.QuestionId);
-        if (question != null)
-        {
-            question.Answers = item.Answer;
-        }
+        QuestionAnswers[item.QuestionId] = item.Answer;
         await SaveAnswerAsync(item);
     }
 
+    protected string GetAnswered(Guid questionId)
+    {
+        if (QuestionAnswers.TryGetValue(questionId, out var answered))
+        {
+            return answered;
+        }
+        return string.Empty;
+    }
     private async Task ChangeAsync(QuestionAnswerChangeEventArgs arg)
     {
         await SubmitAsync(new QuestionAnswerItem()

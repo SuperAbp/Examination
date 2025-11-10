@@ -47,21 +47,6 @@ export class QuestionManagementAnswerComponent implements OnChanges {
     protected fb: FormBuilder,
     protected questionService: QuestionService
   ) {}
-  // ngOnInit(): void {
-  //   if (this.answers.length == 0) {
-  //     this.batchAdd(2);
-  //   } else {
-  //     this.answers.forEach(item => {
-  //       this.add({
-  //         id: item.id,
-  //         sort: item.sort,
-  //         right: item.right,
-  //         content: item.content,
-  //         analysis: item.analysis
-  //       });
-  //     });
-  //   }
-  // }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['answers']) {
       const newValue = changes['answers'].currentValue;

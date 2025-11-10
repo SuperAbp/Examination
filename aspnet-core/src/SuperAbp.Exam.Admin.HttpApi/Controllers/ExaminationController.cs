@@ -95,6 +95,17 @@ public class ExaminationController(IExaminationAdminAppService examAppService)
     }
 
     /// <summary>
+    /// 结束考试
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpPatch("{id}/terminate")]
+    public async Task TerminateAsync(Guid id)
+    {
+        await ExamAppService.TerminateAsync(id);
+    }
+
+    /// <summary>
     /// 删除
     /// </summary>
     /// <param name="id">主键</param>

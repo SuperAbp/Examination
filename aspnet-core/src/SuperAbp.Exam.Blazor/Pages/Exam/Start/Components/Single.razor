@@ -34,6 +34,8 @@ else
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using Volo.Abp.ObjectMapping
+@using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel.UserExamQuestionViewModel
+@using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel
 @inherits ExamQuestionBase
 @inject IObjectMapper ObjectMapper
 @code {
@@ -44,7 +46,7 @@ else
     IReadOnlyList<QuestionAnswerViewModel> _questionAnswers = Array.Empty<QuestionAnswerViewModel>();
 
     [Parameter]
-    public IReadOnlyList<UserExamDetailDto.QuestionDto> Questions { get; set; }
+    public IReadOnlyList<UserExamQuestionViewModel> Questions { get; set; }
     [Parameter]
     public Guid[] QuestionIds { get; set; }
     [Parameter]
@@ -102,9 +104,9 @@ else
         _loadingQuestion = true;
         _answered = await GetAnswered(id);
         _questionIndex = QuestionIds.ToList().IndexOf(id);
-        UserExamDetailDto.QuestionDto question = Questions.Single(q => q.Id == id);
-        _question = ObjectMapper.Map<UserExamDetailDto.QuestionDto, QuestionViewModel>(question);
-        _questionAnswers = question.Options.Select(a => ObjectMapper.Map<UserExamDetailDto.QuestionDto.OptionDto, QuestionAnswerViewModel>(a)).ToArray();
+        UserExamQuestionViewModel question = Questions.Single(q => q.Id == id);
+        _question = ObjectMapper.Map<UserExamQuestionViewModel, QuestionViewModel>(question);
+        _questionAnswers = question.Options.Select(a => ObjectMapper.Map<UserExamQuestionAnswerViewModel, QuestionAnswerViewModel>(a)).ToArray();
         _loadingQuestion = false;
     }
 

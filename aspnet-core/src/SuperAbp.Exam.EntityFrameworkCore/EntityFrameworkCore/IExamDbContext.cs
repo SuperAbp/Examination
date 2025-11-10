@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestionReviews;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
@@ -7,7 +7,9 @@ using SuperAbp.Exam.Favorites;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.MistakesReviews;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
+using SuperAbp.Exam.PaperManagement.PaperQuestions;
 using SuperAbp.Exam.PaperManagement.Papers;
+using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.Questions;
@@ -60,10 +62,13 @@ public interface IExamDbContext : IEfCoreDbContext
 
     public DbSet<QuestionKnowledgePoint> QuestionKnowledgePoints { get; set; }
     public DbSet<PaperQuestionRule> PaperQuestionRules { get; set; }
+    public DbSet<PaperSection> PaperSections { get; set; }
+    public DbSet<PaperQuestion> PaperQuestions { get; set; }
 
     public DbSet<Examination> Exams { get; set; }
 
     public DbSet<UserExam> UserExams { get; set; }
+    public DbSet<UserExamSection> UserExamSections { get; set; }
     public DbSet<UserExamQuestion> UerExamQuestions { get; set; }
     public DbSet<UserExamQuestionReview> UserExamQuestionReviews { get; set; }
 

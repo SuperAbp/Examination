@@ -1,10 +1,10 @@
-import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
+import { Location } from '@angular/common';
+import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema } from '@delon/form';
-import { ModalHelper } from '@delon/theme';
 import { UserExamService } from '@proxy/admin/controllers';
 import { GetUserExamsInput, UserExamListDto } from '@proxy/admin/exam-management/user-exams';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -19,16 +19,20 @@ import { tap } from 'rxjs/operators';
   imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class ExamManagementUserExamComponent implements OnInit {
+  @Input()
+  examId!: string;
+  @Input()
+  userId!: string;
+
   private router = inject(Router);
 
+  private location = inject(Location);
   private route = inject(ActivatedRoute);
   private localizationService = inject(LocalizationService);
   private messageService = inject(NzMessageService);
   private permissionService = inject(PermissionService);
   private userExamService = inject(UserExamService);
 
-  examId!: string;
-  userId!: string;
   userExams: UserExamListDto[];
   total: number;
   loading = false;
@@ -59,7 +63,9 @@ export class ExamManagementUserExamComponent implements OnInit {
             return record.status === 2 || record.status === 3 || record.status === 4 || record.status === 5;
           },
           click: (record: STData, modal?: any, instance?: STComponent) => {
-            this.router.navigateByUrl(`/exam-management/user-exam/${record['id']}`);
+            const url = this.router.serializeUrl(this.router.createUrlTree(['/exam-management/user-exam/', record['id']]));
+            const fullUrl = window.location.origin + this.location.prepareExternalUrl(url);
+            window.open(fullUrl);
           }
         }
       ]
@@ -67,12 +73,8 @@ export class ExamManagementUserExamComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.examId = params['examId'];
-      this.userId = params['userId'];
-      this.params = this.resetParameters();
-      this.getList();
-    });
+    this.params = this.resetParameters();
+    this.getList();
   }
   getList() {
     this.loading = true;
@@ -110,5 +112,9 @@ export class ExamManagementUserExamComponent implements OnInit {
     //  delete this.params.name;
     //}
     this.st.load(1);
+  }
+  back(e: MouseEvent) {
+    e.preventDefault();
+    this.location.back();
   }
 }

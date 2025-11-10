@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -65,45 +65,52 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
         }
         Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
         IdentityUser user = await UserRepository.GetAsync(userExam.UserId);
-        List<Guid> questionIds = userExam.Questions.Select(q => q.QuestionId).ToList();
+        List<Guid> questionIds = userExam.Sections.SelectMany(s => s.Questions).Select(q => q.QuestionId).ToList();
         List<Question> questions = await QuestionRepository.GetByIdsAsync(questionIds);
         UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
         dto.ExamName = examination.Name;
         dto.UserName = user.UserName;
         dto.Status = userExam.Status;
-        List<UserExamDetailDto.QuestionDto> questionDtos = [];
-        foreach (Question question in questions)
+        List<UserExamDetailDto.SectionDto> sectionDtos = [];
+        foreach (UserExamSection section in userExam.Sections.OrderBy(s => s.Order))
         {
-            var questionDto = ObjectMapper.Map<Question, UserExamDetailDto.QuestionDto>(question);
-            UserExamQuestion userExamQuestion = userExam.Questions.Single(q => q.QuestionId == question.Id);
-            questionDto.Right = userExamQuestion.Right;
-            questionDto.Reason = userExamQuestion.Reason;
-            questionDto.Score = userExamQuestion.Score;
-            questionDto.Answers = userExamQuestion.Answers;
-            questionDto.QuestionScore = userExamQuestion.QuestionScore;
-            List<KnowledgePoint> knowledgePoints = await QuestionManager.GetKnowledgePointsAsync(question.Id);
-            if (knowledgePoints.Count > 0)
+            var sectionDto = ObjectMapper.Map<UserExamSection, UserExamDetailDto.SectionDto>(section);
+            List<UserExamDetailDto.SectionDto.QuestionDto> questionDtos = [];
+            foreach (UserExamQuestion userExamQuestion in section.Questions.OrderBy(q => q.Order))
             {
-                questionDto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
-            }
-            List<UserExamDetailDto.QuestionDto.OptionDto> answerDtos = [];
-            foreach (QuestionAnswer answer in question.Answers)
-            {
-                UserExamDetailDto.QuestionDto.OptionDto optionDto = new()
+                Question question = questions.Single(q => q.Id == userExamQuestion.QuestionId);
+                var questionDto = ObjectMapper.Map<Question, UserExamDetailDto.SectionDto.QuestionDto>(question);
+                questionDto.Right = userExamQuestion.Right;
+                questionDto.Reason = userExamQuestion.Reason;
+                questionDto.Score = userExamQuestion.Score;
+                questionDto.Answers = userExamQuestion.Answers;
+                questionDto.QuestionScore = userExamQuestion.QuestionScore;
+                List<KnowledgePoint> knowledgePoints = await QuestionManager.GetKnowledgePointsAsync(question.Id);
+                if (knowledgePoints.Count > 0)
                 {
-                    Id = answer.Id,
-                    Content = answer.Content,
-                };
-                if (userExam.IsSubmitted())
-                {
-                    optionDto.Right = answer.Right;
+                    questionDto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
                 }
-                answerDtos.Add(optionDto);
+                List<UserExamDetailDto.SectionDto.QuestionDto.OptionDto> answerDtos = [];
+                foreach (QuestionAnswer answer in question.Answers)
+                {
+                    UserExamDetailDto.SectionDto.QuestionDto.OptionDto optionDto = new()
+                    {
+                        Id = answer.Id,
+                        Content = answer.Content,
+                    };
+                    if (userExam.IsSubmitted())
+                    {
+                        optionDto.Right = answer.Right;
+                    }
+                    answerDtos.Add(optionDto);
+                }
+                questionDto.Options = answerDtos;
+                questionDtos.Add(questionDto);
             }
-            questionDto.Options = answerDtos;
-            questionDtos.Add(questionDto);
+            sectionDto.Questions = questionDtos;
+            sectionDtos.Add(sectionDto);
         }
-        dto.Questions = questionDtos;
+        dto.Sections = sectionDtos;
         return dto;
     }
 

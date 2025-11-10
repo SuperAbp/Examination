@@ -227,7 +227,6 @@ else
             _cacheQuestions.Add(id, new Tuple<QuestionDetailDto, IReadOnlyList<QuestionAnswerViewModel>>(_question, _questionAnswers));
         }
 
-        var s = ObjectMapper.Map<QuestionDetailDto, QuestionViewModel>(_question);
     }
     public async Task SubmitAsync(QuestionAnswerItem item)
     {

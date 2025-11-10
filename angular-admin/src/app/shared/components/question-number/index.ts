@@ -1,7 +1,7 @@
 import { Component, Input, input } from '@angular/core';
 
 export class QuestionNumber {
-  questionType: number;
+  title: string;
   totalScore: number;
   questions: QuestionNumberItem[];
 }
@@ -21,21 +21,23 @@ export class QuestionNumberItem {
   ],
   template: `
     <nz-card>
-      <div style="margin-bottom: 16px;" *ngFor="let questionNumber of questionNumbers">
-        <div nz-flex nzJustify="space-between" nzAlign="center">
-          <h4>
-            {{ 'Exam::QuestionType:' + questionNumber.questionType | abpLocalization }}
-          </h4>
-          <span>{{ 'Exam::TotalScore{0}' | abpLocalization: questionNumber.totalScore + '' }}</span>
+      @for (questionNumber of questionNumbers; track $index) {
+        <div style="margin-bottom: 16px;">
+          <div nz-flex nzJustify="space-between" nzAlign="center">
+            <h4>
+              {{ questionNumber.title }}
+            </h4>
+            <span>{{ 'Exam::TotalScore{0}' | abpLocalization: questionNumber.totalScore + '' }}</span>
+          </div>
+          <div>
+            <nz-space>
+              @for (questionNumberOption of questionNumber.questions; track $index; let i = $index) {
+                <nz-tag (click)="scrollTo(questionNumberOption.id)" [nzColor]="getColor(questionNumberOption.id)">{{ i + 1 }}</nz-tag>
+              }
+            </nz-space>
+          </div>
         </div>
-        <div>
-          <nz-space>
-            <ng-container *ngFor="let questionNumberOption of questionNumber.questions; let i = index">
-              <nz-tag (click)="scrollTo(questionNumberOption.id)" [nzColor]="getColor(questionNumberOption.id)">{{ i }}</nz-tag>
-            </ng-container>
-          </nz-space>
-        </div>
-      </div>
+      }
     </nz-card>
   `
 })

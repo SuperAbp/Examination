@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SmartEnum.EFCore;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestionReviews;
@@ -8,7 +8,9 @@ using SuperAbp.Exam.Favorites;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.MistakesReviews;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
+using SuperAbp.Exam.PaperManagement.PaperQuestions;
 using SuperAbp.Exam.PaperManagement.Papers;
+using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
@@ -52,8 +54,11 @@ public class ExamDbContextInUnitTest : AbpDbContext<ExamDbContextInUnitTest>, IE
     public DbSet<Paper> Papers { get; set; }
     public DbSet<QuestionKnowledgePoint> QuestionKnowledgePoints { get; set; }
     public DbSet<PaperQuestionRule> PaperQuestionRules { get; set; }
+    public DbSet<PaperSection> PaperSections { get; set; }
+    public DbSet<PaperQuestion> PaperQuestions { get; set; }
     public DbSet<Examination> Exams { get; set; }
     public DbSet<UserExam> UserExams { get; set; }
+    public DbSet<UserExamSection> UserExamSections { get; set; }
     public DbSet<UserExamQuestion> UerExamQuestions { get; set; }
     public DbSet<UserExamQuestionReview> UserExamQuestionReviews { get; set; }
     public DbSet<Training> Trains { get; set; }
@@ -135,6 +140,22 @@ public class ExamDbContextInUnitTest : AbpDbContext<ExamDbContextInUnitTest>, IE
 
             b.Property(p => p.Name).IsRequired().HasMaxLength(PaperConsts.MaxNameLength);
             b.Property(p => p.Description).HasMaxLength(PaperConsts.MaxDescriptionLength);
+        });
+
+        builder.Entity<PaperSection>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "PaperSections", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(p => p.Title).IsRequired().HasMaxLength(100);
+        });
+
+        builder.Entity<PaperQuestion>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "PaperQuestions", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.HasIndex(p => new { p.PaperSectionId, p.QuestionId });
         });
 
         builder.Entity<PaperQuestionRule>(b =>

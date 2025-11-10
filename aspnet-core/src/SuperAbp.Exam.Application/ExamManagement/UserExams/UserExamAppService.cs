@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
@@ -10,15 +10,15 @@ using SuperAbp.Exam.Jobs.UserExamCreateQuestion;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Timing;
 using Volo.Abp.Users;
-using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.QuestionDto;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.MistakesReviews;
-using Volo.Abp;
 using Volo.Abp.BackgroundJobs;
-using Volo.Abp.ObjectMapping;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 using Volo.Abp.EventBus.Local;
 using SuperAbp.Exam.MistakesReviews.Events;
+using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto;
+using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto;
+using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto.QuestionDto;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
@@ -49,9 +49,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
             Examination exam = await examRepository.GetAsync(userExam.ExamId);
-            List<Guid> questionIds = userExam.Questions.Select(q => q.QuestionId).ToList();
+            List<Guid> questionIds = userExam.Sections.SelectMany(s => s.Questions).Select(q => q.QuestionId).ToList();
             List<Question> questions = await questionRepository.GetByIdsAsync(questionIds);
             UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
+            dto.ExamName = exam.Name;
             dto.AnswerMode = exam.AnswerMode;
             if (userExam.StartTime.HasValue)
             {
@@ -68,43 +69,60 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 await UserExamRepository.UpdateAsync(userExam);
             }
 
-            List<UserExamDetailDto.QuestionDto> questionDtos = [];
-            foreach (Question question in questions)
+            // Map sections with their questions
+            var sectionDtos = new List<SectionDto>();
+            var questionMap = questions.ToDictionary(q => q.Id, q => q);
+
+            foreach (var section in userExam.Sections.OrderBy(s => s.Order))
             {
-                var questionDto = ObjectMapper.Map<Question, UserExamDetailDto.QuestionDto>(question);
-                UserExamQuestion userExamQuestion = userExam.Questions.Single(q => q.QuestionId == question.Id);
-                questionDto.Right = userExamQuestion.Right;
-                questionDto.Answers = userExamQuestion.Answers;
-                questionDto.QuestionScore = userExamQuestion.QuestionScore;
-                // TODO:batch query
-                List<KnowledgePoint> knowledgePoints = await questionManager.GetKnowledgePointsAsync(question.Id);
-                if (knowledgePoints.Count > 0)
+                SectionDto sectionDto = ObjectMapper.Map<UserExamSection, SectionDto>(section);
+
+                List<QuestionDto> sectionQuestions = [];
+
+                foreach (var userExamQuestion in section.Questions.OrderBy(q => q.Order))
                 {
-                    questionDto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
-                }
-                List<OptionDto> answerDtos = [];
-                List<QuestionAnswer> answers = question.Answers;
-                if (exam.RandomOrderOfOption)
-                {
-                    answers = answers.OrderBy(_ => Guid.NewGuid()).ToList();
-                }
-                foreach (QuestionAnswer answer in answers)
-                {
-                    OptionDto optionDto = new()
+                    if (!questionMap.TryGetValue(userExamQuestion.QuestionId, out var question))
+                        continue;
+
+                    QuestionDto questionDto = ObjectMapper.Map<Question, QuestionDto>(question);
+                    questionDto.Right = userExamQuestion.Right;
+                    questionDto.Answers = userExamQuestion.Answers;
+                    questionDto.QuestionScore = userExamQuestion.QuestionScore;
+
+                    // Get knowledge points
+                    List<KnowledgePoint> knowledgePoints = await questionManager.GetKnowledgePointsAsync(question.Id);
+                    if (knowledgePoints.Count > 0)
                     {
-                        Id = answer.Id,
-                        Content = answer.Content,
-                    };
-                    if (userExam.IsSubmitted())
-                    {
-                        optionDto.Right = answer.Right;
+                        questionDto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
                     }
-                    answerDtos.Add(optionDto);
+
+                    // Map answers/options
+                    List<OptionDto> answerDtos = [];
+                    List<QuestionAnswer> answers = question.Answers.OrderBy(a => a.Sort).ToList();
+                    if (exam.RandomOrderOfOption && new List<QuestionType> { QuestionType.SingleSelect, QuestionType.MultiSelect }.Contains(question.QuestionType))
+                    {
+                        answers = answers.OrderBy(_ => Guid.NewGuid()).ToList();
+                    }
+
+                    foreach (QuestionAnswer answer in answers)
+                    {
+                        OptionDto optionDto = ObjectMapper.Map<QuestionAnswer, OptionDto>(answer);
+
+                        if (userExam.IsSubmitted())
+                        {
+                            optionDto.Right = answer.Right;
+                        }
+                        answerDtos.Add(optionDto);
+                    }
+                    questionDto.Options = answerDtos;
+                    sectionQuestions.Add(questionDto);
                 }
-                questionDto.Options = answerDtos;
-                questionDtos.Add(questionDto);
+
+                sectionDto.Questions = sectionQuestions;
+                sectionDtos.Add(sectionDto);
             }
-            dto.Questions = questionDtos;
+
+            dto.Sections = sectionDtos;
             return dto;
         }
 
@@ -127,7 +145,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             await UserExamRepository.InsertAsync(userExam);
             await BackgroundJobManager.EnqueueAsync(new UserExamCreateQuestionArgs()
             {
-                UserExamId = userExam.Id
+                UserExamId = userExam.Id,
+                TenantId = CurrentTenant.Id
             });
             return ObjectMapper.Map<UserExam, UserExamListDto>(userExam);
         }
@@ -161,7 +180,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
             Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
-            if (examination.Status != ExaminationStatus.Published)
+
+            if (!(examination.Status == ExaminationStatus.Grading ||
+                  examination.Status == ExaminationStatus.Completed) &&
+                examination.EndTime.HasValue &&
+                examination.EndTime.Value.AddMinutes(5) < Clock.Now)
             {
                 throw new InvalidExamStatusException(examination.Status);
             }
@@ -175,7 +198,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
             decimal totalScore = 0;
             List<Task> publishEvents = [];
-            foreach (UserExamQuestion item in userExam.Questions)
+            foreach (UserExamQuestion item in userExam.Sections.SelectMany(s => s.Questions))
             {
                 bool right = false;
                 decimal score = 0;

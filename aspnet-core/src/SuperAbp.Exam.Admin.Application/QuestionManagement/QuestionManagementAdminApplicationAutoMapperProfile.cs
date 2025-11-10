@@ -22,6 +22,7 @@ public class QuestionManagementAdminApplicationAutoMapperProfile : Profile
         #region 问题
 
         CreateMap<Question, GetQuestionForEditorOutput>();
+        CreateMap<QuestionWithDetails, QuestionDetailDto>();
         CreateMap<QuestionWithDetails, QuestionListDto>()
             .ForMember(s => s.QuestionType,
                 opt => opt.MapFrom(t => t.QuestionType.Value));

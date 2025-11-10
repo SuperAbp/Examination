@@ -4,6 +4,7 @@ using Volo.Abp.Application.Dtos;
 
 using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using System;
+using System.Collections.Generic;
 
 namespace SuperAbp.Exam.Admin.Controllers;
 
@@ -22,6 +23,17 @@ public class QuestionController(IQuestionAdminAppService questionAppService) : E
     public virtual async Task<PagedResultDto<QuestionListDto>> GetListAsync(GetQuestionsInput input)
     {
         return await questionAppService.GetListAsync(input);
+    }
+
+    /// <summary>
+    /// 批量获取详情
+    /// </summary>
+    /// <param name="input">查询条件</param>
+    /// <returns></returns>
+    [HttpGet("details")]
+    public async Task<IReadOnlyList<QuestionDetailDto>> GetListWithDetailAsync(GetQuestionWithDetailInput input)
+    {
+        return await questionAppService.GetListWithDetailAsync(input);
     }
 
     /// <summary>

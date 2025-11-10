@@ -117,7 +117,7 @@ namespace SuperAbp.Exam.Migrations
 
                     b.HasIndex("PaperId");
 
-                    b.ToTable("AppExamination", (string)null);
+                    b.ToTable("AppExaminations", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestionReviews.UserExamQuestionReview", b =>
@@ -177,7 +177,7 @@ namespace SuperAbp.Exam.Migrations
 
                     b.HasIndex("UserExamQuestionId");
 
-                    b.ToTable("AppUserExamQuestionReview", (string)null);
+                    b.ToTable("AppUserExamQuestionReviews", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestions.UserExamQuestion", b =>
@@ -219,6 +219,9 @@ namespace SuperAbp.Exam.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("QuestionId")
                         .HasColumnType("char(36)");
 
@@ -234,20 +237,21 @@ namespace SuperAbp.Exam.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<decimal?>("Score")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid?>("TenantId")
                         .HasColumnType("char(36)")
                         .HasColumnName("TenantId");
 
-                    b.Property<Guid>("UserExamId")
+                    b.Property<Guid>("UserExamSectionId")
                         .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserExamId");
+                    b.HasIndex("UserExamSectionId");
 
-                    b.ToTable("AppUserExamQuestion", (string)null);
+                    b.ToTable("AppUserExamQuestions", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExams.UserExam", b =>
@@ -314,14 +318,56 @@ namespace SuperAbp.Exam.Migrations
                         .HasColumnName("TenantId");
 
                     b.Property<decimal>("TotalScore")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppUserExam", (string)null);
+                    b.ToTable("AppUserExams", (string)null);
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExams.UserExamSection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ScoreEach")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("SectionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("TenantId");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("TotalCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalScore")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("UserExamId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserExamId");
+
+                    b.ToTable("AppUserExamSections", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.Favorites.Favorite", b =>
@@ -468,12 +514,8 @@ namespace SuperAbp.Exam.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
-                    b.Property<int?>("BlankCount")
+                    b.Property<int>("Count")
                         .HasColumnType("int");
-
-                    b.Property<decimal?>("BlankScore")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime(6)")
@@ -485,34 +527,16 @@ namespace SuperAbp.Exam.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
-                    b.Property<int?>("JudgeCount")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("JudgeScore")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("MultiCount")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("MultiScore")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("PaperId")
+                    b.Property<Guid>("PaperSectionId")
                         .HasColumnType("char(36)");
-
-                    b.Property<decimal?>("Proportion")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("QuestionBankId")
                         .HasColumnType("char(36)");
 
-                    b.Property<int?>("SingleCount")
+                    b.Property<int>("QuestionType")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("SingleScore")
+                    b.Property<decimal>("Score")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
@@ -522,7 +546,99 @@ namespace SuperAbp.Exam.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PaperSectionId");
+
                     b.ToTable("AppPaperQuestionRules", (string)null);
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperQuestions.PaperQuestion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("PaperSectionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<decimal>("Score")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("TenantId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaperSectionId");
+
+                    b.ToTable("AppPaperQuestions", (string)null);
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperSections.PaperSection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("PaperId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Remark")
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("ScoreEach")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("TenantId");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("TotalCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalScore")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaperId");
+
+                    b.ToTable("AppPaperSections", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.PaperManagement.Papers.Paper", b =>
@@ -580,6 +696,9 @@ namespace SuperAbp.Exam.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
+
+                    b.Property<int>("PaperType")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Score")
                         .HasPrecision(18, 2)
@@ -863,7 +982,7 @@ namespace SuperAbp.Exam.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppTraining", (string)null);
+                    b.ToTable("AppTrainings", (string)null);
                 });
 
             modelBuilder.Entity("SuperAbp.MenuManagement.Menus.Menu", b =>
@@ -2693,9 +2812,49 @@ namespace SuperAbp.Exam.Migrations
 
             modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExamQuestions.UserExamQuestion", b =>
                 {
-                    b.HasOne("SuperAbp.Exam.ExamManagement.UserExams.UserExam", null)
+                    b.HasOne("SuperAbp.Exam.ExamManagement.UserExams.UserExamSection", null)
                         .WithMany("Questions")
+                        .HasForeignKey("UserExamSectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExams.UserExamSection", b =>
+                {
+                    b.HasOne("SuperAbp.Exam.ExamManagement.UserExams.UserExam", null)
+                        .WithMany("Sections")
                         .HasForeignKey("UserExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperQuestionRules.PaperQuestionRule", b =>
+                {
+                    b.HasOne("SuperAbp.Exam.PaperManagement.PaperSections.PaperSection", "PaperSection")
+                        .WithMany("PaperQuestionRules")
+                        .HasForeignKey("PaperSectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PaperSection");
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperQuestions.PaperQuestion", b =>
+                {
+                    b.HasOne("SuperAbp.Exam.PaperManagement.PaperSections.PaperSection", "PaperSection")
+                        .WithMany("PaperQuestions")
+                        .HasForeignKey("PaperSectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PaperSection");
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperSections.PaperSection", b =>
+                {
+                    b.HasOne("SuperAbp.Exam.PaperManagement.Papers.Paper", null)
+                        .WithMany("PaperSections")
+                        .HasForeignKey("PaperId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -2869,7 +3028,24 @@ namespace SuperAbp.Exam.Migrations
 
             modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExams.UserExam", b =>
                 {
+                    b.Navigation("Sections");
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.ExamManagement.UserExams.UserExamSection", b =>
+                {
                     b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.PaperSections.PaperSection", b =>
+                {
+                    b.Navigation("PaperQuestionRules");
+
+                    b.Navigation("PaperQuestions");
+                });
+
+            modelBuilder.Entity("SuperAbp.Exam.PaperManagement.Papers.Paper", b =>
+                {
+                    b.Navigation("PaperSections");
                 });
 
             modelBuilder.Entity("SuperAbp.Exam.QuestionManagement.Questions.Question", b =>

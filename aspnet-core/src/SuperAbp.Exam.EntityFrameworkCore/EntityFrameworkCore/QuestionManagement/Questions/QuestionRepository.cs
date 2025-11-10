@@ -39,10 +39,13 @@ public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProv
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<int> GetCountAsync(string? content = null, int? questionType = null, List<Guid>? questionBankIds = null,
+    public async Task<int> GetCountAsync(string? content = null,
+        int? questionType = null,
+        List<Guid>? questionBankIds = null,
+        List<Guid>? excludeIds = null,
         CancellationToken cancellationToken = default)
     {
-        var questionQueryable = await GetQueryableAsync(content, questionType, questionBankIds);
+        var questionQueryable = await GetQueryableAsync(content, questionType, questionBankIds, excludeIds);
         return await questionQueryable.CountAsync(cancellationToken);
     }
 
@@ -58,10 +61,16 @@ public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProv
         string? content = null,
         int? questionType = null,
         List<Guid>? questionBankIds = null,
+        List<Guid>? includeIds = null,
+        List<Guid>? excludeIds = null,
+        bool? includeDetails = false,
         CancellationToken cancellationToken = default)
     {
         var dbContext = await GetDbContextAsync();
-        var questionQueryable = await GetQueryableAsync(content, questionType, questionBankIds);
+        var questionQueryable = await GetQueryableAsync(content, questionType, questionBankIds, excludeIds);
+        questionQueryable = questionQueryable
+            .IncludeIf(includeDetails.HasValue && includeDetails.Value, q => q.Answers)
+            .WhereIf(includeIds?.Count > 0, q => includeIds.Contains(q.Id));
         var questionBankQueryable = dbContext.Set<QuestionBank>().AsQueryable();
         var questionKnowledgePointQueryable = dbContext.Set<QuestionKnowledgePoint>().AsQueryable();
         var knowledgePointQueryable = dbContext.Set<KnowledgePoint>().AsQueryable();
@@ -70,29 +79,32 @@ public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProv
                              join kp in knowledgePointQueryable on qkp.KnowledgePointId equals kp.Id
                              select new { qkp.QuestionId, kp.Name };
 
-        var queryable = from q in questionQueryable
-                        join qb in questionBankQueryable on q.QuestionBankId equals qb.Id
-                        join kp in pointQueryable on q.Id equals kp.QuestionId into kpGroup
-                        select new QuestionWithDetails
-                        {
-                            Id = q.Id,
-                            QuestionBank = qb.Title,
-                            Content = q.Content,
-                            Analysis = q.Analysis,
-                            QuestionType = q.QuestionType,
-                            CreationTime = q.CreationTime,
-                            KnowledgePoints = kpGroup.Select(k => k.Name).ToList()
-                        };
+        var queryable = (from q in questionQueryable
+                         join qb in questionBankQueryable on q.QuestionBankId equals qb.Id
+                         join kp in pointQueryable on q.Id equals kp.QuestionId into kpGroup
+                         select new QuestionWithDetails
+                         {
+                             Id = q.Id,
+                             QuestionBank = qb.Title,
+                             Content = q.Content,
+                             Analysis = q.Analysis,
+                             QuestionType = q.QuestionType,
+                             CreationTime = q.CreationTime,
+                             KnowledgePoints = kpGroup.Select(k => k.Name).ToList(),
+                             Answers = q.Answers
+                         })
+                        .PageBy(skipCount, maxResultCount);
 
         return await queryable.ToListAsync(cancellationToken);
     }
 
-    private async Task<IQueryable<Question>> GetQueryableAsync(string? content, int? questionType, List<Guid>? questionBankIds)
+    private async Task<IQueryable<Question>> GetQueryableAsync(string? content, int? questionType, List<Guid>? questionBankIds, List<Guid>? excludeIds = null)
     {
         return (await GetQueryableAsync())
             .WhereIf(questionBankIds is not null && questionBankIds.Count > 0, q => questionBankIds.Contains(q.QuestionBankId))
             .WhereIf(questionType.HasValue, q => q.QuestionType == questionType.Value)
-            .WhereIf(!content.IsNullOrWhiteSpace(), q => q.Content.Contains(content));
+            .WhereIf(!content.IsNullOrWhiteSpace(), q => q.Content.Contains(content))
+            .WhereIf(excludeIds?.Count > 0, q => !excludeIds.Contains(q.Id));
     }
 
     public async Task<List<Question>> GetRandomListAsync(int maxResultCount = Int32.MaxValue, Guid? questionRepositoryId = null,

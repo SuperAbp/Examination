@@ -10,7 +10,7 @@ import { AlainThemeModule } from '@delon/theme';
 import { BlankComponent } from './components/blank';
 import { ChooseComponent } from './components/choose';
 import { QuestionNumberComponent } from './components/question-number';
-import { CharPipe } from './pipes';
+import { CharPipe, SimplifiedOrdinaryPipe } from './pipes';
 import { SHARED_DELON_MODULES } from './shared-delon.module';
 import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
 
@@ -24,7 +24,7 @@ const THIRDMODULES: Array<Type<void>> = [];
 
 const COMPONENTS: Array<Type<void>> = [QuestionNumberComponent, ChooseComponent, BlankComponent];
 const DIRECTIVES: Array<Type<void>> = [];
-const PIPES = [CharPipe];
+const PIPES = [CharPipe, SimplifiedOrdinaryPipe];
 
 // #endregion
 

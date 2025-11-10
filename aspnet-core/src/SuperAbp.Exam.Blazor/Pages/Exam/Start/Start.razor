@@ -12,8 +12,9 @@ else
         <GridCol Span="4">
             <Affix OffsetTop="10">
                 <QuestionNumber CurrentId="_currentId"
+                                Title="@_userExam.ExamName"
                                 Numbers="_questions"
-                                AnswerIds="_answerIds"
+                                AnswerIds="_answerIds"                                
                                 OnChanged="ChangeQuestion"></QuestionNumber>
             </Affix>
         </GridCol>
@@ -22,20 +23,21 @@ else
                 <ChildContent>
                     @if (_userExam.AnswerMode == AnswerMode.Single)
                     {
-                    <Single @ref="_singleComponent"
-                            QuestionAnswerStorageKey="@_questionAnswerStorageKey"
-                            Questions="_examQuestions"
-                            QuestionIds="_questionIds"
-                            OnAnswered="OnAnswered"
-                            OnQuestionChanged="ChangeQuestion" />
+                        <Single @ref="_singleComponent"
+                                QuestionAnswerStorageKey="@_questionAnswerStorageKey"
+                                Questions="_sections.SelectMany(s=>s.Questions).ToArray()"
+                                QuestionIds="_questionIds"
+                                OnAnswered="OnAnswered"
+                                OnQuestionChanged="ChangeQuestion" />
                     }
                     else
                     {
-                    <Full @ref="_fullComponent"
-                          UserExamId="Id"
-                          QuestionAnswerStorageKey="@_questionAnswerStorageKey"
-                          Questions="_examQuestions"
-                          OnAnswered="OnAnswered" />
+                        <Full @ref="_fullComponent"
+                              UserExamId="Id"
+                              QuestionAnswers="@_questionAnswers"
+                              QuestionAnswerStorageKey="@_questionAnswerStorageKey"
+                              Sections="_sections"
+                              OnAnswered="OnAnswered" />
                     }
                 </ChildContent>
             </Card>
@@ -43,10 +45,10 @@ else
         <GridCol Span="4">
             <Affix OffsetTop="10">
                 <Card style="text-align: center;">
-                    <ChildContent>
-                        <CountDown Title="@L["TimeLeft"]" Value="@_userExam.EndTime" ValueStyle="color:red; font-size: 22px" Format="mm 分 ss 秒" OnFinish="SubmitPaperAsync" />
+                    <ChildContent>                        
+                        <CountDown Title="@L["TimeLeft"]" Value="@_userExam.EndTime" ValueStyle="color:red; font-size: 22px" OnFinish="SubmitPaperAsync" />
                         <Divider Type="DividerType.Horizontal" />
-                        <Button AutoLoading Type="@ButtonType.Primary" OnClick="SubmitPaperAsync" style="width:100%">提交试卷</Button>
+                        <Button Loading="@_submitLoading" Type="@ButtonType.Primary" OnClick="SubmitPaperAsync" style="width:100%">提交试卷</Button>
                     </ChildContent>
                 </Card>
             </Affix>
@@ -54,6 +56,9 @@ else
     </GridRow>
 }
 
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.Extensions.Configuration
 @using SuperAbp.Exam.Blazor.Pages.Exam.Start.Components
 @using SuperAbp.Exam.ExamManagement.UserExams
 @using SuperAbp.Exam.Blazor.Model
@@ -62,16 +67,27 @@ else
 @using SuperAbp.Exam.ExamManagement.Exams
 @using Volo.Abp.Http.Client
 @using Single = SuperAbp.Exam.Blazor.Pages.Exam.Start.Components.Single
+@using Volo.Abp.ObjectMapping
+@using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel.UserExamQuestionViewModel
+@using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel
+@using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto
+@using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto
 @inject NavigationManager Navigation
+@inject IAccessTokenProvider AccessTokenProvider
 @inject IStringLocalizer<ExamResource> L
 @inject IUserExamAppService UserExamAppService
+@inject IObjectMapper ObjectMapper
+@inject IConfiguration Configuration
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @code {
     [Parameter]
     public Guid Id { get; set; }
 
+    private Dictionary<Guid, string> _questionAnswers = [];
+
     bool _loading = true;
-    IReadOnlyList<UserExamDetailDto.QuestionDto> _examQuestions = Array.Empty<UserExamDetailDto.QuestionDto>();
+    bool _submitLoading = false;
+    List<UserExamSectionViewModel> _sections = [];
     Dictionary<int, int> _questionTypes = new();
     readonly List<QuestionNumberVo> _questions = [];
     UserExamDetailDto _userExam;
@@ -103,18 +119,12 @@ else
             return;
         }
 
-        _examQuestions = _userExam.Questions;
         List<QuestionAnswerItem> answerItems = await LocalStorage.GetItemAsync<List<QuestionAnswerItem>>(_questionAnswerStorageKey) ?? [];
         if (answerItems.Count > 0)
         {
             foreach (var item in answerItems)
             {
-                var question = _examQuestions.SingleOrDefault(q => q.Id == item.QuestionId);
-                if (question is null)
-                {
-                    continue;
-                }
-                question.Answers = item.Answer;
+                _questionAnswers.Add(item.QuestionId, item.Answer);
                 if (!_answerIds.Contains(item.QuestionId))
                 {
                     _answerIds.Add(item.QuestionId);
@@ -122,31 +132,50 @@ else
             }
         }
 
-        _questionTypes = _examQuestions.GroupBy(q => q.QuestionType).Select(q => new
-        {
-            QuestionType = q.Key,
-            Count = q.Count()
-        }).ToDictionary(key => key.QuestionType, value => value.Count);
-        foreach (KeyValuePair<int, int> item in _questionTypes)
+        foreach (var section in _userExam.Sections)
         {
             QuestionNumberVo vo = new QuestionNumberVo()
             {
-                QuestionType = item.Key,
-                    Questions = _examQuestions.Where(q => q.QuestionType == item.Key)
-                    .Select(q => new QuestionNumberVo.QuestionIndex()
-                    {
-                        QuestionId = q.Id,
-                        QuestionScore = q.QuestionScore
-                    }).ToArray()
+                SectionTitle = section.Title,
+                TotalScore = section.TotalScore,
             };
-            vo.TotalScore = vo.Questions.Sum(q => q.QuestionScore ?? 0);
+            UserExamSectionViewModel sectionVo = ObjectMapper.Map<SectionDto, UserExamSectionViewModel>(section);
+            List<QuestionNumberVo.QuestionIndex> questionIndexes = [];            
+            foreach (var q in section.Questions)
+            {
+                questionIndexes.Add(new QuestionNumberVo.QuestionIndex()
+                {
+                    QuestionId = q.Id,
+                    Score = q.QuestionScore
+                });
+                vo.Questions = questionIndexes;
+
+            }
+            _sections.Add(sectionVo);
             _questions.Add(vo);
         }
+
         _questionIds = _questions.SelectMany(q => q.Questions.Select(i => i.QuestionId)).ToArray();
         _currentId = _questions[0].Questions[0].QuestionId;
+
+        (await AccessTokenProvider.RequestAccessToken()).TryGetToken(out var accessToken);
+        string signalRUrl = Configuration["SignalRUrl"] ?? "";
+        HubConnection hubConnection = new HubConnectionBuilder()
+            .WithUrl(signalRUrl.EnsureEndsWith('/') + "signalr-hubs/progress", options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(accessToken!.Value);
+            })
+            .Build();
+
+        hubConnection.On("Submitted", async () =>
+        {
+            await SubmitPaperAsync();
+        });
+
+        await hubConnection.StartAsync();
         _loading = false;
     }
-    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamDetailDto.QuestionDto.OptionDto> answers)
+    protected IReadOnlyList<QuestionAnswerViewModel> ToQuestionAnswerViewModels(IEnumerable<UserExamQuestionAnswerViewModel> answers)
     {
         return answers
             .Select(qa => new QuestionAnswerViewModel
@@ -159,14 +188,23 @@ else
 
     public virtual async Task SubmitPaperAsync()
     {
+        _submitLoading = true;
         List<QuestionAnswerItem> answerItems = await LocalStorage.GetItemAsync<List<QuestionAnswerItem>>(_questionAnswerStorageKey) ?? [];
-        await UserExamAppService.FinishedAsync(Id, answerItems.Select(a => new UserExamAnswerDto
+        try
         {
-            QuestionId = a.QuestionId,
-            Answers = a.Answer
-        }).ToList());
-        await LocalStorage.RemoveItemAsync(_questionAnswerStorageKey);
-        Navigation.NavigateTo("/exam/result");
+            await UserExamAppService.FinishedAsync(Id, answerItems.Select(a => new UserExamAnswerDto
+                {
+                    QuestionId = a.QuestionId,
+                    Answers = a.Answer
+                }).ToList());
+            await LocalStorage.RemoveItemAsync(_questionAnswerStorageKey);
+            Navigation.NavigateTo("/exam/result");
+        }
+        finally
+        {
+            _submitLoading = false;
+            StateHasChanged();
+        }
     }
 
     public async Task ChangeQuestion(Guid id)

@@ -30,13 +30,18 @@ namespace SuperAbp.Exam.Admin.ExamManagement
             CreateMap<UserExamWithUser, UserExamWithUserDto>();
             CreateMap<UserExam, UserExamListDto>();
             CreateMap<UserExam, UserExamDetailDto>()
-                .ForMember(s => s.Questions,
+                .ForMember(s => s.Sections,
                     opt => opt.Ignore())
                 .ForMember(s => s.UserName,
                     opt => opt.Ignore())
                 .ForMember(s => s.ExamName,
                     opt => opt.Ignore());
-            CreateMap<Question, UserExamDetailDto.QuestionDto>();
+            CreateMap<UserExamSection, UserExamDetailDto.SectionDto>()
+                .ForMember(s => s.Questions,
+                    opt => opt.Ignore());
+            CreateMap<Question, UserExamDetailDto.SectionDto.QuestionDto>()
+                .ForMember(s => s.Options,
+                    opt => opt.Ignore());
         }
     }
 }

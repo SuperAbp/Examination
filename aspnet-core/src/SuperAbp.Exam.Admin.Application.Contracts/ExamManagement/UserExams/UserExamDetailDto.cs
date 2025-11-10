@@ -16,54 +16,64 @@ public class UserExamDetailDto
 
     public int Status { get; set; }
 
-    public IReadOnlyList<QuestionDto> Questions { get; set; } = [];
+    public IReadOnlyList<SectionDto> Sections { get; set; } = [];
 
-    public class QuestionDto
+    public class SectionDto
     {
-        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public decimal? ScoreEach { get; set; }
+        public decimal? TotalScore { get; set; }
+        public int TotalCount { get; set; }
+        public int Order { get; set; }
+        public IReadOnlyList<QuestionDto> Questions { get; set; } = [];
 
-        /// <summary>
-        /// 题干
-        /// </summary>
-        public required string Content { get; set; }
-
-        public int QuestionType { get; set; }
-
-        /// <summary>
-        /// 解析
-        /// </summary>
-        public string? Analysis { get; set; }
-
-        public string? Answers { get; set; }
-
-        /// <summary>
-        /// 正确
-        /// </summary>
-        public bool? Right { get; set; }
-
-        /// <summary>
-        /// 得分
-        /// </summary>
-        public decimal? Score { get; set; }
-
-        public decimal? QuestionScore { get; set; }
-
-        public string? Reason { get; set; }
-
-        public IReadOnlyList<string> KnowledgePoints { get; set; } = [];
-
-        public List<OptionDto> Options { get; set; } = [];
-
-        public class OptionDto
+        public class QuestionDto
         {
             public Guid Id { get; set; }
 
             /// <summary>
-            /// 答案
+            /// 题干
             /// </summary>
             public required string Content { get; set; }
 
+            public int QuestionType { get; set; }
+
+            /// <summary>
+            /// 解析
+            /// </summary>
+            public string? Analysis { get; set; }
+
+            public string? Answers { get; set; }
+
+            /// <summary>
+            /// 正确
+            /// </summary>
             public bool? Right { get; set; }
+
+            /// <summary>
+            /// 得分
+            /// </summary>
+            public decimal? Score { get; set; }
+
+            public decimal? QuestionScore { get; set; }
+
+            public string? Reason { get; set; }
+
+            public IReadOnlyList<string> KnowledgePoints { get; set; } = [];
+
+            public List<OptionDto> Options { get; set; } = [];
+
+            public class OptionDto
+            {
+                public Guid Id { get; set; }
+
+                /// <summary>
+                /// 答案
+                /// </summary>
+                public required string Content { get; set; }
+
+                public bool? Right { get; set; }
+            }
         }
     }
 }

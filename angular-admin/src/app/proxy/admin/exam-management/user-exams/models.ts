@@ -22,10 +22,18 @@ export interface UserExamDetailDto {
   examName?: string;
   userName?: string;
   status: number;
-  questions: UserExamDetailDto_QuestionDto[];
+  sections: UserExamDetailDto_SectionDto[];
 }
 
-export interface UserExamDetailDto_QuestionDto {
+export interface UserExamDetailDto_SectionDto {
+  title?: string;
+  scoreEach?: number;
+  totalScore?: number;
+  totalCount?: number;
+  questions: UserExamDetailDto_SectionDto_QuestionDto[];
+}
+
+export interface UserExamDetailDto_SectionDto_QuestionDto {
   id?: string;
   content?: string;
   questionType: number;
@@ -36,10 +44,10 @@ export interface UserExamDetailDto_QuestionDto {
   questionScore?: number;
   reason?: string;
   knowledgePoints: string[];
-  options: UserExamDetailDto_QuestionDto_OptionDto[];
+  options: UserExamDetailDto_SectionDto_QuestionDto_OptionDto[];
 }
 
-export interface UserExamDetailDto_QuestionDto_OptionDto {
+export interface UserExamDetailDto_SectionDto_QuestionDto_OptionDto {
   id?: string;
   content?: string;
   right?: boolean;

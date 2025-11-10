@@ -1,17 +1,15 @@
-﻿using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
+using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp;
-using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 using Volo.Abp.EventBus.Local;
-using static SuperAbp.Exam.ExamDomainErrorCodes;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams;
 
@@ -23,7 +21,8 @@ public class UserExamManager(
     IPaperQuestionRuleRepository paperQuestionRuleRepository,
     IUserExamRepository userExamRepository,
     ILocalEventBus eventBus,
-    IUserExamQuestionRepository userExamQuestionRepository)
+    IUserExamQuestionRepository userExamQuestionRepository,
+    IPaperSectionRepository paperSectionRepository)
     : DomainService
 {
     public async Task<UserExam> CreateAsync(Guid examId, Guid userId)
@@ -68,44 +67,23 @@ public class UserExamManager(
         UserExam userExam = await userExamRepository.GetAsync(userExamId);
         Examination exam = await examRepository.GetAsync(userExam.ExamId);
         Paper paper = await paperRepository.GetAsync(exam.PaperId);
-        List<PaperQuestionRule> paperRepos = await paperQuestionRuleRepository.GetListAsync(paperId: paper.Id);
 
-        await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto
+        List<PaperSection> sections = await paperSectionRepository.GetListByPaperIdAsync(paper.Id);
+        int sectionIndex = 0;
+        int totalSections = sections.Count;
+
+        foreach (var section in sections)
         {
-            Progress = 10,
-            UserId = userExam.UserId,
-        });
+            sectionIndex++;
 
-        int i = 0;
-        foreach (var paperRepo in paperRepos)
-        {
-            i++;
-            if (paperRepo.SingleCount is > 0)
+            if (paper.PaperType == PaperType.Fixed)
             {
-                List<Question> questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.SingleSelect, paperRepo.SingleCount.Value);
-                userExam.Questions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExam.Id, q.Id, paperRepo.SingleScore ?? 0)));
+                await CreateFixedSectionAsync(userExam, section, sectionIndex, totalSections);
             }
-            if (paperRepo.MultiCount is > 0)
+            else if (paper.PaperType == PaperType.Random)
             {
-                List<Question> questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.MultiSelect, paperRepo.MultiCount.Value);
-                userExam.Questions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExam.Id, q.Id, paperRepo.MultiScore ?? 0)));
+                await CreateRandomSectionAsync(userExam, section, sectionIndex, totalSections);
             }
-            if (paperRepo.JudgeCount is > 0)
-            {
-                List<Question> questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.Judge, paperRepo.JudgeCount.Value);
-                userExam.Questions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExam.Id, q.Id, paperRepo.JudgeScore ?? 0)));
-            }
-            if (paperRepo.BlankCount is > 0)
-            {
-                List<Question> questions = await GetRandomQuestions(paperRepo.QuestionBankId, QuestionType.FillInTheBlanks, paperRepo.BlankCount.Value);
-                userExam.Questions.AddRange(questions.Select(q => new UserExamQuestion(GuidGenerator.Create(), userExam.Id, q.Id, paperRepo.BlankScore ?? 0)));
-            }
-
-            await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto
-            {
-                Progress = i / paperRepos.Count * 80,
-                UserId = userExam.UserId,
-            });
         }
 
         Start(userExam);
@@ -114,15 +92,115 @@ public class UserExamManager(
             Progress = 100,
             UserId = userExam.UserId,
         });
-        async Task<List<Question>> GetRandomQuestions(Guid questionRepositoryId, QuestionType questionType, int count)
-        {
-            return await questionRepository.GetRandomListAsync(questionRepositoryId: questionRepositoryId,
-                questionType: questionType, maxResultCount: count);
-        }
     }
 
-    public async Task<List<UserExamQuestionWithDetails>> GetQuestionsAsync(Guid userExamId)
+    private async Task CreateFixedSectionAsync(UserExam userExam, PaperSection section, int sectionIndex, int totalSections)
     {
-        return await userExamQuestionRepository.GetListAsync(userExamId: userExamId);
+        var userExamSection = new UserExamSection(
+            GuidGenerator.Create(),
+            userExam.Id,
+            section.Id,
+            section.Title,
+            section.ScoreEach,
+            section.TotalScore,
+            section.Order,
+            section.TotalCount);
+        userExamSection.TenantId = userExam.TenantId;
+
+        await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto
+        {
+            Progress = (sectionIndex - 1) / totalSections * 10,
+            UserId = userExam.UserId,
+        });
+
+        var questions = new List<UserExamQuestion>();
+        foreach (var paperQuestion in section.PaperQuestions)
+        {
+            var userExamQuestion = new UserExamQuestion(
+                GuidGenerator.Create(),
+                userExamSection.Id,
+                paperQuestion.QuestionId,
+                paperQuestion.Score,
+                paperQuestion.Order);
+            userExamQuestion.TenantId = userExam.TenantId;
+            questions.Add(userExamQuestion);
+        }
+        userExamSection.SetQuestions(questions);
+        userExam.AddSection(userExamSection);
+
+        await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto
+        {
+            Progress = sectionIndex / totalSections * 80 + 10,
+            UserId = userExam.UserId,
+        });
+    }
+
+    private async Task CreateRandomSectionAsync(UserExam userExam, PaperSection section, int sectionIndex, int totalSections)
+    {
+        var userExamSection = new UserExamSection(
+            GuidGenerator.Create(),
+            userExam.Id,
+            section.Id,
+            section.Title,
+            section.ScoreEach,
+            section.TotalScore,
+            section.Order,
+            section.TotalCount);
+        userExamSection.TenantId = userExam.TenantId;
+
+        await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto
+        {
+            Progress = (sectionIndex - 1) / totalSections * 10,
+            UserId = userExam.UserId,
+        });
+
+        var questions = new List<UserExamQuestion>();
+
+        foreach (var paperRule in section.PaperQuestionRules)
+        {
+            List<Question> randomQuestions = await GetRandomQuestions(paperRule.QuestionBankId, paperRule.QuestionType, paperRule.Count);
+            foreach (var question in randomQuestions)
+            {
+                var userExamQuestion = new UserExamQuestion(
+                    GuidGenerator.Create(),
+                    userExamSection.Id,
+                    question.Id,
+                    paperRule.Score,
+                    0);
+                userExamQuestion.TenantId = userExam.TenantId;
+                questions.Add(userExamQuestion);
+            }
+        }
+        userExamSection.SetQuestions(questions);
+        userExam.AddSection(userExamSection);
+
+        await eventBus.PublishAsync(new DataGenerationProgressUpdatedEto
+        {
+            Progress = sectionIndex / totalSections * 80 + 10,
+            UserId = userExam.UserId,
+        });
+    }
+
+    private async Task<List<Question>> GetRandomQuestions(Guid questionRepositoryId, QuestionType questionType, int count)
+    {
+        return await questionRepository.GetRandomListAsync(questionRepositoryId: questionRepositoryId,
+            questionType: questionType, maxResultCount: count);
+    }
+
+    /// <summary>
+    /// 提交实践
+    /// </summary>
+    /// <param name="examId"></param>
+    /// <returns></returns>
+    public async Task SubmitUserExamAsync(Guid examId)
+    {
+        List<UserExam> userExams = await userExamRepository.GetInProgressAsync(examId);
+        foreach (var userExam in userExams)
+        {
+            await eventBus.PublishAsync(new UserExamSubmittedEto
+            {
+                UserId = userExam.UserId,
+            });
+        }
     }
 }
