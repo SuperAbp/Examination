@@ -16,6 +16,12 @@ namespace SuperAbp.Exam.EntityFrameworkCore.QuestionManagement.Questions;
 public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
     : EfCoreRepository<IExamDbContext, Question, Guid>(dbContextProvider), IQuestionRepository
 {
+    public async Task<bool> ExistsQuestionTypeAsync(int questionType, List<Guid> ids, CancellationToken cancellationToken = default)
+    {
+        var dbSet = await GetDbSetAsync();
+        return await dbSet.AnyAsync(q => q.QuestionType == questionType && ids.Contains(q.Id), cancellationToken);
+    }
+
     public async Task<int> GetCountAsync(Guid questionBankId, CancellationToken cancellationToken = default)
     {
         return await (await GetDbSetAsync())

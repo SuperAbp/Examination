@@ -31,6 +31,7 @@
     "QuestionBankExists": "题库已存在",
     "ExamExists": "考试已存在",
     "Answer": "答案",
+    "ManualReview": "手动审核",
     "UserAnswer": "用户答案",
     "Paper": "试卷",
     "User": "用户",

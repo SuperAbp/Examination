@@ -11,7 +11,7 @@
            OnChange="Change">
         <PropertyColumn Property="c => c.ExamName" Title="@L["ExamName"]"/>
         <PropertyColumn Field="@L["UserExamStatus:" + context.Status]"  Title="@L["Status"]" />
-        <PropertyColumn Property="c => c.TotalScore">
+        <PropertyColumn Property="c => c.TotalScore" Title="@L["TotalScore"]">
             @if (context.Status == 3)
             {
                 @context.TotalScore

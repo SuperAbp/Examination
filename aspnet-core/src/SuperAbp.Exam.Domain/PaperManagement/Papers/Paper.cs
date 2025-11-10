@@ -22,12 +22,13 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
     }
 
     [SetsRequiredMembers]
-    protected internal Paper(Guid id, PaperType paperType, string name, decimal score, int totalQuestionCount) : base(id)
+    protected internal Paper(Guid id, PaperType paperType, string name, decimal score, int totalQuestionCount, bool manualReview) : base(id)
     {
         Name = name;
         Score = score;
         PaperType = paperType;
         TotalQuestionCount = totalQuestionCount;
+        ManualReview = manualReview;
         PaperSections = [];
     }
 
@@ -50,6 +51,11 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
     /// 分数
     /// </summary>
     public decimal Score { get; set; }
+
+    /// <summary>
+    /// 人工批阅
+    /// </summary>
+    public bool ManualReview { get; set; }
 
     public PaperType PaperType { get; set; }
 
