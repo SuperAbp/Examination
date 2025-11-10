@@ -23,6 +23,7 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     IQuestionBankRepository questionBankRepository,
     IKnowledgePointRepository knowledgePointRepository,
     IExamRepository examRepository,
+    IPaperRepository paperRepository,
     ITrainingRepository trainingRepository,
     ExamTestData testData) : IDataSeedContributor, ITransientDependency
 {
@@ -36,12 +37,22 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
 
             await CreateQuestionAsync();
 
+            await CreatePaperAsync();
+
             await CreateExamAsync();
 
             await CreateTrainingAsync();
 
             await CreateKnowledgePointAsync();
         }
+    }
+
+    private async Task CreatePaperAsync()
+    {
+        await paperRepository.InsertManyAsync([
+            new Paper(testData.Paper1Id, PaperType.Fixed, testData.Paper1Name, 100, 10, false),
+            new Paper(testData.Paper2Id, PaperType.Fixed, testData.Paper2Name, 100, 10, false),
+        ]);
     }
 
     private async Task CreateKnowledgePointAsync()
