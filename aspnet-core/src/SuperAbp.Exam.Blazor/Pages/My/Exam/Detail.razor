@@ -22,7 +22,7 @@ else
                         int number = 1, bigNumber = 0;
                         foreach (var sect in _sections)
                         {
-                            <Title Level="2">@chineseNumber[bigNumber++]、@sect.Title（共@(sect.TotalCount)题，合计@(sect.TotalScore))分）</Title>
+                            <Title Level="2">@chineseNumber[bigNumber++]、@sect.Title（共@(sect.TotalCount)题，合计@(sect.TotalScore)分）</Title>
                             foreach (var examQuestion in sect.Questions)
                             {
                                 IReadOnlyList<QuestionAnswerViewModel> answers = ToQuestionAnswerViewModels(examQuestion.Options);

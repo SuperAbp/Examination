@@ -23,6 +23,7 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     IQuestionBankRepository questionBankRepository,
     IKnowledgePointRepository knowledgePointRepository,
     IExamRepository examRepository,
+    IPaperRepository paperRepository,
     ITrainingRepository trainingRepository,
     ExamTestData testData) : IDataSeedContributor, ITransientDependency
 {
@@ -36,12 +37,22 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
 
             await CreateQuestionAsync();
 
+            await CreatePaperAsync();
+
             await CreateExamAsync();
 
             await CreateTrainingAsync();
 
             await CreateKnowledgePointAsync();
         }
+    }
+
+    private async Task CreatePaperAsync()
+    {
+        await paperRepository.InsertManyAsync([
+            new Paper(testData.Paper1Id, PaperType.Fixed, testData.Paper1Name, 100, 10, false),
+            new Paper(testData.Paper2Id, PaperType.Fixed, testData.Paper2Name, 100, 10, false),
+        ]);
     }
 
     private async Task CreateKnowledgePointAsync()
@@ -65,39 +76,39 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     private async Task CreateExamAsync()
     {
         Examination ongoingExam = new(testData.Examination12Id, testData.Paper1Id,
-            testData.Examination12Name, 100, 60, 60, AnswerMode.All, false)
+            testData.Examination12Name, 100, 60, 60, AnswerMode.All, false, true)
         {
             Status = ExaminationStatus.Published
         };
         Examination gradingExam = new(testData.Examination13Id, testData.Paper1Id,
-            testData.Examination13Name, 100, 60, 60, AnswerMode.All, false)
+            testData.Examination13Name, 100, 60, 60, AnswerMode.All, false, true)
         {
             Status = ExaminationStatus.Grading
         };
         Examination completedExam = new(testData.Examination14Id, testData.Paper1Id,
-            testData.Examination14Name, 100, 60, 60, AnswerMode.All, false)
+            testData.Examination14Name, 100, 60, 60, AnswerMode.All, false, true)
         {
             Status = ExaminationStatus.Completed
         };
         Examination cancelledExam = new(testData.Examination15Id, testData.Paper1Id,
-            testData.Examination15Name, 100, 60, 60, AnswerMode.All, false)
+            testData.Examination15Name, 100, 60, 60, AnswerMode.All, false, true)
         {
             Status = ExaminationStatus.Cancelled
         };
         Examination timeExam = new(testData.Examination31Id, testData.Paper1Id,
-            testData.Examination31Name, 100, 60, 60, AnswerMode.All, false)
+            testData.Examination31Name, 100, 60, 60, AnswerMode.All, false, true)
         {
             Status = ExaminationStatus.Published
         };
         timeExam.SetTime(DateTime.Now.AddDays(-2), DateTime.Now.AddDays(-1));
         await examRepository.InsertManyAsync([
-            new Examination(testData.Examination11Id, testData.Paper1Id, testData.Examination11Name, 100, 60, 60, AnswerMode.All, false),
+            new Examination(testData.Examination11Id, testData.Paper1Id, testData.Examination11Name, 100, 60, 60, AnswerMode.All, false, true),
             ongoingExam,
             gradingExam,
             completedExam,
             cancelledExam,
-            new Examination(testData.Examination21Id, testData.Paper2Id, testData.Examination21Name, 100, 60, 60, AnswerMode.All, false),
-            new Examination(testData.Examination22Id, testData.Paper2Id, testData.Examination22Name, 100, 60, 60, AnswerMode.All, false),
+            new Examination(testData.Examination21Id, testData.Paper2Id, testData.Examination21Name, 100, 60, 60, AnswerMode.All, false, true),
+            new Examination(testData.Examination22Id, testData.Paper2Id, testData.Examination22Name, 100, 60, 60, AnswerMode.All, false, true),
             timeExam
         ]);
     }

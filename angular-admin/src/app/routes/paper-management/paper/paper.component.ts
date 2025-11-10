@@ -52,6 +52,7 @@ export class PaperManagementPaperComponent implements OnInit {
   columns: STColumn[] = [
     { title: this.localizationService.instant('Exam::Name'), index: 'name' },
     { title: this.localizationService.instant('Exam::Score'), index: 'score' },
+    { title: this.localizationService.instant('Exam::ManualReview'), index: 'manualReview', type: 'yn' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [

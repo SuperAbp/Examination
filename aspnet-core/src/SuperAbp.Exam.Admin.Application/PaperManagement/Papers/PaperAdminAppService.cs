@@ -15,7 +15,7 @@ using static SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBa
 namespace SuperAbp.Exam.Admin.PaperManagement.Papers
 {
     [Authorize(ExamPermissions.Papers.Default)]
-    public class PaperAdminAppService(IPaperRepository paperRepository, PaperManager paperManager)
+    public class PaperAdminAppService(IPaperRepository paperRepository, PaperManager paperManager, IQuestionRepository questionRepository)
         : ExamAppService, IPaperAdminAppService
     {
         public virtual async Task<PagedResultDto<PaperListDto>> GetListAsync(GetPapersInput input)
@@ -47,11 +47,23 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         [Authorize(ExamPermissions.Papers.Create)]
         public virtual async Task<PaperListDto> CreateAsync(PaperCreateDto input)
         {
-            Paper paper = await paperManager.CreateAsync(PaperType.FromValue(input.PaperType), input.Name,
-                input.Sections.Sum(s => s.TotalScore), input.Sections.Sum(s => s.TotalCount));
+            bool manualReview;
+            PaperType paperType = PaperType.FromValue(input.PaperType);
+            if (PaperType.Random == paperType)
+            {
+                manualReview = input.Sections.Any(s => s.PaperQuestionRules.Any(r => r.QuestionType == QuestionType.FillInTheBlanks));
+            }
+            else
+            {
+                List<Guid> questionIds = input.Sections.SelectMany(s => s.PaperQuestions).Select(q => q.QuestionId).Distinct().ToList();
+                manualReview = await questionRepository.ExistsQuestionTypeAsync(QuestionType.FillInTheBlanks.Value, questionIds);
+            }
+            Paper paper = await paperManager.CreateAsync(paperType, input.Name,
+                input.Sections.Sum(s => s.TotalScore), input.Sections.Sum(s => s.TotalCount), manualReview);
             paper.Description = input.Description;
 
             CreateOrUpdatePaperQuestion(paper, input.Sections);
+
             await paperRepository.InsertAsync(paper);
 
             return ObjectMapper.Map<Paper, PaperListDto>(paper);
@@ -66,7 +78,15 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
 
             RemoveOldSections(paper, input.Sections);
             CreateOrUpdatePaperQuestion(paper, input.Sections);
-
+            if (paper.PaperType == PaperType.Random)
+            {
+                paper.ManualReview = input.Sections.Any(s => s.PaperQuestionRules.Any(r => r.QuestionType == QuestionType.FillInTheBlanks));
+            }
+            else
+            {
+                List<Guid> questionIds = input.Sections.SelectMany(s => s.PaperQuestions).Select(q => q.QuestionId).Distinct().ToList();
+                paper.ManualReview = await questionRepository.ExistsQuestionTypeAsync(QuestionType.FillInTheBlanks.Value, questionIds);
+            }
             paper.Score = input.Sections.Sum(s => s.TotalScore);
             paper.TotalQuestionCount = input.Sections.Sum(s => s.TotalCount);
 

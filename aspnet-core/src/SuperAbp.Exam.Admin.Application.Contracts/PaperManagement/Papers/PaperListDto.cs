@@ -13,5 +13,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         public decimal Score { get; set; }
 
         public int PaperType { get; set; }
+
+        public bool ManualReview { get; set; }
     }
 }

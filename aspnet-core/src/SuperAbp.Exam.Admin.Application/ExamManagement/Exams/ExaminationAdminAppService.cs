@@ -3,6 +3,7 @@ using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.Jobs.SubmittedUserExam;
 using SuperAbp.Exam.Jobs.UserExamCreateQuestion;
+using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.Permissions;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ using static SuperAbp.Exam.ExamDomainErrorCodes;
 namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 {
     [Authorize(ExamPermissions.Exams.Default)]
-    public class ExaminationAdminAppService(IExamRepository examRepository, IBackgroundJobManager backgroundJobManager) : ExamAppService, IExaminationAdminAppService
+    public class ExaminationAdminAppService(IPaperRepository paperRepository, IExamRepository examRepository, IBackgroundJobManager backgroundJobManager) : ExamAppService, IExaminationAdminAppService
     {
         protected IExamRepository ExamRepository { get; } = examRepository;
         public IBackgroundJobManager BackgroundJobManager { get; } = backgroundJobManager;
@@ -59,7 +60,10 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         [Authorize(ExamPermissions.Exams.Create)]
         public virtual async Task<ExamListDto> CreateAsync(ExamCreateDto input)
         {
-            Examination examination = new(GuidGenerator.Create(), input.PaperId, input.Name, input.Score, input.PassingScore, input.TotalTime, AnswerMode.FromValue(input.AnswerMode), input.RandomOrderOfOption)
+            Paper paper = await paperRepository.GetAsync(input.PaperId);
+            Examination examination = new(GuidGenerator.Create(), input.PaperId, input.Name, input.Score,
+                input.PassingScore, input.TotalTime, AnswerMode.FromValue(input.AnswerMode),
+                input.RandomOrderOfOption, paper.ManualReview)
             {
                 Description = input.Description
             };

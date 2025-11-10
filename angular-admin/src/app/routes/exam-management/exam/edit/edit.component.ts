@@ -136,7 +136,7 @@ export class ExamManagementExamEditComponent implements OnInit {
               description: [this.exam.description || ''],
               score: [this.exam.score || 0],
               passingScore: [this.exam.passingScore || 0, [Validators.required, Validators.min(1)]],
-              totalTime: [this.exam.totalTime || 0],
+              totalTime: [this.exam.totalTime || 0, [Validators.required, Validators.min(1)]],
               paperId: [this.exam.paperId || ''],
               startTime: [new Date()],
               endTime: [new Date()],
@@ -161,10 +161,14 @@ export class ExamManagementExamEditComponent implements OnInit {
   passingScoreLessThanScoreValidator(group: FormGroup) {
     const score = group.get('score')?.value;
     const passingScore = group.get('passingScore')?.value;
-
-    if (passingScore != null && score != null && passingScore >= score) {
-      group.get('passingScore')?.setErrors({ passingScoreTooHigh: { max: score - 1 } });
-      return { passingScoreTooHigh: { max: score - 1 } };
+    if (passingScore != null && score != null) {
+      if (passingScore >= score) {
+        group.get('passingScore')?.setErrors({ max: { value: score - 1 } });
+        return { max: { max: score - 1 } };
+      } else if (passingScore < 1) {
+        group.get('passingScore')?.setErrors({ min: { value: 1 } });
+        return { min: { min: 1 } };
+      }
     }
     group.get('passingScore')?.setErrors(null);
     return null;

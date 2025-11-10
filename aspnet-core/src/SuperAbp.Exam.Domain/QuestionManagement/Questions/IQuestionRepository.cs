@@ -12,6 +12,8 @@ namespace SuperAbp.Exam.QuestionManagement.Questions;
 /// </summary>
 public interface IQuestionRepository : IRepository<Question, Guid>
 {
+    Task<bool> ExistsQuestionTypeAsync(int questionType, List<Guid> ids, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// 数量
     /// </summary>

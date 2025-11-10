@@ -182,6 +182,7 @@ public class ExamDbContext :
             b.Property(p => p.Name).IsRequired().HasMaxLength(PaperConsts.MaxNameLength);
             b.Property(p => p.Description).HasMaxLength(PaperConsts.MaxDescriptionLength);
             b.Property(p => p.Score).HasPrecision(18, 2);
+            b.Property(p => p.ManualReview).HasDefaultValue(true);
         });
 
         builder.Entity<PaperSection>(b =>
@@ -220,6 +221,7 @@ public class ExamDbContext :
             b.Property(p => p.Score).HasPrecision(18, 2);
             b.Property(p => p.PassingScore).HasPrecision(18, 2);
             b.HasIndex(p => p.PaperId);
+            b.Property(p => p.ManualReview).HasDefaultValue(true);
         });
 
         builder.Entity<UserExam>(b =>

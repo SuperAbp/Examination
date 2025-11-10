@@ -193,8 +193,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 throw new InvalidUserExamStatusException(userExam.Status);
             }
             userExam.FinishedTime = clock.Now;
-            // TODO: Submitted Or Scored
-            userExam.Status = UserExamStatus.Submitted;
+            userExam.Status = examination.ManualReview ? UserExamStatus.Submitted : UserExamStatus.Scored;
 
             decimal totalScore = 0;
             List<Task> publishEvents = [];
