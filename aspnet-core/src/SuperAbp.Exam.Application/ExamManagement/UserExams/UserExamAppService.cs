@@ -52,6 +52,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             List<Guid> questionIds = userExam.Sections.SelectMany(s => s.Questions).Select(q => q.QuestionId).ToList();
             List<Question> questions = await questionRepository.GetByIdsAsync(questionIds);
             UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
+            dto.ExamName = exam.Name;
             dto.AnswerMode = exam.AnswerMode;
             if (userExam.StartTime.HasValue)
             {
@@ -97,8 +98,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
                     // Map answers/options
                     List<OptionDto> answerDtos = [];
-                    List<QuestionAnswer> answers = question.Answers;
-                    if (exam.RandomOrderOfOption)
+                    List<QuestionAnswer> answers = question.Answers.OrderBy(a => a.Sort).ToList();
+                    if (exam.RandomOrderOfOption && new List<QuestionType> { QuestionType.SingleSelect, QuestionType.MultiSelect }.Contains(question.QuestionType))
                     {
                         answers = answers.OrderBy(_ => Guid.NewGuid()).ToList();
                     }

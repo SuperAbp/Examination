@@ -12,6 +12,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     {
         public Guid UserId { get; set; }
         public Guid ExamId { get; set; }
+        public required string ExamName { get; set; }
         public int Status { get; set; }
 
         public DateTime EndTime { get; set; }

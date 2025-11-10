@@ -322,7 +322,16 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
 
                 foreach (var opt in q.Options.Select((o, idx) => new { Opt = o, Index = idx }))
                 {
-                    answerParams.Add(new { Id = Guid.NewGuid(), QuestionId = qid, Content = opt.Opt.Content, Right = opt.Opt.Right, Ordinal = opt.Index + 1, CreationTime = DateTime.Now, TenantId = tenantId });
+                    answerParams.Add(new
+                    {
+                        Id = Guid.NewGuid(),
+                        QuestionId = qid,
+                        Content = opt.Opt.Content,
+                        Right = opt.Opt.Right,
+                        Sort = opt.Index + 1,
+                        CreationTime = DateTime.Now,
+                        TenantId = tenantId
+                    });
                 }
             }
         }
@@ -337,7 +346,7 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         }
         if (answerParams.Count > 0)
         {
-            await connection.ExecuteAsync("INSERT INTO AppQuestionAnswers (Id, QuestionId, Content, `Right`, Sort, CreationTime, TenantId) VALUES (@Id, @QuestionId, @Content, @Right, @Ordinal, @CreationTime, @TenantId)", answerParams);
+            await connection.ExecuteAsync("INSERT INTO AppQuestionAnswers (Id, QuestionId, Content, `Right`, Sort, CreationTime, TenantId) VALUES (@Id, @QuestionId, @Content, @Right, @Sort, @CreationTime, @TenantId)", answerParams);
         }
         if (knowledgepointParams.Count > 0)
         {

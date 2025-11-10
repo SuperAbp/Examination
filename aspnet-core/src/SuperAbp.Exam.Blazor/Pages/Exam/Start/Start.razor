@@ -12,8 +12,9 @@ else
         <GridCol Span="4">
             <Affix OffsetTop="10">
                 <QuestionNumber CurrentId="_currentId"
+                                Title="@_userExam.ExamName"
                                 Numbers="_questions"
-                                AnswerIds="_answerIds"
+                                AnswerIds="_answerIds"                                
                                 OnChanged="ChangeQuestion"></QuestionNumber>
             </Affix>
         </GridCol>
