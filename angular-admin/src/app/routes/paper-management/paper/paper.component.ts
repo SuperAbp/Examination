@@ -12,6 +12,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { PaperManagementPaperModelComponent } from './edit/paper-model.component';
 import { tap } from 'rxjs';
+import { ExamManagementExamEditComponent } from '../../exam-management/exam/edit/edit.component';
 
 @Component({
   selector: 'app-exam-management-paper',
@@ -83,6 +84,19 @@ export class PaperManagementPaperComponent implements OnInit {
               // tslint:disable-next-line: no-non-null-assertion
               component!.removeRow(record);
             });
+          }
+        },
+        {
+          type: 'modal',
+          text: this.localizationService.instant('Exam::NewExam'),
+          iif: () => {
+            return this.permissionService.getGrantedPolicy('Exam.Exam.Create');
+          },
+          modal: {
+            component: ExamManagementExamEditComponent,
+            params: (record: any) => ({
+              paperId: record.id
+            })
           }
         }
       ]

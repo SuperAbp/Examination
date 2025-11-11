@@ -19,6 +19,7 @@
             [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::Paper' | abpLocalization)"
             formControlName="paperId"
             [nzShowArrow]="false"
+            [nzDisabled]="disableChoosePaper"
             (nzOnSearch)="searchPaper($event)"
             (ngModelChange)="choosePaper($event)"
           >
