@@ -201,6 +201,6 @@ export class ExamManagementExamComponent implements OnInit {
     this.st.load(1);
   }
   add() {
-    this.modal.createStatic(ExamManagementExamEditComponent, { examId: '' }).subscribe(() => this.st.reload());
+    this.modal.createStatic(ExamManagementExamEditComponent).subscribe(() => this.st.reload());
   }
 }

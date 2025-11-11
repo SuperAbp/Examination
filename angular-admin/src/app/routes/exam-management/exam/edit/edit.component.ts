@@ -3,7 +3,7 @@ import { Component, OnInit, Input, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { I18NService } from '@core';
 import { r } from '@delon/mock';
-import { dateTimePickerUtil } from '@delon/util';
+import { dateTimePickerUtil, log } from '@delon/util';
 import { ExaminationService, PaperService } from '@proxy/admin/controllers';
 import { GetExamForEditorOutput } from '@proxy/admin/exam-management/exams';
 import { PaperListDto } from '@proxy/admin/paper-management/papers';
@@ -55,6 +55,8 @@ import { finalize, tap } from 'rxjs/operators';
 export class ExamManagementExamEditComponent implements OnInit {
   @Input()
   examId: string;
+  @Input()
+  paperId: string;
   exam: GetExamForEditorOutput;
 
   loading = false;
@@ -87,6 +89,9 @@ export class ExamManagementExamEditComponent implements OnInit {
     }
   }
 
+  get disableChoosePaper() {
+    return this.paperId != undefined || this.paperId != null || this.examId != undefined || this.examId != null;
+  }
   get isLimitedTime() {
     return this.form.get('isLimitedTime');
   }
@@ -154,6 +159,11 @@ export class ExamManagementExamEditComponent implements OnInit {
             this.isLimitedTime.setValue(true);
             this.examTimes.setValue([this.exam.startTime, this.exam.endTime]);
           }
+          if (this.paperId) {
+            this.form.get('paperId').setValue(this.paperId);
+            this.choosePaper(this.paperId);
+          }
+          log(this.form.value);
         })
       )
       .subscribe();
