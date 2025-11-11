@@ -1,2 +1,3 @@
 import * as Admin from './admin';
-export { Admin };
+import * as Microsoft from './microsoft';
+export { Admin, Microsoft };

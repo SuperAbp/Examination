@@ -1,6 +1,6 @@
 <page-header [action]="phActionTpl">
   <ng-template #phActionTpl>
-    <button (click)="add()" nz-button nzType="primary" *abpPermission="'Exam.QuestionBank.Create'">
+    <button (click)="add()" nz-button nzType="primary" *abpPermission="'Exam.QuestionBanks.Create'">
       {{ 'Exam::NewQuestionBank' | abpLocalization }}
     </button>
   </ng-template>

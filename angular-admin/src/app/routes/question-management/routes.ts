@@ -13,7 +13,7 @@ export const routes: Routes = [
     component: QuestionManagementQuestionBankComponent,
     canActivate: [authJWTCanActivate, permissionGuard],
     data: {
-      requiredPolicy: 'Exam.QuestionBank'
+      requiredPolicy: 'Exam.QuestionBanks'
     }
   },
   {
@@ -21,7 +21,7 @@ export const routes: Routes = [
     component: QuestionManagementQuestionComponent,
     canActivate: [authJWTCanActivate, permissionGuard],
     data: {
-      requiredPolicy: 'Exam.Question'
+      requiredPolicy: 'Exam.Questions'
     }
   },
   {
@@ -29,7 +29,7 @@ export const routes: Routes = [
     component: QuestionManagementQuestionEditComponent,
     canActivate: [authJWTCanActivate, permissionGuard],
     data: {
-      requiredPolicy: 'Exam.Question.Update'
+      requiredPolicy: 'Exam.Questions.Update'
     }
   },
   {
@@ -37,7 +37,7 @@ export const routes: Routes = [
     component: QuestionManagementQuestionEditComponent,
     canActivate: [authJWTCanActivate, permissionGuard],
     data: {
-      requiredPolicy: 'Exam.Question.Create'
+      requiredPolicy: 'Exam.Questions.Create'
     }
   },
   {
@@ -45,7 +45,7 @@ export const routes: Routes = [
     component: QuestionManagementQuestionImportComponent,
     canActivate: [authJWTCanActivate, permissionGuard],
     data: {
-      requiredPolicy: 'Exam.Question.Import'
+      requiredPolicy: 'Exam.Questions.Import'
     }
   },
   { path: 'answer', component: QuestionManagementAnswerComponent }

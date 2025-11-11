@@ -1,5 +1,5 @@
 <ng-container>
-  <button (click)="add()" nz-button type="button" nzType="primary" *abpPermission="'Exam.QuestionAnswer.Create'">
+  <button (click)="add()" nz-button type="button" nzType="primary">
     {{ 'Exam::NewQuestionAnswer' | abpLocalization }}
   </button>
 </ng-container>
@@ -78,13 +78,7 @@
               </nz-form-item>
             </td>
             <td nzAlign="center">
-              <a
-                nz-popconfirm
-                [nzPopconfirmTitle]="'Exam::AreYouSure' | abpLocalization"
-                (nzOnConfirm)="delete(i, option)"
-                nz-tooltip
-                [nzTooltipTitle]="'Exam::Delete' | abpLocalization"
-              >
+              <a nz-popconfirm [nzPopconfirmTitle]="'Exam::AreYouSure' | abpLocalization" (nzOnConfirm)="delete(i, option)">
                 <i nz-icon nzType="delete" nzTheme="outline"></i>
               </a>
             </td>

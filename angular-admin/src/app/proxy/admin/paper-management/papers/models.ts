@@ -48,6 +48,7 @@ export interface PaperListDto extends EntityDto<string> {
   name?: string;
   score: number;
   paperType: number;
+  manualReview: boolean;
 }
 
 export interface PaperUpdateDto extends PaperCreateOrUpdateDtoBase {

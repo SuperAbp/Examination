@@ -107,7 +107,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
           icon: 'edit',
           type: 'link',
           iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.Question.Update');
+            return this.permissionService.getGrantedPolicy('Exam.Questions.Update');
           },
           click: (record: STData, modal?: any, instance?: STComponent) => {
             this.router.navigateByUrl(`/question-management/question/${record['id']}/edit`);
@@ -122,7 +122,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
             icon: 'star'
           },
           iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.Question.Delete');
+            return this.permissionService.getGrantedPolicy('Exam.Questions.Delete');
           },
           click: (record, _modal, component) => {
             this.questionService.delete(record.id).subscribe(response => {

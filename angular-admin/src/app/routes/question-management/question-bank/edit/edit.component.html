@@ -1,19 +1,14 @@
-<div class="modal-header">
-  @if (form) {
-    <div class="modal-title" *ngIf="form && repositoryId">
+@if (form) {
+  <div class="modal-header">
+    <div class="modal-title">
       @if (repositoryId) {
         {{ 'Exam::Edit' | abpLocalization }}
       } @else {
-        {{ 'Exam::NewRepository' | abpLocalization }}
+        {{ 'Exam::NewQuestionBank' | abpLocalization }}
       }
     </div>
-  }
-</div>
-<div class="modal-body">
-  <ng-template #loaderRef>
-    <nz-spin class="modal-spin"></nz-spin>
-  </ng-template>
-  @if (form) {
+  </div>
+  <div class="modal-body">
     <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
       <nz-form-item>
         <nz-form-label nzRequired>{{ 'Exam::Title' | abpLocalization }}</nz-form-label>
@@ -42,14 +37,12 @@
         </nz-form-control>
       </nz-form-item>
     </form>
-  } @else {
-    <nz-spin class="modal-spin"></nz-spin>
-  }
-</div>
-<div class="modal-footer">
-  @if (form) {
+  </div>
+  <div class="modal-footer">
     <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
       {{ 'Exam::Submit' | abpLocalization }}
     </button>
-  }
-</div>
+  </div>
+} @else {
+  <nz-spin class="modal-spin"></nz-spin>
+}
