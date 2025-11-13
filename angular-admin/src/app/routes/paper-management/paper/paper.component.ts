@@ -61,7 +61,7 @@ export class PaperManagementPaperComponent implements OnInit {
           icon: 'edit',
           type: 'link',
           iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.Paper.Update');
+            return this.permissionService.getGrantedPolicy('Exam.Papers.Update');
           },
           click: (record: STData, modal?: any, instance?: STComponent) => {
             this.router.navigateByUrl(`/paper-management/paper/${record['id']}/edit/${record['paperType']}`);
@@ -76,7 +76,7 @@ export class PaperManagementPaperComponent implements OnInit {
             icon: 'star'
           },
           iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.Paper.Delete');
+            return this.permissionService.getGrantedPolicy('Exam.Papers.Delete');
           },
           click: (record, _modal, component) => {
             this.paperService.delete(record.id).subscribe(response => {
@@ -90,7 +90,7 @@ export class PaperManagementPaperComponent implements OnInit {
           type: 'modal',
           text: this.localizationService.instant('Exam::NewExam'),
           iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.Exam.Create');
+            return this.permissionService.getGrantedPolicy('Exam.Exams.Create');
           },
           modal: {
             component: ExamManagementExamEditComponent,

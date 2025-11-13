@@ -2806,10 +2806,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@super-abp/ng.permission-management@~0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@super-abp/ng.permission-management/-/ng.permission-management-0.6.0.tgz#0c12c039f3a7d53039ac3ecbf8f0ba745f57f800"
-  integrity sha512-sq+tJ3jKSjH5mvv+mcSAUjBzJQ1UO6Ek0vlyjMpLiJHKCPUZMv9sUKHs+jj9Bcp5D/8CFI3CQfzQkT9HVa6eEA==
+"@super-abp/ng.permission-management@~0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@super-abp/ng.permission-management/-/ng.permission-management-0.6.1.tgz#464cbe8102de5adcec6b1786caf0450666aa8d5b"
+  integrity sha512-0cDiORzhPHT3LbVlh7rawwxPTJQXBfi098SjqtQ0gf538isxGt9uebvoRVqgy47Yk3Lwe+5sEYPCFiC8vc8lCQ==
   dependencies:
     tslib "^2.3.0"
 

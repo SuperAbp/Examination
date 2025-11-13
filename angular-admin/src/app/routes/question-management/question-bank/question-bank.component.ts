@@ -61,7 +61,7 @@ export class QuestionManagementQuestionBankComponent implements OnInit {
           icon: 'edit',
           type: 'modal',
           iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.QuestionBank.Update');
+            return this.permissionService.getGrantedPolicy('Exam.QuestionBanks.Update');
           },
           modal: {
             component: QuestionManagementQuestionBankEditComponent,
@@ -80,7 +80,7 @@ export class QuestionManagementQuestionBankComponent implements OnInit {
             icon: 'star'
           },
           iif: () => {
-            return this.permissionService.getGrantedPolicy('Exam.QuestionBank.Delete');
+            return this.permissionService.getGrantedPolicy('Exam.QuestionBanks.Delete');
           },
           click: (record, _modal, component) => {
             this.repositoryService.delete(record.id).subscribe(response => {

@@ -1,9 +1,9 @@
 <page-header [action]="phActionTpl">
   <ng-template #phActionTpl>
-    <button (click)="import()" nz-button nzType="primary" *abpPermission="'Exam.Question.Import'">
+    <button (click)="import()" nz-button nzType="primary" *abpPermission="'Exam.Questions.Import'">
       {{ 'Exam::Import' | abpLocalization }}
     </button>
-    <button (click)="add()" nz-button nzType="primary" *abpPermission="'Exam.Question.Create'">
+    <button (click)="add()" nz-button nzType="primary" *abpPermission="'Exam.Questions.Create'">
       {{ 'Exam::NewQuestion' | abpLocalization }}
     </button>
   </ng-template>

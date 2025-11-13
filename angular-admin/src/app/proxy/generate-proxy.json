@@ -773,6 +773,32 @@
       "rootPath": "app",
       "remoteServiceName": "Default",
       "controllers": {
+        "SuperAbp.Exam.Admin.Controllers.AppController": {
+          "controllerName": "App",
+          "controllerGroupName": null,
+          "isRemoteService": false,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "SuperAbp.Exam.Admin.Controllers.AppController",
+          "interfaces": [],
+          "actions": {
+            "GetDataAsync": {
+              "uniqueName": "GetDataAsync",
+              "name": "GetDataAsync",
+              "httpMethod": "GET",
+              "url": "api/app/data",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "Microsoft.AspNetCore.Mvc.IActionResult",
+                "typeSimple": "Microsoft.AspNetCore.Mvc.IActionResult"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Admin.Controllers.AppController"
+            }
+          }
+        },
         "SuperAbp.Exam.Admin.Controllers.ExaminationController": {
           "controllerName": "Examination",
           "controllerGroupName": "Examination",
@@ -2047,222 +2073,6 @@
               },
               "allowAnonymous": null,
               "implementFrom": "SuperAbp.Exam.Admin.PaperManagement.Papers.IPaperAdminAppService"
-            }
-          }
-        },
-        "SuperAbp.Exam.Admin.Controllers.PaperQuestionRuleController": {
-          "controllerName": "PaperQuestionRule",
-          "controllerGroupName": "PaperQuestionRule",
-          "isRemoteService": true,
-          "isIntegrationService": false,
-          "apiVersion": null,
-          "type": "SuperAbp.Exam.Admin.Controllers.PaperQuestionRuleController",
-          "interfaces": [
-            {
-              "type": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.IPaperQuestionRuleAdminAppService",
-              "name": "IPaperQuestionRuleAdminAppService",
-              "methods": [
-                {
-                  "name": "GetListAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "input",
-                      "typeAsString": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.GetPaperQuestionRulesInput, SuperAbp.Exam.Admin.Application.Contracts",
-                      "type": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.GetPaperQuestionRulesInput",
-                      "typeSimple": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.GetPaperQuestionRulesInput",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.PaperQuestionRuleListDto>",
-                    "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.PaperQuestionRuleListDto>"
-                  }
-                },
-                {
-                  "name": "GetEditorAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "id",
-                      "typeAsString": "System.Guid, System.Private.CoreLib",
-                      "type": "System.Guid",
-                      "typeSimple": "string",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.GetPaperQuestionRuleForEditorOutput",
-                    "typeSimple": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.GetPaperQuestionRuleForEditorOutput"
-                  }
-                },
-                {
-                  "name": "DeleteAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "id",
-                      "typeAsString": "System.Guid, System.Private.CoreLib",
-                      "type": "System.Guid",
-                      "typeSimple": "string",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "System.Void",
-                    "typeSimple": "System.Void"
-                  }
-                }
-              ]
-            }
-          ],
-          "actions": {
-            "GetListAsyncByInput": {
-              "uniqueName": "GetListAsyncByInput",
-              "name": "GetListAsync",
-              "httpMethod": "GET",
-              "url": "api/paper-question-rule",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "input",
-                  "typeAsString": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.GetPaperQuestionRulesInput, SuperAbp.Exam.Admin.Application.Contracts",
-                  "type": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.GetPaperQuestionRulesInput",
-                  "typeSimple": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.GetPaperQuestionRulesInput",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "input",
-                  "name": "PaperId",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "Sorting",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "SkipCount",
-                  "jsonName": null,
-                  "type": "System.Int32",
-                  "typeSimple": "number",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "MaxResultCount",
-                  "jsonName": null,
-                  "type": "System.Int32",
-                  "typeSimple": "number",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                }
-              ],
-              "returnValue": {
-                "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.PaperQuestionRuleListDto>",
-                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.PaperQuestionRuleListDto>"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.IPaperQuestionRuleAdminAppService"
-            },
-            "GetEditorAsyncById": {
-              "uniqueName": "GetEditorAsyncById",
-              "name": "GetEditorAsync",
-              "httpMethod": "GET",
-              "url": "api/paper-question-rule/{id}",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "id",
-                  "typeAsString": "System.Guid, System.Private.CoreLib",
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "id",
-                  "name": "id",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.GetPaperQuestionRuleForEditorOutput",
-                "typeSimple": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.GetPaperQuestionRuleForEditorOutput"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.IPaperQuestionRuleAdminAppService"
-            },
-            "DeleteAsyncById": {
-              "uniqueName": "DeleteAsyncById",
-              "name": "DeleteAsync",
-              "httpMethod": "DELETE",
-              "url": "api/paper-question-rule/{id}",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "id",
-                  "typeAsString": "System.Guid, System.Private.CoreLib",
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "id",
-                  "name": "id",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "System.Void",
-                "typeSimple": "System.Void"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.IPaperQuestionRuleAdminAppService"
             }
           }
         },
@@ -7029,6 +6839,14 @@
     }
   },
   "types": {
+    "Microsoft.AspNetCore.Mvc.IActionResult": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": []
+    },
     "SuperAbp.AuditLogging.Dtos.AuditLogActionDetailDto": {
       "baseType": null,
       "isEnum": false,
@@ -8069,7 +7887,7 @@
       "genericArguments": null,
       "properties": [
         {
-          "name": "Name",
+          "name": "Title",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -8081,7 +7899,7 @@
           "regex": null
         },
         {
-          "name": "Score",
+          "name": "ScoreEach",
           "jsonName": null,
           "type": "System.Decimal?",
           "typeSimple": "number?",
@@ -8097,6 +7915,30 @@
           "jsonName": null,
           "type": "System.Decimal?",
           "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TotalCount",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Order",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -8545,269 +8387,6 @@
       "genericArguments": null,
       "properties": []
     },
-    "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.GetPaperQuestionRuleForEditorOutput": {
-      "baseType": "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.PaperQuestionRuleCreateOrUpdateDtoBase",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": []
-    },
-    "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.GetPaperQuestionRulesInput": {
-      "baseType": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
-        {
-          "name": "PaperId",
-          "jsonName": null,
-          "type": "System.Guid",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.PaperQuestionRuleCreateOrUpdateDtoBase": {
-      "baseType": null,
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
-        {
-          "name": "SingleCount",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "SingleScore",
-          "jsonName": null,
-          "type": "System.Decimal?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "MultiCount",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "MultiScore",
-          "jsonName": null,
-          "type": "System.Decimal?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "JudgeCount",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "JudgeScore",
-          "jsonName": null,
-          "type": "System.Decimal?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "BlankCount",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "BlankScore",
-          "jsonName": null,
-          "type": "System.Decimal?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules.PaperQuestionRuleListDto": {
-      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
-        {
-          "name": "QuestionBank",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "QuestionBankId",
-          "jsonName": null,
-          "type": "System.Guid",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "SingleCount",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "SingleScore",
-          "jsonName": null,
-          "type": "System.Decimal?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "MultiCount",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "MultiScore",
-          "jsonName": null,
-          "type": "System.Decimal?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "JudgeCount",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "JudgeScore",
-          "jsonName": null,
-          "type": "System.Decimal?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "BlankCount",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "BlankScore",
-          "jsonName": null,
-          "type": "System.Decimal?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
     "SuperAbp.Exam.Admin.PaperManagement.Papers.GetPaperForEditorOutput": {
       "baseType": "SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase",
       "isEnum": false,
@@ -9181,6 +8760,18 @@
           "jsonName": null,
           "type": "System.Int32",
           "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ManualReview",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

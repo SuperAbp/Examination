@@ -72,7 +72,7 @@ export class ExamManagementExamComponent implements OnInit {
           icon: 'edit',
           type: 'modal',
           iif: record => {
-            return this.permissionService.getGrantedPolicy('Exam.Exam.Update') && record.status === 0;
+            return this.permissionService.getGrantedPolicy('Exam.Exams.Update') && record.status === 0;
           },
           modal: {
             component: ExamManagementExamEditComponent,
@@ -91,7 +91,7 @@ export class ExamManagementExamComponent implements OnInit {
             icon: 'star'
           },
           iif: record => {
-            return this.permissionService.getGrantedPolicy('Exam.Exam.Delete') && record.status === 0;
+            return this.permissionService.getGrantedPolicy('Exam.Exams.Delete') && record.status === 0;
           },
           click: (record, _modal, component) => {
             this.examService.delete(record.id).subscribe(response => {
@@ -125,7 +125,7 @@ export class ExamManagementExamComponent implements OnInit {
             {
               text: this.localizationService.instant('Exam::Publish'),
               iif: record => {
-                return this.permissionService.getGrantedPolicy('Exam.Exam.Publish') && record.status === 0;
+                return this.permissionService.getGrantedPolicy('Exam.Exams.Publish') && record.status === 0;
               },
               click: (record, _modal, component) => {
                 this.examService.publish(record.id).subscribe(response => {
@@ -136,7 +136,7 @@ export class ExamManagementExamComponent implements OnInit {
             {
               text: this.localizationService.instant('Exam::Terminate'),
               iif: record => {
-                return this.permissionService.getGrantedPolicy('Exam.Exam.Terminate') && record.status === 1;
+                return this.permissionService.getGrantedPolicy('Exam.Exams.Terminate') && record.status === 1;
               },
               click: (record, _modal, component) => {
                 this.examService.terminate(record.id).subscribe(response => {
@@ -147,7 +147,7 @@ export class ExamManagementExamComponent implements OnInit {
             {
               text: this.localizationService.instant('Exam::Cancel'),
               iif: record => {
-                return this.permissionService.getGrantedPolicy('Exam.Exam.Cancel') && record.status !== 4 && record.status !== 0;
+                return this.permissionService.getGrantedPolicy('Exam.Exams.Cancel') && record.status !== 4 && record.status !== 0;
               },
               click: (record, _modal, component) => {
                 this.examService.cancel(record.id).subscribe(response => {

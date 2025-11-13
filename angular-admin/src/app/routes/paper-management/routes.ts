@@ -6,13 +6,20 @@ import { PaperManagementPaperEditComponent } from './paper/edit/edit.component';
 import { PaperManagementPaperComponent } from './paper/paper.component';
 
 export const routes: Routes = [
-  { path: 'paper', component: PaperManagementPaperComponent },
+  {
+    path: 'paper',
+    component: PaperManagementPaperComponent,
+    canActivate: [authJWTCanActivate, permissionGuard],
+    data: {
+      requiredPolicy: 'Exam.Papers'
+    }
+  },
   {
     path: 'paper/:id/edit/:model',
     component: PaperManagementPaperEditComponent,
     canActivate: [authJWTCanActivate, permissionGuard],
     data: {
-      requiredPolicy: 'Exam.Paper.Update'
+      requiredPolicy: 'Exam.Papers.Update'
     }
   },
   {
@@ -20,7 +27,7 @@ export const routes: Routes = [
     component: PaperManagementPaperEditComponent,
     canActivate: [authJWTCanActivate, permissionGuard],
     data: {
-      requiredPolicy: 'Exam.Paper.Create'
+      requiredPolicy: 'Exam.Papers.Create'
     }
   }
 ];

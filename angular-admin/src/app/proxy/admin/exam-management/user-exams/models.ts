@@ -29,7 +29,8 @@ export interface UserExamDetailDto_SectionDto {
   title?: string;
   scoreEach?: number;
   totalScore?: number;
-  totalCount?: number;
+  totalCount: number;
+  order: number;
   questions: UserExamDetailDto_SectionDto_QuestionDto[];
 }
 

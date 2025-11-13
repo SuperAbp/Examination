@@ -1,4 +1,4 @@
-import { Injectable, Inject, Provider, APP_INITIALIZER } from '@angular/core';
+import { Injectable, Inject, Provider, APP_INITIALIZER, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -10,6 +10,8 @@ import { NzIconService } from 'ng-zorro-antd/icon';
 
 import { ICONS } from '../../../style-icons';
 import { ICONS_AUTO } from '../../../style-icons-auto';
+import { AppService } from '@proxy/admin/controllers';
+import { log } from '@delon/util';
 
 /**
  * Used for application startup
@@ -35,6 +37,8 @@ export class StartupService {
     private aclService: ACLService,
     private titleService: TitleService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private injector: Injector,
+    private appService: AppService,
     private httpClient: HttpClient,
     private router: Router
   ) {
@@ -42,25 +46,41 @@ export class StartupService {
   }
 
   private viaHttp(): Observable<void> {
-    return this.httpClient.get('assets/tmp/app-data.json').pipe(
-      catchError((res: NzSafeAny) => {
-        console.warn(`StartupService.load: Network request failed`, res);
-        setTimeout(() => this.router.navigateByUrl(`/exception/500`));
-        return of({});
-      }),
-      map((res: NzSafeAny) => {
-        // Application information: including site name, description, year
-        this.settingService.setApp(res.app);
-        // User information: including name, avatar, email address
-        this.settingService.setUser(res.user);
-        // ACL: Set the permissions to full, https://ng-alain.com/acl/getting-started
-        this.aclService.setFull(true);
-        // Menu data, https://ng-alain.com/theme/menu
-        this.menuService.add(res.menu);
-        // Can be set page suffix title, https://ng-alain.com/theme/title
-        this.titleService.suffix = res.app.name;
-      })
-    );
+    var tokenService = this.injector.get(DA_SERVICE_TOKEN) as ITokenService;
+    if (tokenService.get().token !== undefined && tokenService.get().token !== null && tokenService.get().token !== '') {
+      return this.appService.getData().pipe(
+        // catchError(res => {
+        //   debugger;
+        //   console.warn(`StartupService.load: Network request failed`, res);
+        //   return of({});
+        // }),
+        map(appData => {
+          // Application data
+          const res: any = appData;
+          // Application information: including site name, description, year
+          this.settingService.setApp(res.app);
+          // User information: including name, avatar, email address
+          this.settingService.setUser(res.user);
+          // ACL: Set the permissions to full, https://ng-alain.com/acl/getting-started
+          this.aclService.setFull(true);
+          // Menu data, https://ng-alain.com/theme/menu
+          let menus = res.menu.map((item: NzSafeAny) => {
+            item.children = item.children?.map((child: NzSafeAny) => {
+              if (child.icon) {
+                child.icon = { type: 'icon', value: child.icon };
+              }
+              return child;
+            });
+            return item;
+          });
+          this.menuService.add(menus);
+          // Can be set page suffix title, https://ng-alain.com/theme/title
+          this.titleService.suffix = res.app.name;
+        })
+      );
+    } else {
+      return of();
+    }
   }
 
   private viaMock(): Observable<void> {
@@ -162,9 +182,9 @@ export class StartupService {
 
   load(): Observable<void> {
     // http
-    // return this.viaHttp();
+    return this.viaHttp();
     // mock: Don’t use it in a production environment. ViaMock is just to simulate some data to make the scaffolding work normally
     // mock：请勿在生产环境中这么使用，viaMock 单纯只是为了模拟一些数据使脚手架一开始能正常运行
-    return this.viaMock();
+    // return this.viaMock();
   }
 }

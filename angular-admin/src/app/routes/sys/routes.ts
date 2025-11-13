@@ -10,7 +10,7 @@ export const routes: Routes = [
     component: SysKnowledgePointComponent,
     canActivate: [authJWTCanActivate, permissionGuard],
     data: {
-      requiredPolicy: 'Exam.KnowledgePoint.Management'
+      requiredPolicy: 'Exam.KnowledgePoints.Management'
     }
   }
 ];

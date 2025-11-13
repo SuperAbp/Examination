@@ -1,6 +1,6 @@
 <page-header [action]="phActionTpl">
   <ng-template #phActionTpl>
-    <button (click)="add()" nz-button nzType="primary" *abpPermission="'Exam.KnowledgePoint.Create'">
+    <button (click)="add()" nz-button nzType="primary" *abpPermission="'Exam.KnowledgePoints.Create'">
       {{ 'Exam::NewKnowledgePoint' | abpLocalization }}
     </button>
   </ng-template>
@@ -27,10 +27,10 @@
                 {{ item.name }}
               </td>
               <td>
-                <button nz-button nzType="link" (click)="add(item.id)" *abpPermission="'Exam.KnowledgePoint.Create'">
+                <button nz-button nzType="link" (click)="add(item.id)" *abpPermission="'Exam.KnowledgePoints.Create'">
                   <i nz-icon nzType="plus"></i>
                 </button>
-                <button nz-button nzType="link" (click)="edit(item.id)" *abpPermission="'Exam.KnowledgePoint.Update'">
+                <button nz-button nzType="link" (click)="edit(item.id)" *abpPermission="'Exam.KnowledgePoints.Update'">
                   <i nz-icon nzType="edit"></i>
                 </button>
                 <button
@@ -39,7 +39,7 @@
                   nz-button
                   nzType="link"
                   (nzOnConfirm)="delete(item)"
-                  *abpPermission="'Exam.KnowledgePoint.Delete'"
+                  *abpPermission="'Exam.KnowledgePoints.Delete'"
                 >
                   <i nz-icon nzType="delete"></i>
                 </button>
