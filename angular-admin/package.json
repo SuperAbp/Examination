@@ -66,7 +66,7 @@
     "@ng-util/monaco-editor": "^18.0.0",
     "@super-abp/ng.identity": "~0.6.2",
     "@super-abp/ng.menu-management": "~0.6.0",
-    "@super-abp/ng.permission-management": "~0.6.0",
+    "@super-abp/ng.permission-management": "~0.6.1",
     "@super-abp/ng.tenant-management": "~0.0.4",
     "@types/jasmine": "~5.1.0",
     "@types/jasminewd2": "~2.0.13",
