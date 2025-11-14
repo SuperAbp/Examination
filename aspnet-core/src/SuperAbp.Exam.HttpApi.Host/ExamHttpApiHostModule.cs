@@ -40,7 +40,7 @@ namespace SuperAbp.Exam;
 [DependsOn(
     typeof(ExamHttpApiModule),
     typeof(AbpAutofacModule),
-        typeof(AbpCachingStackExchangeRedisModule),
+    typeof(AbpCachingStackExchangeRedisModule),
     typeof(AbpDistributedLockingModule),
     typeof(AbpAspNetCoreMvcUiMultiTenancyModule),
     typeof(ExamApplicationModule),

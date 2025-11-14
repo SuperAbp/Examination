@@ -1,8 +1,7 @@
-﻿@using Volo.Abp.Localization
+﻿@using Lsw.Abp.AspnetCore.Components.Server.AntDesignTheme.Bundling
+@using Volo.Abp.Localization
 @using System.Globalization
 @using Microsoft.Extensions.Hosting
-@using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme.Bundling
-@using Volo.Abp.AspNetCore.Components.Web.Theming.Bundling
 @inject IHostEnvironment Env
 @{
     var rtl = CultureHelper.IsRtl ? "rtl" : string.Empty;
@@ -17,7 +16,7 @@
     <title>SuperAbp.Exam.Blazor.Server</title>
     <base href="/" />
 
-    <AbpStyles BundleName="@BlazorLeptonXLiteThemeBundles.Styles.Global" WebAssemblyStyleFiles="GlobalStyles" @rendermode="InteractiveAuto" />
+    <AbpStyles BundleName="@BlazorAntDesignThemeBundles.Styles.Global" WebAssemblyStyleFiles="GlobalStyles" @rendermode="InteractiveAuto" />
 
     <HeadOutlet @rendermode="InteractiveAuto" />
 
@@ -26,7 +25,7 @@
 
     <Routes @rendermode="InteractiveAuto" />
 
-    <AbpScripts BundleName="@BlazorLeptonXLiteThemeBundles.Scripts.Global" WebAssemblyScriptFiles="GlobalScripts" @rendermode="InteractiveAuto" />
+    <AbpScripts BundleName="@BlazorAntDesignThemeBundles.Scripts.Global" WebAssemblyScriptFiles="GlobalScripts" @rendermode="InteractiveAuto" />
 
     <script src="_framework/blazor.web.js"></script>
 

@@ -1,7 +1,10 @@
-using System;
-using System.IO;
-using Blazorise.Bootstrap5;
-using Blazorise.Icons.FontAwesome;
+using Lsw.Abp.AspnetCore.Components.Server.AntDesignTheme;
+using Lsw.Abp.AspnetCore.Components.Server.AntDesignTheme.Bundling;
+using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Routing;
+using Lsw.Abp.AspnetCore.Components.WebAssembly.AntDesignTheme;
+using Lsw.Abp.IdentityManagement.Blazor.Server.AntDesignUI;
+using Lsw.Abp.SettingManagement.Blazor.Server.AntDesignUI;
+using Lsw.Abp.TenantManagement.Blazor.Server.AntDesignUI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
@@ -10,38 +13,28 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using OpenIddict.Validation.AspNetCore;
 using SuperAbp.Exam.Blazor.Client;
 using SuperAbp.Exam.Blazor.Client.Menus;
 using SuperAbp.Exam.Blazor.Components;
 using SuperAbp.Exam.EntityFrameworkCore;
 using SuperAbp.Exam.Localization;
 using SuperAbp.Exam.MultiTenancy;
-using OpenIddict.Validation.AspNetCore;
+using System;
+using System.IO;
 using Volo.Abp;
 using Volo.Abp.Account.Web;
 using Volo.Abp.AspNetCore.Components.Web;
-using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme;
-using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme.Bundling;
-using Volo.Abp.AspNetCore.Components.Web.Theming.Routing;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.Localization;
-using Volo.Abp.AspNetCore.Mvc.UI;
-using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
-using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.AutoMapper;
-using Volo.Abp.Identity.Blazor.Server;
 using Volo.Abp.Modularity;
 using Volo.Abp.OpenIddict;
 using Volo.Abp.Security.Claims;
-using Volo.Abp.SettingManagement.Blazor.Server;
 using Volo.Abp.Swashbuckle;
-using Volo.Abp.TenantManagement.Blazor.Server;
-using Volo.Abp.UI;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
@@ -56,11 +49,10 @@ namespace SuperAbp.Exam.Blazor;
     typeof(AbpSwashbuckleModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpAccountWebOpenIddictModule),
-    typeof(AbpAspNetCoreComponentsServerLeptonXLiteThemeModule),
-    typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
-    typeof(AbpIdentityBlazorServerModule),
-    typeof(AbpTenantManagementBlazorServerModule),
-    typeof(AbpSettingManagementBlazorServerModule)
+    typeof(AbpAspNetCoreComponentsServerAntDesignThemeModule),
+    typeof(AbpIdentityBlazorServerAntDesignModule),
+    typeof(AbpTenantManagementBlazorServerAntDesignModule),
+    typeof(AbpSettingManagementBlazorServerAntDesignModule)
    )]
 public class ExamBlazorModule : AbpModule
 {
@@ -127,7 +119,6 @@ public class ExamBlazorModule : AbpModule
         ConfigureVirtualFileSystem(hostingEnvironment);
         ConfigureSwaggerServices(context.Services);
         ConfigureAutoApiControllers();
-        ConfigureBlazorise(context);
         ConfigureRouter(context);
         ConfigureMenu(context);
     }
@@ -138,6 +129,12 @@ public class ExamBlazorModule : AbpModule
         context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
         {
             options.IsDynamicClaimsEnabled = true;
+        });
+
+        Configure<AuthenticationOptions>(options =>
+        {
+            options.LoginUrl = "Account/Login1";
+            options.LogoutUrl = "Account/Logout1";
         });
     }
 
@@ -156,7 +153,7 @@ public class ExamBlazorModule : AbpModule
         {
             // MVC UI
             options.StyleBundles.Configure(
-                LeptonXLiteThemeBundles.Styles.Global,
+                BlazorAntDesignThemeBundles.Styles.Global,
                 bundle =>
                 {
                     bundle.AddFiles("/global-styles.css");
@@ -165,7 +162,7 @@ public class ExamBlazorModule : AbpModule
 
             //BLAZOR UI
             options.StyleBundles.Configure(
-                BlazorLeptonXLiteThemeBundles.Styles.Global,
+                BlazorAntDesignThemeBundles.Styles.Global,
                 bundle =>
                 {
                     bundle.AddFiles("/blazor-global-styles.css");
@@ -201,13 +198,6 @@ public class ExamBlazorModule : AbpModule
                 options.CustomSchemaIds(type => type.FullName);
             }
         );
-    }
-
-    private void ConfigureBlazorise(ServiceConfigurationContext context)
-    {
-        context.Services
-            .AddBootstrap5Providers()
-            .AddFontAwesomeIcons();
     }
 
     private void ConfigureMenu(ServiceConfigurationContext context)
