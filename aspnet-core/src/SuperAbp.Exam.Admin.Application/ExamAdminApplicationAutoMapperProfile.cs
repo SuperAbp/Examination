@@ -2,9 +2,9 @@
 
 namespace SuperAbp.Exam.Admin;
 
-public class ExamApplicationAdminAutoMapperProfile : Profile
+public class ExamAdminApplicationAutoMapperProfile : Profile
 {
-    public ExamApplicationAdminAutoMapperProfile()
+    public ExamAdminApplicationAutoMapperProfile()
     {
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations

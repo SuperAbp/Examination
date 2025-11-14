@@ -18,7 +18,7 @@ namespace SuperAbp.Exam.Admin;
 [DependsOn(
     typeof(ExamDomainModule),
     typeof(AbpAccountApplicationModule),
-    typeof(ExamApplicationAdminContractsModule),
+    typeof(ExamAdminApplicationContractsModule),
     typeof(AbpIdentityApplicationModule),
     typeof(AbpPermissionManagementApplicationModule),
     typeof(AbpTenantManagementApplicationModule),
@@ -27,13 +27,13 @@ namespace SuperAbp.Exam.Admin;
     typeof(SuperAbpMenuManagementApplicationModule),
     typeof(SuperAbpAuditLoggingApplicationModule)
     )]
-public class ExamApplicationAdminModule : AbpModule
+public class ExamAdminApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         Configure<AbpAutoMapperOptions>(options =>
         {
-            options.AddMaps<ExamApplicationAdminModule>();
+            options.AddMaps<ExamAdminApplicationModule>();
         });
         context.Services.AddTransient(factory =>
         {

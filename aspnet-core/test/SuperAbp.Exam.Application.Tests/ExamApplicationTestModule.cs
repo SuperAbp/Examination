@@ -7,7 +7,7 @@ using Volo.Abp.Timing;
 namespace SuperAbp.Exam;
 
 [DependsOn(
-    typeof(ExamApplicationAdminModule),
+    typeof(ExamAdminApplicationModule),
     typeof(ExamApplicationModule),
     typeof(ExamDomainTestModule)
 )]

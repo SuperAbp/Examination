@@ -14,7 +14,7 @@ using Volo.Abp.TenantManagement;
 namespace SuperAbp.Exam.Admin;
 
 [DependsOn(
-    typeof(ExamApplicationAdminContractsModule),
+    typeof(ExamAdminApplicationContractsModule),
     typeof(AbpAccountHttpApiModule),
     typeof(AbpIdentityHttpApiModule),
     typeof(AbpPermissionManagementHttpApiModule),
@@ -24,7 +24,7 @@ namespace SuperAbp.Exam.Admin;
     typeof(SuperAbpMenuManagementHttpApiModule),
     typeof(SuperAbpAuditLoggingHttpApiModule)
     )]
-public class ExamHttpApiModule : AbpModule
+public class ExamAdminHttpApiModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

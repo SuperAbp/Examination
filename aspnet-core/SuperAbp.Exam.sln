@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.3.32811.315
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CA9AC87F-097E-4F15-8393-4BC07735A5B0}"
 EndProject
@@ -60,6 +60,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.TestBase", "test\SuperAbp.Exam.TestBase\SuperAbp.Exam.TestBase.csproj", "{75CA5F13-BAF0-43FF-A45D-9B81A2062C06}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.BackgroundServices", "src\SuperAbp.Exam.BackgroundServices\SuperAbp.Exam.BackgroundServices.csproj", "{F9F19817-C0C3-AA27-07EB-1C57F268766E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.Admin.HttpApi.Client", "src\SuperAbp.Exam.Admin.HttpApi.Client\SuperAbp.Exam.Admin.HttpApi.Client.csproj", "{CCA0EBD5-C793-A3B9-DA11-74DD24DF65DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.Admin.Blazor", "src\SuperAbp.Exam.Admin.Blazor\SuperAbp.Exam.Admin.Blazor.csproj", "{F2231233-702E-ABA5-E65F-2709D0A9D179}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAbp.Exam.Admin.Blazor.Client", "src\SuperAbp.Exam.Admin.Blazor.Client\SuperAbp.Exam.Admin.Blazor.Client.csproj", "{196DFEDC-3BFA-88CD-B31B-4DE75E9ECF04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,6 +169,18 @@ Global
 		{F9F19817-C0C3-AA27-07EB-1C57F268766E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9F19817-C0C3-AA27-07EB-1C57F268766E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9F19817-C0C3-AA27-07EB-1C57F268766E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA0EBD5-C793-A3B9-DA11-74DD24DF65DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA0EBD5-C793-A3B9-DA11-74DD24DF65DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA0EBD5-C793-A3B9-DA11-74DD24DF65DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA0EBD5-C793-A3B9-DA11-74DD24DF65DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2231233-702E-ABA5-E65F-2709D0A9D179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2231233-702E-ABA5-E65F-2709D0A9D179}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2231233-702E-ABA5-E65F-2709D0A9D179}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2231233-702E-ABA5-E65F-2709D0A9D179}.Release|Any CPU.Build.0 = Release|Any CPU
+		{196DFEDC-3BFA-88CD-B31B-4DE75E9ECF04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{196DFEDC-3BFA-88CD-B31B-4DE75E9ECF04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{196DFEDC-3BFA-88CD-B31B-4DE75E9ECF04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{196DFEDC-3BFA-88CD-B31B-4DE75E9ECF04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -195,6 +213,9 @@ Global
 		{019B80A6-3AC1-4782-9509-12FE6F01BAF1} = {04DBDB01-70F4-4E06-B468-8F87850B22BE}
 		{75CA5F13-BAF0-43FF-A45D-9B81A2062C06} = {04DBDB01-70F4-4E06-B468-8F87850B22BE}
 		{F9F19817-C0C3-AA27-07EB-1C57F268766E} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
+		{CCA0EBD5-C793-A3B9-DA11-74DD24DF65DE} = {828EF445-0C48-483F-85A3-DF3DE3FC93DF}
+		{F2231233-702E-ABA5-E65F-2709D0A9D179} = {828EF445-0C48-483F-85A3-DF3DE3FC93DF}
+		{196DFEDC-3BFA-88CD-B31B-4DE75E9ECF04} = {828EF445-0C48-483F-85A3-DF3DE3FC93DF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}
