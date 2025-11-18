@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 
-namespace SuperAbp.Exam.Blazor;
+namespace MyCompanyName.MyProjectName.Blazor.WebApp.Tiered;
 
 public class Program
 {

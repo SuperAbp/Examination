@@ -1,6 +1,5 @@
-﻿namespace SuperAbp.Exam.Blazor.Client.Pages;
+﻿namespace SuperAbp.Exam.Admin.Blazor.Client.Pages;
 
 public partial class Index
 {
-
 }

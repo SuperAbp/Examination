@@ -1,12 +1,12 @@
 {
   "profiles": {
-    "SuperAbp.Exam.Admin.Blazor.Client": {
+    "MyCompanyName.MyProjectName.Blazor.WebApp.Tiered.Client": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:54862;http://localhost:54863"
+      "applicationUrl": "https://localhost:55278;http://localhost:55279"
     }
   }
 }

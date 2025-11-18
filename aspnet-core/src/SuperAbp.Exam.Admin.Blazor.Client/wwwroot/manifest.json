@@ -1,6 +1,6 @@
 {
-  "name": "Exam",
-  "short_name": "SuperAbp.Exam",
+  "name": "MyProjectName",
+  "short_name": "MyCompanyName.MyProjectName",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

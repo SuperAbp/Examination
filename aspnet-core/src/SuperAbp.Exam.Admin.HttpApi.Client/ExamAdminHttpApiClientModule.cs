@@ -9,7 +9,7 @@ using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.VirtualFileSystem;
 
-namespace SuperAbp.Exam;
+namespace SuperAbp.Exam.Admin;
 
 [DependsOn(
     typeof(ExamAdminApplicationContractsModule),

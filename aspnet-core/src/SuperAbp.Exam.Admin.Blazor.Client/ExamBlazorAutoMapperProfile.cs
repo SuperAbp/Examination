@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace SuperAbp.Exam.Blazor.Client;
+namespace SuperAbp.Exam.Admin.Blazor.Client;
 
 public class ExamBlazorAutoMapperProfile : Profile
 {

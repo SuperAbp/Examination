@@ -6,31 +6,43 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
-    <RootNamespace>SuperAbp.Exam.Blazor.Client</RootNamespace>
+    <RootNamespace>SuperAbp.Exam.Admin.Blazor.Client</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0.0" />
+    <Content Remove="E:\nuget\packages\volo.abp.identity.blazor.webassembly\9.0.0\contentFiles\any\net9.0\Volo.Abp.Identity.Blazor.WebAssembly.abppkg.analyze.json" />
+    <Content Remove="E:\nuget\packages\volo.abp.tenantmanagement.blazor.webassembly\9.0.0\contentFiles\any\net9.0\Volo.Abp.TenantManagement.Blazor.WebAssembly.abppkg.analyze.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lsw.Abp.AspnetCore.Components.WebAssembly.AntDesignTheme" Version="0.9.6" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.6.2" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.6.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.Autofac.WebAssembly" Version="9.0.0" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Components.WebAssembly.LeptonXLiteTheme" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lsw.Abp.IdentityManagement.Blazor.WebAssembly.AntDesignUI" Version="0.9.6" />
-    <PackageReference Include="Lsw.Abp.TenantManagement.Blazor.WebAssembly.AntDesignUI" Version="0.9.6" />
-    <PackageReference Include="Lsw.Abp.SettingManagement.Blazor.WebAssembly.AntDesignUI" Version="0.9.6" />
+	  <PackageReference Include="Volo.Abp.Autofac.WebAssembly" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Volo.Abp.Identity.Blazor.WebAssembly" Version="9.0.0" />
+	  <PackageReference Include="Volo.Abp.TenantManagement.Blazor.WebAssembly" Version="9.0.0" />
+	  <PackageReference Include="Volo.Abp.SettingManagement.Blazor.WebAssembly" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SuperAbp.Exam.Admin.HttpApi.Client\SuperAbp.Exam.Admin.HttpApi.Client.csproj" />
   </ItemGroup>
 
+  <!-- <TEMPLATE-REMOVE IF-NOT='PWA'> -->
+  <ItemGroup>
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+  </ItemGroup>
+  <!-- </TEMPLATE-REMOVE> -->
 
 </Project>

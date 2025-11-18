@@ -3,7 +3,7 @@ using SuperAbp.Exam.Localization;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Ui.Branding;
 
-namespace SuperAbp.Exam.Blazor;
+namespace MyCompanyName.MyProjectName.Blazor.WebApp.Tiered;
 
 [Dependency(ReplaceServices = true)]
 public class ExamBrandingProvider : DefaultBrandingProvider

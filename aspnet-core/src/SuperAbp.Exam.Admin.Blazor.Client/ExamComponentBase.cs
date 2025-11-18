@@ -1,7 +1,7 @@
 ﻿using SuperAbp.Exam.Localization;
 using Volo.Abp.AspNetCore.Components;
 
-namespace SuperAbp.Exam.Blazor.Client;
+namespace SuperAbp.Exam.Admin.Blazor.Client;
 
 public abstract class ExamComponentBase : AbpComponentBase
 {

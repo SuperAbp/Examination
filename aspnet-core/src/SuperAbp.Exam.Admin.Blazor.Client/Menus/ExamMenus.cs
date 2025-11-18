@@ -1,4 +1,4 @@
-﻿namespace SuperAbp.Exam.Blazor.Client.Menus;
+﻿namespace SuperAbp.Exam.Admin.Blazor.Client.Menus;
 
 public class ExamMenus
 {
@@ -6,5 +6,4 @@ public class ExamMenus
     public const string Home = Prefix + ".Home";
 
     //Add your menu items here...
-
 }

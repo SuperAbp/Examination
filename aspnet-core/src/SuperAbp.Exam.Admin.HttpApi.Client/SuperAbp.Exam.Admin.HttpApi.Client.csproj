@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>SuperAbp.Exam</RootNamespace>
+    <RootNamespace>SuperAbp.Exam.Admin</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

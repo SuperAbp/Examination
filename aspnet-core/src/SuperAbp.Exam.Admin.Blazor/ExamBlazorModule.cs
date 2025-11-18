@@ -1,100 +1,91 @@
-using Lsw.Abp.AspnetCore.Components.Server.AntDesignTheme;
-using Lsw.Abp.AspnetCore.Components.Server.AntDesignTheme.Bundling;
-using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Routing;
-using Lsw.Abp.AspnetCore.Components.WebAssembly.AntDesignTheme;
-using Lsw.Abp.IdentityManagement.Blazor.Server.AntDesignUI;
-using Lsw.Abp.SettingManagement.Blazor.Server.AntDesignUI;
-using Lsw.Abp.TenantManagement.Blazor.Server.AntDesignUI;
+﻿using System;
+using System.IO;
+using Blazorise.Bootstrap5;
+using Blazorise.Icons.FontAwesome;
+using Medallion.Threading;
+using Medallion.Threading.Redis;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.OpenApi.Models;
-using OpenIddict.Validation.AspNetCore;
-using SuperAbp.Exam.Blazor.Client;
-using SuperAbp.Exam.Blazor.Client.Menus;
-using SuperAbp.Exam.Blazor.Components;
-using SuperAbp.Exam.EntityFrameworkCore;
-using SuperAbp.Exam.Localization;
-using SuperAbp.Exam.MultiTenancy;
-using System;
-using System.IO;
+using MyCompanyName.MyProjectName.Blazor.WebApp.Tiered.Menus;
+using StackExchange.Redis;
 using Volo.Abp;
-using Volo.Abp.Account.Web;
+using Volo.Abp.AspNetCore.Authentication.OpenIdConnect;
 using Volo.Abp.AspNetCore.Components.Web;
-using Volo.Abp.AspNetCore.Mvc;
+using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme;
+using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme.Bundling;
+using Volo.Abp.AspNetCore.Components.Web.Theming.Routing;
+using Volo.Abp.AspNetCore.Mvc.Client;
 using Volo.Abp.AspNetCore.Mvc.Localization;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared.Toolbars;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.AutoMapper;
+using Volo.Abp.Caching;
+using Volo.Abp.Caching.StackExchangeRedis;
+using Volo.Abp.DistributedLocking;
+using Volo.Abp.Http.Client.IdentityModel.Web;
+using Volo.Abp.Identity.Blazor.Server;
 using Volo.Abp.Modularity;
-using Volo.Abp.OpenIddict;
+using Volo.Abp.MultiTenancy;
 using Volo.Abp.Security.Claims;
+using Volo.Abp.SettingManagement.Blazor.Server;
 using Volo.Abp.Swashbuckle;
+using Volo.Abp.TenantManagement.Blazor.Server;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
+using SuperAbp.Exam.Admin;
+using SuperAbp.Exam.Localization;
+using SuperAbp.Exam;
+using SuperAbp.Exam.MultiTenancy;
+using SuperAbp.Exam.Admin.Blazor.Components;
+using SuperAbp.Exam.Admin.Blazor.Client;
+using SuperAbp.Exam.Admin.Blazor.Client.Menus;
 
-namespace SuperAbp.Exam.Blazor;
+namespace MyCompanyName.MyProjectName.Blazor.WebApp.Tiered;
 
 [DependsOn(
-    typeof(ExamApplicationModule),
-    typeof(ExamEntityFrameworkCoreModule),
-    typeof(ExamHttpApiModule),
+    typeof(ExamAdminHttpApiClientModule),
+    typeof(AbpCachingStackExchangeRedisModule),
+    typeof(AbpDistributedLockingModule),
+    typeof(AbpAspNetCoreMvcClientModule),
+    typeof(AbpAspNetCoreAuthenticationOpenIdConnectModule),
+    typeof(AbpHttpClientIdentityModelWebModule),
+    typeof(AbpAspNetCoreComponentsServerLeptonXLiteThemeModule),
+    typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
     typeof(AbpAutofacModule),
     typeof(AbpSwashbuckleModule),
     typeof(AbpAspNetCoreSerilogModule),
-    typeof(AbpAccountWebOpenIddictModule),
-    typeof(AbpAspNetCoreComponentsServerAntDesignThemeModule),
-    typeof(AbpIdentityBlazorServerAntDesignModule),
-    typeof(AbpTenantManagementBlazorServerAntDesignModule),
-    typeof(AbpSettingManagementBlazorServerAntDesignModule)
+    typeof(AbpIdentityBlazorServerModule),
+    typeof(AbpTenantManagementBlazorServerModule),
+    typeof(AbpSettingManagementBlazorServerModule)
    )]
 public class ExamBlazorModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
-        var hostingEnvironment = context.Services.GetHostingEnvironment();
-        var configuration = context.Services.GetConfiguration();
-
         context.Services.PreConfigure<AbpMvcDataAnnotationsLocalizationOptions>(options =>
         {
             options.AddAssemblyResource(
                 typeof(ExamResource),
-                typeof(ExamDomainModule).Assembly,
                 typeof(ExamDomainSharedModule).Assembly,
-                typeof(ExamApplicationModule).Assembly,
-                typeof(ExamApplicationContractsModule).Assembly,
+                typeof(ExamAdminApplicationContractsModule).Assembly,
                 typeof(ExamBlazorModule).Assembly
             );
         });
-
-        PreConfigure<OpenIddictBuilder>(builder =>
-        {
-            builder.AddValidation(options =>
-            {
-                options.AddAudiences("Exam");
-                options.UseLocalServer();
-                options.UseAspNetCore();
-            });
-        });
-
-        if (!hostingEnvironment.IsDevelopment())
-        {
-            PreConfigure<AbpOpenIddictAspNetCoreOptions>(options =>
-            {
-                options.AddDevelopmentEncryptionAndSigningCertificate = false;
-            });
-
-            PreConfigure<OpenIddictServerBuilder>(serverBuilder =>
-            {
-                serverBuilder.AddProductionEncryptionAndSigningCertificate("openiddict.pfx", "423ed05f-76d1-43eb-ab13-9fd34df1f31c");
-            });
-        }
 
         PreConfigure<AbpAspNetCoreComponentsWebOptions>(options =>
         {
@@ -112,30 +103,19 @@ public class ExamBlazorModule : AbpModule
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
 
-        ConfigureAuthentication(context);
         ConfigureUrls(configuration);
+        ConfigureCache();
         ConfigureBundles();
+        ConfigureMultiTenancy();
+        ConfigureAuthentication(context, configuration);
         ConfigureAutoMapper();
         ConfigureVirtualFileSystem(hostingEnvironment);
-        ConfigureSwaggerServices(context.Services);
-        ConfigureAutoApiControllers();
+        ConfigureBlazorise(context);
         ConfigureRouter(context);
-        ConfigureMenu(context);
-    }
-
-    private void ConfigureAuthentication(ServiceConfigurationContext context)
-    {
-        context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
-        context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
-        {
-            options.IsDynamicClaimsEnabled = true;
-        });
-
-        Configure<AuthenticationOptions>(options =>
-        {
-            options.LoginUrl = "Account/Login1";
-            options.LogoutUrl = "Account/Logout1";
-        });
+        ConfigureMenu(configuration);
+        ConfigureDataProtection(context, configuration, hostingEnvironment);
+        ConfigureDistributedLocking(context, configuration);
+        ConfigureSwaggerServices(context.Services);
     }
 
     private void ConfigureUrls(IConfiguration configuration)
@@ -143,7 +123,14 @@ public class ExamBlazorModule : AbpModule
         Configure<AppUrlOptions>(options =>
         {
             options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
-            options.RedirectAllowedUrls.AddRange(configuration["App:RedirectAllowedUrls"]?.Split(',') ?? Array.Empty<string>());
+        });
+    }
+
+    private void ConfigureCache()
+    {
+        Configure<AbpDistributedCacheOptions>(options =>
+        {
+            options.KeyPrefix = "Exam:";
         });
     }
 
@@ -153,7 +140,7 @@ public class ExamBlazorModule : AbpModule
         {
             // MVC UI
             options.StyleBundles.Configure(
-                BlazorAntDesignThemeBundles.Styles.Global,
+                LeptonXLiteThemeBundles.Styles.Global,
                 bundle =>
                 {
                     bundle.AddFiles("/global-styles.css");
@@ -162,14 +149,101 @@ public class ExamBlazorModule : AbpModule
 
             //BLAZOR UI
             options.StyleBundles.Configure(
-                BlazorAntDesignThemeBundles.Styles.Global,
+                BlazorLeptonXLiteThemeBundles.Styles.Global,
                 bundle =>
                 {
                     bundle.AddFiles("/blazor-global-styles.css");
                     //You can remove the following line if you don't use Blazor CSS isolation for components
-                    bundle.AddFiles(new BundleFile("/SuperAbp.Exam.Blazor.Client.styles.css", true));
+                    bundle.AddFiles(new BundleFile("/SuperAbp.Exam.Admin.Blazor.Client.styles.css", true));
                 }
             );
+        });
+    }
+
+    private void ConfigureMultiTenancy()
+    {
+        Configure<AbpMultiTenancyOptions>(options =>
+        {
+            options.IsEnabled = MultiTenancyConsts.IsEnabled;
+        });
+    }
+
+    private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
+    {
+        context.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+            })
+            .AddCookie("Cookies", options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromDays(365);
+                options.IntrospectAccessToken();
+            })
+            .AddAbpOpenIdConnect("oidc", options =>
+            {
+                options.Authority = configuration["AuthServer:Authority"];
+                options.RequireHttpsMetadata = configuration.GetValue<bool>("AuthServer:RequireHttpsMetadata");
+                options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
+
+                options.ClientId = configuration["AuthServer:ClientId"];
+                options.ClientSecret = configuration["AuthServer:ClientSecret"];
+
+                options.SaveTokens = true;
+                options.GetClaimsFromUserInfoEndpoint = true;
+
+                options.Scope.Add("roles");
+                options.Scope.Add("email");
+                options.Scope.Add("phone");
+                options.Scope.Add("Exam");
+            });
+        /*
+        * This configuration is used when the AuthServer is running on the internal network such as docker or k8s.
+        * Configuring the redirecting URLs for internal network and the web
+        * The login and the logout URLs are configured to redirect to the AuthServer real DNS for browser.
+        * The token acquired and validated from the the internal network AuthServer URL.
+        */
+        if (configuration.GetValue<bool>("AuthServer:IsContainerized"))
+        {
+            context.Services.Configure<OpenIdConnectOptions>("oidc", options =>
+            {
+                options.TokenValidationParameters.ValidIssuers = new[]
+                {
+                        configuration["AuthServer:MetaAddress"]!.EnsureEndsWith('/'),
+                        configuration["AuthServer:Authority"]!.EnsureEndsWith('/')
+                };
+
+                options.MetadataAddress = configuration["AuthServer:MetaAddress"]!.EnsureEndsWith('/') +
+                                        ".well-known/openid-configuration";
+
+                var previousOnRedirectToIdentityProvider = options.Events.OnRedirectToIdentityProvider;
+                options.Events.OnRedirectToIdentityProvider = async ctx =>
+                {
+                    // Intercept the redirection so the browser navigates to the right URL in your host
+                    ctx.ProtocolMessage.IssuerAddress = configuration["AuthServer:Authority"]!.EnsureEndsWith('/') + "connect/authorize";
+
+                    if (previousOnRedirectToIdentityProvider != null)
+                    {
+                        await previousOnRedirectToIdentityProvider(ctx);
+                    }
+                };
+                var previousOnRedirectToIdentityProviderForSignOut = options.Events.OnRedirectToIdentityProviderForSignOut;
+                options.Events.OnRedirectToIdentityProviderForSignOut = async ctx =>
+                {
+                    // Intercept the redirection for signout so the browser navigates to the right URL in your host
+                    ctx.ProtocolMessage.IssuerAddress = configuration["AuthServer:Authority"]!.EnsureEndsWith('/') + "connect/logout";
+
+                    if (previousOnRedirectToIdentityProviderForSignOut != null)
+                    {
+                        await previousOnRedirectToIdentityProviderForSignOut(ctx);
+                    }
+                };
+            });
+        }
+
+        context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
+        {
+            options.IsDynamicClaimsEnabled = true;
         });
     }
 
@@ -180,12 +254,47 @@ public class ExamBlazorModule : AbpModule
             Configure<AbpVirtualFileSystemOptions>(options =>
             {
                 options.FileSets.ReplaceEmbeddedByPhysical<ExamDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Domain.Shared"));
-                options.FileSets.ReplaceEmbeddedByPhysical<ExamDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Domain"));
-                options.FileSets.ReplaceEmbeddedByPhysical<ExamApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Application.Contracts"));
-                options.FileSets.ReplaceEmbeddedByPhysical<ExamApplicationModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Application"));
+                options.FileSets.ReplaceEmbeddedByPhysical<ExamAdminApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Admin.Application.Contracts"));
                 options.FileSets.ReplaceEmbeddedByPhysical<ExamBlazorModule>(hostingEnvironment.ContentRootPath);
             });
         }
+    }
+
+    private void ConfigureBlazorise(ServiceConfigurationContext context)
+    {
+        context.Services
+            .AddBootstrap5Providers()
+            .AddFontAwesomeIcons();
+    }
+
+    private void ConfigureMenu(IConfiguration configuration)
+    {
+        Configure<AbpNavigationOptions>(options =>
+        {
+            options.MenuContributors.Add(new ExamMenuContributor(configuration));
+        });
+
+        Configure<AbpToolbarOptions>(options =>
+        {
+            options.Contributors.Add(new ExamToolbarContributor());
+        });
+    }
+
+    private void ConfigureRouter(ServiceConfigurationContext context)
+    {
+        Configure<AbpRouterOptions>(options =>
+        {
+            options.AppAssembly = typeof(ExamBlazorModule).Assembly;
+            options.AdditionalAssemblies.Add(typeof(ExamBlazorClientModule).Assembly);
+        });
+    }
+
+    private void ConfigureAutoMapper()
+    {
+        Configure<AbpAutoMapperOptions>(options =>
+        {
+            options.AddMaps<ExamBlazorModule>();
+        });
     }
 
     private void ConfigureSwaggerServices(IServiceCollection services)
@@ -200,36 +309,27 @@ public class ExamBlazorModule : AbpModule
         );
     }
 
-    private void ConfigureMenu(ServiceConfigurationContext context)
+    private void ConfigureDataProtection(
+        ServiceConfigurationContext context,
+        IConfiguration configuration,
+        IWebHostEnvironment hostingEnvironment)
     {
-        Configure<AbpNavigationOptions>(options =>
+        var dataProtectionBuilder = context.Services.AddDataProtection().SetApplicationName("Exam");
+        if (!hostingEnvironment.IsDevelopment())
         {
-            options.MenuContributors.Add(new ExamMenuContributor(context.Services.GetConfiguration()));
-        });
+            var redis = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]!);
+            dataProtectionBuilder.PersistKeysToStackExchangeRedis(redis, "Exam-Protection-Keys");
+        }
     }
 
-    private void ConfigureRouter(ServiceConfigurationContext context)
+    private void ConfigureDistributedLocking(
+        ServiceConfigurationContext context,
+        IConfiguration configuration)
     {
-        Configure<AbpRouterOptions>(options =>
+        context.Services.AddSingleton<IDistributedLockProvider>(sp =>
         {
-            options.AppAssembly = typeof(ExamBlazorModule).Assembly;
-            options.AdditionalAssemblies.Add(typeof(ExamBlazorClientModule).Assembly);
-        });
-    }
-
-    private void ConfigureAutoApiControllers()
-    {
-        Configure<AbpAspNetCoreMvcOptions>(options =>
-        {
-            options.ConventionalControllers.Create(typeof(ExamApplicationModule).Assembly);
-        });
-    }
-
-    private void ConfigureAutoMapper()
-    {
-        Configure<AbpAutoMapperOptions>(options =>
-        {
-            options.AddMaps<ExamBlazorModule>();
+            var connection = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]!);
+            return new RedisDistributedSynchronizationProvider(connection.GetDatabase());
         });
     }
 
@@ -238,40 +338,36 @@ public class ExamBlazorModule : AbpModule
         var env = context.GetEnvironment();
         var app = context.GetApplicationBuilder();
 
-        app.UseAbpRequestLocalization();
-
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
         }
-        else
+
+        app.UseAbpRequestLocalization();
+
+        if (!env.IsDevelopment())
         {
-            app.UseExceptionHandler("/Error");
-            app.UseHsts();
+            app.UseErrorPage();
         }
 
-        app.UseHttpsRedirection();
         app.UseCorrelationId();
         app.MapAbpStaticAssets();
         app.UseRouting();
         app.UseAuthentication();
-        app.UseAbpOpenIddictValidation();
 
         if (MultiTenancyConsts.IsEnabled)
         {
             app.UseMultiTenancy();
         }
-        app.UseUnitOfWork();
         app.UseDynamicClaims();
         app.UseAntiforgery();
         app.UseAuthorization();
-
         app.UseSwagger();
         app.UseAbpSwaggerUI(options =>
         {
             options.SwaggerEndpoint("/swagger/v1/swagger.json", "Exam API");
         });
-
+        app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints(builder =>
         {
             builder.MapRazorComponents<App>()

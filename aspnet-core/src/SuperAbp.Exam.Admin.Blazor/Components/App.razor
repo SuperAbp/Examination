@@ -1,7 +1,12 @@
-﻿@using Lsw.Abp.AspnetCore.Components.Server.AntDesignTheme.Bundling
+﻿@using SuperAbp.Exam.Admin.Blazor.Client
 @using Volo.Abp.Localization
 @using System.Globalization
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Http
 @using Microsoft.Extensions.Hosting
+@using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme.Bundling
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Bundling
+@using Volo.Abp.AspNetCore.Components.WebAssembly.WebApp
 @inject IHostEnvironment Env
 @{
     var rtl = CultureHelper.IsRtl ? "rtl" : string.Empty;
@@ -13,10 +18,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SuperAbp.Exam.Blazor.Server</title>
+    <title>SuperAbp.Exam.Admin.Blazor.Server</title>
     <base href="/" />
 
-    <AbpStyles BundleName="@BlazorAntDesignThemeBundles.Styles.Global" WebAssemblyStyleFiles="GlobalStyles" @rendermode="InteractiveAuto" />
+    <AbpStyles BundleName="@BlazorLeptonXLiteThemeBundles.Styles.Global" WebAssemblyStyleFiles="GlobalStyles" @rendermode="InteractiveAuto" />
 
     <HeadOutlet @rendermode="InteractiveAuto" />
 
@@ -25,7 +30,7 @@
 
     <Routes @rendermode="InteractiveAuto" />
 
-    <AbpScripts BundleName="@BlazorAntDesignThemeBundles.Scripts.Global" WebAssemblyScriptFiles="GlobalScripts" @rendermode="InteractiveAuto" />
+    <AbpScripts BundleName="@BlazorLeptonXLiteThemeBundles.Scripts.Global" WebAssemblyScriptFiles="GlobalScripts" @rendermode="InteractiveAuto" />
 
     <script src="_framework/blazor.web.js"></script>
 
@@ -44,6 +49,7 @@
 
 </body>
 </html>
+
 @code{
     private List<string> GlobalStyles =>
     [
@@ -56,4 +62,35 @@
     [
         "global.js"
     ];
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [Inject]
+    private PersistentComponentState PersistentComponentState { get; set; }
+
+    private string? Token { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (HttpContext.User?.Identity?.IsAuthenticated == true)
+        {
+            Token = await HttpContext.GetTokenAsync("access_token");
+        }
+
+        PersistentComponentState.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
+    }
+
+    async Task OnPersistingAsync()
+    {
+        if (!Token.IsNullOrWhiteSpace())
+        {
+            PersistentComponentState.PersistAsJson(PersistentAccessToken.Key, new PersistentAccessToken
+            {
+                AccessToken = Token
+            });
+        }
+
+        await Task.CompletedTask;
+    }
 }

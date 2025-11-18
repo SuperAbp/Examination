@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-namespace SuperAbp.Exam.Blazor.Client;
+namespace SuperAbp.Exam.Admin.Blazor.Client;
 
 public class Program
 {
-    public async static Task Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
         var application = await builder.AddApplicationAsync<ExamBlazorClientModule>(options =>

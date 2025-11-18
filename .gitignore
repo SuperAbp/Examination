@@ -14,3 +14,4 @@ angular-admin/.vscode
 /aspnet-core/src/SuperAbp.Exam.BackgroundServices/Logs
 /aspnet-core/.history/
 /.history
+aspnet-core/src/SuperAbp.Exam.Admin.Blazor/Logs
