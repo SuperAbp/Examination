@@ -1,13 +1,14 @@
-using System;
-using System.Threading.Tasks;
+using AntDesign;
+using Lsw.Abp.IdentityManagement.Blazor.AntDesignUI;
+using Lsw.Abp.SettingManagement.Blazor.AntDesignUI;
+using Lsw.Abp.TenantManagement.Blazor.AntDesignUI;
 using Microsoft.Extensions.Configuration;
 using SuperAbp.Exam.Localization;
 using SuperAbp.Exam.MultiTenancy;
+using System;
+using System.Threading.Tasks;
 using Volo.Abp.Account.Localization;
 using Volo.Abp.Authorization.Permissions;
-using Volo.Abp.Identity.Blazor;
-using Volo.Abp.SettingManagement.Blazor.Menus;
-using Volo.Abp.TenantManagement.Blazor.Navigation;
 using Volo.Abp.UI.Navigation;
 
 namespace SuperAbp.Exam.Admin.Blazor.Client.Menus;
@@ -43,7 +44,7 @@ public class ExamMenuContributor : IMenuContributor
                 ExamMenus.Home,
                 l["Menu:Home"],
                 "/",
-                icon: "fas fa-home"
+                icon: IconType.Outline.Home
             )
         );
 
@@ -78,7 +79,7 @@ public class ExamMenuContributor : IMenuContributor
                 "Account.Manage",
                 accountStringLocalizer["MyAccount"],
                 $"{authServerUrl.EnsureEndsWith('/')}Account/Manage",
-                icon: "fa fa-cog",
+                icon: IconType.Outline.Setting,
                 order: 1000,
                 target: "_blank")
             .RequireAuthenticated());

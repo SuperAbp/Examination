@@ -15,14 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.6.2" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.6.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.AspNetCore.Components.WebAssembly.LeptonXLiteTheme" Version="4.0.0" />
+    <PackageReference Include="Lsw.Abp.AspnetCore.Components.WebAssembly.AntDesignTheme" Version="0.9.6" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,9 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <PackageReference Include="Volo.Abp.Identity.Blazor.WebAssembly" Version="9.0.0" />
-	  <PackageReference Include="Volo.Abp.TenantManagement.Blazor.WebAssembly" Version="9.0.0" />
-	  <PackageReference Include="Volo.Abp.SettingManagement.Blazor.WebAssembly" Version="9.0.0" />
+	  <PackageReference Include="Lsw.Abp.IdentityManagement.Blazor.WebAssembly.AntDesignUI" Version="0.9.6" />
+	  <PackageReference Include="Lsw.Abp.TenantManagement.Blazor.WebAssembly.AntDesignUI" Version="0.9.6" />
+	  <PackageReference Include="Lsw.Abp.SettingManagement.Blazor.WebAssembly.AntDesignUI" Version="0.9.6" />
   </ItemGroup>
 
   <ItemGroup>
