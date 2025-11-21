@@ -1,0 +1,32 @@
+﻿@page "/questions"
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Admin.Blazor.Client.Components
+@using SuperAbp.Exam.Admin.Blazor.Client.Utils
+@using SuperAbp.Exam.Admin.QuestionManagement.Questions
+
+@inherits CustomerTablePageBase<IQuestionAdminAppService, QuestionListDto, Guid, GetQuestionsInput, QuestionListDto>
+
+<AbpPageHeader Title="@L["Questions"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
+<div class="page-content">
+    <Form Class="search-form" @ref="SearchForm" Layout="@FormLayout.Inline" Model="@GetListInput">
+        <FormItem Label="@L["Title"]">
+            <Input @bind-Value="@context.Content" />
+        </FormItem>
+        <FormItem>
+            <Button Type="@ButtonType.Primary" HtmlType="submit" OnClick="SearchEntitiesAsync">
+                @L["Search"]
+            </Button>
+            <Button HtmlType="submit" OnClick="ClearSearchAsync">
+                @L["Clear"]
+            </Button>
+        </FormItem>
+    </Form>
+    <MyAbpExtensibleDataGrid TItem="QuestionListDto"
+                           Data="@Entities"
+                           OnChange="@OnDataGridReadAsync"
+                           TotalItems="@TotalCount"
+                           PageSize="@PageSize"
+                           CurrentPage="@CurrentPage"
+                           Columns="@QuesionTableColumns">
+    </MyAbpExtensibleDataGrid>
+</div>

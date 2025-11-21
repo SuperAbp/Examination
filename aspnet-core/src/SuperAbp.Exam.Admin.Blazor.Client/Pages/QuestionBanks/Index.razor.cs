@@ -4,6 +4,7 @@ using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.PageToolbars;
 using Lsw.Abp.IdentityManagement.Blazor.AntDesignUI;
 using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks;
+using SuperAbp.Exam.Localization;
 using SuperAbp.Exam.Permissions;
 using System;
 using System.Collections.Generic;
@@ -17,20 +18,20 @@ using Volo.Abp.ObjectExtending;
 
 namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.QuestionBanks;
 
-[Authorize]
+[Authorize(ExamPermissions.QuestionBanks.Management)]
 public partial class Index
 {
     public Index()
     {
-        ObjectMapperContext = typeof(AbpIdentityBlazorAntDesignModule);
-        LocalizationResource = typeof(IdentityResource);
+        ObjectMapperContext = typeof(ExamBlazorClientModule);
+        LocalizationResource = typeof(ExamResource);
 
         CreatePolicyName = ExamPermissions.QuestionBanks.Create;
         UpdatePolicyName = ExamPermissions.QuestionBanks.Update;
         DeletePolicyName = ExamPermissions.QuestionBanks.Delete;
     }
 
-    protected List<TableColumn> RoleManagementTableColumns => TableColumns.Get<Index>();
+    protected List<TableColumn> QuestionBankTableColumns => TableColumns.Get<Index>();
 
     protected IForm SearchForm { get; set; }
 
@@ -68,7 +69,7 @@ public partial class Index
 
     protected override ValueTask SetTableColumnsAsync()
     {
-        RoleManagementTableColumns
+        QuestionBankTableColumns
             .AddRange(new TableColumn[]
             {
                 new TableColumn
@@ -95,10 +96,10 @@ public partial class Index
                     }
             });
 
-        RoleManagementTableColumns.AddRange(GetExtensionTableColumns(IdentityModuleExtensionConsts.ModuleName,
+        QuestionBankTableColumns.AddRange(GetExtensionTableColumns(IdentityModuleExtensionConsts.ModuleName,
             IdentityModuleExtensionConsts.EntityNames.Role));
 
-        RoleManagementTableColumns.Add(new TableColumn
+        QuestionBankTableColumns.Add(new TableColumn
         {
             Title = L["Actions"],
             Actions = EntityActions.Get<Index>()
@@ -135,7 +136,6 @@ public partial class Index
 
     protected virtual async Task OpenCreateModalAsync()
     {
-        Console.WriteLine(111);
         await CreateModal.OpenAsync();
     }
 

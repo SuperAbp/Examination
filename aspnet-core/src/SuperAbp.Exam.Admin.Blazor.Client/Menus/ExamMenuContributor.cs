@@ -51,14 +51,20 @@ public class ExamMenuContributor : IMenuContributor
         var examItem = new ApplicationMenuItem(IdentityMenuNames.GroupName, l["Menu:ExamManagement"],
             icon: IconType.Outline.Appstore);
         context.Menu.Items.Add(examItem);
-        examItem.Items.Add(
+        examItem.Items.AddRange([
             new ApplicationMenuItem(
                 ExamMenus.QuestionBank,
                 l["Menu:QuestionBank"],
                 "/question-banks",
                 requiredPermissionName: ExamPermissions.QuestionBanks.Default
+            ),
+            new ApplicationMenuItem(
+                ExamMenus.Question,
+                l["Menu:Question"],
+                "/questions",
+                requiredPermissionName: ExamPermissions.QuestionBanks.Default
             )
-        );
+        ]);
 
         var administration = context.Menu.GetAdministration();
 

@@ -21,9 +21,9 @@ using Volo.Abp.Localization;
 using Volo.Abp.ObjectExtending;
 using Volo.Abp.ObjectExtending.Modularity;
 
-namespace SuperAbp.Exam.Admin.Blazor.Client
+namespace SuperAbp.Exam.Admin.Blazor.Client.Utils
 {
-    public abstract class CustomerCrudPageBase<TAppService,
+    public abstract class CustomerTablePageBase<TAppService,
             TGetListOutputDto,
             TKey,
             TGetListInput,
@@ -47,11 +47,6 @@ namespace SuperAbp.Exam.Admin.Blazor.Client
         protected bool Loading = false;
         protected TGetListInput GetListInput = new();
         protected IReadOnlyList<TListViewModel> Entities = Array.Empty<TListViewModel>();
-        protected TKey EditingEntityId;
-        protected Modal CreateModal;
-        protected bool CreateModalVisible;
-        protected Modal EditModal;
-        protected bool EditModalVisible;
         protected List<AbpBreadcrumbItem> BreadcrumbItems = new();
         protected TableEntityActionsColumn<TListViewModel> EntityActionsColumn;
         protected EntityActionDictionary EntityActions { get; set; }
@@ -65,7 +60,7 @@ namespace SuperAbp.Exam.Admin.Blazor.Client
         public bool HasUpdatePermission { get; set; }
         public bool HasDeletePermission { get; set; }
 
-        protected CustomerCrudPageBase()
+        protected CustomerTablePageBase()
         {
             TableColumns = new TableColumnDictionary();
             EntityActions = new EntityActionDictionary();

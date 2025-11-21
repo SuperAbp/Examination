@@ -1,10 +1,11 @@
 ﻿@page "/question-banks"
 @using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Admin.Blazor.Client.Utils
 @using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
 @using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.Permissions
 @using Volo.Abp.AspNetCore.Components.Notifications
-@inherits CustomerCrudPageBase<IQuestionBankAdminAppService, QuestionBankListDto, Guid, GetQuestionBanksInput, QuestionBankListDto>
+@inherits CustomerTablePageBase<IQuestionBankAdminAppService, QuestionBankListDto, Guid, GetQuestionBanksInput, QuestionBankListDto>
 @inject IAuthorizationService AuthorizationService
 @inject IStringLocalizer<ExamResource> L
 
@@ -29,7 +30,7 @@
                            TotalItems="@TotalCount"
                            PageSize="@PageSize"
                            CurrentPage="@CurrentPage"
-                           Columns="@RoleManagementTableColumns">
+                           Columns="@QuestionBankTableColumns">
     </AbpExtensibleDataGrid>
 </div>
 @if(HasCreatePermission)
