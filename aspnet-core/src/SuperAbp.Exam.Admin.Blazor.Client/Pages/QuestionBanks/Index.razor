@@ -1,0 +1,63 @@
+﻿@page "/question-banks"
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.Permissions
+@using Volo.Abp.AspNetCore.Components.Notifications
+@inject IAuthorizationService AuthorizationService
+@inject IStringLocalizer<ExamResource> L
+
+<AbpPageHeader Title="@L["QuestionBanks"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
+<div class="page-content">
+    <Form Class="search-form" @ref="SearchForm" Layout="@FormLayout.Inline" Model="@GetQuestionBanksInput">
+        <FormItem Label="@L["Title"]">
+            <Input @bind-Value="@context.Title" />
+        </FormItem>
+        <FormItem>
+            <Button Type="@ButtonType.Primary" HtmlType="submit" OnClick="SearchEntitiesAsync">
+                @L["Search"]
+            </Button>
+            <Button HtmlType="submit" OnClick="ClearSearchAsync">
+                @L["Clear"]
+            </Button>
+        </FormItem>
+    </Form>
+    <Table TItem="QuestionBankListDto"
+           DataSource="@QuestionBanks"
+           Loading="Loading"
+           RowKey="x=>x.Id"
+           Total="TotalCount"
+           @bind-PageIndex="PageIndex"
+           @bind-PageSize="PageSize">
+        <PropertyColumn Property="c => c.Title" Title="@L["Title"]" />
+        <PropertyColumn Property="c => c.SingleCount" Title="@L["SingleCount"]" />
+        <PropertyColumn Property="c => c.MultiCount" Title="@L["MultiCount"]" />
+        <PropertyColumn Property="c => c.JudgeCount" Title="@L["JudgeCount"]" />
+        <PropertyColumn Property="c => c.BlankCount" Title="@L["BlankCount"]" />
+        <ActionColumn Title="@L["Action"]">
+            <Space>
+                <SpaceItem>
+                    @if (HasUpdatePermission)
+                    {
+                        <Button Type="@ButtonType.Link" Icon="@IconType.Outline.Edit" OnClick="async () => await OpenEditModalAsync(context.Id)"></Button>
+                    }
+                    @if (HasDeletePermission)
+                    {
+                        <Popconfirm Title="@L["DeletionConfirmationMessage", L["QuestionBanks"], context.Title]"
+                                    OnConfirm="DeleteAsync">
+                            <Button Type="@ButtonType.Link" Icon="@IconType.Outline.Delete"></Button>
+                        </Popconfirm>
+                    }
+                </SpaceItem>
+            </Space>
+        </ActionColumn>
+    </Table>
+</div>
+@if(HasCreatePermission)
+{
+    <CreateModal @ref="CreateModal" OnSaveSuccess="@OnSaveSuccessAsync" />
+}
+@if(HasUpdatePermission)
+{
+    <UpdateModal @ref="UpdateModal" OnSaveSuccess="@OnSaveSuccessAsync" />
+}

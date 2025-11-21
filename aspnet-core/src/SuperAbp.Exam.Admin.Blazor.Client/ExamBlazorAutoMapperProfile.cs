@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks;
 
 namespace SuperAbp.Exam.Admin.Blazor.Client;
 
@@ -6,6 +7,6 @@ public class ExamBlazorAutoMapperProfile : Profile
 {
     public ExamBlazorAutoMapperProfile()
     {
-        //Define your AutoMapper configuration here for the Blazor project.
+        CreateMap<QuestionBankDetailDto, QuestionBankUpdateDto>();
     }
 }

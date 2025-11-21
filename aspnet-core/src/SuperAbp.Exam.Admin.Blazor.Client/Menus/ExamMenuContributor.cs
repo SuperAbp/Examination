@@ -5,6 +5,7 @@ using Lsw.Abp.TenantManagement.Blazor.AntDesignUI;
 using Microsoft.Extensions.Configuration;
 using SuperAbp.Exam.Localization;
 using SuperAbp.Exam.MultiTenancy;
+using SuperAbp.Exam.Permissions;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp.Account.Localization;
@@ -45,6 +46,17 @@ public class ExamMenuContributor : IMenuContributor
                 l["Menu:Home"],
                 "/",
                 icon: IconType.Outline.Home
+            )
+        );
+        var examItem = new ApplicationMenuItem(IdentityMenuNames.GroupName, l["Menu:ExamManagement"],
+            icon: IconType.Outline.Appstore);
+        context.Menu.Items.Add(examItem);
+        examItem.Items.Add(
+            new ApplicationMenuItem(
+                ExamMenus.QuestionBank,
+                l["Menu:QuestionBank"],
+                "/question-banks",
+                requiredPermissionName: ExamPermissions.QuestionBanks.Default
             )
         );
 

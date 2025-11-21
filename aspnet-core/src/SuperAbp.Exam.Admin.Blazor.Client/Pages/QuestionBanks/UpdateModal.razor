@@ -1,0 +1,24 @@
+﻿@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.QuestionBanks
+@using Volo.Abp.AspNetCore.Components
+@inherits AbpComponentBase
+@inject IStringLocalizer<ExamResource> L
+
+<Modal Title="@L["Edit"]"
+       Visible="@_visible"
+       ConfirmLoading="@_submitLoading"
+       OnOk="SaveAsync"
+       OnCancel="Close">
+    <Form @ref="UpdateForm"
+          Name="update-form"
+          Layout="@FormLayout.Vertical"
+          Model="@QuestionBank">
+        <FormItem Label="@L["Title"]" Rules="@(new FormValidationRule[] { new FormValidationRule { Required = true, Max = QuestionBankConsts.MaxTitleLength } })">
+            <Input @bind-Value="@context.Title" />
+        </FormItem>
+        <FormItem Label="@L["Remark"]" Rules="@(new FormValidationRule[] { new FormValidationRule { Max = QuestionBankConsts.MaxRemarkLength } })">
+            <TextArea Rows="4" @bind-Value="@context.Remark" />
+        </FormItem>
+    </Form>
+</Modal>

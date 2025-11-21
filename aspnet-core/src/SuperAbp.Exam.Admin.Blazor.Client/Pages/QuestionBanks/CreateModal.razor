@@ -1,0 +1,18 @@
+﻿@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Localization
+@inject IStringLocalizer<ExamResource> L
+
+<Modal Title="@L["NewQuestionBank"]"
+       @bind-Visible="@_visible"
+        OnOk="SaveAsync">
+    <Form
+        Layout="@FormLayout.Vertical"
+        Model="@QuestionBank">
+        <FormItem Label="@L["Title"]">
+            <Input @bind-Value="@context.Title" />
+        </FormItem>
+        <FormItem Label="@L["Remark"]">
+            <TextArea Rows="4" @bind-Value="@context.Remark" />
+        </FormItem>
+    </Form>
+</Modal>

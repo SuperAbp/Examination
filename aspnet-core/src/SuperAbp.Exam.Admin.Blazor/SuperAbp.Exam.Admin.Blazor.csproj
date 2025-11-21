@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="Lsw.Abp.AspnetCore.Components.Server.AntDesignTheme" Version="0.9.6" />
+	  <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite" Version="4.0.0" />
     <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy" Version="9.0.0" />
   </ItemGroup>
 
