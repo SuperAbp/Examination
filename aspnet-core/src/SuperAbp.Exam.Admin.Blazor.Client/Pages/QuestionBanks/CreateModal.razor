@@ -3,11 +3,14 @@
 @inject IStringLocalizer<ExamResource> L
 
 <Modal Title="@L["NewQuestionBank"]"
-       @bind-Visible="@_visible"
-        OnOk="SaveAsync">
-    <Form
-        Layout="@FormLayout.Vertical"
-        Model="@QuestionBank">
+       Visible="@_visible"
+       ConfirmLoading="@_submitLoading"
+       OnOk="SaveAsync"
+       OnCancel="Close">
+    <Form @ref="CreateForm"
+          Name="update-form"
+          Layout="@FormLayout.Vertical"
+          Model="@QuestionBank">
         <FormItem Label="@L["Title"]">
             <Input @bind-Value="@context.Title" />
         </FormItem>

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components.Web;
 using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks;
 using System;
 using System.Threading.Tasks;
-using Volo.Abp.ObjectMapping;
 
 namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.QuestionBanks;
 
@@ -13,6 +12,8 @@ public partial class CreateModal
     private bool _submitLoading = false;
     private bool _visible = false;
     protected QuestionBankCreateDto QuestionBank { get; set; }
+
+    protected IForm CreateForm { get; set; }
 
     [Parameter]
     public Func<Task> OnSaveSuccess { get; set; }
@@ -32,16 +33,33 @@ public partial class CreateModal
     {
         try
         {
+            var validate = true;
+            if (CreateForm != null)
+            {
+                validate = CreateForm.Validate();
+            }
+            if (!validate)
+            {
+                return;
+            }
+
             _submitLoading = true;
+            StateHasChanged();
             await QuestionBankAppService.CreateAsync(QuestionBank);
         }
         finally
         {
             _submitLoading = false;
         }
+        Close();
         if (OnSaveSuccess is not null)
         {
             await OnSaveSuccess();
         }
+    }
+
+    protected void Close()
+    {
+        _visible = false;
     }
 }

@@ -4,12 +4,13 @@
 @using SuperAbp.Exam.Localization
 @using SuperAbp.Exam.Permissions
 @using Volo.Abp.AspNetCore.Components.Notifications
+@inherits CustomerCrudPageBase<IQuestionBankAdminAppService, QuestionBankListDto, Guid, GetQuestionBanksInput, QuestionBankListDto>
 @inject IAuthorizationService AuthorizationService
 @inject IStringLocalizer<ExamResource> L
 
 <AbpPageHeader Title="@L["QuestionBanks"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
 <div class="page-content">
-    <Form Class="search-form" @ref="SearchForm" Layout="@FormLayout.Inline" Model="@GetQuestionBanksInput">
+    <Form Class="search-form" @ref="SearchForm" Layout="@FormLayout.Inline" Model="@GetListInput">
         <FormItem Label="@L["Title"]">
             <Input @bind-Value="@context.Title" />
         </FormItem>
@@ -22,36 +23,14 @@
             </Button>
         </FormItem>
     </Form>
-    <Table TItem="QuestionBankListDto"
-           DataSource="@QuestionBanks"
-           Loading="Loading"
-           RowKey="x=>x.Id"
-           Total="TotalCount"
-           @bind-PageIndex="PageIndex"
-           @bind-PageSize="PageSize">
-        <PropertyColumn Property="c => c.Title" Title="@L["Title"]" />
-        <PropertyColumn Property="c => c.SingleCount" Title="@L["SingleCount"]" />
-        <PropertyColumn Property="c => c.MultiCount" Title="@L["MultiCount"]" />
-        <PropertyColumn Property="c => c.JudgeCount" Title="@L["JudgeCount"]" />
-        <PropertyColumn Property="c => c.BlankCount" Title="@L["BlankCount"]" />
-        <ActionColumn Title="@L["Action"]">
-            <Space>
-                <SpaceItem>
-                    @if (HasUpdatePermission)
-                    {
-                        <Button Type="@ButtonType.Link" Icon="@IconType.Outline.Edit" OnClick="async () => await OpenEditModalAsync(context.Id)"></Button>
-                    }
-                    @if (HasDeletePermission)
-                    {
-                        <Popconfirm Title="@L["DeletionConfirmationMessage", L["QuestionBanks"], context.Title]"
-                                    OnConfirm="DeleteAsync">
-                            <Button Type="@ButtonType.Link" Icon="@IconType.Outline.Delete"></Button>
-                        </Popconfirm>
-                    }
-                </SpaceItem>
-            </Space>
-        </ActionColumn>
-    </Table>
+    <AbpExtensibleDataGrid TItem="QuestionBankListDto"
+                           Data="@Entities"
+                           OnChange="@OnDataGridReadAsync"
+                           TotalItems="@TotalCount"
+                           PageSize="@PageSize"
+                           CurrentPage="@CurrentPage"
+                           Columns="@RoleManagementTableColumns">
+    </AbpExtensibleDataGrid>
 </div>
 @if(HasCreatePermission)
 {

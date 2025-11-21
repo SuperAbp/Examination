@@ -5,6 +5,7 @@
 @inherits AbpComponentBase
 @inject IStringLocalizer<ExamResource> L
 
+
 <Modal Title="@L["Edit"]"
        Visible="@_visible"
        ConfirmLoading="@_submitLoading"
@@ -14,10 +15,10 @@
           Name="update-form"
           Layout="@FormLayout.Vertical"
           Model="@QuestionBank">
-        <FormItem Label="@L["Title"]" Rules="@(new FormValidationRule[] { new FormValidationRule { Required = true, Max = QuestionBankConsts.MaxTitleLength } })">
+        <FormItem Label="@L["Title"]">
             <Input @bind-Value="@context.Title" />
         </FormItem>
-        <FormItem Label="@L["Remark"]" Rules="@(new FormValidationRule[] { new FormValidationRule { Max = QuestionBankConsts.MaxRemarkLength } })">
+        <FormItem Label="@L["Remark"]">
             <TextArea Rows="4" @bind-Value="@context.Remark" />
         </FormItem>
     </Form>

@@ -1,10 +1,7 @@
 ﻿using AntDesign;
-using FluentValidation;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Volo.Abp.ObjectMapping;
 
@@ -25,9 +22,6 @@ public partial class UpdateModal
     public Func<Task> OnSaveSuccess { get; set; }
 
     [Inject]
-    protected IValidator<QuestionBankUpdateDto> Validator { get; set; }
-
-    [Inject]
     protected IObjectMapper ObjectMapper { get; set; }
 
     [Inject]
@@ -41,12 +35,6 @@ public partial class UpdateModal
 
         _visible = true;
         await InvokeAsync(StateHasChanged);
-    }
-
-    protected FormValidationRule[] GetRulesAsync(string fieldName)
-    {
-        var descriptor = Validator.CreateDescriptor();
-        var validators = descriptor.GetValidatorsForMember(fieldName);
     }
 
     protected async Task SaveAsync()
