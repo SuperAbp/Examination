@@ -1,0 +1,17 @@
+﻿@using Volo.Abp.AspNetCore.Components
+@inherits AbpComponentBase
+
+<Modal Title="@L["NewKnowledgePoint"]"
+       Visible="@_visible"
+       ConfirmLoading="@_submitLoading"
+       OnOk="SaveAsync"
+       OnCancel="Close">
+    <Form @ref="CreateForm"
+          Name="create-form"
+          Layout="@FormLayout.Vertical"
+          Model="@knowledgePoint">
+        <FormItem Label="@L["Name"]">
+            <Input @bind-Value="@context.Name" />
+        </FormItem>
+    </Form>
+</Modal>

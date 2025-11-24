@@ -1,0 +1,17 @@
+﻿@using Volo.Abp.AspNetCore.Components
+@inherits AbpComponentBase
+
+<Modal Title="@L["Edit"]"
+       Visible="@_visible"
+       ConfirmLoading="@_submitLoading"
+       OnOk="SaveAsync"
+       OnCancel="Close">
+    <Form @ref="UpdateForm"
+          Name="update-form"
+          Layout="@FormLayout.Vertical"
+          Model="@knowledgePoint">
+        <FormItem Label="@L["Name"]">
+            <Input @bind-Value="@context.Name" />
+        </FormItem>
+    </Form>
+</Modal>

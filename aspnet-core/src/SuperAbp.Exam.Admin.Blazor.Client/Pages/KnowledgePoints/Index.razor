@@ -1,0 +1,44 @@
+﻿@page "/knowledge-points"
+@using SuperAbp.Exam.Admin.Blazor.Client.Utils
+@using SuperAbp.Exam.Admin.KnowledgePoints
+@using Volo.Abp.AspNetCore.Components
+
+@inherits CustomerTablePageBase<IKnowledgePointAdminAppService, KnowledgePointNodeDto, Guid, GetKnowledgePointsInput, KnowledgePointNodeDto>
+<AbpPageHeader Title="@L["KnowledgePoints"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
+<div class="page-content">
+    <Table TItem="KnowledgePointNodeDto" 
+        DataSource="@Entities"
+           Loading="@Loading"
+            TreeChildren="item=>item.Children"
+            DefaultExpandAllRows
+            HidePagination
+           Responsive="true"
+           OnChange="@OnDataGridReadAsync">
+        <PropertyColumn Title="@L["Name"]" Property="c => c.Name" />
+        <ActionColumn Title="@L["Actions"]">
+            @if (HasCreatePermission)
+            {
+                <Button Type="@ButtonType.Link" Icon="@IconType.Outline.Plus" OnClick="async () => { await OpenCreateModalAsync(context.Id); }"></Button>
+            }
+            @if (HasUpdatePermission)
+            {
+                <Button Type="@ButtonType.Link" Icon="@IconType.Outline.Edit" OnClick="async () => { await OpenUpdateModalAsync(context.Id); }"></Button>
+            }
+            @if (HasDeletePermission)
+            {
+                <Popconfirm Title="@UiLocalizer["ItemWillBeDeletedMessage"]" OnConfirm="async () => { await DeleteAsync(context.Id); }">
+                    <Button Type="@ButtonType.Link" Icon="@IconType.Outline.Delete"></Button>
+                </Popconfirm>
+            }
+        </ActionColumn>
+    </Table>
+</div>
+
+@if(HasCreatePermission)
+{
+    <CreateModal @ref="CreateModal" OnSaveSuccess="@OnSaveSuccessAsync" />
+}
+@if(HasUpdatePermission)
+{
+    <UpdateModal @ref="UpdateModal" OnSaveSuccess="@OnSaveSuccessAsync" />
+}

@@ -48,7 +48,18 @@ public class ExamMenuContributor : IMenuContributor
                 icon: IconType.Outline.Home
             )
         );
-        var examItem = new ApplicationMenuItem(IdentityMenuNames.GroupName, l["Menu:ExamManagement"],
+        var systemItem = new ApplicationMenuItem(ExamMenus.SystemManagement, l["Menu:SystemManagement"],
+            icon: IconType.Outline.Setting);
+        context.Menu.Items.Add(systemItem);
+        systemItem.Items.AddRange([
+             new ApplicationMenuItem(
+                ExamMenus.KnowledgePoint,
+                l["Menu:KnowledgePoint"],
+                "/knowledge-points",
+                requiredPermissionName: ExamPermissions.KnowledgePoints.Management
+            )]);
+
+        var examItem = new ApplicationMenuItem(ExamMenus.ExamManagement, l["Menu:ExamManagement"],
             icon: IconType.Outline.Appstore);
         context.Menu.Items.Add(examItem);
         examItem.Items.AddRange([

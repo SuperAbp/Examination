@@ -60,7 +60,7 @@ public partial class Index
                         Text = L["Delete"],
                         Visible = (data) => HasDeletePermission,
                         Clicked = async (data) => await DeleteAsync(data.As<QuestionBankListDto>().Id),
-                        ConfirmationMessage = (data) => L["ItemWillBeDeletedMessage"]
+                        ConfirmationMessage = (data) => UiLocalizer["ItemWillBeDeletedMessage"]
                     }
             ]);
 
@@ -112,7 +112,7 @@ public partial class Index
     {
         Toolbar.AddButton(L["NewQuestionBank"], OpenCreateModalAsync,
             IconType.Outline.Plus,
-            requiredPolicyName: ExamPermissions.QuestionBanks.Create);
+            requiredPolicyName: CreatePolicyName);
         await base.SetToolbarItemsAsync();
     }
 

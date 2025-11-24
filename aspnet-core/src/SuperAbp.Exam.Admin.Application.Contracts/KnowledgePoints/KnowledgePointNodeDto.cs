@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.Admin.KnowledgePoints;
 
-public class KnowledgePointNodeDto
+public class KnowledgePointNodeDto : EntityDto<Guid>
 {
-    public Guid Id { get; set; }
-
     public required string Name { get; set; }
 
     public List<KnowledgePointNodeDto> Children { get; set; }
