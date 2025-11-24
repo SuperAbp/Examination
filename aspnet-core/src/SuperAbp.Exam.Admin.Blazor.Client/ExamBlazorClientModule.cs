@@ -1,4 +1,6 @@
-﻿using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Routing;
+﻿using Autofac.Core;
+using Lsw.Abp.AntDesignUI.Components;
+using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.Routing;
 using Lsw.Abp.AspnetCore.Components.WebAssembly.AntDesignTheme;
 using Lsw.Abp.IdentityManagement.Blazor.WebAssembly.AntDesignUI;
 using Lsw.Abp.SettingManagement.Blazor.WebAssembly.AntDesignUI;
@@ -7,8 +9,10 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SuperAbp.Exam.Admin.Blazor.Client.Components;
 using SuperAbp.Exam.Admin.Blazor.Client.Menus;
 using System;
+using System.Linq;
 using System.Net.Http;
 using Volo.Abp.AspNetCore.Components.Web;
 using Volo.Abp.Autofac.WebAssembly;
@@ -41,6 +45,10 @@ public class ExamBlazorClientModule : AbpModule
         var environment = context.Services.GetSingletonInstance<IWebAssemblyHostEnvironment>();
         var builder = context.Services.GetSingletonInstance<WebAssemblyHostBuilder>();
 
+        context.Services.Replace(ServiceDescriptor.Scoped(
+            typeof(AbpExtensibleDataGrid<>),
+            typeof(MyAbpExtensibleDataGrid<>)
+        ));
         ConfigureAuthentication(builder);
         ConfigureHttpClient(context, environment);
         ConfigureRouter(context);

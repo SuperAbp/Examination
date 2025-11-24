@@ -1,8 +1,13 @@
 ﻿using AntDesign;
+using Autofac.Core;
 using Lsw.Abp.AntDesignUI;
+using Lsw.Abp.AntDesignUI.Components;
 using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.PageToolbars;
 using Lsw.Abp.IdentityManagement.Blazor.AntDesignUI;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
+using SuperAbp.Exam.Admin.Blazor.Client.Components;
 using SuperAbp.Exam.Admin.Blazor.Client.Pages.QuestionBanks;
 using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.Admin.QuestionManagement.Questions;
@@ -10,6 +15,7 @@ using SuperAbp.Exam.Localization;
 using SuperAbp.Exam.Permissions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.EntityActions;
@@ -37,8 +43,9 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
         protected IForm SearchForm { get; set; }
 
         protected PageToolbar Toolbar { get; } = new();
-        protected CreateModal CreateModal { get; set; }
-        protected UpdateModal UpdateModal { get; set; }
+
+        [Inject]
+        protected NavigationManager Navigation { get; set; }
 
         protected override ValueTask SetEntityActionsAsync()
         {
@@ -95,6 +102,7 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
                     {
                         Title = L["CreationTime"],
                         Data = nameof(QuestionListDto.CreationTime),
+                        Width = "180"
                     }
                 ]);
 
@@ -112,7 +120,7 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
 
         protected override async ValueTask SetToolbarItemsAsync()
         {
-            Toolbar.AddButton(L["NewQuestionBank"], OpenCreateModalAsync,
+            Toolbar.AddButton(L["NewQuestion"], GoCreateAsync,
                 IconType.Outline.Plus,
                 requiredPolicyName: ExamPermissions.QuestionBanks.Create);
             await base.SetToolbarItemsAsync();
@@ -136,14 +144,16 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
             return await AppService.GetListAsync(input);
         }
 
-        protected virtual async Task OpenCreateModalAsync()
+        protected virtual Task GoCreateAsync()
         {
-            await CreateModal.OpenAsync();
+            Navigation.NavigateTo("/questions/new", true);
+            return Task.CompletedTask;
         }
 
-        protected virtual async Task OpenEditModalAsync(Guid id)
+        protected virtual Task OpenEditModalAsync(Guid id)
         {
-            await UpdateModal.OpenAsync(id);
+            Navigation.NavigateTo("/questions/" + id);
+            return Task.CompletedTask;
         }
 
         protected async Task OnSaveSuccessAsync()

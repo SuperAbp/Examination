@@ -21,12 +21,12 @@
             </Button>
         </FormItem>
     </Form>
-    <MyAbpExtensibleDataGrid TItem="QuestionListDto"
+    <AbpExtensibleDataGrid TItem="QuestionListDto"
                            Data="@Entities"
                            OnChange="@OnDataGridReadAsync"
                            TotalItems="@TotalCount"
                            PageSize="@PageSize"
                            CurrentPage="@CurrentPage"
                            Columns="@QuesionTableColumns">
-    </MyAbpExtensibleDataGrid>
+    </AbpExtensibleDataGrid>
 </div>

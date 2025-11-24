@@ -1,0 +1,66 @@
+﻿@page "/questions/new"
+
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Admin.KnowledgePoints
+@using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
+@using SuperAbp.Exam.Localization
+@inject IStringLocalizer<ExamResource> L
+
+<AbpPageHeader Title="@L["NewQuestion"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
+ <Card>
+    <Form @ref="CreateForm"
+          Name="update-form"
+          Layout="@FormLayout.Vertical"
+          Model="@Question">
+        <Row Gutter="24">
+            <GridCol Lg="12" Xs="24">
+                <FormItem Label="@L["QuestionType"]">
+            
+                    <Select DataSource="@QuestionTypes"
+                            Placeholder="@L["ChoosePlaceholder", L["QuestionType"]]"
+                            ItemValue="c => c.Key"
+                            ItemLabel="c => c.Value">
+                    </Select>
+                </FormItem>
+            </GridCol>
+            <GridCol Lg="12" Xs="24">
+                <FormItem Label="@L["QuestionBank"]">
+                    <Select DataSource="@QuestionBanks"
+                            @bind-Value="@context.QuestionBankId"
+                            EnableSearch
+                            ValueName="@nameof(QuestionBankListDto.Id)"
+                            LabelName="@nameof(QuestionBankListDto.Title)"
+                            TItemValue="Guid"
+                            TItem="QuestionBankListDto"
+                            Placeholder="@L["ChoosePlaceholder",L["QuestionBank"]]"
+                            ShowArrowIcon="false"
+                            SearchDebounceMilliseconds="350"
+                            Loading="LoadingQuestionBank"
+                            OnSearch="@(async (value) => await SearchQuestionBanksAsync(value))">
+                    </Select>
+                </FormItem>
+            </GridCol>
+        </Row>
+        <FormItem Label="@L["QuestionContent"]">
+            <TextArea Rows="4" @bind-Value="@context.Content" Placeholder="@L["Placeholder", L["QuestionContent"]]" />
+        </FormItem>
+        <FormItem Label="@L["KnowledgePoint"]">
+            <TreeSelect DataSource="KnowledgePoints"                        
+                        Placeholder="Please select"
+                        ItemValue="item=>item.Id"
+                        ItemLabel="item=>item.Name"
+                        AllowClear
+                        Multiple
+                        EnableSearch
+                        TreeDefaultExpandAll
+                        MatchedStyle="font-weight: bold"
+                        ChildrenExpression="node=>node.DataItem.Children"
+                        TitleExpression="node=>node.DataItem.Name"
+                        TitleTemplate="node => node.DataItem.Name.ToRenderFragment()"
+                        KeyExpression="node=>node.DataItem.Id.ToString()"
+                        IsLeafExpression="node=>node.DataItem.Children==null">
+                >
+            </TreeSelect>
+        </FormItem>
+    </Form>
+</Card>
