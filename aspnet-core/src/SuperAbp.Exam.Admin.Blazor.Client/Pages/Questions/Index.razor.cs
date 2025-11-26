@@ -94,7 +94,8 @@ public partial class Index
                 {
                     Title = L["CreationTime"],
                     Data = nameof(QuestionListDto.CreationTime),
-                    Width = "180"
+                    Width = "180",
+                    Sortable = true,
                 }
             ]);
 
@@ -121,7 +122,7 @@ public partial class Index
     protected override async ValueTask SetBreadcrumbItemsAsync()
     {
         BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:ExamManagement"]));
-        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["QuestionBanks"]));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["QuestionBanks"], "/questions"));
         await base.SetBreadcrumbItemsAsync();
     }
 
@@ -138,7 +139,7 @@ public partial class Index
 
     protected virtual Task GoCreateAsync()
     {
-        Navigation.NavigateTo("/questions/new", true);
+        Navigation.NavigateTo("/questions/new");
         return Task.CompletedTask;
     }
 

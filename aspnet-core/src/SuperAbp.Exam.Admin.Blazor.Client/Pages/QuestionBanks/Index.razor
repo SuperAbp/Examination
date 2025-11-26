@@ -12,8 +12,8 @@
 <AbpPageHeader Title="@L["QuestionBanks"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
 <div class="page-content">
     <Form Class="search-form" @ref="SearchForm" Layout="@FormLayout.Inline" Model="@GetListInput">
-        <FormItem Label="@L["Title"]">
-            <Input @bind-Value="@context.Title" />
+        <FormItem>
+            <Input @bind-Value="@context.Title" Placeholder="@L["Placeholder", L["Content"]]" />
         </FormItem>
         <FormItem>
             <Button Type="@ButtonType.Primary" HtmlType="submit" OnClick="SearchEntitiesAsync">

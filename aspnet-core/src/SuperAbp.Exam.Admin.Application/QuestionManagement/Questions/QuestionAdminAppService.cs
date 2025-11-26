@@ -137,7 +137,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             }
         }
 
-        protected virtual void CreateOrUpdateAnswer(Question question, QuestionCreateOrUpdateAnswerDto[] answers)
+        protected virtual void CreateOrUpdateAnswer(Question question, IEnumerable<QuestionCreateOrUpdateAnswerDto> answers)
         {
             foreach (QuestionCreateOrUpdateAnswerDto answer in answers)
             {

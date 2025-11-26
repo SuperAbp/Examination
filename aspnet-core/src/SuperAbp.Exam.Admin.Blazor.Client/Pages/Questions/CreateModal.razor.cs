@@ -10,11 +10,14 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static SuperAbp.Exam.Permissions.ExamPermissions;
 
 namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
 {
     public partial class CreateModal
     {
+        protected bool Loading = true;
+        protected bool SubmitLoading = false;
         protected Dictionary<int, string> QuestionTypes;
         protected List<AbpBreadcrumbItem> BreadcrumbItems = new();
         protected PageToolbar Toolbar { get; } = new();
@@ -27,7 +30,13 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
         protected IReadOnlyList<KnowledgePointNodeDto> KnowledgePoints { get; set; }
 
         [Inject]
+        protected NavigationManager Navigation { get; set; }
+
+        [Inject]
         protected IOptionAppService OptionAppService { get; set; }
+
+        [Inject]
+        protected IQuestionAdminAppService QuestionAppService { get; set; }
 
         [Inject]
         protected IQuestionBankAdminAppService QuestionBankAppService { get; set; }
@@ -35,28 +44,36 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
         [Inject]
         protected IKnowledgePointAdminAppService knowledgePointAppService { get; set; }
 
+        public CreateModal()
+        {
+            Question = new QuestionCreateDto();
+        }
+
         protected override async Task OnInitializedAsync()
         {
-            QuestionTypes = new()
+            QuestionTypes = //OptionAppService.GetQuestionTypes();
+            new()
             {
                 { 0, "SingleSelect" },
                 { 1, "MultiSelect" },
                 { 2, "Judge" },
                 { 3, "FillInTheBlanks" }
             };
-            await SearchQuestionBanksAsync();
-            await SearchKnowledgePointsAsync();
+            await SearchQuestionBanks();
+            await SearchKnowledgePoints();
             SetBreadcrumbItems();
             await base.OnInitializedAsync();
+            Loading = false;
+            await InvokeAsync(StateHasChanged);
         }
 
-        protected virtual async Task SearchKnowledgePointsAsync()
+        protected virtual async Task SearchKnowledgePoints()
         {
             var result = await knowledgePointAppService.GetAllAsync(new GetKnowledgePointsInput());
             KnowledgePoints = result.Items;
         }
 
-        protected virtual async Task SearchQuestionBanksAsync(string? keyword = null)
+        protected virtual async Task SearchQuestionBanks(string? keyword = null)
         {
             var input = new GetQuestionBanksInput { MaxResultCount = 1000 };
             if (string.IsNullOrEmpty(keyword) == false)
@@ -67,11 +84,50 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
             QuestionBanks = result.Items;
         }
 
-        protected void SetBreadcrumbItems()
+        protected virtual void SetBreadcrumbItems()
         {
             BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:ExamManagement"]));
             BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Questions"]));
             BreadcrumbItems.Add(new AbpBreadcrumbItem(L["NewQuestion"]));
+        }
+
+        protected virtual bool IsFormValid()
+        {
+            if (CreateForm == null)
+            {
+                return false;
+            }
+            return CreateForm.Validate();
+        }
+
+        protected virtual async Task Save()
+        {
+            try
+            {
+                var validate = true;
+                if (CreateForm != null)
+                {
+                    validate = CreateForm.Validate();
+                }
+                if (!validate)
+                {
+                    return;
+                }
+
+                SubmitLoading = true;
+                StateHasChanged();
+                await QuestionAppService.CreateAsync(Question);
+            }
+            finally
+            {
+                SubmitLoading = false;
+            }
+            Back();
+        }
+
+        protected virtual void Back()
+        {
+            Navigation.NavigateTo("/questions");
         }
     }
 }

@@ -1,0 +1,48 @@
+﻿@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Admin.QuestionManagement.Questions
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
+@inject IStringLocalizer<ExamResource> L
+
+<Button Type="@ButtonType.Primary" OnClick="Add">@L["NewQuestionAnswer"]</Button>
+<Table TItem="QuestionCreateOrUpdateAnswerDto"
+       DataSource="@Options"
+       Loading="@(Options is null)"
+       HidePagination
+       Responsive="true">
+    <ChildContent Context="data">
+        <Column TData="bool" Title="@L["IsAnswer"]">
+            <FormItem Rules="[new FormValidationRule() { Required = true }]">
+            @if(data.Right)
+            {
+                <Radio TValue="bool" Checked CheckedChanged="@(e => ChangeAnswerAsync(data, e))">@L["Answer"]</Radio>
+            }
+            else
+            {
+                <Radio TValue="bool" CheckedChanged="@(e => ChangeAnswerAsync(data, e))">@L["Answer"]</Radio>
+            }
+            </FormItem>
+        </Column>
+        <Column TData="bool" Title="@L["Content"]">
+            <FormItem Rules="[new FormValidationRule() { Required = true, Max = QuestionAnswerConsts.MaxContentLength }]">
+                <TextArea @bind-Value="data.Content" Rows="2" />
+            </FormItem>
+        </Column>
+        <Column TData="bool" Title="@L["Analysis"]">
+            <FormItem Rules="[new FormValidationRule() { Max = QuestionAnswerConsts.MaxAnalysisLength }]">
+                <TextArea @bind-Value="data.Analysis" Rows="2" />
+            </FormItem>
+        </Column>
+        <Column TData="bool" Title="@L["Sort"]">
+            <FormItem Rules="[new FormValidationRule() { Required = true, Min = 0 }]">
+                <AntDesign.InputNumber @bind-Value="data.Sort" Min="0"></AntDesign.InputNumber>
+            </FormItem>
+        </Column>
+        <ActionColumn Title="@L["Actions"]">
+            <Popconfirm Title="@UiLocalizer["ItemWillBeDeletedMessage"]" OnConfirm="() => DeleteAsync(Options.IndexOf(data))">
+                <Button Type="@ButtonType.Link" Icon="@IconType.Outline.Delete"></Button>
+            </Popconfirm>
+        </ActionColumn>
+    </ChildContent>    
+    
+</Table>
