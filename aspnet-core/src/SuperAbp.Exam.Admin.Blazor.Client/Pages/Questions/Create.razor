@@ -1,5 +1,6 @@
 ﻿@page "/questions/new"
 
+@using SuperAbp.Exam.Admin.QuestionManagement.Questions
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using Volo.Abp.Localization;
 @using Microsoft.Extensions.Localization
@@ -18,7 +19,7 @@ else
     <AbpPageHeader Title="@L["NewQuestion"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
     <Card>
         <Form @ref="CreateForm"
-        Name="update-form"
+        Name="create-form"
         Layout="@FormLayout.Vertical"
         Model="@Question">
             <Row Gutter="24">
@@ -39,13 +40,7 @@ else
                         EnableSearch
                         ValueName="@nameof(QuestionBankListDto.Id)"
                         LabelName="@nameof(QuestionBankListDto.Title)"
-                        TItemValue="Guid"
-                        TItem="QuestionBankListDto"
-                        Placeholder="@L["ChoosePlaceholder",L["QuestionBank"]]"
-                        ShowArrowIcon="false"
-                        SearchDebounceMilliseconds="350"
-                        Loading="LoadingQuestionBank"
-                        OnSearch="@(async (value) => await SearchQuestionBanks(value))">
+                        Placeholder="@L["ChoosePlaceholder",L["QuestionBank"]]">
                         </Select>
                     </FormItem>
                 </GridCol>
@@ -55,7 +50,7 @@ else
             </FormItem>
             <FormItem Label="@L["KnowledgePoint"]">
                 <TreeSelect DataSource="KnowledgePoints"                        
-                    Placeholder="Please select"
+                    Placeholder="@L["ChoosePlaceholder", L["KnowledgePoint"]]"
                     ItemValue="item=>item.Id"
                     ItemLabel="item=>item.Name"
                     AllowClear
@@ -67,15 +62,23 @@ else
                     TitleExpression="node=>node.DataItem.Name"
                     TitleTemplate="node => node.DataItem.Name.ToRenderFragment()"
                     KeyExpression="node=>node.DataItem.Id.ToString()"
-                    IsLeafExpression="node=>node.DataItem.Children==null">                    
+                    IsLeafExpression="node=>node.DataItem.Children==null">
                 </TreeSelect>
+            </FormItem>            
+            <FormItem Label="@L["Options"]" Name="@nameof(context.Options)" Rules="[new() { Min = 1 }]">
+                @if (new [] { QuestionType.SingleSelect.Value, QuestionType.Judge.Value }.Contains(context.QuestionType))
+                {                
+                    <SelectComponent @bind-Options="context.Options" Single="true"></SelectComponent>
+                }
+                else if(QuestionType.MultiSelect.Value == context.QuestionType)
+                {
+                    <SelectComponent @bind-Options="context.Options" Single="false"></SelectComponent>
+                }
+                else if (QuestionType.FillInTheBlanks.Value == context.QuestionType)
+                {
+                    <BlankComponent @bind-Options="context.Options"></BlankComponent>
+                }    
             </FormItem>
-            @if (Question.QuestionType == QuestionType.SingleSelect)
-            {
-                
-                <SingleSelectComponent @bind-Options="Question.Options"></SingleSelectComponent>
-                
-            }            
         </Form>
     </Card>
     <FooterToolbarComponent>

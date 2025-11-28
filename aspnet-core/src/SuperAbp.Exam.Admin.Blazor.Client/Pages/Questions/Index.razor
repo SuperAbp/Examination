@@ -6,7 +6,6 @@
 
 @inherits CustomerTablePageBase<IQuestionAdminAppService, QuestionListDto, Guid, GetQuestionsInput, QuestionListDto>
 
-<a href="/questions/new">New Question</a>
 <AbpPageHeader Title="@L["Questions"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
 <div class="page-content">
     <Form Class="search-form" @ref="SearchForm" Layout="@FormLayout.Inline" Model="@GetListInput">

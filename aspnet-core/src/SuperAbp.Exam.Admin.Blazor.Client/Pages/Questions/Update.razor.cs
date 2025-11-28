@@ -9,12 +9,12 @@ using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using static SuperAbp.Exam.Permissions.ExamPermissions;
 
 namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
 {
-    public partial class CreateModal
+    public partial class Update
     {
         protected bool Loading = true;
         protected bool SubmitLoading = false;
@@ -22,12 +22,16 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
         protected List<AbpBreadcrumbItem> BreadcrumbItems = new();
         protected PageToolbar Toolbar { get; } = new();
         protected bool LoadingQuestionBank = false;
-        protected IForm CreateForm { get; set; }
+        protected IForm UpdateForm { get; set; }
 
-        protected QuestionCreateDto Question { get; set; }
+        public int QuestionTypeValue { get; set; }
+        protected QuestionUpdateDto Question { get; set; }
 
         protected IReadOnlyList<QuestionBankListDto> QuestionBanks { get; set; }
         protected IReadOnlyList<KnowledgePointNodeDto> KnowledgePoints { get; set; }
+
+        [Parameter]
+        public Guid Id { get; set; }
 
         [Inject]
         protected NavigationManager Navigation { get; set; }
@@ -44,11 +48,6 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
         [Inject]
         protected IKnowledgePointAdminAppService knowledgePointAppService { get; set; }
 
-        public CreateModal()
-        {
-            Question = new QuestionCreateDto();
-        }
-
         protected override async Task OnInitializedAsync()
         {
             QuestionTypes = //OptionAppService.GetQuestionTypes();
@@ -59,6 +58,23 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
                 { 2, "Judge" },
                 { 3, "FillInTheBlanks" }
             };
+            var detail = await QuestionAppService.GetEditorAsync(Id);
+            Question = new QuestionUpdateDto()
+            {
+                Content = detail.Content,
+                Analysis = detail.Analysis,
+                QuestionBankId = detail.QuestionBankId,
+                KnowledgePointIds = detail.KnowledgePointIds,
+                Options = detail.Answers.Select(a => new QuestionCreateOrUpdateAnswerDto
+                {
+                    Id = a.Id,
+                    Content = a.Content,
+                    Analysis = a.Analysis,
+                    Right = a.Right,
+                    Sort = a.Sort
+                }).ToList()
+            };
+            QuestionTypeValue = detail.QuestionType;
             await SearchQuestionBanks();
             await SearchKnowledgePoints();
             SetBreadcrumbItems();
@@ -82,22 +98,23 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
             }
             var result = await QuestionBankAppService.GetListAsync(input);
             QuestionBanks = result.Items;
+            Question.QuestionBankId = QuestionBanks.FirstOrDefault()?.Id ?? Guid.Empty;
         }
 
         protected virtual void SetBreadcrumbItems()
         {
             BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:ExamManagement"]));
-            BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Questions"]));
+            BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Questions"], "/questions"));
             BreadcrumbItems.Add(new AbpBreadcrumbItem(L["NewQuestion"]));
         }
 
         protected virtual bool IsFormValid()
         {
-            if (CreateForm == null)
+            if (UpdateForm == null)
             {
                 return false;
             }
-            return CreateForm.Validate();
+            return UpdateForm.Validate();
         }
 
         protected virtual async Task Save()
@@ -105,9 +122,9 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
             try
             {
                 var validate = true;
-                if (CreateForm != null)
+                if (UpdateForm != null)
                 {
-                    validate = CreateForm.Validate();
+                    validate = UpdateForm.Validate();
                 }
                 if (!validate)
                 {
@@ -116,7 +133,7 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
 
                 SubmitLoading = true;
                 StateHasChanged();
-                await QuestionAppService.CreateAsync(Question);
+                await QuestionAppService.UpdateAsync(Id, Question);
             }
             finally
             {

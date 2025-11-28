@@ -52,14 +52,14 @@ public partial class Index
                     Visible = (data) => HasUpdatePermission,
                     Clicked = async (data) =>
                     {
-                        await OpenEditModalAsync(data.As<QuestionBankListDto>().Id);
+                        await GoUpdateAsync(data.As<QuestionListDto>().Id);
                     }
                 },
                 new EntityAction
                 {
                     Text = L["Delete"],
                     Visible = (data) => HasDeletePermission,
-                    Clicked = async (data) => await DeleteAsync(data.As<QuestionBankListDto>().Id),
+                    Clicked = async (data) => await DeleteAsync(data.As<QuestionListDto>().Id),
                     ConfirmationMessage = (data) => UiLocalizer["ItemWillBeDeletedMessage"]
                 }
             ]);
@@ -139,13 +139,14 @@ public partial class Index
 
     protected virtual Task GoCreateAsync()
     {
-        Navigation.NavigateTo("/questions/new");
+        Navigation.NavigateTo("/questions/new", true);
         return Task.CompletedTask;
     }
 
-    protected virtual Task OpenEditModalAsync(Guid id)
+    protected virtual Task GoUpdateAsync(Guid id)
     {
-        Navigation.NavigateTo("/questions/" + id);
+        // TODO: Should be remove true
+        Navigation.NavigateTo("/questions/" + id, true);
         return Task.CompletedTask;
     }
 

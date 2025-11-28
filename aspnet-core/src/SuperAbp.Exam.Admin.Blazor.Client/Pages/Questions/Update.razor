@@ -1,0 +1,86 @@
+﻿@page "/questions/{Id:guid}"
+
+@using SuperAbp.Exam.Admin.QuestionManagement.Questions
+@using SuperAbp.Exam.QuestionManagement.Questions
+@using Volo.Abp.Localization;
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Admin.KnowledgePoints
+@using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.Admin.Blazor.Client.Components
+@inject IStringLocalizer<ExamResource> L
+
+@if (Loading)
+{
+    <Spin />
+}
+else
+{
+    <AbpPageHeader Title="@L["Edit"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
+    <Card>
+        <Form @ref="UpdateForm"
+              Name="update-form"
+              Layout="@FormLayout.Vertical"
+              Model="@Question">
+            <Row Gutter="24">
+                <GridCol Lg="12" Xs="24">
+                    <FormItem Label="@L["QuestionType"]">
+                        <Input Value="@L["QuestionType:" + QuestionTypeValue]" Disabled />
+                    </FormItem>
+                </GridCol>
+                <GridCol Lg="12" Xs="24">
+                    <FormItem Label="@L["QuestionBank"]">
+                        <Select DataSource="@QuestionBanks"
+                                @bind-Value="@context.QuestionBankId"
+                                EnableSearch
+                                ValueName="@nameof(QuestionBankListDto.Id)"
+                                LabelName="@nameof(QuestionBankListDto.Title)"
+                                Placeholder="@L["ChoosePlaceholder", L["QuestionBank"]]">
+                        </Select>
+                    </FormItem>
+                </GridCol>
+            </Row>
+            <FormItem Label="@L["QuestionContent"]">
+                <TextArea Rows="4" @bind-Value="@context.Content" Placeholder="@L["Placeholder", L["QuestionContent"]]" />
+            </FormItem>
+            <FormItem Label="@L["KnowledgePoint"]">
+                <TreeSelect DataSource="KnowledgePoints"
+                            Placeholder="@L["ChoosePlaceholder", L["KnowledgePoint"]]"
+                            ItemValue="item => item.Id"
+                            ItemLabel="item => item.Name"
+                            AllowClear
+                            Multiple
+                            EnableSearch
+                            TreeDefaultExpandAll
+                            MatchedStyle="font-weight: bold"
+                            ChildrenExpression="node => node.DataItem.Children"
+                            TitleExpression="node => node.DataItem.Name"
+                            TitleTemplate="node => node.DataItem.Name.ToRenderFragment()"
+                            KeyExpression="node => node.DataItem.Id.ToString()"
+                            IsLeafExpression="node => node.DataItem.Children == null">
+                </TreeSelect>
+            </FormItem>
+            <FormItem Label="@L["Options"]" Name="@nameof(context.Options)" Rules="[new() { Min = 1 }]">
+                @if (new[] { QuestionType.SingleSelect.Value, QuestionType.Judge.Value }.Contains(QuestionTypeValue))
+                {
+                    <SelectComponent @bind-Options="context.Options" Single="true"></SelectComponent>
+                }
+                else if (QuestionType.MultiSelect.Value == QuestionTypeValue)
+                {
+                    <SelectComponent @bind-Options="context.Options" Single="false"></SelectComponent>
+                }
+                else if (QuestionType.FillInTheBlanks.Value == QuestionTypeValue)
+                {
+                    <BlankComponent @bind-Options="context.Options"></BlankComponent>
+                }
+            </FormItem>
+        </Form>
+    </Card>
+    <FooterToolbarComponent>
+        <Extra>
+            <Button Type="@ButtonType.Primary" Loading="@SubmitLoading" Disabled="!IsFormValid()" OnClick="Save">
+                @L["Submit"]
+            </Button>
+        </Extra>
+    </FooterToolbarComponent>
+}

@@ -1,0 +1,49 @@
+﻿@using global::Localization.Resources.AbpUi
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Admin.QuestionManagement.Questions
+@using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.QuestionManagement.QuestionAnswers
+@inject IStringLocalizer<ExamResource> L
+@inject IStringLocalizer<AbpUiResource> UiLocalizer
+
+<Button Type="@ButtonType.Primary" OnClick="AddAsync">@L["NewOption"]</Button>
+
+<Table DataSource="@Options"
+       Loading="@(Options is null)"
+       HidePagination
+       Context="row"
+       Responsive="true">
+    <PropertyColumn Title="@L["IsAnswer"]" Property="c => c.Right">
+        <FormItem>
+            @if (Single)
+            {
+                <Radio TValue="bool" Checked="row.Right" CheckedChanged="@(e => ChangeAnswerAsync(row, e))">@L["Answer"]</Radio>
+            }
+            else
+            {
+                <Checkbox Checked="row.Right">@L["Answer"]</Checkbox>
+            }
+        </FormItem>
+    </PropertyColumn>
+    <PropertyColumn Title="@L["Content"]" Property="c => c.Content">
+        <FormItem>
+            <TextArea @bind-value="@row.Content" Rows="3" OnChange="UpdateValueAsync" />
+        </FormItem>
+    </PropertyColumn>
+    <PropertyColumn Title="@L["Analysis"]" Property="c => c.Analysis">
+        <FormItem>
+            <TextArea @bind-Value="row.Analysis" Rows="3" OnChange="UpdateValueAsync" />
+        </FormItem>
+    </PropertyColumn>
+    <PropertyColumn Title="@L["Sort"]" Property="c => c.Sort">
+        <FormItem Rules="[new FormValidationRule() { Min = 0 }]">
+            <AntDesign.InputNumber @bind-Value="row.Sort" Min="0" OnChange="async (int val) => await UpdateValueAsync()"></AntDesign.InputNumber>
+        </FormItem>
+    </PropertyColumn>
+    <ActionColumn Title="@L["Actions"]">
+        <Popconfirm Title="@UiLocalizer["ItemWillBeDeletedMessage"]" OnConfirm="() => DeleteAsync(Options.IndexOf(row))">
+            <Button Type="@ButtonType.Link" Icon="@IconType.Outline.Delete"></Button>
+        </Popconfirm>
+    </ActionColumn>
+
+</Table>

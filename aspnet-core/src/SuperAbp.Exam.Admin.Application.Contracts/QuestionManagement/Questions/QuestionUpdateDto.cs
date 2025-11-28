@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
 
@@ -7,5 +8,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
 /// </summary>
 public class QuestionUpdateDto : QuestionCreateOrUpdateDtoBase
 {
-    public QuestionCreateOrUpdateAnswerDto[] Options { get; set; } = [];
+    [Required]
+    [MinLength(1)]
+    public List<QuestionCreateOrUpdateAnswerDto> Options { get; set; } = [];
 }

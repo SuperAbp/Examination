@@ -12,9 +12,9 @@ public class QuestionCreateDtoValidator : AbstractValidator<QuestionCreateDto>
     {
         Include(new QuestionCreateOrUpdateDtoBaseValidator(local));
 
-        // RuleFor(q => q)
-        //     .Must(q => ValidateCondition(q.QuestionType, q.Options.Count(a => a.Right)))
-        //     .WithMessage("");
+        RuleFor(q => q)
+            .Must(q => ValidateCondition(q.QuestionType, q.Options.Count(a => a.Right)))
+            .WithMessage("");
     }
 
     private bool ValidateCondition(int questionType, int count)
