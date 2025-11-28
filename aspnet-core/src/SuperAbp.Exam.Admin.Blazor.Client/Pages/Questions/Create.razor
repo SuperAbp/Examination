@@ -19,28 +19,28 @@ else
     <AbpPageHeader Title="@L["NewQuestion"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
     <Card>
         <Form @ref="CreateForm"
-        Name="create-form"
-        Layout="@FormLayout.Vertical"
-        Model="@Question">
+              Name="create-form"
+              Layout="@FormLayout.Vertical"
+              Model="@Question">
             <Row Gutter="24">
                 <GridCol Lg="12" Xs="24">
                     <FormItem Label="@L["QuestionType"]">
                         <Select DataSource="@QuestionTypes"
-                        Placeholder="@L["ChoosePlaceholder", L["QuestionType"]]"
-                        ItemValue="c => c.Key"
-                        ItemLabel="c => c.Value"
-                        @bind-Value="context.QuestionType">
+                                Placeholder="@L["ChoosePlaceholder", L["QuestionType"]]"
+                                ItemValue="c => c.Key"
+                                ItemLabel="@(c => L["QuestionType:" + c.Key])"
+                                @bind-Value="context.QuestionType">
                         </Select>
                     </FormItem>
                 </GridCol>
                 <GridCol Lg="12" Xs="24">
                     <FormItem Label="@L["QuestionBank"]">
                         <Select DataSource="@QuestionBanks"
-                        @bind-Value="@context.QuestionBankId"
-                        EnableSearch
-                        ValueName="@nameof(QuestionBankListDto.Id)"
-                        LabelName="@nameof(QuestionBankListDto.Title)"
-                        Placeholder="@L["ChoosePlaceholder",L["QuestionBank"]]">
+                                @bind-Value="@context.QuestionBankId"
+                                EnableSearch
+                                ValueName="@nameof(QuestionBankListDto.Id)"
+                                LabelName="@nameof(QuestionBankListDto.Title)"
+                                Placeholder="@L["ChoosePlaceholder", L["QuestionBank"]]">
                         </Select>
                     </FormItem>
                 </GridCol>
@@ -49,35 +49,35 @@ else
                 <TextArea Rows="4" @bind-Value="@context.Content" Placeholder="@L["Placeholder", L["QuestionContent"]]" />
             </FormItem>
             <FormItem Label="@L["KnowledgePoint"]">
-                <TreeSelect DataSource="KnowledgePoints"                        
-                    Placeholder="@L["ChoosePlaceholder", L["KnowledgePoint"]]"
-                    ItemValue="item=>item.Id"
-                    ItemLabel="item=>item.Name"
-                    AllowClear
-                    Multiple
-                    EnableSearch
-                    TreeDefaultExpandAll
-                    MatchedStyle="font-weight: bold"
-                    ChildrenExpression="node=>node.DataItem.Children"
-                    TitleExpression="node=>node.DataItem.Name"
-                    TitleTemplate="node => node.DataItem.Name.ToRenderFragment()"
-                    KeyExpression="node=>node.DataItem.Id.ToString()"
-                    IsLeafExpression="node=>node.DataItem.Children==null">
+                <TreeSelect DataSource="KnowledgePoints"
+                            Placeholder="@L["ChoosePlaceholder", L["KnowledgePoint"]]"
+                            ItemValue="item => item.Id"
+                            ItemLabel="item => item.Name"
+                            AllowClear
+                            Multiple
+                            EnableSearch
+                            TreeDefaultExpandAll
+                            MatchedStyle="font-weight: bold"
+                            ChildrenExpression="node => node.DataItem.Children"
+                            TitleExpression="node => node.DataItem.Name"
+                            TitleTemplate="node => node.DataItem.Name.ToRenderFragment()"
+                            KeyExpression="node => node.DataItem.Id.ToString()"
+                            IsLeafExpression="node => node.DataItem.Children == null">
                 </TreeSelect>
-            </FormItem>            
+            </FormItem>
             <FormItem Label="@L["Options"]" Name="@nameof(context.Options)" Rules="[new() { Min = 1 }]">
-                @if (new [] { QuestionType.SingleSelect.Value, QuestionType.Judge.Value }.Contains(context.QuestionType))
-                {                
+                @if (new[] { QuestionType.SingleSelect.Value, QuestionType.Judge.Value }.Contains(context.QuestionType))
+                {
                     <SelectComponent @bind-Options="context.Options" Single="true"></SelectComponent>
                 }
-                else if(QuestionType.MultiSelect.Value == context.QuestionType)
+                else if (QuestionType.MultiSelect.Value == context.QuestionType)
                 {
                     <SelectComponent @bind-Options="context.Options" Single="false"></SelectComponent>
                 }
                 else if (QuestionType.FillInTheBlanks.Value == context.QuestionType)
                 {
                     <BlankComponent @bind-Options="context.Options"></BlankComponent>
-                }    
+                }
             </FormItem>
         </Form>
     </Card>

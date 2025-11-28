@@ -3,12 +3,15 @@ using Lsw.Abp.AntDesignUI;
 using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.PageToolbars;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using SuperAbp.Exam.Admin.Options;
 using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using SuperAbp.Exam.Localization;
 using SuperAbp.Exam.Permissions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.EntityActions;
@@ -30,6 +33,8 @@ public partial class Index
         DeletePolicyName = ExamPermissions.Questions.Delete;
     }
 
+    protected Dictionary<int, string> QuestionTypes { get; set; }
+    protected IReadOnlyList<QuestionBankListDto> QuestionBanks { get; set; }
     protected List<TableColumn> QuesionTableColumns => TableColumns.Get<Index>();
 
     protected IForm SearchForm { get; set; }
@@ -38,6 +43,39 @@ public partial class Index
 
     [Inject]
     protected NavigationManager Navigation { get; set; }
+
+    [Inject]
+    protected IOptionAppService OptionAppService { get; set; }
+
+    [Inject]
+    protected IQuestionBankAdminAppService QuestionBankAppService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // TODO:Waiting for update to .net 10
+        QuestionTypes = //OptionAppService.GetQuestionTypes();
+        new()
+            {
+                { 0, "SingleSelect" },
+                { 1, "MultiSelect" },
+                { 2, "Judge" },
+                { 3, "FillInTheBlanks" }
+            };
+
+        await SearchQuestionBanks();
+        await base.OnInitializedAsync();
+    }
+
+    protected virtual async Task SearchQuestionBanks(string? keyword = null)
+    {
+        var input = new GetQuestionBanksInput { MaxResultCount = 1000 };
+        if (string.IsNullOrEmpty(keyword) == false)
+        {
+            input.Title = keyword;
+        }
+        var result = await QuestionBankAppService.GetListAsync(input);
+        QuestionBanks = result.Items;
+    }
 
     protected override ValueTask SetEntityActionsAsync()
     {

@@ -13,6 +13,24 @@
             <Input Placeholder="@L["Placeholder", L["Content"]]" @bind-Value="@context.Content" />
         </FormItem>
         <FormItem>
+            <Select DataSource="@QuestionTypes"
+                    Placeholder="@L["ChoosePlaceholder", L["QuestionType"]]"
+                    ItemValue="c => c.Key"
+                    ItemLabel="@(c => L["QuestionType:" + c.Key])"
+                    @bind-Value="context.QuestionType">
+            </Select>
+        </FormItem>
+        @* <FormItem>
+            <Select
+                Mode="multiple"
+                Style="min-width: 120px;"
+                    Values="context.QuestionBankIds"
+                    DataSource="@QuestionBanks"
+                    ItemValue="c => c.Id"
+                    ItemLabel="c => c.Title"
+                    Placeholder="@L["ChoosePlaceholder", L["QuestionBank"]]" />
+        </FormItem> *@
+        <FormItem>
             <Button Type="@ButtonType.Primary" HtmlType="submit" OnClick="SearchEntitiesAsync">
                 @L["Search"]
             </Button>

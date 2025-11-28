@@ -9,6 +9,11 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
 /// </summary>
 public class GetQuestionsInput : PagedAndSortedResultRequestDto
 {
+    public GetQuestionsInput()
+    {
+        QuestionBankIds = [];
+    }
+
     /// <summary>
     /// 题干
     /// </summary>
@@ -16,6 +21,6 @@ public class GetQuestionsInput : PagedAndSortedResultRequestDto
 
     public int? QuestionType { get; set; }
 
-    public Guid[] QuestionBankIds { get; set; } = [];
+    public List<Guid> QuestionBankIds { get; set; }
     public List<Guid>? ExcludeIds { get; set; }
 }
