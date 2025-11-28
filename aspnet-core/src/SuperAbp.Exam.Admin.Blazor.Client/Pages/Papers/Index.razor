@@ -1,0 +1,32 @@
+﻿@page "/papers"
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Admin.Blazor.Client.Components
+@using SuperAbp.Exam.Admin.Blazor.Client.Utils
+@using SuperAbp.Exam.Admin.PaperManagement.Papers
+
+@inherits CustomerTablePageBase<IPaperAdminAppService, PaperListDto, Guid, GetPapersInput, PaperListDto>
+
+<AbpPageHeader Title="@L["Questions"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
+<div class="page-content">
+    <Form Class="search-form" @ref="SearchForm" Layout="@FormLayout.Inline" Model="@GetListInput">
+        <FormItem>
+            <Input Placeholder="@L["Placeholder", L["Name"]]" @bind-Value="@context.Name" />
+        </FormItem>
+        <FormItem>
+            <Button Type="@ButtonType.Primary" HtmlType="submit" OnClick="SearchEntitiesAsync">
+                @L["Search"]
+            </Button>
+            <Button HtmlType="submit" OnClick="ClearSearchAsync">
+                @L["Clear"]
+            </Button>
+        </FormItem>
+    </Form>
+    <AbpExtensibleDataGrid TItem="PaperListDto"
+                           Data="@Entities"
+                           OnChange="@OnDataGridReadAsync"
+                           TotalItems="@TotalCount"
+                           PageSize="@PageSize"
+                           CurrentPage="@CurrentPage"
+                           Columns="@QuesionTableColumns">
+    </AbpExtensibleDataGrid>
+</div>

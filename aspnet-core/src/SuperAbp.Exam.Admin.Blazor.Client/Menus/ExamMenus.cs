@@ -8,6 +8,7 @@ public class ExamMenus
     public const string ExamManagement = Prefix + ".ExamManagement";
     public const string QuestionBank = Prefix + ".QuestionBank";
     public const string Question = Prefix + ".Question";
+    public const string Paper = Prefix + ".Paper";
     public const string KnowledgePoint = Prefix + ".KnowledgePoint";
 
     //Add your menu items here...

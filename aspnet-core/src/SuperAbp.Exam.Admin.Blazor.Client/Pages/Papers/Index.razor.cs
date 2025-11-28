@@ -3,8 +3,8 @@ using Lsw.Abp.AntDesignUI;
 using Lsw.Abp.AspnetCore.Components.Web.AntDesignTheme.PageToolbars;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
-using SuperAbp.Exam.Admin.Options;
-using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks;
+using SuperAbp.Exam.Admin.Blazor.Client.Components;
+using SuperAbp.Exam.Admin.PaperManagement.Papers;
 using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using SuperAbp.Exam.Localization;
 using SuperAbp.Exam.Permissions;
@@ -16,9 +16,9 @@ using Volo.Abp.AspNetCore.Components.Web.Extensibility.EntityActions;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns;
 using Volo.Abp.ObjectExtending;
 
-namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions;
+namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Papers;
 
-[Authorize(ExamPermissions.Questions.Management)]
+[Authorize(ExamPermissions.Papers.Default)]
 public partial class Index
 {
     public Index()
@@ -26,13 +26,11 @@ public partial class Index
         ObjectMapperContext = typeof(ExamBlazorClientModule);
         LocalizationResource = typeof(ExamResource);
 
-        CreatePolicyName = ExamPermissions.Questions.Create;
-        UpdatePolicyName = ExamPermissions.Questions.Update;
-        DeletePolicyName = ExamPermissions.Questions.Delete;
+        CreatePolicyName = ExamPermissions.Papers.Create;
+        UpdatePolicyName = ExamPermissions.Papers.Update;
+        DeletePolicyName = ExamPermissions.Papers.Delete;
     }
 
-    protected Dictionary<int, string> QuestionTypes { get; set; }
-    protected IReadOnlyList<QuestionBankListDto> QuestionBanks { get; set; }
     protected List<TableColumn> QuesionTableColumns => TableColumns.Get<Index>();
 
     protected IForm SearchForm { get; set; }
@@ -41,39 +39,6 @@ public partial class Index
 
     [Inject]
     protected NavigationManager Navigation { get; set; }
-
-    [Inject]
-    protected IOptionAppService OptionAppService { get; set; }
-
-    [Inject]
-    protected IQuestionBankAdminAppService QuestionBankAppService { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        // TODO:Waiting for update to .net 10
-        QuestionTypes = //OptionAppService.GetQuestionTypes();
-        new()
-            {
-                { 0, "SingleSelect" },
-                { 1, "MultiSelect" },
-                { 2, "Judge" },
-                { 3, "FillInTheBlanks" }
-            };
-
-        await SearchQuestionBanks();
-        await base.OnInitializedAsync();
-    }
-
-    protected virtual async Task SearchQuestionBanks(string? keyword = null)
-    {
-        var input = new GetQuestionBanksInput { MaxResultCount = 1000 };
-        if (string.IsNullOrEmpty(keyword) == false)
-        {
-            input.Title = keyword;
-        }
-        var result = await QuestionBankAppService.GetListAsync(input);
-        QuestionBanks = result.Items;
-    }
 
     protected override ValueTask SetEntityActionsAsync()
     {
@@ -88,14 +53,14 @@ public partial class Index
                     Visible = (data) => HasUpdatePermission,
                     Clicked = async (data) =>
                     {
-                        await GoUpdateAsync(data.As<QuestionListDto>().Id);
+                        await GoUpdateAsync(data.As<PaperListDto>().Id);
                     }
                 },
                 new EntityAction
                 {
                     Text = L["Delete"],
                     Visible = (data) => HasDeletePermission,
-                    Clicked = async (data) => await DeleteAsync(data.As<QuestionListDto>().Id),
+                    Clicked = async (data) => await DeleteAsync(data.As<PaperListDto>().Id),
                     ConfirmationMessage = (data) => UiLocalizer["ItemWillBeDeletedMessage"]
                 }
             ]);
@@ -110,28 +75,20 @@ public partial class Index
             [
                 new TableColumn
                 {
-                    Title = L["QuestionBank"],
-                    Data = nameof(QuestionListDto.QuestionBank),
-                    Width = "180"
+                    Title = L["Name"],
+                    Data = nameof(PaperListDto.Name)
                 },
                 new TableColumn
                 {
-                    Title = L["QuestionType"],
-                    Data = nameof(QuestionListDto.QuestionType),
-                    ValueConverter = data=> L["QuestionType:" + data.As<QuestionListDto>().QuestionType],
+                    Title = L["Score"],
+                    Data = nameof(PaperListDto.Score),
                     Width = "60",
                 },
                 new TableColumn
                 {
-                    Title = L["Content"],
-                    Data = nameof(QuestionListDto.Content),
-                },
-                new TableColumn
-                {
-                    Title = L["CreationTime"],
-                    Data = nameof(QuestionListDto.CreationTime),
-                    Width = "180",
-                    Sortable = true,
+                    Title = L["ManualReview"],
+                    Data = nameof(PaperListDto.ManualReview),
+                    Component = typeof(ManualReviewComponent)
                 }
             ]);
 
@@ -168,21 +125,21 @@ public partial class Index
         await SearchEntitiesAsync();
     }
 
-    protected override async Task<PagedResultDto<QuestionListDto>> GetListAsync(GetQuestionsInput input)
+    protected override async Task<PagedResultDto<PaperListDto>> GetListAsync(GetPapersInput input)
     {
         return await AppService.GetListAsync(input);
     }
 
     protected virtual Task GoCreateAsync()
     {
-        Navigation.NavigateTo("/questions/new", true);
+        Navigation.NavigateTo("/papers/new", true);
         return Task.CompletedTask;
     }
 
     protected virtual Task GoUpdateAsync(Guid id)
     {
         // TODO: Should be remove true
-        Navigation.NavigateTo("/questions/" + id, true);
+        Navigation.NavigateTo("/papers/" + id, true);
         return Task.CompletedTask;
     }
 

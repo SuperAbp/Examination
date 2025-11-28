@@ -67,13 +67,19 @@ public class ExamMenuContributor : IMenuContributor
                 ExamMenus.QuestionBank,
                 l["Menu:QuestionBank"],
                 "/question-banks",
-                requiredPermissionName: ExamPermissions.QuestionBanks.Default
+                requiredPermissionName: ExamPermissions.QuestionBanks.Management
             ),
             new ApplicationMenuItem(
                 ExamMenus.Question,
                 l["Menu:Question"],
                 "/questions",
-                requiredPermissionName: ExamPermissions.QuestionBanks.Default
+                requiredPermissionName: ExamPermissions.QuestionBanks.Management
+            ),
+            new ApplicationMenuItem(
+                ExamMenus.Paper,
+                l["Menu:Paper"],
+                "/papers",
+                requiredPermissionName: ExamPermissions.Papers.Default
             )
         ]);
 
