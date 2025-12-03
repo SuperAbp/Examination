@@ -19,11 +19,18 @@ public interface IQuestionAdminAppService : IApplicationService
     Task<PagedResultDto<QuestionListDto>> GetListAsync(GetQuestionsInput input);
 
     /// <summary>
+    /// 列表
+    /// </summary>
+    /// <param name="ids">查询条件</param>
+    /// <returns>结果</returns>
+    Task<ListResultDto<QuestionListDto>> GetByIdsAsync(IEnumerable<Guid> ids);
+
+    /// <summary>
     /// 批量获取详情
     /// </summary>
     /// <param name="input">查询条件</param>
     /// <returns></returns>
-    Task<IReadOnlyList<QuestionDetailDto>> GetListWithDetailAsync(GetQuestionWithDetailInput input);
+    Task<ListResultDto<QuestionDetailDto>> GetListWithDetailAsync(GetQuestionWithDetailInput input);
 
     /// <summary>
     /// 获取修改

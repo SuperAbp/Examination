@@ -30,3 +30,16 @@
                            Columns="@QuesionTableColumns">
     </AbpExtensibleDataGrid>
 </div>
+<Modal Title="@L["NewPaper"]"
+       Width="350"
+       @bind-Visible="@ShowCreateModal"
+       Footer="null">
+    <GridRow Gutter="16">
+        <GridCol Span="12">
+            <Button Style="width: 100%;" Type="@ButtonType.Primary" OnClick="() => Goto(0)">@L["FixQuestion"]</Button>
+        </GridCol>
+        <GridCol Span="12">
+            <Button Style="width: 100%;" Type="@ButtonType.Primary" OnClick="() => Goto(1)">@L["RandomQuestion"]</Button>
+        </GridCol>
+    </GridRow>
+</Modal>

@@ -1,0 +1,85 @@
+﻿@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Admin.PaperManagement.Papers
+@using SuperAbp.Exam.Localization
+@inject IStringLocalizer<ExamResource> L
+
+
+<Flex Justify="space-between" Style="margin: 16px 0;">
+    @L["Questions"]
+    <Button Type="@ButtonType.Primary" OnClick="AddSection">@L["AddSection"]</Button>
+</Flex>
+@foreach (PaperCreateOrUpdateDtoBase.PaperSectionDto section in Paper.Sections)
+{
+    <Card>
+        <TitleTemplate>
+            <Space>
+                <SpaceItem>
+                    <Input Value="section.Title" />
+                </SpaceItem>
+                <SpaceItem>                    
+                    共 @(section.TotalCount) 题 每题
+                    <FormItem>
+                        <AntDesign.InputNumber @bind-Value="section.ScoreEach" Min="1" OnChange="(decimal value) => UpdateScore(section)"></AntDesign.InputNumber>
+                    </FormItem>
+                    分
+                </SpaceItem>
+                <SpaceItem>
+                    <Button Type="@ButtonType.Primary" OnClick="() => SelectQuestion(section)">@L["SelectQuestions"]</Button>
+                </SpaceItem>
+                <SpaceItem>
+                    <Button Type="@ButtonType.Primary" OnClick="() => RandomAdditionQuestion(section)">@L["RandomlySelectQuestions"]</Button>
+                </SpaceItem>
+            </Space>
+        </TitleTemplate>
+        <Body>
+            <AntList DataSource="GetQuestions(section)" TItem="PaperCreateOrUpdateDtoBase.PaperSectionDto.PaperQuestionDto">
+                <ListItem>
+                    @{
+                        var detail = Questions.TryGetValue(context.QuestionId, out var q) ? q : null;
+                        int index = section.PaperQuestions.IndexOf(context);
+                    }
+                    @if (detail != null)
+                    {
+                        <div class="w-100">
+                            <div class="question-content">
+                                <h3>@(index + 1)、@detail.Content</h3>
+                            </div>
+                            @if (detail.Answers != null && detail.Answers.Count > 0)
+                            {
+                                @foreach (var item in detail.Answers.OrderBy(a => a.Sort).Select((answer, index) => new { answer, index }))
+                                {
+                                    <div class="box">
+                                        <Flex Justify="space-between">
+                                            <div>
+                                                <span style="color: #1890ff" class="font-weight-bold">@($"{(char)(65 + item.index)} ")</span>
+                                                @if (!string.IsNullOrEmpty(item.answer.Content))
+                                                {
+                                                    <span>@item.answer.Content</span>
+                                                }
+                                            </div>
+                                            <div>
+                                                @if (item.answer.Right)
+                                                {
+                                                    @context.Score
+                                                    <Icon Type="@IconType.TwoTone.CheckCircle" TwoToneColor="#52c41a"></Icon>
+                                                }
+                                            </div>
+                                        </Flex>
+                                    </div>
+                                }
+                            }
+                            @if (detail.Analysis != null)
+                            {
+                                <div class="analysis-section">
+                                    <Descriptions Layout="DescriptionsLayout.Vertical">
+                                        <BreadcrumbItem Title="@L["Exam::Analysis"]">@detail.Analysis</BreadcrumbItem>
+                                    </Descriptions>
+                                </div>
+                            }
+                        </div>
+                    }
+                </ListItem>
+            </AntList>
+        </Body>
+    </Card>
+}

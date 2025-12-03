@@ -5,6 +5,7 @@ using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -94,7 +95,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
             return ObjectMapper.Map<Paper, PaperListDto>(paper);
         }
 
-        protected virtual void RemoveOldSections(Paper paper, PaperSectionDto[] sections)
+        protected virtual void RemoveOldSections(Paper paper, IEnumerable<PaperSectionDto> sections)
         {
             Guid[] sectionIds = sections.Where(s => s.Id.HasValue).Select(s => s.Id!.Value).ToArray();
             List<Guid> sectionsToBeRemoved = paper.PaperSections.Where(s => !sectionIds.Any(i => i == s.Id)).Select(s => s.Id).ToList();
@@ -129,7 +130,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
             }
         }
 
-        protected virtual void CreateOrUpdatePaperQuestion(Paper paper, PaperSectionDto[] sections)
+        protected virtual void CreateOrUpdatePaperQuestion(Paper paper, IEnumerable<PaperSectionDto> sections)
         {
             foreach (PaperSectionDto sectionDto in sections)
             {

@@ -23,4 +23,5 @@ public class GetQuestionsInput : PagedAndSortedResultRequestDto
 
     public List<Guid> QuestionBankIds { get; set; }
     public List<Guid>? ExcludeIds { get; set; }
+    public List<Guid>? IncludeIds { get; set; }
 }

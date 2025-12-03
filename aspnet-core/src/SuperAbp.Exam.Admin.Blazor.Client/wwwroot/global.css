@@ -1,2 +1,7 @@
-﻿body {
+﻿.w-100 {
+    width: 100%;
+}
+
+.font-weight-bold {
+    font-weight: bold;
 }

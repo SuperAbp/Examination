@@ -31,6 +31,7 @@ public partial class Index
         DeletePolicyName = ExamPermissions.Papers.Delete;
     }
 
+    protected bool ShowCreateModal { get; set; } = false;
     protected List<TableColumn> QuesionTableColumns => TableColumns.Get<Index>();
 
     protected IForm SearchForm { get; set; }
@@ -106,16 +107,16 @@ public partial class Index
 
     protected override async ValueTask SetToolbarItemsAsync()
     {
-        Toolbar.AddButton(L["NewQuestion"], GoCreateAsync,
+        Toolbar.AddButton(L["NewPaper"], OpenCreateAsync,
             IconType.Outline.Plus,
-            requiredPolicyName: ExamPermissions.QuestionBanks.Create);
+            requiredPolicyName: CreatePolicyName);
         await base.SetToolbarItemsAsync();
     }
 
     protected override async ValueTask SetBreadcrumbItemsAsync()
     {
         BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:ExamManagement"]));
-        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["QuestionBanks"], "/questions"));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Papers"], "/papers"));
         await base.SetBreadcrumbItemsAsync();
     }
 
@@ -130,9 +131,9 @@ public partial class Index
         return await AppService.GetListAsync(input);
     }
 
-    protected virtual Task GoCreateAsync()
+    protected virtual Task OpenCreateAsync()
     {
-        Navigation.NavigateTo("/papers/new", true);
+        ShowCreateModal = true;
         return Task.CompletedTask;
     }
 
@@ -141,6 +142,11 @@ public partial class Index
         // TODO: Should be remove true
         Navigation.NavigateTo("/papers/" + id, true);
         return Task.CompletedTask;
+    }
+
+    protected virtual void Goto(int mode)
+    {
+        Navigation.NavigateTo("/papers/new/" + mode, true);
     }
 
     protected async Task OnSaveSuccessAsync()

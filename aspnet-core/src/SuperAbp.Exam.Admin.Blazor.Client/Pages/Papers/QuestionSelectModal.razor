@@ -1,0 +1,48 @@
+﻿@using SuperAbp.Exam.Admin.Blazor.Client.Utils
+@using Volo.Abp.Application.Dtos
+@using SuperAbp.Exam.Admin.QuestionManagement.Questions
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Localization
+@using AntDesign
+@inject IStringLocalizer<ExamResource> L
+@* @inherits CustomerTableBase<IQuestionAdminAppService, QuestionListDto, Guid, GetQuestionsInput, QuestionListDto> *@
+@inherits FeedbackComponent<IEnumerable<Guid>, IEnumerable<Guid>>
+
+<Form Class="search-form" @ref="SearchForm" Layout="@FormLayout.Inline" Model="@GetListInput">
+    <FormItem>
+        <Input Placeholder="@L["Placeholder", L["Content"]]" @bind-Value="@context.Content" />
+    </FormItem>
+    <FormItem>
+        <Select DataSource="@QuestionTypes"
+                Placeholder="@L["ChoosePlaceholder", L["QuestionType"]]"
+                ItemValue="c => c.Key"
+                ItemLabel="@(c => L["QuestionType:" + c.Key])"
+                @bind-Value="context.QuestionType">
+        </Select>
+    </FormItem>
+    <FormItem>
+        <Button Type="@ButtonType.Primary" HtmlType="submit" OnClick="SearchEntitiesAsync">
+            @L["Search"]
+        </Button>
+        <Button HtmlType="submit" OnClick="ClearSearchAsync">
+            @L["Clear"]
+        </Button>
+    </FormItem>
+</Form>
+<Table TItem="QuestionListDto"
+       DataSource="@Entities"
+       Loading="@Loading"
+       Total="@TotalCount"
+       PageIndex="CurrentPage"
+       PageSize="@PageSize"
+       OnChange="@OnDataGridReadAsync"
+       @bind-SelectedRows="SelectedQuestions"
+       RowKey="x=>x.Id">
+    <Selection />
+    <PropertyColumn Title="@L["QuestionBank"]" Property="c => c.QuestionBank" Width="180"></PropertyColumn>
+    <PropertyColumn Title="@L["QuestionType"]" Property="c => c.QuestionType" Width="60">
+        @L["QuestionType:" + context.QuestionType]
+    </PropertyColumn>
+    <PropertyColumn Title="@L["Content"]" Property="c => c.Content"></PropertyColumn>
+    <PropertyColumn Title="@L["CreationTime"]" Property="c => c.CreationTime" Width="180"></PropertyColumn>
+</Table>

@@ -25,13 +25,19 @@ public class QuestionController(IQuestionAdminAppService questionAppService) : E
         return await questionAppService.GetListAsync(input);
     }
 
+    [HttpGet("ids")]
+    public virtual async Task<ListResultDto<QuestionListDto>> GetByIdsAsync(IEnumerable<Guid> ids)
+    {
+        return await questionAppService.GetByIdsAsync(ids);
+    }
+
     /// <summary>
     /// 批量获取详情
     /// </summary>
     /// <param name="input">查询条件</param>
     /// <returns></returns>
     [HttpGet("details")]
-    public async Task<IReadOnlyList<QuestionDetailDto>> GetListWithDetailAsync(GetQuestionWithDetailInput input)
+    public virtual async Task<ListResultDto<QuestionDetailDto>> GetListWithDetailAsync(GetQuestionWithDetailInput input)
     {
         return await questionAppService.GetListWithDetailAsync(input);
     }

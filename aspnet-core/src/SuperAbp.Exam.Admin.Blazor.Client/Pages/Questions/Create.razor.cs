@@ -87,15 +87,6 @@ namespace SuperAbp.Exam.Admin.Blazor.Client.Pages.Questions
             BreadcrumbItems.Add(new AbpBreadcrumbItem(L["NewQuestion"]));
         }
 
-        protected virtual bool IsFormValid()
-        {
-            if (CreateForm == null)
-            {
-                return false;
-            }
-            return CreateForm.Validate();
-        }
-
         protected virtual async Task Save()
         {
             try

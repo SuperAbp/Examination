@@ -76,13 +76,13 @@ public class PaperSectionDtoValidator : AbstractValidator<PaperCreateOrUpdateDto
             .WithMessage(local["The {0} field is required.", "{PropertyName}"])
             .NotEmpty()
             .WithMessage(local["The {0} field is required.", "{PropertyName}"])
-            .Must((section, questions) => section.PaperQuestions.Length == section.TotalCount)
+            .Must((section, questions) => section.PaperQuestions.Count == section.TotalCount)
             .WithMessage(local["The number of {0} must match TotalCount.", "{PropertyName}"])
             .When(s => _paperType == PaperType.Fixed.Value);
 
         RuleForEach(s => s.PaperQuestions)
             .SetValidator(new PaperQuestionDtoValidator(local))
-            .When(s => s.PaperQuestions != null && s.PaperQuestions.Length > 0 && _paperType == PaperType.Fixed.Value);
+            .When(s => s.PaperQuestions != null && s.PaperQuestions.Count > 0 && _paperType == PaperType.Fixed.Value);
 
         RuleFor(s => s.PaperQuestionRules)
             .NotNull()
@@ -93,7 +93,7 @@ public class PaperSectionDtoValidator : AbstractValidator<PaperCreateOrUpdateDto
 
         RuleForEach(s => s.PaperQuestionRules)
             .SetValidator(new PaperQuestionRuleDtoValidator(local))
-            .When(s => s.PaperQuestionRules != null && s.PaperQuestionRules.Length > 0 && _paperType != PaperType.Fixed.Value);
+            .When(s => s.PaperQuestionRules != null && s.PaperQuestionRules.Count > 0 && _paperType != PaperType.Fixed.Value);
     }
 }
 

@@ -112,7 +112,7 @@ public partial class Index
                 {
                     Title = L["QuestionBank"],
                     Data = nameof(QuestionListDto.QuestionBank),
-                    Width = "180"
+                    Width = "180",
                 },
                 new TableColumn
                 {
@@ -151,7 +151,7 @@ public partial class Index
     {
         Toolbar.AddButton(L["NewQuestion"], GoCreateAsync,
             IconType.Outline.Plus,
-            requiredPolicyName: ExamPermissions.QuestionBanks.Create);
+            requiredPolicyName: CreatePolicyName);
         await base.SetToolbarItemsAsync();
     }
 

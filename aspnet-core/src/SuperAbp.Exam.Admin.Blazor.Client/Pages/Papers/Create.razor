@@ -1,0 +1,55 @@
+﻿@page "/papers/new/{mode:int}"
+@using Microsoft.Extensions.Localization
+@using SuperAbp.Exam.Admin.Blazor.Client.Components
+@using SuperAbp.Exam.Localization
+@inject IStringLocalizer<ExamResource> L
+@if (Loading)
+{
+    <Spin />
+}
+else
+{
+    <AbpPageHeader Title="@L["NewPaper"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
+    @* <EditForm Model="@Paper" FormName="create-form">
+        <Card>
+            <Input @bind-Value="@Paper.Name" />
+            <TextArea Rows="4" @bind-Value="@Paper.Description" />
+            <AntDesign.InputNumber @bind-Value="Paper.Score" Min="1"></AntDesign.InputNumber>
+        </Card>
+
+        @if (Mode == 0)
+        {
+            <CascadingValue Value="@Paper">
+                <PaperFixComponent></PaperFixComponent>
+            </CascadingValue>
+        }
+        
+    </EditForm> *@
+    <Form @ref="CreateForm" Name="create-form" Layout="@FormLayout.Vertical" Model="@Paper">
+        <Card>
+            <FormItem Label="@L["Name"]">
+                <Input @bind-Value="@context.Name" />
+            </FormItem>
+            <FormItem Label="@L["Description"]">
+                <TextArea Rows="4" @bind-Value="@context.Description" />
+            </FormItem>
+            <FormItem Label="@L["Score"]" Rules="new FormValidationRule[] { new FormValidationRule { Min = 1 } }">
+                <AntDesign.InputNumber @bind-Value="context.Score" Min="1"></AntDesign.InputNumber>
+            </FormItem>
+        </Card>
+
+        @if (Mode == 0)
+        {
+            <CascadingValue Value="@Paper">
+                <PaperFixComponent></PaperFixComponent>
+            </CascadingValue>
+        }
+    </Form>
+    <FooterToolbarComponent>
+        <Extra>
+            <Button Type="@ButtonType.Primary" Loading="@SubmitLoading" OnClick="Save">
+                @L["Submit"]
+            </Button>
+        </Extra>
+    </FooterToolbarComponent>
+}

@@ -119,7 +119,7 @@ public partial class Index
     protected override async ValueTask SetBreadcrumbItemsAsync()
     {
         BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:ExamManagement"]));
-        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["QuestionBanks"]));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["QuestionBanks"], "question-banks"));
         await base.SetBreadcrumbItemsAsync();
     }
 
