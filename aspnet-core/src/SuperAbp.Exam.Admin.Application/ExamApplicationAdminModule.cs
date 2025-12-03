@@ -5,7 +5,6 @@ using SuperAbp.MenuManagement;
 using System;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Account;
-using Volo.Abp.AutoMapper;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
@@ -31,10 +30,6 @@ public class ExamApplicationAdminModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        Configure<AbpAutoMapperOptions>(options =>
-        {
-            options.AddMaps<ExamApplicationAdminModule>();
-        });
         context.Services.AddTransient(factory =>
         {
             Func<int, IQuestionAnalysis?> accessor = key =>

@@ -1,10 +1,9 @@
-﻿using SuperAbp.Exam.ExamManagement.UserExamQuestions;
-using SuperAbp.Exam.ExamManagement.UserExams;
-using AutoMapper;
+﻿using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.QuestionManagement.Questions;
-using Volo.Abp.AutoMapper;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using AutoMapper;
+using Volo.Abp.AutoMapper;
 
 namespace SuperAbp.Exam.ExamManagement
 {
