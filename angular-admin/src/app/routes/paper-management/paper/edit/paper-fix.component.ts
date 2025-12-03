@@ -166,7 +166,7 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
       .getListWithDetail({ includeIds: ids } as GetQuestionWithDetailInput)
       .pipe(
         tap(res => {
-          res.forEach(q => this.questionDetails.set(q.id, q));
+          res.items.forEach(q => this.questionDetails.set(q.id, q));
         })
       )
       .subscribe();
@@ -177,13 +177,13 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
         .getListWithDetail({ includeIds: selectedQuestionIds } as GetQuestionWithDetailInput)
         .pipe(
           tap(res => {
-            res.forEach(q => this.questionDetails.set(q.id, q));
+            res.items.forEach(q => this.questionDetails.set(q.id, q));
             const sectionsArray = this.sections;
             if (sectionIndex > -1) {
               const sectionGroup = sectionsArray.at(sectionIndex);
               const questionsArray = sectionGroup.get('paperQuestions') as any;
               const scoreEach = sectionGroup.get('scoreEach')?.value || 0;
-              res.forEach(q => {
+              res.items.forEach(q => {
                 questionsArray.push(this.createQuestion({ questionId: q.id, score: scoreEach } as any));
               });
             }
@@ -206,17 +206,17 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
         } as GetQuestionWithDetailInput)
         .pipe(
           tap(res => {
-            res.forEach(q => this.questionDetails.set(q.id, q));
+            res.items.forEach(q => this.questionDetails.set(q.id, q));
             const sectionsArray = this.sections;
             if (sectionIndex > -1) {
               const sectionGroup = sectionsArray.at(sectionIndex);
               const questionsArray = sectionGroup.get('paperQuestions') as any;
               const scoreEach = sectionGroup.get('scoreEach')?.value || 0;
-              res.forEach(q => {
+              res.items.forEach(q => {
                 questionsArray.push(this.createQuestion({ questionId: q.id, score: scoreEach } as any));
               });
             }
-            this.questionIds = [...this.questionIds, ...res.map(x => x.id)];
+            this.questionIds = [...this.questionIds, ...res.items.map(x => x.id)];
             this.recomputeTotal();
           })
         )
