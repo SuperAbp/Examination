@@ -2414,10 +2414,10 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.2.tgz#821f8442f4175d8f0467b9daf26e3a18e2d02af2"
   integrity sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==
 
-"@super-abp/ng.identity@~0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@super-abp/ng.identity/-/ng.identity-0.7.0.tgz#3518ab6bc324354623ebdaf25ebf2a0d725386f2"
-  integrity sha512-ZJlWQABEXUkr3pkhgEJb0r+evH0+DqYh0o3iU6ldl+4NqK2MeYpoqtmUTrwVLo82rpEN+iEXGcSEwdwW2O6x0w==
+"@super-abp/ng.identity@~0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@super-abp/ng.identity/-/ng.identity-0.7.1.tgz#ceba60edb78366b8677a03019cfa895ec50acbbd"
+  integrity sha512-KkfJYWhlmx0mQHc6ZVPxGS5v0ygXOcCWuES3lwHgqs8XT9cO/EdEv+b4Is2c2DtPdWJC4DzezH9Rsfi6IZ2voA==
   dependencies:
     tslib "^2.3.0"
 
