@@ -11,15 +11,15 @@ export class QuestionNumberItem {
 }
 
 @Component({
-  selector: 'question-number',
-  styles: [
-    `
+    selector: 'question-number',
+    styles: [
+        `
       nz-tag {
         cursor: pointer;
       }
     `
-  ],
-  template: `
+    ],
+    template: `
     <nz-card>
       @for (questionNumber of questionNumbers; track $index) {
         <div style="margin-bottom: 16px;">
@@ -39,7 +39,8 @@ export class QuestionNumberItem {
         </div>
       }
     </nz-card>
-  `
+  `,
+    standalone: false
 })
 export class QuestionNumberComponent {
   @Input()

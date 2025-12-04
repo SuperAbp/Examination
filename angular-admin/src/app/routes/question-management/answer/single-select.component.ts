@@ -7,7 +7,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -19,21 +19,20 @@ interface QuestionAnswerTemp extends QuestionAnswerDto {
 }
 
 @Component({
-  selector: 'single-select',
-  templateUrl: './single-select.component.html',
-  standalone: true,
-  imports: [
-    CoreModule,
-    NzButtonModule,
-    NzTableModule,
-    NzFormModule,
-    NzRadioModule,
-    NzInputModule,
-    NzInputNumberModule,
-    NzPopconfirmModule,
-    NzToolTipModule,
-    NzIconModule
-  ]
+    selector: 'single-select',
+    templateUrl: './single-select.component.html',
+    imports: [
+        CoreModule,
+        NzButtonModule,
+        NzTableModule,
+        NzFormModule,
+        NzRadioModule,
+        NzInputModule,
+        NzInputNumberLegacyModule,
+        NzPopconfirmModule,
+        NzToolTipModule,
+        NzIconModule
+    ]
 })
 export class SingleSelectComponent extends QuestionManagementAnswerComponent {
   constructor(

@@ -3,15 +3,16 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { _HttpClient } from '@delon/theme';
 
 @Component({
-  selector: 'exception-trigger',
-  template: `
+    selector: 'exception-trigger',
+    template: `
     <div class="pt-lg">
       <nz-card>
         <button *ngFor="let t of types" (click)="go(t)" nz-button nzDanger>触发{{ t }}</button>
         <button nz-button nzType="link" (click)="refresh()">触发刷新Token</button>
       </nz-card>
     </div>
-  `
+  `,
+    standalone: false
 })
 export class ExceptionTriggerComponent {
   types = [401, 403, 404, 500];

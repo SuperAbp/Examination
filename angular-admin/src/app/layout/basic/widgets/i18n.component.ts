@@ -7,8 +7,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 
 @Component({
-  selector: 'header-i18n',
-  template: `
+    selector: 'header-i18n',
+    template: `
     @if (showLangText) {
       <div nz-dropdown [nzDropdownMenu]="langMenu" nzPlacement="bottomRight">
         <i nz-icon nzType="global"></i>
@@ -29,12 +29,11 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
       </ul>
     </nz-dropdown-menu>
   `,
-  host: {
-    '[class.flex-1]': 'true'
-  },
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [I18nPipe, NzDropDownModule, NzIconModule, NzMenuModule]
+    host: {
+        '[class.flex-1]': 'true'
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [I18nPipe, NzDropDownModule, NzIconModule, NzMenuModule]
 })
 export class HeaderI18nComponent {
   private readonly settings = inject(SettingsService);

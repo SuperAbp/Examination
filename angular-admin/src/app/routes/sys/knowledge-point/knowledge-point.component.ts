@@ -23,20 +23,19 @@ export interface TreeNodeInterface extends KnowledgePointNodeDto {
 }
 
 @Component({
-  selector: 'app-sys-knowledge-point',
-  templateUrl: './knowledge-point.component.html',
-  standalone: true,
-  imports: [
-    CoreModule,
-    PageHeaderModule,
-    DelonFormModule,
-    STModule,
-    NzCardModule,
-    NzButtonModule,
-    NzTableModule,
-    NzIconModule,
-    NzPopconfirmModule
-  ]
+    selector: 'app-sys-knowledge-point',
+    templateUrl: './knowledge-point.component.html',
+    imports: [
+        CoreModule,
+        PageHeaderModule,
+        DelonFormModule,
+        STModule,
+        NzCardModule,
+        NzButtonModule,
+        NzTableModule,
+        NzIconModule,
+        NzPopconfirmModule
+    ]
 })
 export class SysKnowledgePointComponent implements OnInit {
   private modal = inject(ModalHelper);

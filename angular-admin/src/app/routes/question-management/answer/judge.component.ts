@@ -7,7 +7,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -20,21 +20,20 @@ interface QuestionAnswerTemp extends QuestionAnswerDto {
 }
 
 @Component({
-  selector: 'judge',
-  templateUrl: './judge.component.html',
-  standalone: true,
-  imports: [
-    CoreModule,
-    NzButtonModule,
-    NzTableModule,
-    NzFormModule,
-    NzInputModule,
-    NzInputNumberModule,
-    NzPopconfirmModule,
-    NzToolTipModule,
-    NzRadioModule,
-    NzIconModule
-  ]
+    selector: 'judge',
+    templateUrl: './judge.component.html',
+    imports: [
+        CoreModule,
+        NzButtonModule,
+        NzTableModule,
+        NzFormModule,
+        NzInputModule,
+        NzInputNumberLegacyModule,
+        NzPopconfirmModule,
+        NzToolTipModule,
+        NzRadioModule,
+        NzIconModule
+    ]
 })
 export class JudgeComponent extends QuestionManagementAnswerComponent {
   constructor(

@@ -11,10 +11,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 @Component({
-  selector: 'app-exam-management-exam-view',
-  templateUrl: './view.component.html',
-  standalone: true,
-  imports: [CoreModule, PageHeaderModule, NzCardModule, NzSpinModule, SVModule]
+    selector: 'app-exam-management-exam-view',
+    templateUrl: './view.component.html',
+    imports: [CoreModule, PageHeaderModule, NzCardModule, NzSpinModule, SVModule]
 })
 export class ExamManagementExamViewComponent implements OnInit {
   examId: string;

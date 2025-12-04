@@ -16,8 +16,8 @@ import { HeaderI18nComponent } from './widgets/i18n.component';
 import { HeaderUserComponent } from './widgets/user.component';
 
 @Component({
-  selector: 'layout-basic',
-  template: `
+    selector: 'layout-basic',
+    template: `
     <layout-default [options]="options" [asideUser]="asideUserTpl" [content]="contentTpl" [customError]="null">
       <layout-default-header-item direction="left">
         <a layout-default-header-item-trigger href="//github.com/SuperAbp/Examing" target="_blank">
@@ -80,23 +80,22 @@ import { HeaderUserComponent } from './widgets/user.component';
     }
     <theme-btn></theme-btn>
   `,
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    I18nPipe,
-    LayoutDefaultModule,
-    NzIconModule,
-    NzMenuModule,
-    NzDropDownModule,
-    NzAvatarModule,
-    SettingDrawerModule,
-    ThemeBtnComponent,
-    HeaderClearStorageComponent,
-    HeaderFullScreenComponent,
-    HeaderUserComponent,
-    HeaderI18nComponent
-  ]
+    imports: [
+        RouterOutlet,
+        RouterLink,
+        I18nPipe,
+        LayoutDefaultModule,
+        NzIconModule,
+        NzMenuModule,
+        NzDropDownModule,
+        NzAvatarModule,
+        SettingDrawerModule,
+        ThemeBtnComponent,
+        HeaderClearStorageComponent,
+        HeaderFullScreenComponent,
+        HeaderUserComponent,
+        HeaderI18nComponent
+    ]
 })
 export class LayoutBasicComponent {
   options: LayoutDefaultOptions = {
