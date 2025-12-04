@@ -10,7 +10,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
@@ -30,7 +30,7 @@ export const SHARED_ZORRO_MODULES = [
   NzGridModule,
   NzButtonModule,
   NzInputModule,
-  NzInputNumberLegacyModule,
+  NzInputNumberModule,
   NzAlertModule,
   NzProgressModule,
   NzSelectModule,

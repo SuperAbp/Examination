@@ -16,8 +16,8 @@ import { HeaderI18nComponent } from './widgets/i18n.component';
 import { HeaderUserComponent } from './widgets/user.component';
 
 @Component({
-    selector: 'layout-basic',
-    template: `
+  selector: 'layout-basic',
+  template: `
     <layout-default [options]="options" [asideUser]="asideUserTpl" [content]="contentTpl" [customError]="null">
       <layout-default-header-item direction="left">
         <a layout-default-header-item-trigger href="//github.com/SuperAbp/Examing" target="_blank">
@@ -65,8 +65,8 @@ import { HeaderUserComponent } from './widgets/user.component';
         </div>
         <nz-dropdown-menu #userMenu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item routerLink="/pro/account/center">个人中心</li>
-            <li nz-menu-item routerLink="/pro/account/settings">个人设置</li>
+            <li nz-menu-item routerLink="/pro/account/center">{{ 'menu.account.center' | i18n }}</li>
+            <li nz-menu-item routerLink="/pro/account/settings">{{ 'menu.account.settings' | i18n }}</li>
           </ul>
         </nz-dropdown-menu>
       </ng-template>
@@ -80,28 +80,25 @@ import { HeaderUserComponent } from './widgets/user.component';
     }
     <theme-btn></theme-btn>
   `,
-    imports: [
-        RouterOutlet,
-        RouterLink,
-        I18nPipe,
-        LayoutDefaultModule,
-        NzIconModule,
-        NzMenuModule,
-        NzDropDownModule,
-        NzAvatarModule,
-        SettingDrawerModule,
-        ThemeBtnComponent,
-        HeaderClearStorageComponent,
-        HeaderFullScreenComponent,
-        HeaderUserComponent,
-        HeaderI18nComponent
-    ]
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    I18nPipe,
+    LayoutDefaultModule,
+    NzIconModule,
+    NzMenuModule,
+    NzDropDownModule,
+    NzAvatarModule,
+    SettingDrawerModule,
+    ThemeBtnComponent,
+    HeaderClearStorageComponent,
+    HeaderFullScreenComponent,
+    HeaderUserComponent,
+    HeaderI18nComponent
+  ]
 })
 export class LayoutBasicComponent {
-  options: LayoutDefaultOptions = {
-    logoExpanded: `./assets/logo-full.svg`,
-    logoCollapsed: `./assets/logo.svg`
-  };
+  options: LayoutDefaultOptions = { logoExpanded: `./assets/logo-full.svg`, logoCollapsed: `./assets/logo.svg` };
   searchToggleStatus = false;
   showSettingDrawer = !environment.production;
   get user(): User {

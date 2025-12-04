@@ -21,7 +21,7 @@ import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
@@ -59,7 +59,7 @@ import { QuestionSelectComponent } from './question-select.component';
         NzIconModule,
         NzInputModule,
         NzListModule,
-        NzInputNumberLegacyModule,
+        NzInputNumberModule,
         NzButtonModule,
         NzFlexModule,
         NzSpaceModule,

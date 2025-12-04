@@ -88,7 +88,6 @@ export class SysKnowledgePointComponent implements OnInit {
       }
       this.visitNode(node, hashMap, array);
     }
-    console.log(array);
 
     return array;
   }

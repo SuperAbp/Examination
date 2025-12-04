@@ -21,7 +21,7 @@ import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
@@ -70,7 +70,7 @@ export interface PaperQuestionRuleCreateTemp extends PaperCreateOrUpdateDtoBase_
         NzIconModule,
         NzInputModule,
         NzListModule,
-        NzInputNumberLegacyModule,
+        NzInputNumberModule,
         NzButtonModule,
         NzFlexModule,
         NzSpaceModule,
