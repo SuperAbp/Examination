@@ -31,7 +31,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { finalize, tap } from 'rxjs/operators';
 
 import { QuestionRandomComponent } from './question-random.component';
@@ -80,7 +80,7 @@ export interface PaperQuestionRuleCreateTemp extends PaperCreateOrUpdateDtoBase_
         NzSelectModule,
         NzTableModule,
         NzPopconfirmModule,
-        NzToolTipModule
+        NzTooltipModule
     ]
 })
 export class PaperManagementPaperRandomEditComponent implements OnInit {

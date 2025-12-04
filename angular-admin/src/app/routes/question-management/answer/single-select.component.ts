@@ -11,7 +11,7 @@ import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 
 import { QuestionManagementAnswerComponent } from './answer.component';
 interface QuestionAnswerTemp extends QuestionAnswerDto {
@@ -30,7 +30,7 @@ interface QuestionAnswerTemp extends QuestionAnswerDto {
         NzInputModule,
         NzInputNumberLegacyModule,
         NzPopconfirmModule,
-        NzToolTipModule,
+        NzTooltipModule,
         NzIconModule
     ]
 })
