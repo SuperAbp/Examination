@@ -22,8 +22,8 @@
   },
   "private": true,
   "dependencies": {
-    "@abp/ng.core": "~9.0.0",
-    "@abp/ng.oauth": "~9.0.0",
+    "@abp/ng.core": "~10.0.0",
+    "@abp/ng.oauth": "~10.0.0",
     "@angular/animations": "^20.3.15",
     "@angular/common": "^20.3.15",
     "@angular/compiler": "^20.3.15",
@@ -52,7 +52,7 @@
     "zone.js": "~0.15.1"
   },
   "devDependencies": {
-    "@abp/ng.schematics": "~9.0.0",
+    "@abp/ng.schematics": "~10.0.0",
     "@angular-eslint/builder": "^20.7.0",
     "@angular-eslint/eslint-plugin": "^20.7.0",
     "@angular-eslint/eslint-plugin-template": "^20.7.0",
@@ -64,7 +64,7 @@
     "@angular/language-service": "^20.3.15",
     "@delon/testing": "^19.2.0",
     "@ng-util/monaco-editor": "^19.0.1",
-    "@super-abp/ng.identity": "~0.6.2",
+    "@super-abp/ng.identity": "~0.7.0",
     "@super-abp/ng.menu-management": "~0.7.0",
     "@super-abp/ng.permission-management": "~0.7.0",
     "@super-abp/ng.tenant-management": "~0.7.0",
