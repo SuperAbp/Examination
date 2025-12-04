@@ -11,4 +11,8 @@ export const APP_ROUTES: Routes = [
     path: 'account',
     loadChildren: () => import('@abp/ng.account').then(c => c.createRoutes()),
   },
+  {
+    path: '',
+    loadChildren: () => import('./exam-management/routes').then(m => m.routes),
+  },
 ];

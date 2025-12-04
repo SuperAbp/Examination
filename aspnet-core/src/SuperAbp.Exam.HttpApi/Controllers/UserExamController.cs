@@ -12,6 +12,7 @@ namespace SuperAbp.Exam.Controllers
     /// 用户考试
     /// </summary>
     [Route("api/user-exam")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class UserExamController : ExamController, IUserExamAppService
     {
         private readonly IUserExamAppService _userExamAppService;
