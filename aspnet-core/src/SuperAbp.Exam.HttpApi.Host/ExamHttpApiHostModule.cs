@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using Volo.Abp;
 using Volo.Abp.Account;
+using Volo.Abp.AspNetCore.Authentication.JwtBearer;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
@@ -31,6 +32,7 @@ using Volo.Abp.Caching;
 using Volo.Abp.Caching.StackExchangeRedis;
 using Volo.Abp.DistributedLocking;
 using Volo.Abp.Modularity;
+using Volo.Abp.Security.Claims;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
@@ -43,6 +45,7 @@ namespace SuperAbp.Exam;
         typeof(AbpCachingStackExchangeRedisModule),
     typeof(AbpDistributedLockingModule),
     typeof(AbpAspNetCoreMvcUiMultiTenancyModule),
+    typeof(AbpAspNetCoreAuthenticationJwtBearerModule),
     typeof(ExamApplicationModule),
     typeof(ExamEntityFrameworkCoreModule),
     typeof(AbpAspNetCoreSerilogModule),
@@ -85,12 +88,16 @@ public class ExamHttpApiHostModule : AbpModule
     private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
     {
         context.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-           .AddJwtBearer(options =>
+            .AddAbpJwtBearer(options =>
             {
                 options.Authority = configuration["AuthServer:Authority"];
-                options.RequireHttpsMetadata = Convert.ToBoolean(configuration["AuthServer:RequireHttpsMetadata"]);
+                options.RequireHttpsMetadata = configuration.GetValue<bool>("AuthServer:RequireHttpsMetadata");
                 options.Audience = "Exam";
             });
+        context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
+        {
+            options.IsDynamicClaimsEnabled = true;
+        });
     }
 
     private void ConfigureUrls(IConfiguration configuration)

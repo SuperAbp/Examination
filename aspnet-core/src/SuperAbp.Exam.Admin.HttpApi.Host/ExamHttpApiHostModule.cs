@@ -55,11 +55,11 @@ public class ExamHttpApiHostModule : AbpModule
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
 
-        //if (!configuration.GetValue<bool>("App:DisablePII"))
-        //{
-        //    Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
-        //    Microsoft.IdentityModel.Logging.IdentityModelEventSource.LogCompleteSecurityArtifact = true;
-        //}
+        if (!configuration.GetValue<bool>("App:DisablePII"))
+        {
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.LogCompleteSecurityArtifact = true;
+        }
 
         ConfigureAuthentication(context, configuration);
         ConfigureCache(configuration);
