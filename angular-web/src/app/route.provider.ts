@@ -31,4 +31,13 @@ function configureRoutes() {
       layout: eLayoutType.application,
     },
   ]);
+  routes.add([
+    {
+      path: '/question-banks',
+      name: '::QuestionBanks',
+      iconClass: 'fas fa-home',
+      order: 1,
+      layout: eLayoutType.application,
+    },
+  ]);
 }

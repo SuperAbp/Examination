@@ -1,0 +1,17 @@
+
+h2{
+    font-size: 16px;
+}
+.bs-tag {
+    cursor: pointer;
+    padding: 0 7px;
+    border: 1px solid var(--bs-border-color);
+    background: var(--bs-light);
+    border-radius: 2px;
+
+    &.bs-tag-primary {
+        background: var(--bs-primary);
+        border-color: var(--bs-primary);
+        color: white;
+    }
+}

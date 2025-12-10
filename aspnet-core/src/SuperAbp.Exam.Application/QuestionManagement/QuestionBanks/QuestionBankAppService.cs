@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Application.Dtos;
@@ -11,10 +12,10 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionBanks
         IQuestionRepository questionRepository)
         : ExamAppService, IQuestionBankAppService
     {
-        public virtual async Task<ListResultDto<QuestionType>> GetQuestionTypesAsync(Guid id)
+        public virtual async Task<ListResultDto<int>> GetQuestionTypesAsync(Guid id)
         {
             List<QuestionType> questionTypes = await questionRepository.GetQuestionTypesAsync(id);
-            return new ListResultDto<QuestionType>(questionTypes);
+            return new ListResultDto<int>(questionTypes.Select(q => q.Value).ToArray());
         }
 
         public virtual async Task<PagedResultDto<QuestionBankListDto>> GetListAsync(GetQuestionBanksInput input)

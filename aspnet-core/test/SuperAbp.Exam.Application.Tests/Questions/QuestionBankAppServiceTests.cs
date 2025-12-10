@@ -37,7 +37,7 @@ public abstract class QuestionBankAppServiceTests<TStartupModule> : ExamApplicat
     [Fact]
     public async Task Should_Get_QuestionTypes()
     {
-        ListResultDto<QuestionType> result = await _questionRepoAppService.GetQuestionTypesAsync(_testData.QuestionBank1Id);
+        ListResultDto<int> result = await _questionRepoAppService.GetQuestionTypesAsync(_testData.QuestionBank1Id);
         result.Items.Count.ShouldBeGreaterThan(0);
     }
 }

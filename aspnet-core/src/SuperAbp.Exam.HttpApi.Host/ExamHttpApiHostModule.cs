@@ -62,7 +62,6 @@ public class ExamHttpApiHostModule : AbpModule
         ConfigureAuthentication(context, configuration);
         ConfigureCache(configuration);
         ConfigureUrls(configuration);
-        ConfigureConventionalControllers();
         ConfigureVirtualFileSystem(context);
         ConfigureDataProtection(context, configuration, hostingEnvironment);
         ConfigureDistributedLocking(context, configuration);

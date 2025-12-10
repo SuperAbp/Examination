@@ -20,6 +20,7 @@ namespace SuperAbp.Exam.Admin;
     typeof(ExamDomainModule),
     typeof(AbpAccountApplicationModule),
     typeof(ExamApplicationAdminContractsModule),
+    typeof(AbpAutoMapperModule),
     typeof(AbpIdentityApplicationModule),
     typeof(AbpPermissionManagementApplicationModule),
     typeof(AbpTenantManagementApplicationModule),

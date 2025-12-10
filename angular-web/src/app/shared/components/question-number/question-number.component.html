@@ -1,0 +1,30 @@
+<div class="card">
+  <div class="card-body">
+    @for (number of questionNumbers; track $index) {
+    <div class="mb-3">
+      <div class="row">
+        <div class="d-flex justify-content-between">
+          <h2>{{ `::QuestionType:${number.questionType}` | abpLocalization }}</h2>
+          @if(number.TotalScore){
+          <span>
+            Total: {{ number.Items?.length ?? 0 }}
+            @if (number.TotalScore > 0) {
+            <span> / Score: {{ number.TotalScore }}</span>
+            }
+          </span>
+          }
+        </div>
+      </div>
+      <div class="row row-cols-auto gy-2 gx-2">
+        @for (question of number.questions; track $index) {
+        <div class="col">
+          <span [class]="getClassName(question.id)" (click)="showQuestion(question.id)">
+            {{ $index + 1 }}
+          </span>
+        </div>
+        }
+      </div>
+    </div>
+    }
+  </div>
+</div>

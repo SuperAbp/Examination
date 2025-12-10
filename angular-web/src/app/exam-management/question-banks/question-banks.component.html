@@ -1,0 +1,23 @@
+<ngx-datatable
+  [rows]="questionBanks.items"
+  [count]="questionBanks.totalCount"
+  [list]="list"
+  default
+>
+  <ngx-datatable-column
+    [name]="'Exam::Title' | abpLocalization"
+    prop="title"
+  ></ngx-datatable-column>
+  <ngx-datatable-column
+    [name]="'Exam::Actions' | abpLocalization"
+    [width]="150"
+    [canAutoResize]="false"
+    [sortable]="false"
+  >
+    <ng-template ngx-datatable-cell-template let-row="row">
+      <button type="button" class="btn btn-primary" (click)="goDetail(row.id)">
+        {{ 'Exam::Detail' | abpLocalization }}
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>

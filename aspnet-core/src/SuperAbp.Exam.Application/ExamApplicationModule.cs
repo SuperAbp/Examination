@@ -11,8 +11,9 @@ namespace SuperAbp.Exam;
 
 [DependsOn(
     typeof(ExamDomainModule),
-    typeof(AbpAccountApplicationModule),
     typeof(ExamApplicationContractsModule),
+    typeof(AbpAutoMapperModule),
+    typeof(AbpAccountApplicationModule),
     typeof(AbpIdentityApplicationModule),
     typeof(AbpPermissionManagementApplicationModule),
     typeof(AbpTenantManagementApplicationModule),

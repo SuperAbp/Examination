@@ -14,6 +14,8 @@
     "module": "es2020",
     "lib": ["es2018", "dom"],
     "paths": {
+      "@proxy/*": ["src/app/proxy/*"],
+      "@shared/*": ["src/app/shared/*"]
     },
     "useDefineForClassFields": false
   },

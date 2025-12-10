@@ -1,0 +1,32 @@
+<div class="row">
+  <div class="col-3">
+    <app-question-number
+      [questionNumbers]="questionNumbers"
+      [selectedQuestionId]="selectedQuestionId"
+      (questionSelected)="onQuestionSelected($event)"
+    ></app-question-number>
+  </div>
+  <div class="col-9">
+    <div class="card">
+      <div class="card-header">
+        <span style="cursor: pointer" (click)="goBack()">
+          <i class="fa-solid fa-arrow-left"></i>
+        </span>
+        <h1>{{ questionBank?.title }}</h1>
+      </div>
+      <div class="card-body">
+        @if (selectedQuestion) {
+        <h2>{{ selectedQuestion.content }}</h2>
+        @for (option of selectedQuestion.answers; track $index) {
+        <div class="form-check" data-id="@option.Id">
+          <input class="form-check-input" type="radio" name="option" [id]="' option' + $index" />
+          <label class="form-check-label" [for]="' option' + $index">
+            <span class="tag">{{ 65 + $index | char }}</span>
+            {{ option.content }}
+          </label>
+        </div>
+        } }
+      </div>
+    </div>
+  </div>
+</div>
