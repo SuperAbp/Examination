@@ -3,7 +3,8 @@
     <app-question-number
       [questionNumbers]="questionNumbers"
       [selectedQuestionId]="selectedQuestionId"
-      (questionSelected)="onQuestionSelected($event)"
+      [answerMap]="answerMap"
+      (questionNumberSelected)="onQuestionNumberSelected($event)"
     ></app-question-number>
   </div>
   <div class="col-9">
@@ -18,14 +19,68 @@
         @if (selectedQuestion) {
         <h2>{{ selectedQuestion.content }}</h2>
         @for (option of selectedQuestion.answers; track $index) {
-        <div class="form-check" data-id="@option.Id">
-          <input class="form-check-input" type="radio" name="option" [id]="' option' + $index" />
-          <label class="form-check-label" [for]="' option' + $index">
-            <span class="tag">{{ 65 + $index | char }}</span>
-            {{ option.content }}
-          </label>
+        <input
+          type="radio"
+          class="btn-check"
+          name="option"
+          [id]="'option' + option.id"
+          [disabled]="isOptionDisabled()"
+          autocomplete="off"
+        />
+        <label
+          class="btn w-100 text-start border"
+          [class.mb-2]="$index !== selectedQuestion.answers.length - 1"
+          (click)="onOptionSelected(option)"
+          [class.border-primary]="isSelectedOption(option)"
+          [for]="'option' + option.id"
+        >
+          <div class="d-flex justify-content-between">
+            <div>
+              <span class="tag">{{ 65 + $index | char }}</span>
+              {{ option.content }}
+            </div>
+            @if(showAnalysis && option.right){
+            <div>
+              <i class="fa-regular fa-circle-check text-success"></i>
+            </div>
+            }
+          </div>
+        </label>
+        } @if (showAnalysis && selectedQuestion.analysis) {
+        <div class="analysis-box">
+          <h4>分析：</h4>
+          <p>{{ selectedQuestion.analysis }}</p>
         </div>
-        } }
+        }
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="isPrevDisabled()"
+            (click)="prev()"
+          >
+            <i class="fa-solid fa-arrow-left me-1"></i>
+            {{ '::Previous' | abpLocalization }}
+          </button>
+          <i
+            class="fs-5"
+            [class]="isFavorited() ? 'fa-solid fa-star' : 'fa-regular fa-star'"
+            style="cursor: pointer"
+            (click.stop)="favorite()"
+          ></i>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="isNextDisabled()"
+            (click)="next()"
+          >
+            {{ '::Next' | abpLocalization }}
+            <i class="fa-solid fa-arrow-right ms-1"></i>
+          </button>
+        </div>
+        }@else {
+        <div class="text-center"><i class="fa fa-pulse fa-spinner" aria-hidden="true"></i></div>
+        }
       </div>
     </div>
   </div>

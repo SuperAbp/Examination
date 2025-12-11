@@ -1,26 +1,23 @@
+@if(questionBank) {
 <div class="card">
-  <!-- Header with back button and title -->
   <div class="card-header">
     <span style="cursor: pointer" (click)="goBack()">
       <i class="fa-solid fa-arrow-left"></i>
     </span>
-    <h1>{{ questionBank?.title }}</h1>
+    <h1>{{ questionBank.title }}</h1>
   </div>
 
-  <!-- Introduction Section -->
   <div class="section">
     <h2>简介:</h2>
     <p>{{ questionBank.remark }}</p>
   </div>
 
-  <!-- Free Practice Section -->
   <div class="section">
     <h2>自由练习</h2>
     <button class="btn btn-primary" (click)="start(0)">顺序练习</button>
     <button class="btn btn-primary" (click)="start(1)">背题模式</button>
   </div>
 
-  <!-- Question Type Practice Section -->
   <div class="section">
     <h2>题型练习</h2>
     <div class="content">
@@ -32,3 +29,6 @@
     </div>
   </div>
 </div>
+} @else {
+<div class="text-center"><i class="fa fa-pulse fa-spinner" aria-hidden="true"></i></div>
+}
