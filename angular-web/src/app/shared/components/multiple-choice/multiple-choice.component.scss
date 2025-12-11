@@ -1,0 +1,12 @@
+.btn-check:disabled + .btn {
+  opacity: 1;
+}
+
+.tag {
+  color: var(--bs-primary);
+  font-weight: 600;
+}
+
+.gap-2 {
+  gap: 8px;
+}

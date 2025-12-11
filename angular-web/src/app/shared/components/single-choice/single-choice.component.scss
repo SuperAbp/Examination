@@ -1,0 +1,8 @@
+.btn-check:disabled + .btn {
+  opacity: 1;
+}
+
+.tag {
+  color: var(--bs-primary);
+  font-weight: 600;
+}

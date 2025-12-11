@@ -3,7 +3,7 @@
     <app-question-number
       [questionNumbers]="questionNumbers"
       [selectedQuestionId]="selectedQuestionId"
-      [answerMap]="answerMap"
+      [answerMap]="submittedAnswerMap"
       (questionNumberSelected)="onQuestionNumberSelected($event)"
     ></app-question-number>
   </div>
@@ -18,41 +18,35 @@
       <div class="card-body">
         @if (selectedQuestion) {
           <h2>{{ selectedQuestion.content }}</h2>
-          @for (option of selectedQuestion.answers; track $index) {
-            <input
-              type="radio"
-              class="btn-check"
-              name="option"
-              [id]="'option' + option.id"
+
+          @if (selectedQuestion.questionType === 0) {
+            <app-single-choice
+              [options]="selectedQuestion.answers"
+              [selectedAnswerId]="
+                submittedAnswerMap.get(selectedQuestionId)?.answerIds.values().next().value ?? null
+              "
+              [showAnalysis]="showAnalysis"
               [disabled]="isOptionDisabled()"
-              autocomplete="off"
-            />
-            <label
-              class="btn w-100 text-start border"
-              [class.mb-2]="$index !== selectedQuestion.answers.length - 1"
-              (click)="onOptionSelected(option)"
-              [class.border-primary]="isSelectedOption(option)"
-              [for]="'option' + option.id"
-            >
-              <div class="d-flex justify-content-between">
-                <div>
-                  <span class="tag">{{ 65 + $index | char }}</span>
-                  {{ option.content }}
-                </div>
-                @if (showAnalysis && option.right) {
-                  <div>
-                    <i class="fa-regular fa-circle-check text-success"></i>
-                  </div>
-                }
-              </div>
-            </label>
+              (submitted)="onSubmitted($event)"
+            ></app-single-choice>
+          } @else if (selectedQuestion.questionType === 1) {
+            <app-multiple-choice
+              [options]="selectedQuestion.answers"
+              [selectedAnswerIds]="selectedMultipleChoiceAnswerIds()"
+              [showAnalysis]="showAnalysis"
+              [disabled]="showAnalysis"
+              (answerChanged)="onAnswerChanged($event)"
+              (submitted)="onSubmitted($event)"
+            ></app-multiple-choice>
           }
+
           @if (showAnalysis && selectedQuestion.analysis) {
             <div class="analysis-box">
-              <h4>分析：</h4>
+              <h4>{{ '::Analysis' | abpLocalization }}</h4>
               <p>{{ selectedQuestion.analysis }}</p>
             </div>
           }
+
           <div class="d-flex justify-content-between align-items-center mt-3">
             <button
               type="button"

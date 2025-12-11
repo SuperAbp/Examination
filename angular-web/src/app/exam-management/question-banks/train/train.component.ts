@@ -10,14 +10,16 @@ import {
 } from '@proxy/question-management/questions';
 import { QuestionNumber } from '@shared/components/question-number/question-number';
 import { QuestionNumberComponent } from '@shared/components/question-number/question-number.component';
-import { CharPipe } from '@shared/pipes/char/char.pipe';
+import { SingleChoiceComponent } from '@shared/components/single-choice/single-choice.component';
+import { MultipleChoiceComponent } from '@shared/components/multiple-choice/multiple-choice.component';
+import { AnswerSubmission } from '@shared/components/choice-answer';
 import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-question-banks-train',
   templateUrl: './train.component.html',
   styleUrls: ['./train.component.scss'],
-  imports: [CoreModule, QuestionNumberComponent, CharPipe],
+  imports: [CoreModule, QuestionNumberComponent, SingleChoiceComponent, MultipleChoiceComponent],
 })
 export class QuestionBanksTrainComponent implements OnInit {
   mode: number;
@@ -28,9 +30,9 @@ export class QuestionBanksTrainComponent implements OnInit {
   questionNumbers: QuestionNumber[] = [];
   selectedQuestion: QuestionDetailDto;
   selectedQuestionId: string;
-  selectedAnswerId: string | null = null;
   showAnalysis = false;
-  answerMap: Map<string, { answerId: string; right: boolean }> = new Map();
+  submittedAnswerMap: Map<string, { answerIds: Set<string>; right: boolean }> = new Map();
+  selectedAnswerMap: Map<string, Set<string>> = new Map();
   allQuestionIds: string[] = [];
   favorites: Set<string> = new Set();
 
@@ -70,7 +72,7 @@ export class QuestionBanksTrainComponent implements OnInit {
               acc.get(type)!.addQuestions([question]);
               return acc;
             }, new Map<number, QuestionNumber>())
-            .values()
+            .values(),
         );
 
         this.allQuestionIds = [];
@@ -93,36 +95,46 @@ export class QuestionBanksTrainComponent implements OnInit {
 
   onQuestionNumberSelected(questionId: string): void {
     this.selectedQuestionId = questionId;
-    const savedState = this.answerMap.get(questionId);
+    const savedState = this.submittedAnswerMap.get(questionId);
+
     if (savedState) {
-      this.selectedAnswerId = savedState.answerId;
       this.showAnalysis = true;
     } else {
-      this.selectedAnswerId = null;
       this.showAnalysis = false;
     }
+
     this.questionService.get(questionId).subscribe(question => {
       this.selectedQuestion = question;
     });
+
     if (this.mode === 1) {
       this.showAnalysis = true;
     }
   }
 
-  onOptionSelected(option: QuestionAnswerDto): void {
-    this.selectedAnswerId = option.id;
+  onAnswerChanged(answerId: string): void {
+    const currentAnswers = this.selectedAnswerMap.get(this.selectedQuestionId) || new Set<string>();
+    if (currentAnswers.has(answerId)) {
+      currentAnswers.delete(answerId);
+    } else {
+      currentAnswers.add(answerId);
+    }
+    this.selectedAnswerMap.set(this.selectedQuestionId, currentAnswers);
+  }
+
+  onSubmitted(submission: AnswerSubmission): void {
     this.showAnalysis = true;
-    this.answerMap.set(this.selectedQuestionId, {
-      answerId: option.id,
-      right: option.right,
+    this.submittedAnswerMap.set(this.selectedQuestionId, {
+      answerIds: submission.answerIds,
+      right: submission.isCorrect,
     });
   }
 
+  selectedMultipleChoiceAnswerIds(): Set<string> {
+    return this.selectedAnswerMap.get(this.selectedQuestionId) || new Set<string>();
+  }
   isOptionDisabled(): boolean {
     return this.showAnalysis;
-  }
-  isSelectedOption(option: QuestionAnswerDto): boolean {
-    return this.selectedAnswerId === option.id;
   }
 
   prev(): void {
