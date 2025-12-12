@@ -116,10 +116,17 @@ export class QuestionBanksTrainComponent implements OnInit {
           });
         });
 
-        if (lastTrainedQuestionId && this.allQuestionIds.includes(lastTrainedQuestionId)) {
-          this.onQuestionNumberSelected(lastTrainedQuestionId);
-        } else if (questionsResult.items.length > 0) {
-          this.onQuestionNumberSelected(questionsResult.items[0].id);
+        // mode为1(背题模式)时，从第一题开始；否则跳转到最新答题
+        if (this.mode === 1) {
+          if (questionsResult.items.length > 0) {
+            this.onQuestionNumberSelected(questionsResult.items[0].id);
+          }
+        } else {
+          if (lastTrainedQuestionId && this.allQuestionIds.includes(lastTrainedQuestionId)) {
+            this.onQuestionNumberSelected(lastTrainedQuestionId);
+          } else if (questionsResult.items.length > 0) {
+            this.onQuestionNumberSelected(questionsResult.items[0].id);
+          }
         }
       }
     });
@@ -266,5 +273,13 @@ export class QuestionBanksTrainComponent implements OnInit {
     this.favoriteService.getByQuestionId(questionId).subscribe(isFavorited => {
       this.isFavorited = isFavorited;
     });
+  }
+
+  getCorrectQuestionIds(): Set<string> {
+    return this.mode === 1 ? new Set() : this.correctQuestionIds;
+  }
+
+  getIncorrectQuestionIds(): Set<string> {
+    return this.mode === 1 ? new Set() : this.incorrectQuestionIds;
   }
 }

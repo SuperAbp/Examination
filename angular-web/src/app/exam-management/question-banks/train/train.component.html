@@ -3,8 +3,8 @@
     <app-question-number
       [questionNumbers]="questionNumbers"
       [selectedQuestionId]="selectedQuestionId"
-      [correctQuestionIds]="correctQuestionIds"
-      [incorrectQuestionIds]="incorrectQuestionIds"
+      [correctQuestionIds]="getCorrectQuestionIds()"
+      [incorrectQuestionIds]="getIncorrectQuestionIds()"
       (questionNumberSelected)="onQuestionNumberSelected($event)"
     ></app-question-number>
   </div>
@@ -14,11 +14,11 @@
         <span style="cursor: pointer" (click)="goBack()">
           <i class="fa-solid fa-arrow-left"></i>
         </span>
-        <h2>{{ questionBank?.title }}</h2>
+        <span class="ms-3">{{ questionBank?.title }}</span>
       </div>
       <div class="card-body">
         @if (selectedQuestion) {
-          <h1>{{ selectedQuestion.content }}</h1>
+          <div class="fs-5 mb-3">{{ selectedQuestion.content }}</div>
 
           @if (selectedQuestion.questionType === 0 || selectedQuestion.questionType === 2) {
             <app-single-choice
@@ -51,9 +51,9 @@
           }
 
           @if (showAnalysis && selectedQuestion.analysis) {
-            <div class="sa-callout sa-callout-info">
-              <h5>{{ '::Analysis' | abpLocalization }}</h5>
-              <p class="mb-0">{{ selectedQuestion.analysis }}</p>
+            <div class="sa-callout">
+              <div class="mb-1">{{ '::Analysis' | abpLocalization }}</div>
+              <p style="font-size: 0.75rem">{{ selectedQuestion.analysis }}</p>
             </div>
           }
 
