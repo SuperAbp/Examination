@@ -1,1 +1,46 @@
 /* You can add global styles to this file, and also import other style files */
+
+.sa-callout {
+  --bs-link-color-rgb: var(--sa-callout-link);
+  --bs-code-color: var(--sa-callout-code-color);
+  padding: 1.25rem;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  color: var(--sa-callout-color, inherit);
+  background-color: var(--sa-callout-bg, var(--bs-gray-100));
+  border-left: 0.25rem solid var(--sa-callout-border, var(--bs-gray-300));
+}
+
+.sa-callout h4 {
+  margin-bottom: 0.25rem;
+}
+
+.sa-callout > :last-child {
+  margin-bottom: 0;
+}
+
+.sa-callout + .sa-callout {
+  margin-top: -0.25rem;
+}
+
+.sa-callout .highlight {
+  background-color: #0000000d;
+}
+
+.sa-callout-info {
+  --sa-callout-color: var(--bs-info-text-emphasis);
+  --sa-callout-bg: var(--bs-info-bg-subtle);
+  --sa-callout-border: var(--bs-info-border-subtle);
+}
+
+.sa-callout-warning {
+  --sa-callout-color: var(--bs-warning-text-emphasis);
+  --sa-callout-bg: var(--bs-warning-bg-subtle);
+  --sa-callout-border: var(--bs-warning-border-subtle);
+}
+
+.sa-callout-danger {
+  --sa-callout-color: var(--bs-danger-text-emphasis);
+  --sa-callout-bg: var(--bs-danger-bg-subtle);
+  --sa-callout-border: var(--bs-danger-border-subtle);
+}

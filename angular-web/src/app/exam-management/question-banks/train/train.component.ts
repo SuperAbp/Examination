@@ -40,8 +40,8 @@ export class QuestionBanksTrainComponent implements OnInit {
   selectedQuestion: QuestionDetailDto;
   selectedQuestionId: string;
   showAnalysis = false;
-  answerMap: Map<string, { answers: Set<string>; right: boolean }> = new Map();
-  selectedAnswerMap: Map<string, Set<string>> = new Map();
+  // 统一管理答案状态：answers-用户答案，submitted-是否已提交，right-是否正确
+  answerMap: Map<string, { answers: Set<string>; submitted: boolean; right?: boolean }> = new Map();
   allQuestionIds: string[] = [];
   isFavorited = false;
   correctQuestionIds: Set<string> = new Set();
@@ -116,7 +116,6 @@ export class QuestionBanksTrainComponent implements OnInit {
           });
         });
 
-        // 优先加载最后训练的题目，如果没有则加载第一题
         if (lastTrainedQuestionId && this.allQuestionIds.includes(lastTrainedQuestionId)) {
           this.onQuestionNumberSelected(lastTrainedQuestionId);
         } else if (questionsResult.items.length > 0) {
@@ -134,7 +133,7 @@ export class QuestionBanksTrainComponent implements OnInit {
     this.selectedQuestionId = questionId;
 
     const savedState = this.answerMap.get(questionId);
-    this.showAnalysis = !!savedState;
+    this.showAnalysis = savedState?.submitted || false;
 
     this.questionService.get(questionId).subscribe(question => {
       this.selectedQuestion = question;
@@ -148,19 +147,26 @@ export class QuestionBanksTrainComponent implements OnInit {
   }
 
   onAnswerChanged(answerId: string): void {
-    const currentAnswers = this.selectedAnswerMap.get(this.selectedQuestionId) || new Set<string>();
+    const savedState = this.answerMap.get(this.selectedQuestionId);
+    const currentAnswers = savedState?.answers || new Set<string>();
+
     if (currentAnswers.has(answerId)) {
       currentAnswers.delete(answerId);
     } else {
       currentAnswers.add(answerId);
     }
-    this.selectedAnswerMap.set(this.selectedQuestionId, currentAnswers);
+
+    this.answerMap.set(this.selectedQuestionId, {
+      answers: currentAnswers,
+      submitted: false,
+    });
   }
 
   onSubmitted(submission: AnswerSubmission): void {
     this.showAnalysis = true;
     this.answerMap.set(this.selectedQuestionId, {
       answers: submission.answers,
+      submitted: true,
       right: submission.isCorrect,
     });
 
@@ -194,29 +200,21 @@ export class QuestionBanksTrainComponent implements OnInit {
   }
 
   selectedMultipleChoiceAnswerIds(): Set<string> {
-    return this.selectedAnswerMap.get(this.selectedQuestionId) || new Set<string>();
+    const savedState = this.answerMap.get(this.selectedQuestionId);
+    return savedState?.answers || new Set<string>();
   }
 
   selectedFillBlankAnswers(): string[] {
-    // 优先返回未提交的临时答案
-    const tempAnswers = this.selectedAnswerMap.get(this.selectedQuestionId);
-    if (tempAnswers && tempAnswers.size > 0) {
-      return Array.from(tempAnswers);
-    }
-
-    // 如果没有临时答案，返回已提交的答案
-    const saved = this.answerMap.get(this.selectedQuestionId);
-    if (saved && saved.answers.size > 0) {
-      return Array.from(saved.answers);
-    }
-
-    return [];
+    const savedState = this.answerMap.get(this.selectedQuestionId);
+    return savedState?.answers ? Array.from(savedState.answers) : [];
   }
 
   onFillBlankAnswerChanged(answers: string[]): void {
     // 暂存填空题答案，但不提交
-    const answerSet = new Set(answers);
-    this.selectedAnswerMap.set(this.selectedQuestionId, answerSet);
+    this.answerMap.set(this.selectedQuestionId, {
+      answers: new Set(answers),
+      submitted: false,
+    });
   }
 
   isOptionDisabled(): boolean {

@@ -13,11 +13,11 @@
 }
 
 @if (showAnalysis) {
-  <div class="answer-box mb-3">
-    <h5 class="text-danger mb-2">{{ '::Answer' | abpLocalization }}:</h5>
-    <div class="answer-content">
+  <div class="sa-callout sa-callout-info">
+    <h5>{{ '::Answer' | abpLocalization }}</h5>
+    <div class="mb-0">
       @for (option of options; track $index) {
-        <div class="mb-1">{{ option.content }}</div>
+        <div>{{ option.content }}</div>
       }
     </div>
   </div>
