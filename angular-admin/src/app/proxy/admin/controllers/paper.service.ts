@@ -1,12 +1,13 @@
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { GetPaperForEditorOutput, GetPapersInput, PaperCreateDto, PaperListDto, PaperUpdateDto } from '../paper-management/papers/models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PaperService {
+  private restService = inject(RestService);
   apiName = 'Default';
   
 
@@ -51,6 +52,4 @@ export class PaperService {
       body: input,
     },
     { apiName: this.apiName,...config });
-
-  constructor(private restService: RestService) {}
 }

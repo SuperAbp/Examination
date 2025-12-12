@@ -24,5 +24,5 @@ public class QuestionDetailDto : EntityDto<Guid>
     public string Analysis { get; set; }
 
     public IReadOnlyList<string> KnowledgePoints { get; set; } = [];
-    public IReadOnlyList<QuestionAnswerDto> Answers { get; set; } = [];
+    public IReadOnlyList<QuestionOptionDto> Options { get; set; } = [];
 }

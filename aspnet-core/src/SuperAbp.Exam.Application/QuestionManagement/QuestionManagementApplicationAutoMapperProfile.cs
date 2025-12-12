@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.Questions;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 
 namespace SuperAbp.Exam.QuestionManagement;
 
@@ -16,6 +15,6 @@ public class QuestionManagementApplicationAutoMapperProfile : Profile
         CreateMap<Question, QuestionListDto>();
         CreateMap<Question, QuestionDetailDto>();
 
-        CreateMap<QuestionAnswer, QuestionAnswerDto>();
+        CreateMap<QuestionOption, QuestionOptionDto>();
     }
 }

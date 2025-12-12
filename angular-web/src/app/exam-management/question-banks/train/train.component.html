@@ -3,7 +3,8 @@
     <app-question-number
       [questionNumbers]="questionNumbers"
       [selectedQuestionId]="selectedQuestionId"
-      [answerMap]="submittedAnswerMap"
+      [correctQuestionIds]="correctQuestionIds"
+      [incorrectQuestionIds]="incorrectQuestionIds"
       (questionNumberSelected)="onQuestionNumberSelected($event)"
     ></app-question-number>
   </div>
@@ -13,17 +14,17 @@
         <span style="cursor: pointer" (click)="goBack()">
           <i class="fa-solid fa-arrow-left"></i>
         </span>
-        <h1>{{ questionBank?.title }}</h1>
+        <h2>{{ questionBank?.title }}</h2>
       </div>
       <div class="card-body">
         @if (selectedQuestion) {
-          <h2>{{ selectedQuestion.content }}</h2>
+          <h1>{{ selectedQuestion.content }}</h1>
 
-          @if (selectedQuestion.questionType === 0) {
+          @if (selectedQuestion.questionType === 0 || selectedQuestion.questionType === 2) {
             <app-single-choice
-              [options]="selectedQuestion.answers"
+              [options]="selectedQuestion.options"
               [selectedAnswerId]="
-                submittedAnswerMap.get(selectedQuestionId)?.answerIds.values().next().value ?? null
+                answerMap.get(selectedQuestionId)?.answerIds.values().next().value ?? null
               "
               [showAnalysis]="showAnalysis"
               [disabled]="isOptionDisabled()"
@@ -31,7 +32,7 @@
             ></app-single-choice>
           } @else if (selectedQuestion.questionType === 1) {
             <app-multiple-choice
-              [options]="selectedQuestion.answers"
+              [options]="selectedQuestion.options"
               [selectedAnswerIds]="selectedMultipleChoiceAnswerIds()"
               [showAnalysis]="showAnalysis"
               [disabled]="showAnalysis"
@@ -59,7 +60,7 @@
             </button>
             <i
               class="fs-5"
-              [class]="isFavorited() ? 'fa-solid fa-star' : 'fa-regular fa-star'"
+              [class]="isFavorited ? 'fa-solid fa-star' : 'fa-regular fa-star'"
               style="cursor: pointer"
               (click.stop)="favorite()"
             ></i>

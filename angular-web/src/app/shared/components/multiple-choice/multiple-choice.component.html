@@ -2,7 +2,7 @@
   <input
     type="checkbox"
     class="btn-check"
-    [id]="'multiple-choice-option' + option.id"
+    [id]="'option-' + option.id"
     [disabled]="disabled"
     autocomplete="off"
   />
@@ -11,7 +11,7 @@
     [class.mb-2]="$index !== options.length - 1"
     (click)="onOptionToggled(option)"
     [class.border-primary]="isSelectedOption(option)"
-    [for]="'multiple-choice-option' + option.id"
+    [for]="'option-' + option.id"
   >
     <div class="d-flex justify-content-between">
       <div>

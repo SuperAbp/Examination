@@ -8,22 +8,22 @@ export interface GetQuestionsInput {
   questionBankId?: string;
 }
 
-export interface QuestionAnswerDto extends EntityDto<string> {
-  right: boolean;
-  content: string;
-  analysis?: string;
-  sort: number;
-}
-
 export interface QuestionDetailDto extends EntityDto<string> {
   questionType: number;
   questionBankId?: string;
   content?: string;
   analysis?: string;
   knowledgePoints: string[];
-  answers: QuestionAnswerDto[];
+  options: QuestionOptionDto[];
 }
 
 export interface QuestionListDto extends EntityDto<string> {
   questionType: number;
+}
+
+export interface QuestionOptionDto extends EntityDto<string> {
+  right: boolean;
+  content: string;
+  analysis?: string;
+  sort: number;
 }

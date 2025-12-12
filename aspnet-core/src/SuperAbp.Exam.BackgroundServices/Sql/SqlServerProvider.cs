@@ -124,9 +124,9 @@ public class SqlServerProvider : ISqlProvider
         return "DELETE FROM AppExaminations WHERE TenantId = @TenantId";
     }
 
-    public string DeleteQuestionAnswers()
+    public string DeleteQuestionOptions()
     {
-        return "DELETE FROM AppQuestionAnswers WHERE TenantId = @TenantId";
+        return "DELETE FROM AppQuestionOptions WHERE TenantId = @TenantId";
     }
 
     public string DeleteQuestions()
@@ -154,9 +154,9 @@ public class SqlServerProvider : ISqlProvider
         return "INSERT INTO AppQuestions (Id, QuestionBankId, QuestionType, Content, Analysis, ExtraProperties, ConcurrencyStamp, CreationTime, TenantId) VALUES (@Id, @QuestionBankId, @QuestionType, @Content, @Analysis, '{}', REPLACE(CAST(NEWID() AS VARCHAR(36)), '-', ''), @CreationTime, @TenantId)";
     }
 
-    public string InsertQuestionAnswers()
+    public string InsertQuestionOptions()
     {
-        return "INSERT INTO AppQuestionAnswers (Id, QuestionId, Content, [Right], Sort, CreationTime, TenantId) VALUES (@Id, @QuestionId, @Content, @Right, @Sort, @CreationTime, @TenantId)";
+        return "INSERT INTO AppQuestionOptions (Id, QuestionId, Content, [Right], Sort, CreationTime, TenantId) VALUES (@Id, @QuestionId, @Content, @Right, @Sort, @CreationTime, @TenantId)";
     }
 
     public string InsertQuestionKnowledgePoints()

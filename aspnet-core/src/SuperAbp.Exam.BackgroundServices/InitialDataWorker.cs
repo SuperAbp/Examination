@@ -345,7 +345,7 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         }
         if (answerParams.Count > 0)
         {
-            await connection.ExecuteAsync(sqlProvider.InsertQuestionAnswers(), answerParams);
+            await connection.ExecuteAsync(sqlProvider.InsertQuestionOptions(), answerParams);
         }
         if (knowledgepointParams.Count > 0)
         {
@@ -366,7 +366,7 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         await connection.ExecuteAsync(sqlProvider.DeleteUserExams(), new { TenantId = tenantId });
         await connection.ExecuteAsync(sqlProvider.DeleteKnowledgePoints(), new { TenantId = tenantId });
         await connection.ExecuteAsync(sqlProvider.DeleteExaminations(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeleteQuestionAnswers(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeleteQuestionOptions(), new { TenantId = tenantId });
         await connection.ExecuteAsync(sqlProvider.DeleteQuestions(), new { TenantId = tenantId });
         await connection.ExecuteAsync(sqlProvider.DeleteQuestionKnowledgePoints(), new { TenantId = tenantId });
         await connection.ExecuteAsync(sqlProvider.DeleteQuestionBanks(), new { TenantId = tenantId });

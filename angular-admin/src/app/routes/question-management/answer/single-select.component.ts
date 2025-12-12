@@ -2,7 +2,7 @@ import { CoreModule } from '@abp/ng.core';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { QuestionService } from '@proxy/admin/controllers';
-import { QuestionAnswerDto } from '@proxy/admin/question-management/questions';
+import { QuestionOptionDto } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -14,25 +14,25 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 
 import { QuestionManagementAnswerComponent } from './answer.component';
-interface QuestionAnswerTemp extends QuestionAnswerDto {
+interface QuestionOptionTemp extends QuestionOptionDto {
   id?: string;
 }
 
 @Component({
-    selector: 'single-select',
-    templateUrl: './single-select.component.html',
-    imports: [
-        CoreModule,
-        NzButtonModule,
-        NzTableModule,
-        NzFormModule,
-        NzRadioModule,
-        NzInputModule,
-        NzInputNumberLegacyModule,
-        NzPopconfirmModule,
-        NzTooltipModule,
-        NzIconModule
-    ]
+  selector: 'single-select',
+  templateUrl: './single-select.component.html',
+  imports: [
+    CoreModule,
+    NzButtonModule,
+    NzTableModule,
+    NzFormModule,
+    NzRadioModule,
+    NzInputModule,
+    NzInputNumberLegacyModule,
+    NzPopconfirmModule,
+    NzTooltipModule,
+    NzIconModule
+  ]
 })
 export class SingleSelectComponent extends QuestionManagementAnswerComponent {
   constructor(

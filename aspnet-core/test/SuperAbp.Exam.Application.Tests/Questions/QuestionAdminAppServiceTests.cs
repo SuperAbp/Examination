@@ -1,7 +1,6 @@
 ﻿using Shouldly;
 using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using SuperAbp.Exam.QuestionManagement.Questions;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;

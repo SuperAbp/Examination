@@ -3,7 +3,7 @@
     type="radio"
     class="btn-check"
     name="single-choice-option"
-    [id]="'single-choice-option' + option.id"
+    [id]="'option-' + option.id"
     [disabled]="disabled"
     autocomplete="off"
   />
@@ -12,7 +12,7 @@
     [class.mb-2]="$index !== options.length - 1"
     (click)="onOptionSelected(option)"
     [class.border-primary]="isSelectedOption(option)"
-    [for]="'single-choice-option' + option.id"
+    [for]="'option-' + option.id"
   >
     <div class="d-flex justify-content-between">
       <div>

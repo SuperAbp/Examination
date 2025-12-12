@@ -1,9 +1,9 @@
 ﻿using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.QuestionManagement.Questions;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 using AutoMapper;
 using Volo.Abp.AutoMapper;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 
 namespace SuperAbp.Exam.ExamManagement
 {
@@ -41,7 +41,7 @@ namespace SuperAbp.Exam.ExamManagement
             CreateMap<Question, UserExamDetailDto.SectionDto.QuestionDto>()
                 .Ignore(s => s.Right)
                 .Ignore(s => s.Options);
-            CreateMap<QuestionAnswer, UserExamDetailDto.SectionDto.QuestionDto.OptionDto>();
+            CreateMap<QuestionOption, UserExamDetailDto.SectionDto.QuestionDto.OptionDto>();
 
             #endregion 用户考试
         }

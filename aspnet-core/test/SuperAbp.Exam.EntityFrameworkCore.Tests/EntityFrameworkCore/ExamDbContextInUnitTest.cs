@@ -11,11 +11,11 @@ using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.PaperQuestions;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.PaperManagement.PaperSections;
-using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
+using SuperAbp.Exam.QuestionManagement.QuestionOptions;
 using SuperAbp.Exam.QuestionManagement.Questions;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 using SuperAbp.Exam.TrainingManagement;
 using SuperAbp.MenuManagement.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -49,7 +49,7 @@ public class ExamDbContextInUnitTest : AbpDbContext<ExamDbContextInUnitTest>, IE
     public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
     public DbSet<Question> Questions { get; set; }
     public DbSet<KnowledgePoint> KnowledgePoints { get; set; }
-    public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
+    public DbSet<QuestionOption> QuestionOptions { get; set; }
     public DbSet<QuestionBank> QuestionBanks { get; set; }
     public DbSet<Paper> Papers { get; set; }
     public DbSet<QuestionKnowledgePoint> QuestionKnowledgePoints { get; set; }
@@ -102,14 +102,14 @@ public class ExamDbContextInUnitTest : AbpDbContext<ExamDbContextInUnitTest>, IE
             b.Property(p => p.Name).IsRequired().HasMaxLength(KnowledgePointConsts.MaxNameLength);
         });
 
-        builder.Entity<QuestionAnswer>(b =>
+        builder.Entity<QuestionOption>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "QuestionAnswers", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "QuestionOptions", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
 
-            b.Property(p => p.Content).IsRequired().HasMaxLength(QuestionAnswerConsts.MaxContentLength);
-            b.Property(p => p.Analysis).HasMaxLength(QuestionAnswerConsts.MaxAnalysisLength);
+            b.Property(p => p.Content).IsRequired().HasMaxLength(QuestionOptionConsts.MaxContentLength);
+            b.Property(p => p.Analysis).HasMaxLength(QuestionOptionConsts.MaxAnalysisLength);
             b.Property(p => p.Sort).IsRequired().HasDefaultValue(0);
         });
 

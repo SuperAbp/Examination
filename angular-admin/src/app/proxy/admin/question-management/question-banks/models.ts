@@ -18,7 +18,7 @@ export interface QuestionBankCreateDto extends QuestionBankCreateOrUpdateDtoBase
 }
 
 export interface QuestionBankCreateOrUpdateDtoBase {
-  title?: string;
+  title: string;
   remark?: string;
 }
 

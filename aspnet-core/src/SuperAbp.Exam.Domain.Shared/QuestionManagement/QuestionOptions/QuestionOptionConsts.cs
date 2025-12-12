@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SuperAbp.Exam.QuestionManagement.QuestionAnswers;
+namespace SuperAbp.Exam.QuestionManagement.QuestionOptions;
 
-public class QuestionAnswerConsts
+public class QuestionOptionConsts
 {
     public const string DefaultSorting = "Sort DESC";
 

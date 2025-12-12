@@ -6,9 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.Permissions;
-using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 using Volo.Abp;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 {
@@ -47,7 +46,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             foreach (QuestionWithDetails question in questions)
             {
                 var dto = ObjectMapper.Map<QuestionWithDetails, QuestionDetailDto>(question);
-                dto.Answers = ObjectMapper.Map<List<QuestionAnswer>, List<QuestionAnswerDto>>(question.Answers);
+                dto.Options = ObjectMapper.Map<List<QuestionOption>, List<QuestionOptionDto>>(question.Options);
                 dtos.Add(dto);
             }
             return dtos;
@@ -57,7 +56,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         {
             Question question = await questionRepository.GetAsync(id);
             var dto = ObjectMapper.Map<Question, GetQuestionForEditorOutput>(question);
-            dto.Answers = ObjectMapper.Map<List<QuestionAnswer>, List<QuestionAnswerDto>>(question.Answers);
+            dto.Answers = ObjectMapper.Map<List<QuestionOption>, List<QuestionOptionDto>>(question.Options);
             List<Guid> points = await questionManager.GetKnowledgePointIdsAsync(id);
             if (points.Count > 0)
             {

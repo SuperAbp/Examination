@@ -3,7 +3,7 @@ using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
 
-public class QuestionAnswerDto : EntityDto<Guid>
+public class QuestionOptionDto : EntityDto<Guid>
 {
     public bool Right { get; set; }
 

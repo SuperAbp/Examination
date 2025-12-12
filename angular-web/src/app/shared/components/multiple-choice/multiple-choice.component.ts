@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CoreModule } from '@abp/ng.core';
-import { QuestionAnswerDto } from '@proxy/question-management/questions';
+import { QuestionOptionDto } from '@proxy/question-management/questions';
 import { AnswerSubmission } from '@shared/components/choice-answer';
 import { CharPipe } from '@shared/pipes/char/char.pipe';
 
@@ -12,7 +12,7 @@ import { CharPipe } from '@shared/pipes/char/char.pipe';
   imports: [CommonModule, CoreModule, CharPipe],
 })
 export class MultipleChoiceComponent {
-  @Input() options: QuestionAnswerDto[] = [];
+  @Input() options: QuestionOptionDto[] = [];
   @Input() selectedAnswerIds: Set<string> = new Set();
   @Input() showAnalysis = false;
   @Input() disabled = false;
@@ -20,11 +20,11 @@ export class MultipleChoiceComponent {
   @Output() submitted = new EventEmitter<AnswerSubmission>();
   @Output() answerChanged = new EventEmitter<string>();
 
-  onOptionToggled(option: QuestionAnswerDto): void {
+  onOptionToggled(option: QuestionOptionDto): void {
     this.answerChanged.emit(option.id);
   }
 
-  isSelectedOption(option: QuestionAnswerDto): boolean {
+  isSelectedOption(option: QuestionOptionDto): boolean {
     return this.selectedAnswerIds.has(option.id);
   }
 

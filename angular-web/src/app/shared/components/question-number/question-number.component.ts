@@ -11,7 +11,8 @@ import { CoreModule } from '@abp/ng.core';
 export class QuestionNumberComponent {
   @Input() questionNumbers: QuestionNumber[] = [];
   @Input() selectedQuestionId: string;
-  @Input() answerMap: Map<string, { answerId: string; right: boolean }> = new Map();
+  @Input() correctQuestionIds: Set<string> = new Set();
+  @Input() incorrectQuestionIds: Set<string> = new Set();
   @Output() questionNumberSelected = new EventEmitter<string>();
 
   showQuestion(id: string) {
@@ -22,13 +23,10 @@ export class QuestionNumberComponent {
     let className = 'bs-tag';
     if (this.selectedQuestionId === id) {
       className += ' bs-tag-warning';
-    }
-    // 根据答案状态添加正确或错误的class
-    if (this.answerMap.has(id)) {
-      const answerState = this.answerMap.get(id);
-      if (answerState.right) {
+    } else {
+      if (this.correctQuestionIds.has(id)) {
         className += ' bs-tag-success';
-      } else {
+      } else if (this.incorrectQuestionIds.has(id)) {
         className += ' bs-tag-danger';
       }
     }

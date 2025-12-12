@@ -1,5 +1,5 @@
 ﻿using SuperAbp.Exam.QuestionManagement.Questions;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 using System;
 using System.Collections.Generic;
 
@@ -53,6 +53,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public Question Question { get; set; }
 
-        public List<QuestionAnswer> QuestionAnswers { get; set; } = [];
+        public List<QuestionOption> QuestionOptions { get; set; } = [];
     }
 }

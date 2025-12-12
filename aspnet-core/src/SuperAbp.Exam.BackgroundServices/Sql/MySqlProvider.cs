@@ -124,9 +124,9 @@ public class MySqlProvider : ISqlProvider
         return "DELETE FROM AppExaminations WHERE TenantId = @TenantId";
     }
 
-    public string DeleteQuestionAnswers()
+    public string DeleteQuestionOptions()
     {
-        return "DELETE FROM AppQuestionAnswers WHERE TenantId = @TenantId";
+        return "DELETE FROM AppQuestionOptions WHERE TenantId = @TenantId";
     }
 
     public string DeleteQuestions()
@@ -154,7 +154,7 @@ public class MySqlProvider : ISqlProvider
         return "INSERT INTO AppQuestions (Id, QuestionBankId, QuestionType, Content, Analysis, ExtraProperties, ConcurrencyStamp, CreationTime, TenantId) VALUES (@Id, @QuestionBankId, @QuestionType, @Content, @Analysis, '{}', REPLACE(UUID(), '-', ''), @CreationTime, @TenantId)";
     }
 
-    public string InsertQuestionAnswers()
+    public string InsertQuestionOptions()
     {
         return "INSERT INTO AppQuestionAnswers (Id, QuestionId, Content, `Right`, Sort, CreationTime, TenantId) VALUES (@Id, @QuestionId, @Content, @Right, @Sort, @CreationTime, @TenantId)";
     }

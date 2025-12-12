@@ -114,7 +114,7 @@ public interface ISqlProvider
     /// <summary>
     /// 删除问题答案
     /// </summary>
-    string DeleteQuestionAnswers();
+    string DeleteQuestionOptions();
 
     /// <summary>
     /// 删除问题
@@ -144,7 +144,7 @@ public interface ISqlProvider
     /// <summary>
     /// 插入问题答案
     /// </summary>
-    string InsertQuestionAnswers();
+    string InsertQuestionOptions();
 
     /// <summary>
     /// 插入问题知识点关系

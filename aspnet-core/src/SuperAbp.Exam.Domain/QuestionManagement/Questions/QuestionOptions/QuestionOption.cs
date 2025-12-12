@@ -3,18 +3,18 @@ using System.Diagnostics.CodeAnalysis;
 using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp.MultiTenancy;
 
-namespace SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+namespace SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 
 /// <summary>
 /// 答案
 /// </summary>
-public class QuestionAnswer : FullAuditedEntity<Guid>, IMultiTenant
+public class QuestionOption : FullAuditedEntity<Guid>, IMultiTenant
 {
-    protected QuestionAnswer()
+    protected QuestionOption()
     { Content = string.Empty; }
 
     [SetsRequiredMembers]
-    protected internal QuestionAnswer(Guid id, Guid questionId, string content, bool right, int sort = 0, string? analysis = null) : base(id)
+    protected internal QuestionOption(Guid id, Guid questionId, string content, bool right, int sort = 0, string? analysis = null) : base(id)
     {
         Right = right;
         Content = content;

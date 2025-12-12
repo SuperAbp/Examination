@@ -14,9 +14,9 @@ public static class ExamDomainErrorCodes
         public const string TitleAlreadyExists = "Exam:QuestionBank:0001";
     }
 
-    public static class QuestionAnswers
+    public static class QuestionOptions
     {
-        public const string ContentAlreadyExists = "Exam:QuestionAnswer:0001";
+        public const string ContentAlreadyExists = "Exam:QuestionOption:0001";
     }
 
     public static class Papers

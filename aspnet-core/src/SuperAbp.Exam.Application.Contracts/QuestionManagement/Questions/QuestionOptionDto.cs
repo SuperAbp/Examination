@@ -6,7 +6,7 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
     /// <summary>
     /// 列表
     /// </summary>
-    public class QuestionAnswerDto : EntityDto<Guid>
+    public class QuestionOptionDto : EntityDto<Guid>
     {
         /// <summary>
         /// 是否正确

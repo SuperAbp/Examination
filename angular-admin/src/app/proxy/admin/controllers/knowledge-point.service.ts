@@ -1,12 +1,13 @@
 import { RestService, Rest } from '@abp/ng.core';
 import type { ListResultDto } from '@abp/ng.core';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { GetKnowledgePointForEditorOutput, GetKnowledgePointsInput, KnowledgePointCreateDto, KnowledgePointNodeDto, KnowledgePointUpdateDto } from '../knowledge-points/models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class KnowledgePointService {
+  private restService = inject(RestService);
   apiName = 'Default';
   
 
@@ -52,6 +53,4 @@ export class KnowledgePointService {
       body: input,
     },
     { apiName: this.apiName,...config });
-
-  constructor(private restService: RestService) {}
 }

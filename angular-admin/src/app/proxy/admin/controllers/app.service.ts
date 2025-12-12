@@ -1,11 +1,12 @@
 import { RestService, Rest } from '@abp/ng.core';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { IActionResult } from '../../microsoft/asp-net-core/mvc/models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppService {
+  private restService = inject(RestService);
   apiName = 'Default';
   
 
@@ -15,6 +16,4 @@ export class AppService {
       url: '/api/app/data',
     },
     { apiName: this.apiName,...config });
-
-  constructor(private restService: RestService) {}
 }

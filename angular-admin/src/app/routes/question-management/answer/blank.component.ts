@@ -2,7 +2,7 @@ import { CoreModule } from '@abp/ng.core';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { QuestionService } from '@proxy/admin/controllers';
-import { QuestionAnswerDto } from '@proxy/admin/question-management/questions';
+import { QuestionOptionDto } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -14,24 +14,24 @@ import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 
 import { QuestionManagementAnswerComponent } from './answer.component';
 
-interface QuestionAnswerTemp extends QuestionAnswerDto {
+interface QuestionOptionTemp extends QuestionOptionDto {
   id?: string;
 }
 
 @Component({
-    selector: 'blank',
-    templateUrl: './blank.component.html',
-    imports: [
-        CoreModule,
-        NzButtonModule,
-        NzTableModule,
-        NzFormModule,
-        NzInputModule,
-        NzInputNumberLegacyModule,
-        NzPopconfirmModule,
-        NzTooltipModule,
-        NzIconModule
-    ]
+  selector: 'blank',
+  templateUrl: './blank.component.html',
+  imports: [
+    CoreModule,
+    NzButtonModule,
+    NzTableModule,
+    NzFormModule,
+    NzInputModule,
+    NzInputNumberLegacyModule,
+    NzPopconfirmModule,
+    NzTooltipModule,
+    NzIconModule
+  ]
 })
 export class BlankComponent extends QuestionManagementAnswerComponent {
   constructor(
@@ -41,7 +41,7 @@ export class BlankComponent extends QuestionManagementAnswerComponent {
     super(fb, questionService);
   }
 
-  override createAttribute(item: QuestionAnswerTemp) {
+  override createAttribute(item: QuestionOptionTemp) {
     return this.fb.group({
       id: [item.id || null],
       right: [true],

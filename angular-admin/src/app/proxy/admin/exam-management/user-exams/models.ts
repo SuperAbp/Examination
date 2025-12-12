@@ -1,12 +1,12 @@
 import type { PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
 export interface GetUserExamWithUsersInput extends PagedAndSortedResultRequestDto {
-  examId?: string;
+  examId: string;
 }
 
 export interface GetUserExamsInput extends PagedAndSortedResultRequestDto {
-  examId?: string;
-  userId?: string;
+  examId: string;
+  userId: string;
 }
 
 export interface ReviewedQuestionDto {
@@ -19,8 +19,8 @@ export interface ReviewedQuestionDto {
 export interface UserExamDetailDto {
   userId?: string;
   examId?: string;
-  examName?: string;
-  userName?: string;
+  examName: string;
+  userName: string;
   status: number;
   sections: UserExamDetailDto_SectionDto[];
 }
@@ -36,7 +36,7 @@ export interface UserExamDetailDto_SectionDto {
 
 export interface UserExamDetailDto_SectionDto_QuestionDto {
   id?: string;
-  content?: string;
+  content: string;
   questionType: number;
   analysis?: string;
   answers?: string;
@@ -50,7 +50,7 @@ export interface UserExamDetailDto_SectionDto_QuestionDto {
 
 export interface UserExamDetailDto_SectionDto_QuestionDto_OptionDto {
   id?: string;
-  content?: string;
+  content: string;
   right?: boolean;
 }
 
@@ -64,7 +64,7 @@ export interface UserExamListDto {
 
 export interface UserExamWithUserDto {
   userId?: string;
-  user?: string;
+  user: string;
   totalCount: number;
   maxScore: number;
 }
