@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Volo.Abp.Application.Services;
 
-namespace SuperAbp.Exam.Admin.Options;
+namespace SuperAbp.Exam.Options;
 
 public interface IOptionAppService : IApplicationService
 {

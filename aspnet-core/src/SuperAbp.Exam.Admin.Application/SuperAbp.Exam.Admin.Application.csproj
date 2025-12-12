@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SuperAbp.Exam.Admin.Application.Contracts\SuperAbp.Exam.Admin.Application.Contracts.csproj" />
+    <ProjectReference Include="..\SuperAbp.Exam.Application.Shared\SuperAbp.Exam.Application.Shared.csproj" />
     <ProjectReference Include="..\SuperAbp.Exam.Domain\SuperAbp.Exam.Domain.csproj" />
   </ItemGroup>
 

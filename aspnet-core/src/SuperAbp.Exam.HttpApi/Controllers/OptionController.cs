@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SuperAbp.Exam.Options;
 
-namespace SuperAbp.Exam.Admin.Controllers;
+namespace SuperAbp.Exam.Controllers;
 
 /// <summary>
 /// 选项

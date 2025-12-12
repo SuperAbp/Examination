@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using SuperAbp.Exam.Admin.Options;
 using Shouldly;
 using Volo.Abp.Modularity;
 using Xunit;
+using SuperAbp.Exam.Options;
 
 namespace SuperAbp.Exam;
 

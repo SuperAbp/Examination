@@ -1078,6 +1078,47 @@
             }
           }
         },
+        "SuperAbp.Exam.Controllers.OptionController": {
+          "controllerName": "Option",
+          "controllerGroupName": "Option",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "SuperAbp.Exam.Controllers.OptionController",
+          "interfaces": [
+            {
+              "type": "SuperAbp.Exam.Options.IOptionAppService",
+              "name": "IOptionAppService",
+              "methods": [
+                {
+                  "name": "GetQuestionTypes",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                    "typeSimple": "{number:string}"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetQuestionTypes": {
+              "uniqueName": "GetQuestionTypes",
+              "name": "GetQuestionTypes",
+              "httpMethod": "GET",
+              "url": "api/options/question-types",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                "typeSimple": "{number:string}"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Options.IOptionAppService"
+            }
+          }
+        },
         "SuperAbp.Exam.Controllers.QuestionBankController": {
           "controllerName": "QuestionBank",
           "controllerGroupName": "QuestionBank",
@@ -4859,7 +4900,7 @@
           "regex": null
         },
         {
-          "name": "Answers",
+          "name": "Options",
           "jsonName": null,
           "type": "[SuperAbp.Exam.QuestionManagement.Questions.QuestionOptionDto]",
           "typeSimple": "[SuperAbp.Exam.QuestionManagement.Questions.QuestionOptionDto]",

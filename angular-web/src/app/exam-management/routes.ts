@@ -4,6 +4,7 @@ import { ExamsComponent } from './exams/exams.component';
 import { QuestionBanksComponent } from './question-banks/question-banks.component';
 import { QuestionBanksDetailComponent } from './question-banks/detail/detail.component';
 import { QuestionBanksTrainComponent } from './question-banks/train/train.component';
+import { MyFavoriteComponent } from './my/my-favorite/my-favorite.component';
 
 export const routes: Routes = [
   {
@@ -29,6 +30,16 @@ export const routes: Routes = [
     data: {
       requiredPolicy: 'Exam.QuestionBanks',
     },
+  },
+  {
+    path: 'my',
+    children: [
+      {
+        path: 'favorites',
+        component: MyFavoriteComponent,
+        canActivate: [authGuard],
+      },
+    ],
   },
   {
     path: 'exams',

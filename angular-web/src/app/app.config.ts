@@ -2,7 +2,7 @@ import { provideAbpCore, withOptions } from '@abp/ng.core';
 import { provideAbpOAuth } from '@abp/ng.oauth';
 import { provideAbpThemeShared } from '@abp/ng.theme.shared';
 import { provideAccountConfig } from '@abp/ng.account/config';
-import { registerLocale } from '@abp/ng.core/locale';
+import { registerLocaleForEsBuild } from '@abp/ng.core/locale';
 import { provideThemeBasicConfig } from '@abp/ng.theme.basic';
 import { ApplicationConfig } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -19,8 +19,8 @@ export const appConfig: ApplicationConfig = {
     provideAbpCore(
       withOptions({
         environment,
-        registerLocaleFn: registerLocale(),
-      })
+        registerLocaleFn: registerLocaleForEsBuild(),
+      }),
     ),
     provideAbpOAuth(),
     provideAccountConfig(),

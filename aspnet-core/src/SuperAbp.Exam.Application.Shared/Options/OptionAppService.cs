@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SuperAbp.Exam.Admin.Options;
+namespace SuperAbp.Exam.Options;
 
-public class OptionAppService : ExamAppService, IOptionAppService
+public class OptionAppService : ExamAppServiceBase, IOptionAppService
 {
     public Dictionary<int, string> GetQuestionTypes()
     {

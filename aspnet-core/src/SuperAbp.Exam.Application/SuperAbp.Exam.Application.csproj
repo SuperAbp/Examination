@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SuperAbp.Exam.Application.Shared\SuperAbp.Exam.Application.Shared.csproj" />
     <ProjectReference Include="..\SuperAbp.Exam.Domain\SuperAbp.Exam.Domain.csproj" />
     <ProjectReference Include="..\SuperAbp.Exam.Application.Contracts\SuperAbp.Exam.Application.Contracts.csproj" />
   </ItemGroup>

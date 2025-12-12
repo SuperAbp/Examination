@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SuperAbp.Exam.Localization;
-using Volo.Abp.Application.Services;
-
-namespace SuperAbp.Exam.Admin;
+﻿namespace SuperAbp.Exam.Admin;
 
 /* Inherit your application services from this class.
  */
 
-public abstract class ExamAppService : ApplicationService
+public abstract class ExamAppService : ExamAppServiceBase
 {
-    protected ExamAppService()
-    {
-        LocalizationResource = typeof(ExamResource);
-    }
 }
