@@ -33,7 +33,7 @@ export class MultipleChoiceComponent {
     const isCorrect = this.isAnswerCorrect(this.selectedAnswerIds, rightAnswerIds);
 
     this.submitted.emit({
-      answerIds: this.selectedAnswerIds,
+      answers: this.selectedAnswerIds,
       isCorrect: isCorrect,
     });
   }

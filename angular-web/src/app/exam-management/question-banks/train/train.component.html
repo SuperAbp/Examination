@@ -24,7 +24,7 @@
             <app-single-choice
               [options]="selectedQuestion.options"
               [selectedAnswerId]="
-                answerMap.get(selectedQuestionId)?.answerIds.values().next().value ?? null
+                answerMap.get(selectedQuestionId)?.answers.values().next().value ?? null
               "
               [showAnalysis]="showAnalysis"
               [disabled]="isOptionDisabled()"
@@ -39,6 +39,15 @@
               (answerChanged)="onAnswerChanged($event)"
               (submitted)="onSubmitted($event)"
             ></app-multiple-choice>
+          } @else if (selectedQuestion.questionType === 3) {
+            <app-fill-blank
+              [options]="selectedQuestion.options"
+              [selectedAnswers]="selectedFillBlankAnswers()"
+              [showAnalysis]="showAnalysis"
+              [disabled]="showAnalysis"
+              (answerChanged)="onFillBlankAnswerChanged($event)"
+              (submitted)="onSubmitted($event)"
+            ></app-fill-blank>
           }
 
           @if (showAnalysis && selectedQuestion.analysis) {

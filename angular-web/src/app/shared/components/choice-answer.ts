@@ -1,4 +1,4 @@
 export interface AnswerSubmission {
-  answerIds: Set<string>;
+  answers: Set<string>;
   isCorrect: boolean;
 }

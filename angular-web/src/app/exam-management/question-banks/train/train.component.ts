@@ -14,6 +14,7 @@ import { QuestionNumber } from '@shared/components/question-number/question-numb
 import { QuestionNumberComponent } from '@shared/components/question-number/question-number.component';
 import { SingleChoiceComponent } from '@shared/components/single-choice/single-choice.component';
 import { MultipleChoiceComponent } from '@shared/components/multiple-choice/multiple-choice.component';
+import { FillBlankComponent } from '@shared/components/fill-blank/fill-blank.component';
 import { AnswerSubmission } from '@shared/components/choice-answer';
 import { forkJoin } from 'rxjs';
 
@@ -21,7 +22,13 @@ import { forkJoin } from 'rxjs';
   selector: 'app-question-banks-train',
   templateUrl: './train.component.html',
   styleUrls: ['./train.component.scss'],
-  imports: [CoreModule, QuestionNumberComponent, SingleChoiceComponent, MultipleChoiceComponent],
+  imports: [
+    CoreModule,
+    QuestionNumberComponent,
+    SingleChoiceComponent,
+    MultipleChoiceComponent,
+    FillBlankComponent,
+  ],
 })
 export class QuestionBanksTrainComponent implements OnInit {
   mode: number;
@@ -33,7 +40,7 @@ export class QuestionBanksTrainComponent implements OnInit {
   selectedQuestion: QuestionDetailDto;
   selectedQuestionId: string;
   showAnalysis = false;
-  answerMap: Map<string, { answerIds: Set<string>; right: boolean }> = new Map();
+  answerMap: Map<string, { answers: Set<string>; right: boolean }> = new Map();
   selectedAnswerMap: Map<string, Set<string>> = new Map();
   allQuestionIds: string[] = [];
   isFavorited = false;
@@ -153,7 +160,7 @@ export class QuestionBanksTrainComponent implements OnInit {
   onSubmitted(submission: AnswerSubmission): void {
     this.showAnalysis = true;
     this.answerMap.set(this.selectedQuestionId, {
-      answerIds: submission.answerIds,
+      answers: submission.answers,
       right: submission.isCorrect,
     });
 
@@ -189,6 +196,29 @@ export class QuestionBanksTrainComponent implements OnInit {
   selectedMultipleChoiceAnswerIds(): Set<string> {
     return this.selectedAnswerMap.get(this.selectedQuestionId) || new Set<string>();
   }
+
+  selectedFillBlankAnswers(): string[] {
+    // 优先返回未提交的临时答案
+    const tempAnswers = this.selectedAnswerMap.get(this.selectedQuestionId);
+    if (tempAnswers && tempAnswers.size > 0) {
+      return Array.from(tempAnswers);
+    }
+
+    // 如果没有临时答案，返回已提交的答案
+    const saved = this.answerMap.get(this.selectedQuestionId);
+    if (saved && saved.answers.size > 0) {
+      return Array.from(saved.answers);
+    }
+
+    return [];
+  }
+
+  onFillBlankAnswerChanged(answers: string[]): void {
+    // 暂存填空题答案，但不提交
+    const answerSet = new Set(answers);
+    this.selectedAnswerMap.set(this.selectedQuestionId, answerSet);
+  }
+
   isOptionDisabled(): boolean {
     return this.showAnalysis;
   }

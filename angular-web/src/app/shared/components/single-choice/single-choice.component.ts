@@ -21,7 +21,7 @@ export class SingleChoiceComponent {
   onOptionSelected(option: QuestionOptionDto): void {
     if (!this.disabled) {
       this.submitted.emit({
-        answerIds: new Set([option.id]),
+        answers: new Set([option.id]),
         isCorrect: option.right,
       });
     }

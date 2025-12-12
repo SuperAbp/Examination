@@ -1,0 +1,35 @@
+@for (option of options; track $index) {
+  <div class="mb-3">
+    <input
+      type="text"
+      class="form-control"
+      [id]="'blank-' + $index"
+      [(ngModel)]="answers[$index]"
+      [disabled]="disabled"
+      (ngModelChange)="onAnswerChange()"
+      [placeholder]="'::Answer' | abpLocalization"
+    />
+  </div>
+}
+
+@if (showAnalysis) {
+  <div class="answer-box mb-3">
+    <h5 class="text-danger mb-2">{{ '::Answer' | abpLocalization }}:</h5>
+    <div class="answer-content">
+      @for (option of options; track $index) {
+        <div class="mb-1">{{ option.content }}</div>
+      }
+    </div>
+  </div>
+}
+
+<div class="mt-3">
+  <button
+    type="button"
+    class="btn btn-primary w-100"
+    [disabled]="isSubmitDisabled()"
+    (click)="onSubmit()"
+  >
+    {{ '::Submit' | abpLocalization }}
+  </button>
+</div>
