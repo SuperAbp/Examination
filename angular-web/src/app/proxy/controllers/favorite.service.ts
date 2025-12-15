@@ -14,7 +14,7 @@ export class FavoriteService {
   create = (questionId: string, config?: Partial<Rest.Config>) =>
     this.restService.request<any, void>({
       method: 'POST',
-      url: '/api/favorite',
+      url: '/api/favorites',
       params: { questionId },
     },
     { apiName: this.apiName,...config });
@@ -23,7 +23,7 @@ export class FavoriteService {
   delete = (questionId: string, config?: Partial<Rest.Config>) =>
     this.restService.request<any, void>({
       method: 'DELETE',
-      url: '/api/favorite',
+      url: '/api/favorites',
       params: { questionId },
     },
     { apiName: this.apiName,...config });
@@ -32,7 +32,7 @@ export class FavoriteService {
   getByQuestionId = (questionId: string, config?: Partial<Rest.Config>) =>
     this.restService.request<any, boolean>({
       method: 'GET',
-      url: `/api/favorite/question/${questionId}`,
+      url: `/api/favorites/question/${questionId}`,
     },
     { apiName: this.apiName,...config });
   
@@ -40,7 +40,7 @@ export class FavoriteService {
   getCount = (config?: Partial<Rest.Config>) =>
     this.restService.request<any, number>({
       method: 'GET',
-      url: '/api/favorite/count',
+      url: '/api/favorites/count',
     },
     { apiName: this.apiName,...config });
   
@@ -48,7 +48,7 @@ export class FavoriteService {
   getList = (input: GetFavoritesInput, config?: Partial<Rest.Config>) =>
     this.restService.request<any, PagedResultDto<FavoriteListDto>>({
       method: 'GET',
-      url: '/api/favorite',
+      url: '/api/favorites',
       params: { questionType: input.questionType, questionContent: input.questionContent, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName,...config });

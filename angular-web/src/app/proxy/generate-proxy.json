@@ -869,7 +869,7 @@
               "uniqueName": "GetListAsyncByInput",
               "name": "GetListAsync",
               "httpMethod": "GET",
-              "url": "api/favorite",
+              "url": "api/favorites",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -954,7 +954,7 @@
               "uniqueName": "GetCountAsync",
               "name": "GetCountAsync",
               "httpMethod": "GET",
-              "url": "api/favorite/count",
+              "url": "api/favorites/count",
               "supportedVersions": [],
               "parametersOnMethod": [],
               "parameters": [],
@@ -969,7 +969,7 @@
               "uniqueName": "GetByQuestionIdAsyncByQuestionId",
               "name": "GetByQuestionIdAsync",
               "httpMethod": "GET",
-              "url": "api/favorite/question/{questionId}",
+              "url": "api/favorites/question/{questionId}",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -1006,7 +1006,7 @@
               "uniqueName": "CreateAsyncByQuestionId",
               "name": "CreateAsync",
               "httpMethod": "POST",
-              "url": "api/favorite",
+              "url": "api/favorites",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -1043,7 +1043,7 @@
               "uniqueName": "DeleteAsyncByQuestionId",
               "name": "DeleteAsync",
               "httpMethod": "DELETE",
-              "url": "api/favorite",
+              "url": "api/favorites",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -1075,6 +1075,138 @@
               },
               "allowAnonymous": null,
               "implementFrom": "SuperAbp.Exam.Favorites.IFavoriteAppService"
+            }
+          }
+        },
+        "SuperAbp.Exam.Controllers.MistakesReviewController": {
+          "controllerName": "MistakesReview",
+          "controllerGroupName": "MistakesReview",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "SuperAbp.Exam.Controllers.MistakesReviewController",
+          "interfaces": [
+            {
+              "type": "SuperAbp.Exam.MistakesReviews.IMistakesReviewAppService",
+              "name": "IMistakesReviewAppService",
+              "methods": [
+                {
+                  "name": "GetListAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput, SuperAbp.Exam.Application.Contracts",
+                      "type": "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput",
+                      "typeSimple": "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakesReviews.MistakesReviewListDto>",
+                    "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakesReviews.MistakesReviewListDto>"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetListAsyncByInput": {
+              "uniqueName": "GetListAsyncByInput",
+              "name": "GetListAsync",
+              "httpMethod": "GET",
+              "url": "api/mistakes-reviews",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput, SuperAbp.Exam.Application.Contracts",
+                  "type": "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput",
+                  "typeSimple": "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "QuestionType",
+                  "jsonName": null,
+                  "type": "System.Int32?",
+                  "typeSimple": "number?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "QuestionContent",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "ErrorCount",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "Sorting",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "SkipCount",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "MaxResultCount",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakesReviews.MistakesReviewListDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakesReviews.MistakesReviewListDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.MistakesReviews.IMistakesReviewAppService"
             }
           }
         },
@@ -1686,43 +1818,6 @@
             }
           ],
           "actions": {
-            "CreateAsyncByInput": {
-              "uniqueName": "CreateAsyncByInput",
-              "name": "CreateAsync",
-              "httpMethod": "POST",
-              "url": "api/training",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "input",
-                  "typeAsString": "SuperAbp.Exam.TrainingManagement.TrainingCreateDto, SuperAbp.Exam.Application.Contracts",
-                  "type": "SuperAbp.Exam.TrainingManagement.TrainingCreateDto",
-                  "typeSimple": "SuperAbp.Exam.TrainingManagement.TrainingCreateDto",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "input",
-                  "name": "input",
-                  "jsonName": null,
-                  "type": "SuperAbp.Exam.TrainingManagement.TrainingCreateDto",
-                  "typeSimple": "SuperAbp.Exam.TrainingManagement.TrainingCreateDto",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "Body",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "SuperAbp.Exam.TrainingManagement.TrainingListDto",
-                "typeSimple": "SuperAbp.Exam.TrainingManagement.TrainingListDto"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.TrainingManagement.ITrainingAppService"
-            },
             "GetListAsyncByInput": {
               "uniqueName": "GetListAsyncByInput",
               "name": "GetListAsync",
@@ -1768,6 +1863,43 @@
               "returnValue": {
                 "type": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.TrainingManagement.TrainingListDto>",
                 "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.TrainingManagement.TrainingListDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.TrainingManagement.ITrainingAppService"
+            },
+            "CreateAsyncByInput": {
+              "uniqueName": "CreateAsyncByInput",
+              "name": "CreateAsync",
+              "httpMethod": "POST",
+              "url": "api/training",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "SuperAbp.Exam.TrainingManagement.TrainingCreateDto, SuperAbp.Exam.Application.Contracts",
+                  "type": "SuperAbp.Exam.TrainingManagement.TrainingCreateDto",
+                  "typeSimple": "SuperAbp.Exam.TrainingManagement.TrainingCreateDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "SuperAbp.Exam.TrainingManagement.TrainingCreateDto",
+                  "typeSimple": "SuperAbp.Exam.TrainingManagement.TrainingCreateDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "SuperAbp.Exam.TrainingManagement.TrainingListDto",
+                "typeSimple": "SuperAbp.Exam.TrainingManagement.TrainingListDto"
               },
               "allowAnonymous": null,
               "implementFrom": "SuperAbp.Exam.TrainingManagement.ITrainingAppService"
@@ -4680,6 +4812,108 @@
           "type": "System.String",
           "typeSimple": "string",
           "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput": {
+      "baseType": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "QuestionType",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "QuestionContent",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ErrorCount",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "SuperAbp.Exam.MistakesReviews.MistakesReviewListDto": {
+      "baseType": "Volo.Abp.Application.Dtos.AuditedEntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "QuestionId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "QuestionContent",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ErrorCount",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "QuestionType",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": true,
           "minLength": null,
           "maxLength": null,
           "minimum": null,

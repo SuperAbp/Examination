@@ -10,5 +10,5 @@ public class MistakesReviewListDto : AuditedEntityDto<Guid>
 
     public required string QuestionContent { get; set; }
     public int ErrorCount { get; set; }
-    public required QuestionType QuestionType { get; set; }
+    public required int QuestionType { get; set; }
 }

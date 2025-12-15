@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-header">
-    <h5 class="mb-0">{{ '::Menu:MyFavorite' | abpLocalization }}</h5>
+    <h5 class="mb-0">{{ '::Menu:MyMistakeReview' | abpLocalization }}</h5>
   </div>
   <div class="card-body">
     <form (ngSubmit)="search()" class="mb-3">
@@ -49,16 +49,16 @@
       </div>
     </form>
 
-    <ngx-datatable [rows]="favorites.items" [count]="favorites.totalCount" [list]="list" default>
+    <ngx-datatable [rows]="mistakes.items" [count]="mistakes.totalCount" [list]="list" default>
       <ngx-datatable-column
         [name]="'::QuestionContent' | abpLocalization"
         prop="questionContent"
       ></ngx-datatable-column>
       <ngx-datatable-column
         [name]="'::QuestionType' | abpLocalization"
+        prop="questionType"
         [width]="80"
         [canAutoResize]="false"
-        prop="questionType"
       >
         <ng-template ngx-datatable-cell-template let-row="row">
           {{ '::QuestionType:' + row.questionType | abpLocalization }}
@@ -66,9 +66,9 @@
       </ngx-datatable-column>
       <ngx-datatable-column
         [name]="'::CreationTime' | abpLocalization"
+        prop="creationTime"
         [width]="150"
         [canAutoResize]="false"
-        prop="creationTime"
       >
         <ng-template ngx-datatable-cell-template let-row="row">
           {{ row.creationTime | date: 'short' }}
