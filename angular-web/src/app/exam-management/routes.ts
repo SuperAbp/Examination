@@ -5,6 +5,7 @@ import { QuestionBanksComponent } from './question-banks/question-banks.componen
 import { QuestionBanksDetailComponent } from './question-banks/detail/detail.component';
 import { QuestionBanksTrainComponent } from './question-banks/train/train.component';
 import { MyFavoriteComponent } from './my/my-favorite/my-favorite.component';
+import { MyFavoriteTrainComponent } from './my/my-favorite/train/train.component';
 
 export const routes: Routes = [
   {
@@ -37,6 +38,11 @@ export const routes: Routes = [
       {
         path: 'favorites',
         component: MyFavoriteComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'favorites/train',
+        component: MyFavoriteTrainComponent,
         canActivate: [authGuard],
       },
     ],

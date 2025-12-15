@@ -19,16 +19,17 @@
           </div>
         </div>
         <div class="col">
-          <div class="form-group">
-            <select class="form-control" [(ngModel)]="filters.questionType" name="questionType">
-              <option [value]="null">{{ '::All' | abpLocalization }}</option>
-              @for (type of questionTypes; track $index) {
-                <option [value]="type.value">
-                  {{ type.label | abpLocalization }}
-                </option>
-              }
-            </select>
-          </div>
+          <ng-select
+            [placeholder]="
+              '::ChoosePlaceholder' | abpLocalization: ('::QuestionType' | abpLocalization)
+            "
+            [(ngModel)]="filters.questionType"
+            [items]="questionTypes"
+            bindLabel="label"
+            bindValue="value"
+            name="questionType"
+          >
+          </ng-select>
         </div>
         <div class="col">
           <div class="form-group">
@@ -36,8 +37,11 @@
               <button type="submit" class="btn btn-primary me-2">
                 {{ '::Search' | abpLocalization }}
               </button>
-              <button type="button" class="btn btn-secondary" (click)="clearFilters()">
+              <button type="button" class="btn btn-secondary me-2" (click)="clearFilters()">
                 {{ '::Clear' | abpLocalization }}
+              </button>
+              <button type="button" class="btn btn-primary" (click)="startTraining()">
+                {{ '::StartTraining' | abpLocalization }}
               </button>
             </div>
           </div>
@@ -67,8 +71,12 @@
         [sortable]="false"
       >
         <ng-template ngx-datatable-cell-template let-row="row">
-          <button type="button" class="btn btn-primary" (click)="goDetail(row.id)">
-            {{ 'Exam::Detail' | abpLocalization }}
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            (click)="startTraining(row.questionId)"
+          >
+            {{ '::StartTraining' | abpLocalization }}
           </button>
         </ng-template>
       </ngx-datatable-column>
