@@ -14,7 +14,6 @@ import { APP_ROUTE_PROVIDER } from './route.provider';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(APP_ROUTES),
-    APP_ROUTE_PROVIDER,
     provideAnimations(),
     provideAbpCore(
       withOptions({
@@ -26,5 +25,6 @@ export const appConfig: ApplicationConfig = {
     provideAccountConfig(),
     provideAbpThemeShared(),
     provideThemeBasicConfig(),
+    APP_ROUTE_PROVIDER,
   ],
 };

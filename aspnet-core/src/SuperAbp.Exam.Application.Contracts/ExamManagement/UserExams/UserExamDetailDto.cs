@@ -17,7 +17,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public DateTime EndTime { get; set; }
 
-        public required AnswerMode AnswerMode { get; set; }
+        public required int AnswerMode { get; set; }
 
         public IReadOnlyList<SectionDto> Sections { get; set; } = [];
 

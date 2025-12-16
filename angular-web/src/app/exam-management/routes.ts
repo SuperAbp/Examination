@@ -66,4 +66,19 @@ export const routes: Routes = [
       requiredPolicy: 'Exam.Exams',
     },
   },
+  {
+    path: 'exams',
+    component: ExamsComponent,
+    data: {
+      requiredPolicy: 'Exam.Exams',
+    },
+  },
+  {
+    path: 'exams/welcome/:id',
+    loadComponent: () =>
+      import('./exams/welcome/welcome.component').then(m => m.ExamsWelcomeComponent),
+    data: {
+      requiredPolicy: 'Exam.Exams',
+    },
+  },
 ];

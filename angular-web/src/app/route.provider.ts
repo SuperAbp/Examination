@@ -10,8 +10,6 @@ export const APP_ROUTE_PROVIDER = [
 
 function configureRoutes() {
   const routes = inject(RoutesService);
-  console.log(routes);
-
   routes.removeByParam({ name: eThemeSharedRouteNames.Administration });
   routes.add([
     {

@@ -1,0 +1,14 @@
+<div class="card">
+  <div class="card-body">
+    <h3 class="text-center">{{ '::ExamInstructions' | abpLocalization }}</h3>
+    @if (exam.description && exam.description.length > 0) {
+      <div [innerHTML]="exam.description"></div>
+      <ngb-progressbar class="mb-3" type="primary" [value]="progress" />
+      <div class="d-flex justify-content-center">
+        <abp-button type="primary" [loading]="btnLoading" (click)="start()">
+          {{ '::StartExam' | abpLocalization }}
+        </abp-button>
+      </div>
+    }
+  </div>
+</div>
