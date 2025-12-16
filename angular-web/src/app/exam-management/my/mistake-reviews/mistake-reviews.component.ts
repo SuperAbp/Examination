@@ -6,8 +6,8 @@ import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { MistakesReviewService, OptionService } from '@proxy/controllers';
-import { MistakesReviewListDto } from '@proxy/mistakes-reviews';
+import { MistakeReviewService, OptionService } from '@proxy/controllers';
+import { MistakeReviewListDto } from '@proxy/mistake-reviews';
 
 @Component({
   selector: 'app-mistake-reviews',
@@ -25,10 +25,10 @@ import { MistakesReviewListDto } from '@proxy/mistakes-reviews';
   ],
 })
 export class MistakeReviewsComponent implements OnInit {
-  mistakes = { items: [], totalCount: 0 } as PagedResultDto<MistakesReviewListDto>;
+  mistakes = { items: [], totalCount: 0 } as PagedResultDto<MistakeReviewListDto>;
   public readonly list = inject(ListService);
   private localizationService = inject(LocalizationService);
-  private readonly mistakesReviewService = inject(MistakesReviewService);
+  private readonly mistakeReviewService = inject(MistakeReviewService);
   private readonly optionService = inject(OptionService);
   private readonly router = inject(Router);
 
@@ -49,7 +49,7 @@ export class MistakeReviewsComponent implements OnInit {
         questionType: this.filters.questionType ?? undefined,
         errorCount: 1, // 至少错误1次
       };
-      return this.mistakesReviewService.getList(params);
+      return this.mistakeReviewService.getList(params);
     };
     this.list.hookToQuery(mistakeStreamCreator).subscribe(response => {
       this.mistakes = response;

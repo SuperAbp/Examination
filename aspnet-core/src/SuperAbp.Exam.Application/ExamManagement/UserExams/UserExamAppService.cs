@@ -11,7 +11,6 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Timing;
 using Volo.Abp.Users;
 using SuperAbp.Exam.KnowledgePoints;
-using SuperAbp.Exam.MistakesReviews;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.EventBus.Local;
 using SuperAbp.Exam.MistakesReviews.Events;
@@ -19,6 +18,7 @@ using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto.QuestionDto;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
+using SuperAbp.Exam.MistakeReviews;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
@@ -30,7 +30,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         UserExamManager userExamManager,
         IQuestionRepository questionRepository,
         QuestionManager questionManager,
-        IMistakesReviewRepository mistakesReviewRepository,
+        IMistakeReviewRepository mistakesReviewRepository,
         IBackgroundJobManager backgroundJobManager,
         ILocalEventBus localEventBus)
         : ExamAppService, IUserExamAppService

@@ -1,10 +1,9 @@
 using System;
-using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Application.Dtos;
 
-namespace SuperAbp.Exam.MistakesReviews;
+namespace SuperAbp.Exam.MistakeReviews;
 
-public class MistakesReviewListDto : AuditedEntityDto<Guid>
+public class MistakeReviewListDto : AuditedEntityDto<Guid>
 {
     public Guid QuestionId { get; set; }
 

@@ -26,15 +26,13 @@ using SuperAbp.Exam.ExamManagement.UserExamQuestionReviews;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.KnowledgePoints;
-using SuperAbp.Exam.MistakesReviews;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 using SuperAbp.Exam.PaperManagement.PaperQuestions;
-
-using SuperAbp.Exam.PaperManagement.Papers;
 
 using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 using SuperAbp.Exam.QuestionManagement.QuestionOptions;
+using SuperAbp.Exam.MistakeReviews;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -100,7 +98,7 @@ public class ExamDbContext :
     public DbSet<Training> Trains { get; set; }
 
     public DbSet<Favorite> Favorites { get; set; }
-    public DbSet<MistakesReview> MistakesReviews { get; set; }
+    public DbSet<MistakeReview> MistakeReviews { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
@@ -277,9 +275,9 @@ public class ExamDbContext :
             b.ConfigureByConvention();
         });
 
-        builder.Entity<MistakesReview>(b =>
+        builder.Entity<MistakeReview>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "MistakesReviews", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "MistakeReviews", ExamConsts.DbSchema);
             b.ConfigureByConvention();
         });
     }

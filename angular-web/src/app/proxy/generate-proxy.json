@@ -1078,33 +1078,33 @@
             }
           }
         },
-        "SuperAbp.Exam.Controllers.MistakesReviewController": {
-          "controllerName": "MistakesReview",
-          "controllerGroupName": "MistakesReview",
+        "SuperAbp.Exam.Controllers.MistakeReviewController": {
+          "controllerName": "MistakeReview",
+          "controllerGroupName": "MistakeReview",
           "isRemoteService": true,
           "isIntegrationService": false,
           "apiVersion": null,
-          "type": "SuperAbp.Exam.Controllers.MistakesReviewController",
+          "type": "SuperAbp.Exam.Controllers.MistakeReviewController",
           "interfaces": [
             {
-              "type": "SuperAbp.Exam.MistakesReviews.IMistakesReviewAppService",
-              "name": "IMistakesReviewAppService",
+              "type": "SuperAbp.Exam.MistakeReviews.IMistakeReviewAppService",
+              "name": "IMistakeReviewAppService",
               "methods": [
                 {
                   "name": "GetListAsync",
                   "parametersOnMethod": [
                     {
                       "name": "input",
-                      "typeAsString": "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput, SuperAbp.Exam.Application.Contracts",
-                      "type": "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput",
-                      "typeSimple": "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput",
+                      "typeAsString": "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput, SuperAbp.Exam.Application.Contracts",
+                      "type": "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput",
+                      "typeSimple": "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput",
                       "isOptional": false,
                       "defaultValue": null
                     }
                   ],
                   "returnValue": {
-                    "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakesReviews.MistakesReviewListDto>",
-                    "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakesReviews.MistakesReviewListDto>"
+                    "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakeReviews.MistakeReviewListDto>",
+                    "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakeReviews.MistakeReviewListDto>"
                   }
                 }
               ]
@@ -1115,14 +1115,14 @@
               "uniqueName": "GetListAsyncByInput",
               "name": "GetListAsync",
               "httpMethod": "GET",
-              "url": "api/mistakes-reviews",
+              "url": "api/mistake-reviews",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
                   "name": "input",
-                  "typeAsString": "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput, SuperAbp.Exam.Application.Contracts",
-                  "type": "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput",
-                  "typeSimple": "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput",
+                  "typeAsString": "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput, SuperAbp.Exam.Application.Contracts",
+                  "type": "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput",
+                  "typeSimple": "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput",
                   "isOptional": false,
                   "defaultValue": null
                 }
@@ -1146,18 +1146,6 @@
                   "jsonName": null,
                   "type": "System.String",
                   "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "ErrorCount",
-                  "jsonName": null,
-                  "type": "System.Int32",
-                  "typeSimple": "number",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -1202,11 +1190,11 @@
                 }
               ],
               "returnValue": {
-                "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakesReviews.MistakesReviewListDto>",
-                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakesReviews.MistakesReviewListDto>"
+                "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakeReviews.MistakeReviewListDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakeReviews.MistakeReviewListDto>"
               },
               "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.MistakesReviews.IMistakesReviewAppService"
+              "implementFrom": "SuperAbp.Exam.MistakeReviews.IMistakeReviewAppService"
             }
           }
         },
@@ -4820,7 +4808,7 @@
         }
       ]
     },
-    "SuperAbp.Exam.MistakesReviews.GetMistakesReviewInput": {
+    "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput": {
       "baseType": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
       "isEnum": false,
       "enumNames": null,
@@ -4850,22 +4838,10 @@
           "minimum": null,
           "maximum": null,
           "regex": null
-        },
-        {
-          "name": "ErrorCount",
-          "jsonName": null,
-          "type": "System.Int32",
-          "typeSimple": "number",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
         }
       ]
     },
-    "SuperAbp.Exam.MistakesReviews.MistakesReviewListDto": {
+    "SuperAbp.Exam.MistakeReviews.MistakeReviewListDto": {
       "baseType": "Volo.Abp.Application.Dtos.AuditedEntityDto<System.Guid>",
       "isEnum": false,
       "enumNames": null,

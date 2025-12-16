@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SuperAbp.Exam.Favorites;
-using SuperAbp.Exam.MistakesReviews;
+using SuperAbp.Exam.MistakeReviews;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 
-namespace SuperAbp.Exam.EntityFrameworkCore.MistakesReviews;
+namespace SuperAbp.Exam.EntityFrameworkCore.MistakeReviews;
 
-public class MistakesReviewRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
-    : EfCoreRepository<IExamDbContext, MistakesReview, Guid>(dbContextProvider), IMistakesReviewRepository
+public class MistakeReviewRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
+    : EfCoreRepository<IExamDbContext, MistakeReview, Guid>(dbContextProvider), IMistakeReviewRepository
 {
     public async Task<List<MistakeWithDetails>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
         Guid? userId = null, string? questionContent = null, QuestionType? questionType = null, CancellationToken cancellationToken = default)
@@ -35,7 +35,7 @@ public class MistakesReviewRepository(IDbContextProvider<IExamDbContext> dbConte
     private async Task<IQueryable<MistakeWithDetails>> GetQueryableAsync(Guid? userId, string? questionContent = null, QuestionType? questionType = null)
     {
         var dbContext = await GetDbContextAsync();
-        IQueryable<MistakesReview> queryable = (await GetQueryableAsync())
+        IQueryable<MistakeReview> queryable = (await GetQueryableAsync())
             .WhereIf(userId.HasValue, p => p.UserId == userId.Value);
         IQueryable<Question> questionQueryable = dbContext.Set<Question>().AsQueryable();
         return (from mistake in queryable

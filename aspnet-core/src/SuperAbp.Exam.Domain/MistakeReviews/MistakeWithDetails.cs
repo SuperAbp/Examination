@@ -1,7 +1,7 @@
 using System;
 using SuperAbp.Exam.QuestionManagement.Questions;
 
-namespace SuperAbp.Exam.MistakesReviews;
+namespace SuperAbp.Exam.MistakeReviews;
 
 public class MistakeWithDetails
 {

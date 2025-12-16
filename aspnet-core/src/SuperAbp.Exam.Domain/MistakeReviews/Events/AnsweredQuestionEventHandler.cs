@@ -1,4 +1,4 @@
-using SuperAbp.Exam.MistakesReviews;
+using SuperAbp.Exam.MistakeReviews;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp.DependencyInjection;
@@ -6,7 +6,7 @@ using Volo.Abp.EventBus;
 
 namespace SuperAbp.Exam.MistakesReviews.Events;
 
-public class AnsweredQuestionEventHandler(IMistakesReviewRepository mistakesReviewRepository)
+public class AnsweredQuestionEventHandler(IMistakeReviewRepository mistakesReviewRepository)
     : ILocalEventHandler<AnsweredQuestionEvent>, ITransientDependency
 {
     public async Task HandleEventAsync(AnsweredQuestionEvent eventData)
@@ -27,7 +27,7 @@ public class AnsweredQuestionEventHandler(IMistakesReviewRepository mistakesRevi
         }
         else
         {
-            await mistakesReviewRepository.InsertAsync(new MistakesReview(
+            await mistakesReviewRepository.InsertAsync(new MistakeReview(
                 Guid.NewGuid(),
                 eventData.QuestionId,
                 eventData.UserId));

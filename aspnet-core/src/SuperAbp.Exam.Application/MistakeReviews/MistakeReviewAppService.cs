@@ -4,15 +4,15 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
 
-namespace SuperAbp.Exam.MistakesReviews;
+namespace SuperAbp.Exam.MistakeReviews;
 
-public class MistakesReviewAppService(IMistakesReviewRepository mistakesReviewRepository)
-    : ExamAppService, IMistakesReviewAppService
+public class MistakeReviewAppService(IMistakeReviewRepository mistakeReviewRepository)
+    : ExamAppService, IMistakeReviewAppService
 {
-    public async Task<PagedResultDto<MistakesReviewListDto>> GetListAsync(GetMistakesReviewInput input)
+    public async Task<PagedResultDto<MistakeReviewListDto>> GetListAsync(GetMistakeReviewsInput input)
     {
         QuestionType? questionType = input.QuestionType.HasValue ? QuestionType.FromValue(input.QuestionType.Value) : null;
-        List<MistakeWithDetails> mistakes = await mistakesReviewRepository.GetListAsync(
+        List<MistakeWithDetails> mistakes = await mistakeReviewRepository.GetListAsync(
             sorting: input.Sorting,
             skipCount: input.SkipCount,
             maxResultCount: input.MaxResultCount,
@@ -20,12 +20,12 @@ public class MistakesReviewAppService(IMistakesReviewRepository mistakesReviewRe
             questionContent: input.QuestionContent,
             questionType: questionType
         );
-        long totalCount = await mistakesReviewRepository.CountAsync(
+        long totalCount = await mistakeReviewRepository.CountAsync(
             userId: CurrentUser.GetId(),
             questionContent: input.QuestionContent,
             questionType: questionType
         );
-        List<MistakesReviewListDto> dtos = ObjectMapper.Map<List<MistakeWithDetails>, List<MistakesReviewListDto>>(mistakes);
-        return new PagedResultDto<MistakesReviewListDto>(totalCount, dtos);
+        List<MistakeReviewListDto> dtos = ObjectMapper.Map<List<MistakeWithDetails>, List<MistakeReviewListDto>>(mistakes);
+        return new PagedResultDto<MistakeReviewListDto>(totalCount, dtos);
     }
 }

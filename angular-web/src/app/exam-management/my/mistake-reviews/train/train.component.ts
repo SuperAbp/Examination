@@ -1,7 +1,7 @@
 import { LocalizationService } from '@abp/ng.core';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MistakesReviewService, QuestionService, TrainingService } from '@proxy/controllers';
+import { MistakeReviewService, QuestionService, TrainingService } from '@proxy/controllers';
 import { GetTrainsInput, TrainingListDto } from '@proxy/training-management';
 import { QuestionNumber } from '@shared/components/question-number/question-number';
 import { TrainComponent, TrainConfig } from '@shared/components/train';
@@ -23,7 +23,7 @@ export class MistakeReviewsTrainComponent implements OnInit {
   questionNumbers: QuestionNumber[] = [];
   trainingRecords: TrainingListDto[] = [];
 
-  private readonly mistakesReviewService = inject(MistakesReviewService);
+  private readonly mistakeReviewService = inject(MistakeReviewService);
   private readonly questionService = inject(QuestionService);
   private readonly trainingService = inject(TrainingService);
   private readonly router = inject(Router);
@@ -75,7 +75,7 @@ export class MistakeReviewsTrainComponent implements OnInit {
 
       // 通过 MistakesReviewService 获取错题列表
       forkJoin([
-        this.mistakesReviewService.getList(getMistakesInput),
+        this.mistakeReviewService.getList(getMistakesInput),
         this.trainingService.getList({
           trainingSource: 3,
         } as GetTrainsInput),
