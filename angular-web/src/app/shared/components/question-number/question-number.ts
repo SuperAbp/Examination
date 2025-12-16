@@ -1,42 +1,40 @@
-import { QuestionListDto } from '@proxy/question-management/questions';
-
 export class QuestionNumber {
   questionType: number;
-  questions: QuestionListDto[] = [];
+  questionIds: string[] = [];
 
   constructor(questionType: number = 0) {
     this.questionType = questionType;
   }
 
   /**
-   * 添加questions
-   * @param questions 问题列表
+   * 添加问题ID
+   * @param questionIds 问题ID列表
    */
-  addQuestions(questions: QuestionListDto[]): void {
-    if (!questions || questions.length === 0) {
+  addQuestionIds(questionIds: string[]): void {
+    if (!questionIds || questionIds.length === 0) {
       return;
     }
-    this.questions.push(...questions);
+    this.questionIds.push(...questionIds);
   }
 
   /**
-   * 获取问题列表
+   * 获取问题ID列表
    */
-  getQuestions(): QuestionListDto[] {
-    return this.questions;
+  getQuestionIds(): string[] {
+    return this.questionIds;
   }
 
   /**
    * 获取问题总数
    */
   getTotalCount(): number {
-    return this.questions.length;
+    return this.questionIds.length;
   }
 
   /**
    * 清空所有数据
    */
   clear(): void {
-    this.questions = [];
+    this.questionIds = [];
   }
 }

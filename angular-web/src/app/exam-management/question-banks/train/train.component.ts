@@ -70,7 +70,7 @@ export class QuestionBanksTrainComponent implements OnInit {
               if (!acc.has(type)) {
                 acc.set(type, new QuestionNumber(type));
               }
-              acc.get(type)!.addQuestions([question]);
+              acc.get(type)!.addQuestionIds([question.id]);
               return acc;
             }, new Map<number, QuestionNumber>())
             .values(),

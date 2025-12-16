@@ -79,7 +79,7 @@ export class MistakeReviewsComponent implements OnInit {
 
   startTraining(questionId?: string) {
     const queryParams: any = {
-      mode: 1,
+      mode: 0,
     };
 
     if (questionId) {
@@ -93,6 +93,6 @@ export class MistakeReviewsComponent implements OnInit {
       }
     }
 
-    this.router.navigate(['/my/mistakes/train'], { queryParams });
+    this.router.navigate(['/my/mistakes-reviews/train'], { queryParams });
   }
 }

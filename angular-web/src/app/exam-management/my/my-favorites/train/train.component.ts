@@ -9,13 +9,13 @@ import { TrainComponent, TrainConfig } from '@shared/components/train';
 import { forkJoin } from 'rxjs';
 
 @Component({
-  selector: 'app-my-favorite-train',
+  selector: 'app-my-favorites-train',
   templateUrl: './train.component.html',
   styleUrls: ['./train.component.css'],
   standalone: true,
   imports: [TrainComponent],
 })
-export class MyFavoriteTrainComponent implements OnInit {
+export class MyFavoritesTrainComponent implements OnInit {
   mode: number;
   type?: number;
   questionId?: string;
@@ -73,7 +73,7 @@ export class MyFavoriteTrainComponent implements OnInit {
               if (!acc.has(type)) {
                 acc.set(type, new QuestionNumber(type));
               }
-              acc.get(type)!.addQuestions([question]);
+              acc.get(type)!.addQuestionIds([question.id]);
               return acc;
             }, new Map<number, QuestionNumber>())
             .values(),

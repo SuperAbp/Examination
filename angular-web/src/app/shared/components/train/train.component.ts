@@ -98,9 +98,7 @@ export class TrainComponent implements OnChanges {
   private initializeQuestions(): void {
     this.allQuestionIds = [];
     this.questionNumbers.forEach(qn => {
-      qn.questions.forEach(q => {
-        this.allQuestionIds.push(q.id);
-      });
+      this.allQuestionIds.push(...qn.questionIds);
     });
 
     // 如果有题目且还没选中，自动选择第一题

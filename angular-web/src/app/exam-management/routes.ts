@@ -4,9 +4,10 @@ import { ExamsComponent } from './exams/exams.component';
 import { QuestionBanksComponent } from './question-banks/question-banks.component';
 import { QuestionBanksDetailComponent } from './question-banks/detail/detail.component';
 import { QuestionBanksTrainComponent } from './question-banks/train/train.component';
-import { MyFavoriteComponent } from './my/my-favorite/my-favorite.component';
-import { MyFavoriteTrainComponent } from './my/my-favorite/train/train.component';
 import { MistakeReviewsComponent } from './my/mistake-reviews/mistake-reviews.component';
+import { MistakeReviewsTrainComponent } from './my/mistake-reviews/train/train.component';
+import { MyFavoritesComponent } from './my/my-favorites/my-favorites.component';
+import { MyFavoritesTrainComponent } from './my/my-favorites/train/train.component';
 
 export const routes: Routes = [
   {
@@ -38,17 +39,22 @@ export const routes: Routes = [
     children: [
       {
         path: 'favorites',
-        component: MyFavoriteComponent,
+        component: MyFavoritesComponent,
         canActivate: [authGuard],
       },
       {
         path: 'favorites/train',
-        component: MyFavoriteTrainComponent,
+        component: MyFavoritesTrainComponent,
         canActivate: [authGuard],
       },
       {
         path: 'mistakes-reviews',
         component: MistakeReviewsComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'mistakes-reviews/train',
+        component: MistakeReviewsTrainComponent,
         canActivate: [authGuard],
       },
     ],

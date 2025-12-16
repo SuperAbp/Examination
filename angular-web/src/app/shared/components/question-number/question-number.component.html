@@ -18,9 +18,9 @@
           </div>
         </div>
         <div class="row row-cols-auto gy-2 gx-2">
-          @for (question of number.questions; track $index) {
+          @for (questionId of number.questionIds; track $index) {
             <div class="col">
-              <span [class]="getClassName(question.id)" (click)="showQuestion(question.id)">
+              <span [class]="getClassName(questionId)" (click)="showQuestion(questionId)">
                 {{ $index + 1 }}
               </span>
             </div>

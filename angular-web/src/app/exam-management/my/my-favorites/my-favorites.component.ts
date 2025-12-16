@@ -10,9 +10,9 @@ import { FormsModule } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
-  selector: 'app-my-favorite',
-  templateUrl: './my-favorite.component.html',
-  styleUrls: ['./my-favorite.component.scss'],
+  selector: 'app-my-favorites',
+  templateUrl: './my-favorites.component.html',
+  styleUrls: ['./my-favorites.component.scss'],
   providers: [ListService],
   imports: [
     CoreModule,
@@ -24,7 +24,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
     NgxDatatableListDirective,
   ],
 })
-export class MyFavoriteComponent implements OnInit {
+export class MyFavoritesComponent implements OnInit {
   favorites = { items: [], totalCount: 0 } as PagedResultDto<FavoriteListDto>;
   public readonly list = inject(ListService);
   private localizationService = inject(LocalizationService);
