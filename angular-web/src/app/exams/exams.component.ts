@@ -1,8 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CoreModule, ListService, PagedResultDto, ConfigStateService } from '@abp/ng.core';
-import { ExaminationService, UserExamService } from '../../proxy/controllers';
-import { ExamListDto, GetExamsInput } from '../../proxy/exam-management/exams';
-import { UserExamDetailDto } from '../../proxy/exam-management/user-exams';
+import { ExaminationService, UserExamService } from '@proxy/controllers';
+import { ExamListDto, GetExamsInput } from '@proxy/exam-management/exams';
+import { UserExamDetailDto } from '@proxy/exam-management/user-exams';
 import { Router } from '@angular/router';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxDatatableDefaultDirective, NgxDatatableListDirective } from '@abp/ng.theme.shared';

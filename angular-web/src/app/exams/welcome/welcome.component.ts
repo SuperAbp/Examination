@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { ButtonComponent } from '@abp/ng.theme.shared';
 import * as signalR from '@microsoft/signalr';
-import { environment } from '../../../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-exams-welcome',

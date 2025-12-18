@@ -13,6 +13,14 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: '',
-    loadChildren: () => import('./exam-management/routes').then(m => m.routes),
+    loadChildren: () => import('./exams/routes').then(m => m.routes),
+  },
+  {
+    path: '',
+    loadChildren: () => import('./question-banks/routes').then(m => m.routes),
+  },
+  {
+    path: '',
+    loadChildren: () => import('./my/routes').then(m => m.routes),
   },
 ];

@@ -341,7 +341,6 @@ export class ExamsStartComponent implements OnInit {
     };
   }
 
-  // 根据剩余时间选择合适的显示格式
   private getCountdownFormat(seconds: number): string {
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
@@ -358,24 +357,19 @@ export class ExamsStartComponent implements OnInit {
     }
   }
 
-  // 倒计时事件处理
   onCountdownEvent(event: CountdownEvent): void {
     if (event.action === 'notify') {
-      // 剩余时间警告
       if (event.left <= 60000) {
-        // 小于1分钟
         this.isTimeDanger = true;
         this.isTimeWarning = false;
       } else if (event.left <= 300000) {
-        // 小于5分钟
         this.isTimeWarning = true;
         this.isTimeDanger = false;
       }
     } else if (event.action === 'done') {
-      // 倒计时结束，自动提交
       this.isTimeDanger = true;
       if (!this.isSubmitting) {
-        this.submitExam();
+        this.doSubmit();
       }
     }
   }
