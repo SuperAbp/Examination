@@ -1,9 +1,13 @@
 export class QuestionNumber {
   questionType: number;
   questionIds: string[] = [];
+  title?: string;
+  totalScore?: number;
 
-  constructor(questionType: number = 0) {
+  constructor(questionType: number = 0, title?: string, totalScore?: number) {
     this.questionType = questionType;
+    this.title = title;
+    this.totalScore = totalScore;
   }
 
   /**

@@ -1,0 +1,45 @@
+.question-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 0.25rem;
+
+  ::ng-deep {
+    p {
+      margin-bottom: 0.5rem;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    pre {
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 0.25rem;
+      overflow-x: auto;
+    }
+  }
+}
+
+.sticky-top {
+  position: sticky;
+}
+
+.card-header {
+  background-color: #fff;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.badge {
+  font-weight: 500;
+}
+
+@media (max-width: 991.98px) {
+  .sticky-top {
+    position: relative !important;
+    top: auto !important;
+  }
+}

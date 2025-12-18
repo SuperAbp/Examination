@@ -96,11 +96,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                         questionDto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
                     }
 
-                    // Map answers/options
                     List<OptionDto> answerDtos = [];
                     List<QuestionOption> answers = question.Options.OrderBy(a => a.Sort).ToList();
                     if (exam.RandomOrderOfOption && new List<QuestionType> { QuestionType.SingleSelect, QuestionType.MultiSelect }.Contains(question.QuestionType))
                     {
+                        // TODO:用户创建考试后顺序应该固定，而不是每次获取都随机。但是创建时并不存选项，如何解决？
                         answers = answers.OrderBy(_ => Guid.NewGuid()).ToList();
                     }
 

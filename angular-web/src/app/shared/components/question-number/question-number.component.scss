@@ -20,4 +20,10 @@
     border-color: var(--bs-warning);
     color: var(--bs-warning);
   }
+
+  &.bs-tag-info {
+    background: var(--bs-info-bg-subtle);
+    border-color: var(--bs-info);
+    color: var(--bs-info);
+  }
 }

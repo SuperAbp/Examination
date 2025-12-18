@@ -1,5 +1,5 @@
 @if (unfinishedExam) {
-  <a class="text-decoration-none" [href]="'/exams/welcome/' + unfinishedExam.examId">
+  <a class="text-decoration-none" [href]="'/exams/start/' + unfinishedExam.id">
     <ngb-alert [dismissible]="false"> 存在未完成的考试，立即进入 </ngb-alert>
   </a>
 }

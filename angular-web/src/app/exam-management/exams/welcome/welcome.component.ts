@@ -10,7 +10,7 @@ import * as signalR from '@microsoft/signalr';
 import { environment } from '../../../../environments/environment';
 
 @Component({
-  selector: 'app-welcome',
+  selector: 'app-exams-welcome',
   templateUrl: './welcome.component.html',
   imports: [CoreModule, CommonModule, ButtonComponent, NgbProgressbar],
 })
@@ -48,8 +48,10 @@ export class ExamsWelcomeComponent implements OnInit, OnDestroy {
     this.btnLoading = true;
 
     this.userExamService.create({ examId: this.id! }).subscribe({
-      next: async () => {
-        await this.setupSignalRConnection();
+      next: async userExam => {
+        // 保存userExamId用于跳转
+        const userExamId = userExam.id;
+        await this.setupSignalRConnection(userExamId);
       },
       error: () => {
         this.btnLoading = false;
@@ -57,12 +59,11 @@ export class ExamsWelcomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  private async setupSignalRConnection() {
+  private async setupSignalRConnection(userExamId: string) {
     try {
       const apiUrl = environment.apis.default.url;
       const signalRUrl = apiUrl.replace(/\/$/, '') + '/signalr-hubs/progress';
 
-      // 获取访问令牌
       const getAccessToken = () => {
         const token = localStorage.getItem('access_token');
         return token || '';
@@ -79,7 +80,7 @@ export class ExamsWelcomeComponent implements OnInit, OnDestroy {
         this.progress = progressValue;
         if (this.progress >= 100) {
           this.hubConnection?.stop();
-          this.router.navigate(['/exam/start', this.id]);
+          this.router.navigate(['/exams/start', userExamId]);
         }
       });
 

@@ -1,0 +1,81 @@
+<!-- 题目标题 -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <span class="text-primary">第 {{ questionIndex + 1 }} 题</span>
+    <span class="badge bg-secondary ms-2">
+      {{
+        question.questionType === 1 ? '单选题' : question.questionType === 2 ? '多选题' : '填空题'
+      }}
+    </span>
+    <span class="text-muted ms-2">({{ question.questionScore }}分)</span>
+  </div>
+</div>
+
+<!-- 题目内容 -->
+<div class="fs-5 mb-3">{{ question.content }}</div>
+
+<!-- 单选题 -->
+@if (question.questionType === 1) {
+  <app-single-choice
+    [options]="question.options"
+    [selectedAnswerId]="selectedAnswerId"
+    [showAnalysis]="false"
+    [disabled]="false"
+    (submitted)="onSingleChoiceSubmitted($event)"
+  >
+  </app-single-choice>
+}
+
+<!-- 多选题 -->
+@if (question.questionType === 2) {
+  <app-multiple-choice
+    [options]="question.options"
+    [selectedAnswerIds]="selectedAnswers"
+    [showAnalysis]="false"
+    [disabled]="false"
+    [hideSubmitButton]="true"
+    (answerChanged)="onAnswerChanged($event)"
+  >
+  </app-multiple-choice>
+}
+
+<!-- 填空题 -->
+@if (question.questionType === 3) {
+  <app-fill-blank
+    [options]="question.options"
+    [selectedAnswers]="fillBlankAnswers"
+    [showAnalysis]="false"
+    [disabled]="false"
+    [hideSubmitButton]="true"
+    (answersChanged)="onFillBlankChanged($event)"
+  >
+  </app-fill-blank>
+}
+
+<!-- 知识点 -->
+@if (question.knowledgePoints && question.knowledgePoints.length > 0) {
+  <div class="mt-3">
+    <small class="text-muted">
+      <i class="fas fa-tags"></i> 知识点：
+      @for (kp of question.knowledgePoints; track kp; let last = $last) {
+        <span class="badge bg-light text-dark">{{ kp }}</span>
+        @if (!last) {
+          <span>, </span>
+        }
+      }
+    </small>
+  </div>
+}
+
+<!-- 底部导航 -->
+<div class="d-flex justify-content-between align-items-center mt-4">
+  <button type="button" class="btn btn-primary" [disabled]="isPrevDisabled" (click)="onPrev()">
+    <i class="fa-solid fa-arrow-left me-1"></i>
+    上一题
+  </button>
+
+  <button type="button" class="btn btn-primary" [disabled]="isNextDisabled" (click)="onNext()">
+    下一题
+    <i class="fa-solid fa-arrow-right ms-1"></i>
+  </button>
+</div>

@@ -67,16 +67,25 @@ export const routes: Routes = [
     },
   },
   {
-    path: 'exams',
-    component: ExamsComponent,
+    path: 'exams/welcome/:id',
+    loadComponent: () =>
+      import('./exams/welcome/welcome.component').then(m => m.ExamsWelcomeComponent),
     data: {
       requiredPolicy: 'Exam.Exams',
     },
   },
   {
-    path: 'exams/welcome/:id',
+    path: 'exams/start/:id',
+    loadComponent: () => import('./exams/start/start.component').then(m => m.ExamsStartComponent),
+    canActivate: [authGuard],
+    data: {
+      requiredPolicy: 'Exam.Exams',
+    },
+  },
+  {
+    path: 'exams/submitted/:id',
     loadComponent: () =>
-      import('./exams/welcome/welcome.component').then(m => m.ExamsWelcomeComponent),
+      import('./exams/submitted/submitted.component').then(m => m.ExamsSubmittedComponent),
     data: {
       requiredPolicy: 'Exam.Exams',
     },

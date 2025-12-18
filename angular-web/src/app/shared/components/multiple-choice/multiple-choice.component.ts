@@ -16,6 +16,7 @@ export class MultipleChoiceComponent {
   @Input() selectedAnswerIds: Set<string> = new Set();
   @Input() showAnalysis = false;
   @Input() disabled = false;
+  @Input() hideSubmitButton = false; // 隐藏提交按钮（用于考试环境）
 
   @Output() submitted = new EventEmitter<AnswerSubmission>();
   @Output() answerChanged = new EventEmitter<string>();
