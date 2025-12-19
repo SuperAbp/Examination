@@ -4,7 +4,7 @@ import { NgxDatatableDefaultDirective, NgxDatatableListDirective } from '@abp/ng
 import { Component, inject, OnInit } from '@angular/core';
 import { FavoriteService, OptionService } from '@proxy/controllers';
 import { Router } from '@angular/router';
-import { FavoriteListDto } from '@proxy/favorites';
+import { FavoriteListDto, GetFavoritesInput } from '@proxy/favorites';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
@@ -26,7 +26,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 })
 export class MyFavoritesComponent implements OnInit {
   favorites = { items: [], totalCount: 0 } as PagedResultDto<FavoriteListDto>;
-  public readonly list = inject(ListService);
+  protected readonly list = inject(ListService<GetFavoritesInput>);
   private localizationService = inject(LocalizationService);
   private readonly favoriteService = inject(FavoriteService);
   private readonly optionService = inject(OptionService);
@@ -42,17 +42,15 @@ export class MyFavoritesComponent implements OnInit {
   ngOnInit() {
     this.loadQuestionTypes();
 
-    const questionBankStreamCreator = query => {
-      const params = {
-        ...query,
-        questionContent: this.filters.questionContent || undefined,
-        questionType: this.filters.questionType ?? undefined,
-      };
-      return this.favoriteService.getList(params);
-    };
-    this.list.hookToQuery(questionBankStreamCreator).subscribe(response => {
-      this.favorites = response;
-    });
+    this.list
+      .hookToQuery(query => {
+        query.questionContent = this.filters.questionContent || undefined;
+        query.questionType = this.filters.questionType ?? undefined;
+        return this.favoriteService.getList(query);
+      })
+      .subscribe(response => {
+        this.favorites = response;
+      });
   }
 
   loadQuestionTypes() {

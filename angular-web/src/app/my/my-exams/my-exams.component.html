@@ -1,0 +1,108 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="mb-0">{{ '::Menu:MyExam' | abpLocalization }}</h5>
+  </div>
+  <div class="card-body">
+    <form (ngSubmit)="search()" class="mb-3">
+      <div class="row">
+        <div class="col">
+          <ng-select
+            [placeholder]="
+              '::ChoosePlaceholder' | abpLocalization: ('::ExamName' | abpLocalization)
+            "
+            [(ngModel)]="filters.examId"
+            [items]="examList"
+            bindLabel="name"
+            bindValue="id"
+            name="examId"
+          >
+          </ng-select>
+        </div>
+        <div class="col-auto">
+          <div class="form-group">
+            <div>
+              <button type="submit" class="btn btn-primary me-2">
+                <i class="fa fa-search"></i> {{ '::Search' | abpLocalization }}
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="clearFilters()">
+                <i class="fa fa-times"></i> {{ '::Clear' | abpLocalization }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <ngx-datatable [rows]="exams.items" [count]="exams.totalCount" [list]="list" default>
+      <ngx-datatable-column
+        [name]="'::ExamName' | abpLocalization"
+        prop="examName"
+      ></ngx-datatable-column>
+      <ngx-datatable-column
+        [name]="'::Status' | abpLocalization"
+        prop="status"
+        [width]="120"
+        [canAutoResize]="false"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          {{ '::UserExamStatus:' + row.status | abpLocalization }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        [name]="'::TotalScore' | abpLocalization"
+        [width]="100"
+        [canAutoResize]="false"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          @if (row.status === 3) {
+            {{ row.totalScore }}
+          } @else if (row.status <= 2) {
+            未出分
+          } @else {
+            0
+          }
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column
+        [name]="'::ExamTime' | abpLocalization"
+        [width]="280"
+        [canAutoResize]="false"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <span>
+            {{ row.creationTime | date: 'yyyy-MM-dd HH:mm' }}
+            @if (row.finishedTime) {
+              ~
+              {{ row.finishedTime | date: 'yyyy-MM-dd HH:mm' }}
+            }
+          </span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        [name]="'Exam::Actions' | abpLocalization"
+        [width]="150"
+        [canAutoResize]="false"
+        [sortable]="false"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <button
+            *ngIf="row.status === 2"
+            type="button"
+            class="btn btn-primary btn-sm"
+            (click)="viewExam(row.id)"
+          >
+            {{ '::Detail' | abpLocalization }}
+          </button>
+          <button
+            *ngIf="row.status === 1"
+            type="button"
+            class="btn btn-warning btn-sm"
+            (click)="viewExam(row.id)"
+          >
+            {{ '::Continue' | abpLocalization }}
+          </button>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>

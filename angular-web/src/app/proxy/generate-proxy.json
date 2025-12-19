@@ -2326,7 +2326,7 @@
               "parameters": [
                 {
                   "nameOnMethod": "input",
-                  "name": "UserExamId",
+                  "name": "ExamId",
                   "jsonName": null,
                   "type": "System.Guid?",
                   "typeSimple": "string?",
@@ -5552,7 +5552,7 @@
       "genericArguments": null,
       "properties": [
         {
-          "name": "UserExamId",
+          "name": "ExamId",
           "jsonName": null,
           "type": "System.Guid?",
           "typeSimple": "string?",

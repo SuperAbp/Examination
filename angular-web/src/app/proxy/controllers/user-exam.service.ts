@@ -50,7 +50,7 @@ export class UserExamService {
     this.restService.request<any, PagedResultDto<UserExamListDto>>({
       method: 'GET',
       url: '/api/user-exams',
-      params: { userExamId: input.userExamId, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+      params: { examId: input.examId, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName,...config });
   

@@ -7,7 +7,7 @@ import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { MistakeReviewService, OptionService } from '@proxy/controllers';
-import { MistakeReviewListDto } from '@proxy/mistake-reviews';
+import { MistakeReviewListDto, GetMistakeReviewsInput } from '@proxy/mistake-reviews';
 
 @Component({
   selector: 'app-mistake-reviews',
@@ -26,7 +26,7 @@ import { MistakeReviewListDto } from '@proxy/mistake-reviews';
 })
 export class MistakeReviewsComponent implements OnInit {
   mistakes = { items: [], totalCount: 0 } as PagedResultDto<MistakeReviewListDto>;
-  public readonly list = inject(ListService);
+  protected readonly list = inject(ListService<GetMistakeReviewsInput>);
   private localizationService = inject(LocalizationService);
   private readonly mistakeReviewService = inject(MistakeReviewService);
   private readonly optionService = inject(OptionService);
@@ -42,18 +42,15 @@ export class MistakeReviewsComponent implements OnInit {
   ngOnInit() {
     this.loadQuestionTypes();
 
-    const mistakeStreamCreator = query => {
-      const params = {
-        ...query,
-        questionContent: this.filters.questionContent || undefined,
-        questionType: this.filters.questionType ?? undefined,
-        errorCount: 1, // 至少错误1次
-      };
-      return this.mistakeReviewService.getList(params);
-    };
-    this.list.hookToQuery(mistakeStreamCreator).subscribe(response => {
-      this.mistakes = response;
-    });
+    this.list
+      .hookToQuery(query => {
+        query.questionContent = this.filters.questionContent || undefined;
+        query.questionType = this.filters.questionType ?? undefined;
+        return this.mistakeReviewService.getList(query);
+      })
+      .subscribe(response => {
+        this.mistakes = response;
+      });
   }
 
   loadQuestionTypes() {

@@ -129,11 +129,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public virtual async Task<PagedResultDto<UserExamListDto>> GetListAsync(GetUserExamsInput input)
         {
             await NormalizeMaxResultCountAsync(input);
-
-            int totalCount = await UserExamRepository.GetCountAsync(CurrentUser.GetId());
+            int totalCount = await UserExamRepository.GetCountAsync(CurrentUser.GetId(), input.ExamId);
             List<UserExamWithDetails> entities = await UserExamRepository.GetListWithDetailAsync(
                 input.Sorting ?? UserExamConsts.DefaultSorting, input.SkipCount, input.MaxResultCount,
-                CurrentUser.GetId());
+                CurrentUser.GetId(), input.ExamId);
 
             List<UserExamListDto> dtos = ObjectMapper.Map<List<UserExamWithDetails>, List<UserExamListDto>>(entities);
             return new PagedResultDto<UserExamListDto>(totalCount, dtos);

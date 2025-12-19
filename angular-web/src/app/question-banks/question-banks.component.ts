@@ -3,8 +3,12 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxDatatableDefaultDirective, NgxDatatableListDirective } from '@abp/ng.theme.shared';
+import { FormsModule } from '@angular/forms';
 import { QuestionBankService } from '@proxy/controllers';
-import { QuestionBankListDto } from '@proxy/question-management/question-banks';
+import {
+  QuestionBankListDto,
+  GetQuestionBanksInput,
+} from '@proxy/question-management/question-banks';
 
 @Component({
   selector: 'app-question-banks',
@@ -12,6 +16,7 @@ import { QuestionBankListDto } from '@proxy/question-management/question-banks';
   providers: [ListService],
   imports: [
     CoreModule,
+    FormsModule,
     NgxDatatableModule,
     NgxDatatableDefaultDirective,
     NgxDatatableListDirective,
@@ -19,15 +24,34 @@ import { QuestionBankListDto } from '@proxy/question-management/question-banks';
 })
 export class QuestionBanksComponent implements OnInit {
   questionBanks = { items: [], totalCount: 0 } as PagedResultDto<QuestionBankListDto>;
-  public readonly list = inject(ListService);
+  protected readonly list = inject(ListService<GetQuestionBanksInput>);
   private readonly questionBankService = inject(QuestionBankService);
   private readonly router = inject(Router);
 
+  filters: Partial<GetQuestionBanksInput> = {
+    title: undefined,
+  };
+
   ngOnInit() {
-    const questionBankStreamCreator = query => this.questionBankService.getList(query);
-    this.list.hookToQuery(questionBankStreamCreator).subscribe(response => {
-      this.questionBanks = response;
-    });
+    this.list
+      .hookToQuery(query => {
+        query.title = this.filters.title;
+        return this.questionBankService.getList(query);
+      })
+      .subscribe(response => {
+        this.questionBanks = response;
+      });
+  }
+
+  search() {
+    this.list.get();
+  }
+
+  clearFilters() {
+    this.filters = {
+      title: undefined,
+    };
+    this.search();
   }
 
   goDetail(id: string) {

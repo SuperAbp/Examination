@@ -1,7 +1,7 @@
 import type { EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
 export interface GetUserExamsInput extends PagedAndSortedResultRequestDto {
-  userExamId?: string;
+  examId?: string;
 }
 
 export interface UserExamAnswerDto {

@@ -3,6 +3,30 @@
     <h5 class="mb-0">{{ '::Menu:QuestionBank' | abpLocalization }}</h5>
   </div>
   <div class="card-body">
+    <form (ngSubmit)="search()" class="mb-3">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="filters.title"
+              name="title"
+              [placeholder]="'::Placeholder' | abpLocalization: ('::Title' | abpLocalization)"
+            />
+          </div>
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-primary me-2" (click)="search()">
+            <i class="fa fa-search"></i> {{ '::Search' | abpLocalization }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="clearFilters()">
+            <i class="fa fa-times"></i> {{ '::Clear' | abpLocalization }}
+          </button>
+        </div>
+      </div>
+    </form>
+
     <ngx-datatable
       [rows]="questionBanks.items"
       [count]="questionBanks.totalCount"
