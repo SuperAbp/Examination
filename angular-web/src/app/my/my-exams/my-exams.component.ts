@@ -76,4 +76,8 @@ export class MyExamsComponent implements OnInit {
   viewExam(id: string) {
     this.router.navigate(['/exams/submitted', id]);
   }
+
+  viewDetail(id: string) {
+    this.router.navigate(['/my/exams/detail', id]);
+  }
 }

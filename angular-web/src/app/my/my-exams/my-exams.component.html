@@ -56,9 +56,25 @@
           @if (row.status === 3) {
             {{ row.totalScore }}
           } @else if (row.status <= 2) {
-            未出分
+            {{ '::NotGradedYet' | abpLocalization }}
           } @else {
             0
+          }
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column
+        [name]="'::IsPassed' | abpLocalization"
+        [width]="100"
+        [canAutoResize]="false"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          @if (row.isPassed === null || row.isPassed === undefined) {
+            {{ '::NotGradedYet' | abpLocalization }}
+          } @else if (row.isPassed) {
+            <span class="badge bg-success">{{ '::Passed' | abpLocalization }}</span>
+          } @else {
+            <span class="badge bg-danger">{{ '::NotPassed' | abpLocalization }}</span>
           }
         </ng-template>
       </ngx-datatable-column>
@@ -86,10 +102,10 @@
       >
         <ng-template ngx-datatable-cell-template let-row="row">
           <button
-            *ngIf="row.status === 2"
+            *ngIf="row.status === 3"
             type="button"
             class="btn btn-primary btn-sm"
-            (click)="viewExam(row.id)"
+            (click)="viewDetail(row.id)"
           >
             {{ '::Detail' | abpLocalization }}
           </button>

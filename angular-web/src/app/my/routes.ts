@@ -5,6 +5,7 @@ import { MistakeReviewsTrainComponent } from './mistake-reviews/train/train.comp
 import { MyFavoritesComponent } from './my-favorites/my-favorites.component';
 import { MyFavoritesTrainComponent } from './my-favorites/train/train.component';
 import { MyExamsComponent } from './my-exams/my-exams.component';
+import { ExamDetailComponent } from './my-exams/detail/detail.component';
 
 export const routes: Routes = [
   {
@@ -13,6 +14,11 @@ export const routes: Routes = [
       {
         path: 'exams',
         component: MyExamsComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'exams/detail/:id',
+        component: ExamDetailComponent,
         canActivate: [authGuard],
       },
       {

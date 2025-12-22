@@ -1,0 +1,16 @@
+// 响应式调整
+@media (max-width: 992px) {
+  .question-numbers {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+// 粘性定位优化
+.sticky-top {
+  z-index: 10;
+}
+
+// 适当加粗
+strong {
+  font-weight: 500;
+}

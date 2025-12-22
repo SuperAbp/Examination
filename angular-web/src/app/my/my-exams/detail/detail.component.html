@@ -1,0 +1,174 @@
+@if (loading) {
+  <div class="text-center mt-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">加载中...</span>
+    </div>
+  </div>
+} @else {
+  <div class="row g-3">
+    <!-- 左侧：题号导航 -->
+    <div class="col-2">
+      <div class="sticky-top" style="top: 1rem">
+        <app-question-number
+          [questionNumbers]="questionNumbers"
+          [correctQuestionIds]="correctQuestionIds"
+          [incorrectQuestionIds]="incorrectQuestionIds"
+          (questionNumberSelected)="scrollToQuestion($event)"
+        >
+        </app-question-number>
+      </div>
+    </div>
+
+    <!-- 中间：试卷内容 -->
+    <div class="col-8">
+      <div class="card">
+        <div class="card-header">
+          <span style="cursor: pointer" (click)="goBack()">
+            <i class="fa-solid fa-arrow-left"></i>
+          </span>
+          <span class="ms-3 fw-bold">{{ examDetail.examName }}</span>
+        </div>
+        <div class="card-body">
+          @if (examDetail.sections && examDetail.sections.length > 0) {
+            <!-- 按章节显示 -->
+            @for (section of examDetail.sections; track section.id; let sectionIdx = $index) {
+              @if (section.title) {
+                <div class="mb-4">
+                  <h5>
+                    {{ getChineseNumber(sectionIdx + 1) }}、{{ section.title }}
+                    <small class="text-muted">
+                      (共{{ section.questions?.length }}题，每题{{ section.scoreEach }}分)
+                    </small>
+                  </h5>
+                </div>
+              }
+
+              @for (question of section.questions; track question.id; let questionIdx = $index) {
+                <div class="mb-4" [id]="'question-' + question.id">
+                  <!-- 题目内容 -->
+                  <div class="fs-5 mb-3">{{ questionIdx + 1 }}、{{ question.content }}</div>
+
+                  @if (question.questionType === 0 || question.questionType === 2) {
+                    <app-single-choice
+                      [options]="question.options"
+                      [selectedAnswerId]="getSelectedAnswerId(question)"
+                      [showAnalysis]="true"
+                      [disabled]="true"
+                    >
+                    </app-single-choice>
+                  } @else if (question.questionType === 1) {
+                    <app-multiple-choice
+                      [options]="question.options"
+                      [selectedAnswerIds]="getSelectedAnswerIds(question)"
+                      [showAnalysis]="true"
+                      [disabled]="true"
+                      [hideSubmitButton]="true"
+                    >
+                    </app-multiple-choice>
+                  } @else if (question.questionType === 3) {
+                    <app-fill-blank
+                      [options]="question.options"
+                      [selectedAnswers]="getFillBlankAnswers(question)"
+                      [showAnalysis]="true"
+                      [disabled]="true"
+                      [hideSubmitButton]="true"
+                    >
+                    </app-fill-blank>
+                  }
+
+                  <div class="p-3 rounded bg-light mt-3">
+                    <div>
+                      <strong class="fs-3">
+                        @if (question.right === true) {
+                          <i class="fa fa-check-circle text-success"></i>
+                        } @else {
+                          <i class="fa fa-times-circle text-danger"></i>
+                        }
+                      </strong>
+                    </div>
+                    <div>
+                      <strong>{{ '::Score' | abpLocalization }}：</strong>
+                      <span>
+                        {{ question.score || 0 }}/{{ question.questionScore || section.scoreEach }}
+                      </span>
+                    </div>
+                    @if (question.analysis) {
+                      <div>
+                        <strong>{{ '::Analysis' | abpLocalization }}：</strong>
+                        <div [innerHTML]="question.analysis"></div>
+                      </div>
+                    }
+                  </div>
+
+                  @if (question.knowledgePoints && question.knowledgePoints.length > 0) {
+                    <div class="mt-2">
+                      <small class="text-muted">
+                        <i class="fa fa-tags"></i> 知识点：
+                        @for (kp of question.knowledgePoints; track kp; let last = $last) {
+                          <span class="badge bg-light text-dark">{{ kp }}</span>
+                        }
+                      </small>
+                    </div>
+                  }
+                </div>
+              }
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧：成绩统计 -->
+    <div class="col-2">
+      <div class="sticky-top" style="top: 1rem">
+        <div class="card">
+          <div class="card-body">
+            <!-- 总分 -->
+            <div class="text-center mb-4">
+              <div class="text-muted mb-2">{{ '::TotalScore' | abpLocalization }}</div>
+              <div class="score-display">
+                @if (examDetail.isPassed) {
+                  <span class="fs-1 fw-bold text-success">{{ examDetail.totalScore || 0 }}</span>
+                } @else {
+                  <span class="fs-1 fw-bold text-danger">{{ examDetail.totalScore || 0 }}</span>
+                }
+              </div>
+            </div>
+
+            <hr />
+
+            <!-- 答题统计 -->
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-2">
+                <span>{{ '::TotalCount' | abpLocalization }}：</span>
+                <strong>{{ getTotalQuestions() }}</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>{{ '::CorrectCount' | abpLocalization }}：</span>
+                <strong class="text-success">{{ getCorrectCount() }}</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>{{ '::WrongCount' | abpLocalization }}：</span>
+                <strong class="text-danger">{{ getWrongCount() }}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span>{{ '::UnansweredCount' | abpLocalization }}：</span>
+                <strong class="text-muted">{{ getUnansweredCount() }}</strong>
+              </div>
+            </div>
+
+            <hr />
+
+            <!-- 正确率 -->
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-2">
+                <span>{{ '::AccuracyRate' | abpLocalization }}：</span>
+                <strong class="text-primary">{{ getAccuracyRate() }}%</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

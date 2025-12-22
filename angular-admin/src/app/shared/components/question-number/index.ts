@@ -11,15 +11,15 @@ export class QuestionNumberItem {
 }
 
 @Component({
-    selector: 'question-number',
-    styles: [
-        `
+  selector: 'question-number',
+  styles: [
+    `
       nz-tag {
         cursor: pointer;
       }
     `
-    ],
-    template: `
+  ],
+  template: `
     <nz-card>
       @for (questionNumber of questionNumbers; track $index) {
         <div style="margin-bottom: 16px;">
@@ -30,7 +30,7 @@ export class QuestionNumberItem {
             <span>{{ 'Exam::TotalScore{0}' | abpLocalization: questionNumber.totalScore + '' }}</span>
           </div>
           <div>
-            <nz-space>
+            <nz-space nzWrap>
               @for (questionNumberOption of questionNumber.questions; track $index; let i = $index) {
                 <nz-tag (click)="scrollTo(questionNumberOption.id)" [nzColor]="getColor(questionNumberOption.id)">{{ i + 1 }}</nz-tag>
               }
@@ -40,7 +40,7 @@ export class QuestionNumberItem {
       }
     </nz-card>
   `,
-    standalone: false
+  standalone: false
 })
 export class QuestionNumberComponent {
   @Input()
