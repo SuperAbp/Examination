@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,7 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Volo.Abp;
-using Volo.Abp.AspNetCore.Authentication.JwtBearer;
+using Volo.Abp.Account;
 using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
@@ -29,7 +28,6 @@ using Volo.Abp.Caching.StackExchangeRedis;
 using Volo.Abp.DistributedLocking;
 using Volo.Abp.Json;
 using Volo.Abp.Modularity;
-using Volo.Abp.Security.Claims;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
@@ -42,7 +40,6 @@ namespace SuperAbp.Exam.Admin;
     typeof(AbpCachingStackExchangeRedisModule),
     typeof(AbpDistributedLockingModule),
     typeof(AbpAspNetCoreMvcUiMultiTenancyModule),
-    typeof(AbpAspNetCoreAuthenticationJwtBearerModule),
     typeof(ExamApplicationAdminModule),
     typeof(ExamEntityFrameworkCoreModule),
     typeof(AbpAspNetCoreSerilogModule),
@@ -55,24 +52,17 @@ public class ExamHttpApiHostModule : AbpModule
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
 
-        if (!configuration.GetValue<bool>("App:DisablePII"))
-        {
-            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
-            Microsoft.IdentityModel.Logging.IdentityModelEventSource.LogCompleteSecurityArtifact = true;
-        }
-
         ConfigureAuthentication(context, configuration);
         ConfigureCache(configuration);
         ConfigureJson();
-        ConfigureHealthChecks(context);
-        //ConfigureUrls(configuration);
+        ConfigureUrls(configuration);
         ConfigureVirtualFileSystem(context);
         ConfigureDataProtection(context, configuration, hostingEnvironment);
         ConfigureDistributedLocking(context, configuration);
         ConfigureCors(context, configuration);
         if (hostingEnvironment.IsDevelopment())
         {
-            ConfigureSwagger(context, configuration);
+            ConfigureSwaggerServices(context, configuration);
         }
 
         Configure<AbpBackgroundWorkerOptions>(options =>
@@ -89,16 +79,12 @@ public class ExamHttpApiHostModule : AbpModule
     private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
     {
         context.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddAbpJwtBearer(options =>
+            .AddJwtBearer(options =>
             {
                 options.Authority = configuration["AuthServer:Authority"];
-                options.RequireHttpsMetadata = configuration.GetValue<bool>("AuthServer:RequireHttpsMetadata");
+                options.RequireHttpsMetadata = Convert.ToBoolean(configuration["AuthServer:RequireHttpsMetadata"]);
                 options.Audience = "Exam";
             });
-        context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
-        {
-            options.IsDynamicClaimsEnabled = true;
-        });
     }
 
     private void ConfigureJson()
@@ -110,17 +96,17 @@ public class ExamHttpApiHostModule : AbpModule
         });
     }
 
-    //private void ConfigureUrls(IConfiguration configuration)
-    //{
-    //    Configure<AppUrlOptions>(options =>
-    //    {
-    //        options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
-    //        options.RedirectAllowedUrls.AddRange(configuration["App:RedirectAllowedUrls"].Split(','));
+    private void ConfigureUrls(IConfiguration configuration)
+    {
+        Configure<AppUrlOptions>(options =>
+        {
+            options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
+            options.RedirectAllowedUrls.AddRange(configuration["App:RedirectAllowedUrls"].Split(','));
 
-    //        options.Applications["Angular"].RootUrl = configuration["App:ClientUrl"];
-    //        options.Applications["Angular"].Urls[AccountUrlNames.PasswordReset] = "account/reset-password";
-    //    });
-    //}
+            options.Applications["Angular"].RootUrl = configuration["App:ClientUrl"];
+            options.Applications["Angular"].Urls[AccountUrlNames.PasswordReset] = "account/reset-password";
+        });
+    }
 
     private void ConfigureVirtualFileSystem(ServiceConfigurationContext context)
     {
@@ -146,7 +132,7 @@ public class ExamHttpApiHostModule : AbpModule
         }
     }
 
-    private static void ConfigureSwagger(ServiceConfigurationContext context, IConfiguration configuration)
+    private static void ConfigureSwaggerServices(ServiceConfigurationContext context, IConfiguration configuration)
     {
         context.Services.AddAbpSwaggerGenWithOAuth(
             configuration["AuthServer:Authority"],
@@ -171,11 +157,6 @@ public class ExamHttpApiHostModule : AbpModule
 
                 #endregion 注释
             });
-    }
-
-    private void ConfigureHealthChecks(ServiceConfigurationContext context)
-    {
-        context.Services.AddHealthChecks();
     }
 
     private void ConfigureDataProtection(
@@ -242,9 +223,8 @@ public class ExamHttpApiHostModule : AbpModule
         }
 
         app.UseCorrelationId();
-        app.MapAbpStaticAssets();
+        app.UseStaticFiles();
         app.UseRouting();
-        app.UseAbpSecurityHeaders();
         app.UseCors();
         app.UseAuthentication();
 

@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SuperAbp.AuditLogging;
 using SuperAbp.Exam.Admin.QuestionManagement.Questions;
-using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.MenuManagement;
 using System;
-using System.Reflection;
+using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.FeatureManagement;
@@ -32,6 +31,10 @@ public class ExamApplicationAdminModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        Configure<AbpAutoMapperOptions>(options =>
+        {
+            options.AddMaps<ExamApplicationAdminModule>();
+        });
         context.Services.AddTransient(factory =>
         {
             Func<int, IQuestionAnalysis?> accessor = key =>
@@ -46,10 +49,6 @@ public class ExamApplicationAdminModule : AbpModule
                 };
             };
             return accessor;
-        });
-        Configure<AbpAutoMapperOptions>(options =>
-        {
-            options.AddMaps<ExamApplicationAdminModule>();
         });
     }
 }

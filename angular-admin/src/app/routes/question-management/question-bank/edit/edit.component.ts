@@ -12,9 +12,10 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, tap } from 'rxjs/operators';
 
 @Component({
-    selector: 'app-question-management-question-bank-edit',
-    templateUrl: './edit.component.html',
-    imports: [CoreModule, NzSpinModule, NzModalModule, NzFormModule, NzInputModule, NzButtonModule]
+  selector: 'app-question-management-question-bank-edit',
+  templateUrl: './edit.component.html',
+  standalone: true,
+  imports: [CoreModule, NzSpinModule, NzModalModule, NzFormModule, NzInputModule, NzButtonModule]
 })
 export class QuestionManagementQuestionBankEditComponent implements OnInit {
   @Input()

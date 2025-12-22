@@ -31,7 +31,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { finalize, tap } from 'rxjs/operators';
 
 import { QuestionRandomComponent } from './question-random.component';
@@ -44,10 +44,10 @@ export interface PaperQuestionRuleCreateTemp extends PaperCreateOrUpdateDtoBase_
   questionTypeName: string;
 }
 @Component({
-    selector: 'app-paper-random',
-    templateUrl: './paper-random.component.html',
-    styles: [
-        `
+  selector: 'app-paper-random',
+  templateUrl: './paper-random.component.html',
+  styles: [
+    `
       .ant-form-item-label {
         width: 95px;
       }
@@ -58,30 +58,31 @@ export interface PaperQuestionRuleCreateTemp extends PaperCreateOrUpdateDtoBase_
         border-radius: 4px;
       }
     `
-    ],
-    imports: [
-        SharedModule,
-        CoreModule,
-        PageHeaderModule,
-        FooterToolbarModule,
-        NzSpinModule,
-        NzCardModule,
-        NzFormModule,
-        NzIconModule,
-        NzInputModule,
-        NzListModule,
-        NzInputNumberModule,
-        NzButtonModule,
-        NzFlexModule,
-        NzSpaceModule,
-        NzModalModule,
-        NzRadioModule,
-        NzDescriptionsModule,
-        NzSelectModule,
-        NzTableModule,
-        NzPopconfirmModule,
-        NzTooltipModule
-    ]
+  ],
+  standalone: true,
+  imports: [
+    SharedModule,
+    CoreModule,
+    PageHeaderModule,
+    FooterToolbarModule,
+    NzSpinModule,
+    NzCardModule,
+    NzFormModule,
+    NzIconModule,
+    NzInputModule,
+    NzListModule,
+    NzInputNumberModule,
+    NzButtonModule,
+    NzFlexModule,
+    NzSpaceModule,
+    NzModalModule,
+    NzRadioModule,
+    NzDescriptionsModule,
+    NzSelectModule,
+    NzTableModule,
+    NzPopconfirmModule,
+    NzToolTipModule
+  ]
 })
 export class PaperManagementPaperRandomEditComponent implements OnInit {
   private modal = inject(ModalHelper);

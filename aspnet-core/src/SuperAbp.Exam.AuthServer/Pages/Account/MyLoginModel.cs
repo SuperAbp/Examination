@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -22,9 +21,8 @@ namespace SuperAbp.Exam.Pages.Account
             IOptions<AbpAccountOptions> accountOptions,
             IOptions<IdentityOptions> identityOptions,
             IdentityDynamicClaimsPrincipalContributorCache identityDynamicClaimsPrincipalContributorCache,
-            IAbpTenantAppService tenantAppService,
-            IWebHostEnvironment webHostEnvironment)
-            : base(schemeProvider, accountOptions, identityOptions, identityDynamicClaimsPrincipalContributorCache, webHostEnvironment)
+            IAbpTenantAppService tenantAppService)
+            : base(schemeProvider, accountOptions, identityOptions, identityDynamicClaimsPrincipalContributorCache)
         {
             _tenantAppService = tenantAppService;
         }

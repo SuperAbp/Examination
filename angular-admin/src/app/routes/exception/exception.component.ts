@@ -3,10 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { ExceptionType } from '@delon/abc/exception';
 
 @Component({
-    selector: 'app-exception',
-    template: ` <exception [type]="type" style="min-height: 500px; height: 80%;"> </exception> `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'app-exception',
+  template: ` <exception [type]="type" style="min-height: 500px; height: 80%;"> </exception> `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExceptionComponent {
   get type(): ExceptionType {

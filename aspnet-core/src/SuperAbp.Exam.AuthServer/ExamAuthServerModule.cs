@@ -87,6 +87,15 @@ public class ExamAuthServerModule : AbpModule
         var hostingEnvironment = context.Services.GetHostingEnvironment();
         var configuration = context.Services.GetConfiguration();
 
+        Configure<AbpAntiForgeryOptions>(options =>
+        {
+            options.TokenCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            options.TokenCookie.SameSite = SameSiteMode.Lax;
+        });
+        Configure<OpenIddictServerAspNetCoreOptions>(options =>
+        {
+            options.DisableTransportSecurityRequirement = true;
+        });
         Configure<AbpLocalizationOptions>(options =>
         {
             options.Resources

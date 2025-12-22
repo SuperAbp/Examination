@@ -33,10 +33,10 @@ import { QuestionRandomComponent } from './question-random.component';
 import { QuestionSelectComponent } from './question-select.component';
 
 @Component({
-    selector: 'app-paper-fix',
-    templateUrl: './paper-fix.component.html',
-    styles: [
-        `
+  selector: 'app-paper-fix',
+  templateUrl: './paper-fix.component.html',
+  styles: [
+    `
       .ant-form-item-label {
         width: 95px;
       }
@@ -47,26 +47,27 @@ import { QuestionSelectComponent } from './question-select.component';
         border-radius: 4px;
       }
     `
-    ],
-    imports: [
-        SharedModule,
-        CoreModule,
-        PageHeaderModule,
-        FooterToolbarModule,
-        NzSpinModule,
-        NzCardModule,
-        NzFormModule,
-        NzIconModule,
-        NzInputModule,
-        NzListModule,
-        NzInputNumberModule,
-        NzButtonModule,
-        NzFlexModule,
-        NzSpaceModule,
-        NzModalModule,
-        NzRadioModule,
-        NzDescriptionsModule
-    ]
+  ],
+  standalone: true,
+  imports: [
+    SharedModule,
+    CoreModule,
+    PageHeaderModule,
+    FooterToolbarModule,
+    NzSpinModule,
+    NzCardModule,
+    NzFormModule,
+    NzIconModule,
+    NzInputModule,
+    NzListModule,
+    NzInputNumberModule,
+    NzButtonModule,
+    NzFlexModule,
+    NzSpaceModule,
+    NzModalModule,
+    NzRadioModule,
+    NzDescriptionsModule
+  ]
 })
 export class PaperManagementPaperFixEditComponent implements OnInit {
   private modal = inject(ModalHelper);

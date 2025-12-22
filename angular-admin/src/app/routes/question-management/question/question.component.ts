@@ -13,9 +13,10 @@ import { of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 @Component({
-    selector: 'app-question-management-question',
-    templateUrl: './question.component.html',
-    imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
+  selector: 'app-question-management-question',
+  templateUrl: './question.component.html',
+  standalone: true,
+  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class QuestionManagementQuestionComponent implements OnInit {
   private router = inject(Router);

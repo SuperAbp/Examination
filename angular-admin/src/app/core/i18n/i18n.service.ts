@@ -15,6 +15,7 @@ import {
   _HttpClient,
   AlainI18nBaseService
 } from '@delon/theme';
+import { AlainConfigService } from '@delon/util/config';
 import { enUS as dfEn, zhCN as dfZhCn, zhTW as dfZhTw } from 'date-fns/locale';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { en_US as zorroEnUS, NzI18nService, zh_CN as zorroZhCN, zh_TW as zorroZhTW } from 'ng-zorro-antd/i18n';
@@ -31,7 +32,7 @@ interface LangConfigData {
 }
 
 const DEFAULT = 'zh-CN';
-const LANGS: Record<string, LangConfigData> = {
+const LANGS: { [key: string]: LangConfigData } = {
   'zh-CN': {
     text: '简体中文',
     ng: ngZh,
@@ -67,9 +68,8 @@ export class I18NService extends AlainI18nBaseService {
     return { code, text: item.text, abbr: item.abbr };
   });
 
-  constructor() {
-    super();
-
+  constructor(cogSrv: AlainConfigService) {
+    super(cogSrv);
     const defaultLang = this.getDefaultLang();
     this._defaultLang = this._langs.findIndex(w => w.code === defaultLang) === -1 ? DEFAULT : defaultLang;
   }
@@ -87,7 +87,7 @@ export class I18NService extends AlainI18nBaseService {
   }
 
   loadLangData(lang: string): Observable<NzSafeAny> {
-    return this.http.get(`./assets/tmp/i18n/${lang}.json`);
+    return this.http.get(`assets/tmp/i18n/${lang}.json`);
   }
 
   use(lang: string, data: Record<string, unknown>): void {

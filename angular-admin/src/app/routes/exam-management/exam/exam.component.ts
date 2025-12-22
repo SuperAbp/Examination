@@ -15,9 +15,10 @@ import { tap } from 'rxjs/operators';
 import { ExamManagementExamEditComponent } from './edit/edit.component';
 
 @Component({
-    selector: 'app-exam-management-exam',
-    templateUrl: './exam.component.html',
-    imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
+  selector: 'app-exam-management-exam',
+  templateUrl: './exam.component.html',
+  standalone: true,
+  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class ExamManagementExamComponent implements OnInit {
   private modal = inject(ModalHelper);

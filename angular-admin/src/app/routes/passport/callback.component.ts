@@ -4,10 +4,9 @@ import { SocialService } from '@delon/auth';
 import { SettingsService } from '@delon/theme';
 
 @Component({
-    selector: 'app-callback',
-    template: ``,
-    providers: [SocialService],
-    standalone: false
+  selector: 'app-callback',
+  template: ``,
+  providers: [SocialService]
 })
 export class CallbackComponent implements OnInit {
   type = '';

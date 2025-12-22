@@ -1,4 +1,4 @@
-import { CoreModule, NgxValidateCoreModule, provideAbpCore, withOptions } from '@abp/ng.core';
+import { CoreModule } from '@abp/ng.core';
 import { registerLocale } from '@abp/ng.core/locale';
 import { AbpOAuthModule, provideAbpOAuth } from '@abp/ng.oauth';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -50,13 +50,12 @@ const routerFeatures: RouterFeatures[] = [withComponentInputBinding(), withInMem
 if (environment.useHash) routerFeatures.push(withHashLocation());
 
 const providers: Array<Provider | EnvironmentProviders> = [
-  provideAbpCore(
-    withOptions({
+  importProvidersFrom([
+    CoreModule.forRoot({
       environment,
       registerLocaleFn: registerLocale()
-      })
-  ),
-  importProvidersFrom([NgxValidateCoreModule.forRoot()]),
+    })
+  ]),
   provideHttpClient(withInterceptors([...(environment.interceptorFns ?? []), defaultInterceptor, authJWTInterceptor])),
   provideAnimations(),
   provideRouter(routes, ...routerFeatures),

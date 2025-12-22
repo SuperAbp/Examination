@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { UserExamDetailDto_SectionDto_QuestionDto } from '@proxy/admin/exam-management/user-exams';
 
 @Component({
-    selector: 'choose',
-    template: `
+  selector: 'choose',
+  template: `
     <div class="chooses">
       <div
         *ngFor="let option of question.options; let j = index"
@@ -22,8 +22,7 @@ import { UserExamDetailDto_SectionDto_QuestionDto } from '@proxy/admin/exam-mana
       </div>
     </div>
   `,
-    styleUrl: './index.less',
-    standalone: false
+  styleUrl: './index.less'
 })
 export class ChooseComponent {
   @Input()

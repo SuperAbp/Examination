@@ -18,10 +18,10 @@ export class questionTest {
   items: QuestionDetailDto[];
 }
 @Component({
-    selector: 'app-exam-management-paper-edit',
-    templateUrl: './edit.component.html',
-    styles: [
-        `
+  selector: 'app-exam-management-paper-edit',
+  templateUrl: './edit.component.html',
+  styles: [
+    `
       [nz-radio] {
         display: block;
         height: 32px;
@@ -40,8 +40,9 @@ export class questionTest {
         border-radius: 4px;
       }
     `
-    ],
-    imports: [SharedModule, CoreModule, PaperManagementPaperFixEditComponent, PaperManagementPaperRandomEditComponent]
+  ],
+  standalone: true,
+  imports: [SharedModule, CoreModule, PaperManagementPaperFixEditComponent, PaperManagementPaperRandomEditComponent]
 })
 export class PaperManagementPaperEditComponent implements OnInit {
   private route = inject(ActivatedRoute);

@@ -7,10 +7,10 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 import { QuestionManagementAnswerComponent } from './answer.component';
 
@@ -19,19 +19,20 @@ interface QuestionAnswerTemp extends QuestionAnswerDto {
 }
 
 @Component({
-    selector: 'blank',
-    templateUrl: './blank.component.html',
-    imports: [
-        CoreModule,
-        NzButtonModule,
-        NzTableModule,
-        NzFormModule,
-        NzInputModule,
-        NzInputNumberLegacyModule,
-        NzPopconfirmModule,
-        NzTooltipModule,
-        NzIconModule
-    ]
+  selector: 'blank',
+  templateUrl: './blank.component.html',
+  standalone: true,
+  imports: [
+    CoreModule,
+    NzButtonModule,
+    NzTableModule,
+    NzFormModule,
+    NzInputModule,
+    NzInputNumberModule,
+    NzPopconfirmModule,
+    NzToolTipModule,
+    NzIconModule
+  ]
 })
 export class BlankComponent extends QuestionManagementAnswerComponent {
   constructor(

@@ -17,9 +17,10 @@ export class questionTest {
   items: QuestionDetailDto[];
 }
 @Component({
-    selector: 'app-exam-management-paper-model',
-    templateUrl: './paper-model.component.html',
-    imports: [CoreModule, NzButtonModule, NzSpaceModule, NzGridModule, NzModalModule]
+  selector: 'app-exam-management-paper-model',
+  templateUrl: './paper-model.component.html',
+  standalone: true,
+  imports: [CoreModule, NzButtonModule, NzSpaceModule, NzGridModule, NzModalModule]
 })
 export class PaperManagementPaperModelComponent {
   private modal = inject(NzModalRef);

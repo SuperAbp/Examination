@@ -9,21 +9,6 @@ public class FakeClock : IClock, ITransientDependency
 {
     public DateTime Normalize(DateTime dateTime) => dateTime;
 
-    public DateTime ConvertToUserTime(DateTime utcDateTime)
-    {
-        throw new NotImplementedException();
-    }
-
-    public DateTimeOffset ConvertToUserTime(DateTimeOffset dateTimeOffset)
-    {
-        throw new NotImplementedException();
-    }
-
-    public DateTime ConvertToUtc(DateTime dateTime)
-    {
-        throw new NotImplementedException();
-    }
-
     public DateTime FakeNow { get; set; } = DateTime.Now;
     public DateTime Now => FakeNow;
     public DateTimeKind Kind => DateTimeKind.Utc;

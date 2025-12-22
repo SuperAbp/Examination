@@ -8,8 +8,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { HeaderI18nComponent } from '../basic/widgets/i18n.component';
 
 @Component({
-    selector: 'layout-passport',
-    template: `
+  selector: 'layout-passport',
+  template: `
     <div class="container">
       <header-i18n showLangText="false" class="langs" />
       <div class="wrap">
@@ -29,8 +29,9 @@ import { HeaderI18nComponent } from '../basic/widgets/i18n.component';
     </div>
     <theme-btn />
   `,
-    styleUrls: ['./passport.component.less'],
-    imports: [RouterOutlet, HeaderI18nComponent, GlobalFooterModule, NzIconModule, ThemeBtnComponent]
+  styleUrls: ['./passport.component.less'],
+  standalone: true,
+  imports: [RouterOutlet, HeaderI18nComponent, GlobalFooterModule, NzIconModule, ThemeBtnComponent]
 })
 export class LayoutPassportComponent implements OnInit {
   private tokenService = inject(DA_SERVICE_TOKEN);

@@ -1,10 +1,10 @@
-﻿using SuperAbp.Exam.Blazor.Model;
+﻿using AutoMapper;
+using SuperAbp.Exam.Blazor.Model;
 using SuperAbp.Exam.Blazor.Pages;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel;
 using static SuperAbp.Exam.Blazor.Model.UserExamSectionViewModel.UserExamQuestionViewModel;
-using AutoMapper;
 
 namespace SuperAbp.Exam.Blazor;
 

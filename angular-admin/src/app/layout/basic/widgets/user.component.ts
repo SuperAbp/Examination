@@ -19,25 +19,26 @@ import { tap } from 'rxjs';
       <div nz-menu class="width-sm">
         <div nz-menu-item routerLink="/pro/account/center">
           <i nz-icon nzType="user" class="mr-sm"></i>
-          {{ 'menu.account.center' | i18n }}
+          个人中心
         </div>
         <div nz-menu-item routerLink="/pro/account/settings">
           <i nz-icon nzType="setting" class="mr-sm"></i>
-          {{ 'menu.account.settings' | i18n }}
+          个人设置
         </div>
         <div nz-menu-item routerLink="/exception/trigger">
           <i nz-icon nzType="close-circle" class="mr-sm"></i>
-          {{ 'menu.account.trigger' | i18n }}
+          触发错误
         </div>
         <li nz-menu-divider></li>
         <div nz-menu-item (click)="logout()">
           <i nz-icon nzType="logout" class="mr-sm"></i>
-          {{ 'menu.account.logout' | i18n }}
+          退出登录
         </div>
       </div>
     </nz-dropdown-menu>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
   imports: [NzDropDownModule, NzMenuModule, NzIconModule, I18nPipe, NzAvatarModule]
 })
 export class HeaderUserComponent {

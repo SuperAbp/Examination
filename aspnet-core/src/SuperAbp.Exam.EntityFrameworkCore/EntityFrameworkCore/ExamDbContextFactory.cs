@@ -19,7 +19,7 @@ public class ExamDbContextFactory : IDesignTimeDbContextFactory<ExamDbContext>
 
         string connectionString = configuration.GetConnectionString("Default") ?? String.Empty;
         var builder = new DbContextOptionsBuilder<ExamDbContext>()
-            .UseSqlServer(connectionString);
+            .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 
         return new ExamDbContext(builder.Options);
     }

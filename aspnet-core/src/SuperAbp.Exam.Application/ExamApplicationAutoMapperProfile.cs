@@ -5,9 +5,9 @@ using SuperAbp.Exam.TrainingManagement;
 
 namespace SuperAbp.Exam;
 
-public class ExamApplicationAutoMapper : Profile
+public class ExamApplicationAutoMapperProfile : Profile
 {
-    public ExamApplicationAutoMapper()
+    public ExamApplicationAutoMapperProfile()
     {
         CreateMap<Training, TrainingListDto>();
 
