@@ -10,6 +10,16 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     /// </summary>
     public class UserExamDetailDto : EntityDto<Guid>
     {
+        /// <summary>
+        /// 总分
+        /// </summary>
+        public decimal TotalScore { get; set; }
+
+        /// <summary>
+        /// 是否通过
+        /// </summary>
+        public bool? IsPassed { get; set; }
+
         public Guid UserId { get; set; }
         public Guid ExamId { get; set; }
         public required string ExamName { get; set; }

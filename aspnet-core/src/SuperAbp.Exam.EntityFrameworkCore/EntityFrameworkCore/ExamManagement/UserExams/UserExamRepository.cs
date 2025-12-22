@@ -108,6 +108,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
                               CreationTime = ue.CreationTime,
                               FinishedTime = ue.FinishedTime,
                               TotalScore = ue.TotalScore,
+                              IsPassed = ue.IsPassed,
                               Status = ue.Status
                           })
                 .OrderBy(sorting ?? UserExamConsts.DefaultSorting)

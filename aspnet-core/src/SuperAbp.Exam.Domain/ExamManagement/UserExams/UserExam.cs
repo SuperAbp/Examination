@@ -37,6 +37,11 @@ public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
     public decimal TotalScore { get; set; }
 
     /// <summary>
+    /// 是否通过
+    /// </summary>
+    public bool? IsPassed { get; set; }
+
+    /// <summary>
     /// 交卷时间
     /// </summary>
     public DateTime? FinishedTime { get; set; }
@@ -93,5 +98,14 @@ public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
     {
         Sections.Add(section);
         return this;
+    }
+
+    /// <summary>
+    /// 检查并设置是否通过考试
+    /// </summary>
+    /// <param name="passingScore">及格分数</param>
+    public void CheckPassed(decimal passingScore)
+    {
+        IsPassed = TotalScore >= passingScore;
     }
 }

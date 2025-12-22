@@ -135,6 +135,10 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
             userExam.ReviewQuestion(GuidGenerator.Create(), question.QuestionId, question.Right, question.Score.Value, question.Reason);
         }
         userExam.UpdateTotalScore();
+
+        // 根据及格分数判断是否通过并存储
+        userExam.CheckPassed(examination.PassingScore);
+
         userExam.Status = UserExamStatus.Scored;
         await UserExamRepository.UpdateAsync(userExam);
     }

@@ -13,6 +13,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public Guid UserId { get; set; }
         public string ExamName { get; set; }
 
+        /// <summary>
+        /// 是否通过
+        /// </summary>
+        public bool? IsPassed { get; set; }
+
         // public Guid QuestionId { get; set; }
         // public required QuestionType QuestionType { get; set; }
         //

@@ -88,6 +88,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                     questionDto.Right = userExamQuestion.Right;
                     questionDto.Answers = userExamQuestion.Answers;
                     questionDto.QuestionScore = userExamQuestion.QuestionScore;
+                    questionDto.Score = userExamQuestion.Score;
 
                     // Get knowledge points
                     List<KnowledgePoint> knowledgePoints = await questionManager.GetKnowledgePointsAsync(question.Id);
