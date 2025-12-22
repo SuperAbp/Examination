@@ -8,10 +8,10 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 
 import { QuestionManagementAnswerComponent } from './answer.component';
 interface QuestionAnswerTemp extends QuestionAnswerDto {
@@ -19,21 +19,20 @@ interface QuestionAnswerTemp extends QuestionAnswerDto {
 }
 
 @Component({
-  selector: 'multi-select',
-  templateUrl: './multi-select.component.html',
-  standalone: true,
-  imports: [
-    CoreModule,
-    NzButtonModule,
-    NzTableModule,
-    NzFormModule,
-    NzCheckboxModule,
-    NzInputModule,
-    NzInputNumberModule,
-    NzPopconfirmModule,
-    NzToolTipModule,
-    NzIconModule
-  ]
+    selector: 'multi-select',
+    templateUrl: './multi-select.component.html',
+    imports: [
+        CoreModule,
+        NzButtonModule,
+        NzTableModule,
+        NzFormModule,
+        NzCheckboxModule,
+        NzInputModule,
+        NzInputNumberLegacyModule,
+        NzPopconfirmModule,
+        NzTooltipModule,
+        NzIconModule
+    ]
 })
 export class MultiSelectComponent extends QuestionManagementAnswerComponent {
   constructor(

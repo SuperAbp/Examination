@@ -24,26 +24,25 @@ import { JudgeComponent } from '../../answer/judge.component';
 import { MultiSelectComponent } from '../../answer/multi-select.component';
 import { SingleSelectComponent } from '../../answer/single-select.component';
 @Component({
-  selector: 'app-question-management-question-edit',
-  templateUrl: './edit.component.html',
-  standalone: true,
-  imports: [
-    CoreModule,
-    PageHeaderModule,
-    FooterToolbarModule,
-    NzSpinModule,
-    NzCardModule,
-    NzGridModule,
-    NzFormModule,
-    NzSelectModule,
-    NzInputModule,
-    NzButtonModule,
-    JudgeComponent,
-    SingleSelectComponent,
-    MultiSelectComponent,
-    BlankComponent,
-    NzTreeSelectModule
-  ]
+    selector: 'app-question-management-question-edit',
+    templateUrl: './edit.component.html',
+    imports: [
+        CoreModule,
+        PageHeaderModule,
+        FooterToolbarModule,
+        NzSpinModule,
+        NzCardModule,
+        NzGridModule,
+        NzFormModule,
+        NzSelectModule,
+        NzInputModule,
+        NzButtonModule,
+        JudgeComponent,
+        SingleSelectComponent,
+        MultiSelectComponent,
+        BlankComponent,
+        NzTreeSelectModule
+    ]
 })
 export class QuestionManagementQuestionEditComponent implements OnInit {
   questionId: string;

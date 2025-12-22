@@ -1,8 +1,10 @@
 using Dapper;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
+using SuperAbp.Exam.BackgroundServices.Sql;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -43,10 +45,21 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         IConfiguration configuration = workerContext.ServiceProvider.GetRequiredService<IConfiguration>();
         ILogger<InitialDataWorker> logger = workerContext.ServiceProvider.GetRequiredService<ILogger<InitialDataWorker>>();
 
-        using IDbConnection connection = new MySqlConnection(configuration.GetConnectionString("Default"));
-
+        ISqlProvider sqlProvider;// = SqlProviderFactory.CreateProvider("sqlserver");
+        IDbConnection connection;//= new MySqlConnection(configuration.GetConnectionString("Default"));
+        string databaseType = "sqlserver";
+        if (databaseType == "mysql")
+        {
+            sqlProvider = new MySqlProvider();
+            connection = new MySqlConnection(configuration.GetConnectionString("Default"));
+        }
+        else
+        {
+            sqlProvider = new SqlServerProvider();
+            connection = new SqlConnection(configuration.GetConnectionString("Default"));
+        }
         // TODO:Remove InitialDataExecutionLog Table
-        DateTime lastExecutedTime = await connection.ExecuteScalarAsync<DateTime>("SELECT LastExecutedTime FROM InitialDataExecutionLog ORDER BY LastExecutedTime DESC LIMIT 1");
+        DateTime lastExecutedTime = await connection.ExecuteScalarAsync<DateTime>(sqlProvider.GetLastExecutedTime());
         if (!int.TryParse(configuration["InitialData:IntervalDays"], out int intervalDays))
         {
             intervalDays = 1;
@@ -68,33 +81,34 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         }
 #endif
 
-        Guid? tenantId = await connection.QuerySingleOrDefaultAsync<Guid?>("SELECT Id FROM AbpTenants WHERE Name = @Name", new { Name = "Demo" });
+        Guid? tenantId = await connection.QuerySingleOrDefaultAsync<Guid?>(sqlProvider.GetTenantIdByName(), new { Name = "Demo" });
         if (tenantId == null || tenantId == Guid.Empty)
         {
             logger.LogWarning("Demo tenant not found, skipping initial data.");
             return;
         }
+        var finalTenantId = tenantId.Value;
         logger.LogDebug("Clear data……");
-        await ClearDataAsync(connection, tenantId.Value);
+        await ClearDataAsync(connection, finalTenantId, sqlProvider);
         logger.LogDebug("Create Question……");
-        bool flowControl = await CreateQuestionAsync(connection, tenantId.Value);
+        bool flowControl = await CreateQuestionAsync(connection, finalTenantId, sqlProvider);
         if (!flowControl)
         {
             return;
         }
         logger.LogDebug("Create Paper……");
-        await CreatePaperAsync(connection, tenantId.Value);
+        await CreatePaperAsync(connection, finalTenantId, sqlProvider);
         logger.LogDebug("Create Exam……");
-        await CreateExamAsync(connection, tenantId.Value);
+        await CreateExamAsync(connection, finalTenantId, sqlProvider);
         logger.LogDebug("Create Record……");
-        await connection.ExecuteAsync("INSERT INTO InitialDataExecutionLog (LastExecutedTime) VALUES (@LastExecutedTime)", new { LastExecutedTime = DateTime.Now });
+        await connection.ExecuteAsync(sqlProvider.InsertInitialDataExecutionLog(), new { LastExecutedTime = DateTime.Now });
         logger.LogDebug("Created successfully.");
     }
 
-    private async Task CreatePaperAsync(IDbConnection connection, Guid tenantId)
+    private async Task CreatePaperAsync(IDbConnection connection, Guid tenantId, ISqlProvider sqlProvider)
     {
         List<dynamic> questionBanks = (await connection.QueryAsync<dynamic>(
-            "SELECT * FROM AppQuestionBanks WHERE TenantId = @TenantId",
+            sqlProvider.GetQuestionBanks(),
             new { TenantId = tenantId })).ToList();
 
         foreach (var questionBank in questionBanks)
@@ -102,19 +116,15 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
             Guid questionBankId = questionBank.Id;
             string bankName = questionBank.Title ?? "";
 
-            await CreateRandomPaper(connection, tenantId, questionBankId, bankName);
-            await CreateFixedPaper(connection, tenantId, questionBankId, bankName);
+            await CreateRandomPaper(connection, tenantId, questionBankId, bankName, sqlProvider);
+            await CreateFixedPaper(connection, tenantId, questionBankId, bankName, sqlProvider);
         }
     }
 
-    private async Task CreateRandomPaper(IDbConnection connection, Guid tenantId, Guid questionBankId, string bankName)
+    private async Task CreateRandomPaper(IDbConnection connection, Guid tenantId, Guid questionBankId, string bankName, ISqlProvider sqlProvider)
     {
         Guid paperId = Guid.NewGuid();
-        string countsSql = @"SELECT QuestionType, COUNT(1) AS Cnt
-                             FROM AppQuestions
-                             WHERE QuestionBankId = @QuestionBankId AND TenantId = @TenantId
-                             GROUP BY QuestionType
-                             HAVING COUNT(1) > 0";
+        string countsSql = sqlProvider.GetQuestionCountsByType();
         Dictionary<int, int> counts = (await connection.QueryAsync<dynamic>(countsSql, new { QuestionBankId = questionBankId, TenantId = tenantId }))
                 .ToDictionary(r => (int)r.QuestionType, r => (int)r.Cnt);
 
@@ -149,32 +159,27 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
             });
         }
         await connection.ExecuteAsync(
-            @"INSERT INTO AppPapers (Id, Name, PaperType, Description, TotalQuestionCount, Score, CreationTime, TenantId, ExtraProperties, ConcurrencyStamp)
-            VALUES (@Id, @Name, 1, @Description, @TotalQuestionCount, @Score, NOW(), @TenantId, '{}', REPLACE(UUID(), '-', ''))", new Paper()
+            sqlProvider.InsertPaper(), new Paper()
             {
                 Id = paperId,
                 Name = $"{bankName} 随机组卷",
                 Description = "考试须知",
                 TotalQuestionCount = sections.Sum(s => s.TotalCount),
                 Score = sections.Sum(s => s.TotalScore),
-                TenantId = tenantId
+                TenantId = tenantId,
+                PaperType = 1
             });
         await connection.ExecuteAsync(
-                @"INSERT INTO AppPaperSections (Id, PaperId, Title, ScoreEach, `Order`, TotalScore, TotalCount, CreationTime, TenantId)
-                  VALUES (@Id, @PaperId, @Title, @ScoreEach, @Order, @TotalScore, @TotalCount, NOW(), @TenantId)", sections);
+                sqlProvider.InsertPaperSections(), sections);
         await connection.ExecuteAsync(
-                @"INSERT INTO AppPaperQuestionRules (Id, PaperSectionId, QuestionBankId, QuestionType, Count, Score, CreationTime, TenantId)
-                  VALUES (@Id, @PaperSectionId, @QuestionBankId, @QuestionType, @Count, @Score, NOW(), @TenantId)", rules);
+                sqlProvider.InsertPaperQuestionRules(), rules);
     }
 
-    private async Task CreateFixedPaper(IDbConnection connection, Guid tenantId, Guid questionBankId, string bankName)
+    private async Task CreateFixedPaper(IDbConnection connection, Guid tenantId, Guid questionBankId, string bankName, ISqlProvider sqlProvider)
     {
         Guid paperId = Guid.NewGuid();
 
-        List<dynamic> questions = (await connection.QueryAsync<dynamic>(@"SELECT Id, QuestionType FROM AppQuestions
-                  WHERE QuestionBankId = @QuestionBankId
-                  AND TenantId = @TenantId
-                  ORDER BY CreationTime DESC", new
+        List<dynamic> questions = (await connection.QueryAsync<dynamic>(sqlProvider.GetQuestions(), new
         {
             QuestionBankId = questionBankId,
             TenantId = tenantId
@@ -217,28 +222,26 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
                 TenantId = tenantId
             });
         }
-        await connection.ExecuteAsync(@"INSERT INTO AppPapers (Id, Name, PaperType, Description, TotalQuestionCount, Score, CreationTime, TenantId, ExtraProperties, ConcurrencyStamp)
-            VALUES (@Id, @Name, 0, @Description, @TotalQuestionCount, @Score, NOW(), @TenantId, '{}', REPLACE(UUID(), '-', ''))", new Paper()
+        await connection.ExecuteAsync(sqlProvider.InsertPaper(), new Paper()
         {
             Id = paperId,
             Name = $"{bankName} 固定试卷",
             Description = "考试须知",
             TotalQuestionCount = paperSections.Sum(s => s.TotalCount),
             Score = paperSections.Sum(s => s.TotalScore),
-            TenantId = tenantId
+            TenantId = tenantId,
+            PaperType = 0
         });
         await connection.ExecuteAsync(
-                @"INSERT INTO AppPaperSections (Id, PaperId, Title, ScoreEach, `Order`, TotalScore, TotalCount, CreationTime, TenantId)
-                  VALUES (@Id, @PaperId, @Title, @ScoreEach, @Order, @TotalScore, @TotalCount, NOW(), @TenantId)", paperSections);
+                sqlProvider.InsertPaperSections(), paperSections);
         await connection.ExecuteAsync(
-                @"INSERT INTO AppPaperQuestions (Id, PaperSectionId, QuestionId, Score, `Order`, CreationTime, TenantId)
-                  VALUES (@Id, @PaperSectionId, @QuestionId, @Score, @Order, NOW(), @TenantId)", paperQuestions);
+                sqlProvider.InsertPaperQuestions(), paperQuestions);
     }
 
-    private async Task CreateExamAsync(IDbConnection connection, Guid tenantId)
+    private async Task CreateExamAsync(IDbConnection connection, Guid tenantId, ISqlProvider sqlProvider)
     {
         List<Paper> papers = (await connection.QueryAsync<Paper>(
-            "SELECT * FROM AppPapers WHERE TenantId = @TenantId",
+            sqlProvider.GetPapers(),
             new { TenantId = tenantId })).ToList();
 
         List<Examination> examinations = [];
@@ -261,14 +264,10 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
                 EndTime = DateTime.Now.AddDays(7),
             });
         }
-        await connection.ExecuteAsync(@"
-            INSERT INTO AppExaminations (Id, Name, Description, Score, PassingScore, TotalTime, PaperId, Status,
-                AnswerMode, RandomOrderOfOption, StartTime, EndTime, CreationTime, TenantId, ExtraProperties, ConcurrencyStamp)
-            VALUES (@Id, @Name, @Description, @Score, @PassingScore, @TotalTime, @PaperId, @Status, @AnswerMode,
-                @RandomOrderOfOption, @StartTime, @EndTime, NOW(), @TenantId, '{}', REPLACE(UUID(), '-', ''))", examinations);
+        await connection.ExecuteAsync(sqlProvider.InsertExaminations(), examinations);
     }
 
-    private async Task<bool> CreateQuestionAsync(IDbConnection connection, Guid tenantId)
+    private async Task<bool> CreateQuestionAsync(IDbConnection connection, Guid tenantId, ISqlProvider sqlProvider)
     {
         var jsonPath = Path.Combine(AppContext.BaseDirectory, "questions.json");
         if (!File.Exists(jsonPath))
@@ -338,39 +337,39 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
 
         if (bankParams.Count > 0)
         {
-            await connection.ExecuteAsync("INSERT INTO AppQuestionBanks (Id, Title, Remark, ExtraProperties, ConcurrencyStamp, CreationTime, TenantId) VALUES (@Id, @Title, @Remark, '{}', REPLACE(UUID(), '-', ''), @CreationTime, @TenantId)", bankParams);
+            await connection.ExecuteAsync(sqlProvider.InsertQuestionBanks(), bankParams);
         }
         if (questionParams.Count > 0)
         {
-            await connection.ExecuteAsync("INSERT INTO AppQuestions (Id, QuestionBankId, QuestionType, Content, Analysis, ExtraProperties, ConcurrencyStamp, CreationTime, TenantId) VALUES (@Id, @QuestionBankId, @QuestionType, @Content, @Analysis, '{}', REPLACE(UUID(), '-', ''), @CreationTime, @TenantId)", questionParams);
+            await connection.ExecuteAsync(sqlProvider.InsertQuestions(), questionParams);
         }
         if (answerParams.Count > 0)
         {
-            await connection.ExecuteAsync("INSERT INTO AppQuestionAnswers (Id, QuestionId, Content, `Right`, Sort, CreationTime, TenantId) VALUES (@Id, @QuestionId, @Content, @Right, @Sort, @CreationTime, @TenantId)", answerParams);
+            await connection.ExecuteAsync(sqlProvider.InsertQuestionAnswers(), answerParams);
         }
         if (knowledgepointParams.Count > 0)
         {
-            await connection.ExecuteAsync("INSERT INTO AppQuestionKnowledgePoints (QuestionId, KnowledgePointId, CreationTime, TenantId, ExtraProperties, ConcurrencyStamp) VALUES (@QuestionId, @KnowledgePointId, @CreationTime, @TenantId, '{}', REPLACE(UUID(), '-', ''))", knowledgepointParams);
+            await connection.ExecuteAsync(sqlProvider.InsertQuestionKnowledgePoints(), knowledgepointParams);
         }
 
         return true;
     }
 
-    private async Task ClearDataAsync(IDbConnection connection, Guid tenantId)
+    private async Task ClearDataAsync(IDbConnection connection, Guid tenantId, ISqlProvider sqlProvider)
     {
-        await connection.ExecuteAsync("DELETE FROM AppPaperQuestions WHERE TenantId = @TenantId", new { TenantId = tenantId });
-        await connection.ExecuteAsync("DELETE FROM AppPaperQuestionRules WHERE TenantId = @TenantId", new { TenantId = tenantId });
-        await connection.ExecuteAsync("DELETE FROM AppPaperSections WHERE TenantId = @TenantId", new { TenantId = tenantId });
-        await connection.ExecuteAsync("DELETE FROM AppPapers WHERE TenantId = @TenantId", new { TenantId = tenantId });
-        await connection.ExecuteAsync("DELETE FROM AppUserExamQuestions WHERE TenantId = @TenantId", new { TenantId = tenantId });
-        await connection.ExecuteAsync("DELETE FROM AppUserExamSections WHERE TenantId = @TenantId", new { TenantId = tenantId });
-        await connection.ExecuteAsync("DELETE FROM AppUserExams WHERE TenantId = @TenantId", new { TenantId = tenantId });
-        await connection.ExecuteAsync("DELETE FROM AppKnowledgePoints WHERE TenantId = @TenantId", new { TenantId = tenantId });
-        await connection.ExecuteAsync("DELETE FROM AppExaminations WHERE TenantId = @TenantId", new { TenantId = tenantId });
-        await connection.ExecuteAsync("DELETE FROM AppQuestionAnswers WHERE TenantId = @TenantId", new { TenantId = tenantId });
-        await connection.ExecuteAsync("DELETE FROM AppQuestions WHERE TenantId = @TenantId", new { TenantId = tenantId });
-        await connection.ExecuteAsync("DELETE FROM AppQuestionKnowledgePoints WHERE TenantId = @TenantId", new { TenantId = tenantId });
-        await connection.ExecuteAsync("DELETE FROM AppQuestionBanks WHERE TenantId = @TenantId", new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeletePaperQuestions(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeletePaperQuestionRules(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeletePaperSections(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeletePapers(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeleteUserExamQuestions(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeleteUserExamSections(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeleteUserExams(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeleteKnowledgePoints(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeleteExaminations(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeleteQuestionAnswers(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeleteQuestions(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeleteQuestionKnowledgePoints(), new { TenantId = tenantId });
+        await connection.ExecuteAsync(sqlProvider.DeleteQuestionBanks(), new { TenantId = tenantId });
     }
 
     // DTOs for parsing questions.json
@@ -409,7 +408,7 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get; internal set; }
+        public string? Name { get; internal set; }
 
         /// <summary>
         /// 描述
@@ -434,7 +433,7 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
         public Guid PaperId { get; set; }
-        public string Title { get; set; }
+        public string? Title { get; set; }
         public decimal ScoreEach { get; set; }
         public decimal TotalScore { get; set; }
         public int Order { get; set; }
@@ -487,7 +486,7 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// 描述

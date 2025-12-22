@@ -16,21 +16,20 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-sys-knowledge-point-edit',
-  templateUrl: './edit.component.html',
-  standalone: true,
-  imports: [
-    CoreModule,
-    PageHeaderModule,
-    FooterToolbarModule,
-    NzSpinModule,
-    NzCardModule,
-    NzGridModule,
-    NzFormModule,
-    NzSelectModule,
-    NzInputModule,
-    NzButtonModule
-  ]
+    selector: 'app-sys-knowledge-point-edit',
+    templateUrl: './edit.component.html',
+    imports: [
+        CoreModule,
+        PageHeaderModule,
+        FooterToolbarModule,
+        NzSpinModule,
+        NzCardModule,
+        NzGridModule,
+        NzFormModule,
+        NzSelectModule,
+        NzInputModule,
+        NzButtonModule
+    ]
 })
 export class SysKnowledgePointEditComponent implements OnInit {
   @Input()

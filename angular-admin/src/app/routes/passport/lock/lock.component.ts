@@ -10,11 +10,10 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzInputModule } from 'ng-zorro-antd/input';
 
 @Component({
-  selector: 'passport-lock',
-  templateUrl: './lock.component.html',
-  styleUrls: ['./lock.component.less'],
-  standalone: true,
-  imports: [ReactiveFormsModule, I18nPipe, NzAvatarModule, NzFormModule, NzGridModule, NzButtonModule, NzInputModule]
+    selector: 'passport-lock',
+    templateUrl: './lock.component.html',
+    styleUrls: ['./lock.component.less'],
+    imports: [ReactiveFormsModule, I18nPipe, NzAvatarModule, NzFormModule, NzGridModule, NzButtonModule, NzInputModule]
 })
 export class UserLockComponent {
   f = new FormGroup({

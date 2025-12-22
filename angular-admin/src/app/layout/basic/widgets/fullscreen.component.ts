@@ -4,17 +4,16 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import screenfull from 'screenfull';
 
 @Component({
-  selector: 'header-fullscreen',
-  template: `
+    selector: 'header-fullscreen',
+    template: `
     <i nz-icon [nzType]="status ? 'fullscreen-exit' : 'fullscreen'"></i>
     {{ (status ? 'menu.fullscreen.exit' : 'menu.fullscreen') | i18n }}
   `,
-  host: {
-    '[class.flex-1]': 'true'
-  },
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [NzIconModule, I18nPipe]
+    host: {
+        '[class.flex-1]': 'true'
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [NzIconModule, I18nPipe]
 })
 export class HeaderFullScreenComponent {
   status = false;

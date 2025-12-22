@@ -13,7 +13,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
@@ -22,10 +22,10 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-exam-management-exam-edit',
-  templateUrl: './edit.component.html',
-  styles: [
-    `
+    selector: 'app-exam-management-exam-edit',
+    templateUrl: './edit.component.html',
+    styles: [
+        `
       nz-select {
         width: 100%;
       }
@@ -34,23 +34,22 @@ import { finalize, tap } from 'rxjs/operators';
         margin-right: 8px;
       }
     `
-  ],
-  standalone: true,
-  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
-  imports: [
-    CoreModule,
-    NzModalModule,
-    NzFormModule,
-    NzSpinModule,
-    NzSelectModule,
-    NzInputModule,
-    NzInputNumberModule,
-    NzCheckboxModule,
-    NzDatePickerModule,
-    NzButtonModule,
-    NzRadioModule,
-    EditorComponent
-  ]
+    ],
+    providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
+    imports: [
+        CoreModule,
+        NzModalModule,
+        NzFormModule,
+        NzSpinModule,
+        NzSelectModule,
+        NzInputModule,
+        NzInputNumberLegacyModule,
+        NzCheckboxModule,
+        NzDatePickerModule,
+        NzButtonModule,
+        NzRadioModule,
+        EditorComponent
+    ]
 })
 export class ExamManagementExamEditComponent implements OnInit {
   @Input()
