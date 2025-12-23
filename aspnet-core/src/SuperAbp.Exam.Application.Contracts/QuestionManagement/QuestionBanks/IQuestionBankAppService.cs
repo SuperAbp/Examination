@@ -16,7 +16,7 @@ namespace SuperAbp.Exam.QuestionManagement.QuestionBanks
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<ListResultDto<QuestionType>> GetQuestionTypesAsync(Guid id);
+        Task<ListResultDto<int>> GetQuestionTypesAsync(Guid id);
 
         /// <summary>
         /// 列表

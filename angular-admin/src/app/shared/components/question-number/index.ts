@@ -30,7 +30,7 @@ export class QuestionNumberItem {
             <span>{{ 'Exam::TotalScore{0}' | abpLocalization: questionNumber.totalScore + '' }}</span>
           </div>
           <div>
-            <nz-space>
+            <nz-space nzWrap>
               @for (questionNumberOption of questionNumber.questions; track $index; let i = $index) {
                 <nz-tag (click)="scrollTo(questionNumberOption.id)" [nzColor]="getColor(questionNumberOption.id)">{{ i + 1 }}</nz-tag>
               }
@@ -39,7 +39,8 @@ export class QuestionNumberItem {
         </div>
       }
     </nz-card>
-  `
+  `,
+  standalone: false
 })
 export class QuestionNumberComponent {
   @Input()

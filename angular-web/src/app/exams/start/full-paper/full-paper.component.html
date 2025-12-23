@@ -1,0 +1,67 @@
+@for (section of sections; track section.id; let sectionIdx = $index) {
+  @if (section.title) {
+    <div class="mb-4">
+      <h5>
+        {{ getChineseNumber(sectionIdx + 1) }}、{{ section.title }}
+        <small class="text-muted"
+          >(共{{ section.questions.length }}题，每题{{ section.scoreEach }}分)</small
+        >
+      </h5>
+    </div>
+  }
+
+  @for (question of section.questions; track question.id; let questionIdx = $index) {
+    <div class="mb-5" [id]="'question-' + question.id">
+      <div class="fs-5 mb-3">{{ $index + 1 }}、{{ question.content }}</div>
+
+      @if (question.questionType === 0 || question.questionType === 2) {
+        <app-single-choice
+          [options]="question.options"
+          [selectedAnswerId]="getSingleChoiceAnswer(question.id!)"
+          [showAnalysis]="false"
+          [disabled]="false"
+          (submitted)="onQuestionAnswered(question.id!, $event.answers)"
+        >
+        </app-single-choice>
+      }
+
+      @if (question.questionType === 1) {
+        <app-multiple-choice
+          [options]="question.options"
+          [selectedAnswerIds]="getQuestionAnswers(question.id!)"
+          [showAnalysis]="false"
+          [disabled]="false"
+          [hideSubmitButton]="true"
+          (answerChanged)="onMultipleChoiceChanged(question.id!, $event)"
+        >
+        </app-multiple-choice>
+      }
+
+      @if (question.questionType === 3) {
+        <app-fill-blank
+          [options]="question.options"
+          [selectedAnswers]="getFillBlankAnswers(question.id!)"
+          [showAnalysis]="false"
+          [disabled]="false"
+          [hideSubmitButton]="true"
+          (answersChanged)="onFillBlankChanged(question.id!, $event)"
+        >
+        </app-fill-blank>
+      }
+
+      @if (question.knowledgePoints && question.knowledgePoints.length > 0) {
+        <div class="mt-3">
+          <small class="text-muted">
+            <i class="fas fa-tags"></i> 知识点：
+            @for (kp of question.knowledgePoints; track kp; let last = $last) {
+              <span class="badge bg-light text-dark">{{ kp }}</span>
+              @if (!last) {
+                <span>, </span>
+              }
+            }
+          </small>
+        </div>
+      }
+    </div>
+  }
+}

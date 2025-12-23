@@ -3,23 +3,25 @@
   <Import Project="..\..\common.props" />
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>SuperAbp.Exam</RootNamespace>
 	  <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SuperAbp.Exam.Application.Shared\SuperAbp.Exam.Application.Shared.csproj" />
     <ProjectReference Include="..\SuperAbp.Exam.Domain\SuperAbp.Exam.Domain.csproj" />
     <ProjectReference Include="..\SuperAbp.Exam.Application.Contracts\SuperAbp.Exam.Application.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.Account.Application" Version="9.0.0" />
-    <PackageReference Include="Volo.Abp.Identity.Application" Version="9.0.0" />
-    <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="9.0.0" />
-    <PackageReference Include="Volo.Abp.TenantManagement.Application" Version="9.0.0" />
-    <PackageReference Include="Volo.Abp.FeatureManagement.Application" Version="9.0.0" />
-    <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="9.0.0" />
+    <PackageReference Include="Volo.Abp.Account.Application" Version="10.0.0" />
+    <PackageReference Include="Volo.Abp.AutoMapper" Version="10.0.0" />
+    <PackageReference Include="Volo.Abp.Identity.Application" Version="10.0.0" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="10.0.0" />
+    <PackageReference Include="Volo.Abp.TenantManagement.Application" Version="10.0.0" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.Application" Version="10.0.0" />
+    <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,12 +1,13 @@
 import { RestService, Rest } from '@abp/ng.core';
 import type { ListResultDto, PagedResultDto } from '@abp/ng.core';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { GetUserExamWithUsersInput, GetUserExamsInput, ReviewedQuestionDto, UserExamDetailDto, UserExamListDto, UserExamWithUserDto } from '../exam-management/user-exams/models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserExamService {
+  private restService = inject(RestService);
   apiName = 'Default';
   
 
@@ -44,6 +45,4 @@ export class UserExamService {
       body: input,
     },
     { apiName: this.apiName,...config });
-
-  constructor(private restService: RestService) {}
 }

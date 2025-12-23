@@ -5,7 +5,7 @@ using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.Admin.KnowledgePoints;
 using SuperAbp.Exam.KnowledgePoints;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement;
 
@@ -30,7 +30,7 @@ public class QuestionManagementAdminApplicationAutoMapperProfile : Profile
         CreateMap<QuestionCreateDto, Question>();
         CreateMap<QuestionUpdateDto, Question>();
 
-        CreateMap<QuestionAnswer, QuestionAnswerDto>();
+        CreateMap<QuestionOption, QuestionOptionDto>();
 
         #endregion 问题
 

@@ -11,14 +11,14 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Timing;
 using Volo.Abp.Users;
 using SuperAbp.Exam.KnowledgePoints;
-using SuperAbp.Exam.MistakesReviews;
 using Volo.Abp.BackgroundJobs;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 using Volo.Abp.EventBus.Local;
 using SuperAbp.Exam.MistakesReviews.Events;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto.QuestionDto;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
+using SuperAbp.Exam.MistakeReviews;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
@@ -30,7 +30,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         UserExamManager userExamManager,
         IQuestionRepository questionRepository,
         QuestionManager questionManager,
-        IMistakesReviewRepository mistakesReviewRepository,
+        IMistakeReviewRepository mistakesReviewRepository,
         IBackgroundJobManager backgroundJobManager,
         ILocalEventBus localEventBus)
         : ExamAppService, IUserExamAppService
@@ -88,6 +88,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                     questionDto.Right = userExamQuestion.Right;
                     questionDto.Answers = userExamQuestion.Answers;
                     questionDto.QuestionScore = userExamQuestion.QuestionScore;
+                    questionDto.Score = userExamQuestion.Score;
 
                     // Get knowledge points
                     List<KnowledgePoint> knowledgePoints = await questionManager.GetKnowledgePointsAsync(question.Id);
@@ -96,17 +97,17 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                         questionDto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
                     }
 
-                    // Map answers/options
                     List<OptionDto> answerDtos = [];
-                    List<QuestionAnswer> answers = question.Answers.OrderBy(a => a.Sort).ToList();
+                    List<QuestionOption> answers = question.Options.OrderBy(a => a.Sort).ToList();
                     if (exam.RandomOrderOfOption && new List<QuestionType> { QuestionType.SingleSelect, QuestionType.MultiSelect }.Contains(question.QuestionType))
                     {
+                        // TODO:用户创建考试后顺序应该固定，而不是每次获取都随机。但是创建时并不存选项，如何解决？
                         answers = answers.OrderBy(_ => Guid.NewGuid()).ToList();
                     }
 
-                    foreach (QuestionAnswer answer in answers)
+                    foreach (QuestionOption answer in answers)
                     {
-                        OptionDto optionDto = ObjectMapper.Map<QuestionAnswer, OptionDto>(answer);
+                        OptionDto optionDto = ObjectMapper.Map<QuestionOption, OptionDto>(answer);
 
                         if (userExam.IsSubmitted())
                         {
@@ -129,11 +130,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public virtual async Task<PagedResultDto<UserExamListDto>> GetListAsync(GetUserExamsInput input)
         {
             await NormalizeMaxResultCountAsync(input);
-
-            int totalCount = await UserExamRepository.GetCountAsync(CurrentUser.GetId());
+            int totalCount = await UserExamRepository.GetCountAsync(CurrentUser.GetId(), input.ExamId);
             List<UserExamWithDetails> entities = await UserExamRepository.GetListWithDetailAsync(
                 input.Sorting ?? UserExamConsts.DefaultSorting, input.SkipCount, input.MaxResultCount,
-                CurrentUser.GetId());
+                CurrentUser.GetId(), input.ExamId);
 
             List<UserExamListDto> dtos = ObjectMapper.Map<List<UserExamWithDetails>, List<UserExamListDto>>(entities);
             return new PagedResultDto<UserExamListDto>(totalCount, dtos);
@@ -212,14 +212,14 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
                 Question question = await questionRepository.GetAsync(item.QuestionId);
                 if ((question.QuestionType == QuestionType.SingleSelect || question.QuestionType == QuestionType.Judge)
-                    && item.Answers == (question.Answers.SingleOrDefault(a => a.Right)?.Id.ToString() ?? ""))
+                    && item.Answers == (question.Options.SingleOrDefault(a => a.Right)?.Id.ToString() ?? ""))
                 {
                     totalScore += item.QuestionScore;
                     score = item.QuestionScore;
                     right = true;
                 }
                 else if (question.QuestionType == QuestionType.MultiSelect
-                    && (new HashSet<string>(item.Answers.Split(ExamConsts.Splitter)).SetEquals(question.Answers.Where(a => a.Right).Select(a => a.Id.ToString()))))
+                    && (new HashSet<string>(item.Answers.Split(ExamConsts.Splitter)).SetEquals(question.Options.Where(a => a.Right).Select(a => a.Id.ToString()))))
                 {
                     totalScore += item.QuestionScore;
                     score = item.QuestionScore;
@@ -228,7 +228,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 else if (question.QuestionType == QuestionType.FillInTheBlanks)
                 {
                     string[] allAnswers = item.Answers.Split(ExamConsts.Splitter);
-                    if (allAnswers.Length == question.Answers.Count && allAnswers.SequenceEqual(question.Answers.Select(a => a.Content)))
+                    if (allAnswers.Length == question.Options.Count && allAnswers.SequenceEqual(question.Options.Select(a => a.Content)))
                     {
                         // TODO:一空多项，多空多项，无序
                         right = true;

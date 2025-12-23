@@ -8,17 +8,16 @@ import { QuestionBankCountDto, QuestionBankListDto } from '@proxy/admin/question
 import { GetQuestionsInput, QuestionDetailDto, QuestionListDto } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
 import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { count, map, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-question-random',
-  templateUrl: './question-random.component.html',
-  standalone: true,
-  imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, NzFormModule, NzSelectModule, NzInputNumberModule]
+    selector: 'app-question-random',
+    templateUrl: './question-random.component.html',
+    imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, NzFormModule, NzSelectModule, NzInputNumberLegacyModule]
 })
 export class QuestionRandomComponent implements OnInit {
   @Input()

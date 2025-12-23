@@ -75,7 +75,7 @@ public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProv
         var dbContext = await GetDbContextAsync();
         var questionQueryable = await GetQueryableAsync(content, questionType, questionBankIds, excludeIds);
         questionQueryable = questionQueryable
-            .IncludeIf(includeDetails.HasValue && includeDetails.Value, q => q.Answers)
+            .IncludeIf(includeDetails.HasValue && includeDetails.Value, q => q.Options)
             .WhereIf(includeIds?.Count > 0, q => includeIds.Contains(q.Id));
         var questionBankQueryable = dbContext.Set<QuestionBank>().AsQueryable();
         var questionKnowledgePointQueryable = dbContext.Set<QuestionKnowledgePoint>().AsQueryable();
@@ -97,7 +97,7 @@ public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProv
                              QuestionType = q.QuestionType,
                              CreationTime = q.CreationTime,
                              KnowledgePoints = kpGroup.Select(k => k.Name).ToList(),
-                             Answers = q.Answers
+                             Options = q.Options
                          })
                         .PageBy(skipCount, maxResultCount);
 

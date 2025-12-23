@@ -1,0 +1,29 @@
+@for (option of options; track option.id) {
+  <input
+    type="radio"
+    class="btn-check"
+    name="single-choice-option"
+    [id]="'option-' + option.id"
+    [disabled]="disabled"
+    autocomplete="off"
+  />
+  <label
+    class="btn w-100 text-start border"
+    [class.mb-2]="$index !== options.length - 1"
+    (click)="onOptionSelected(option)"
+    [class.border-primary]="isSelectedOption(option)"
+    [for]="'option-' + option.id"
+  >
+    <div class="d-flex justify-content-between">
+      <div>
+        <span class="tag">{{ 65 + $index | char }}</span>
+        {{ option.content }}
+      </div>
+      @if (showAnalysis && option.right) {
+        <div>
+          <i class="fa-regular fa-circle-check text-success"></i>
+        </div>
+      }
+    </div>
+  </label>
+}

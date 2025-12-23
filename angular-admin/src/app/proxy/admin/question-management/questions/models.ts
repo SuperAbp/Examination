@@ -2,7 +2,7 @@ import type { EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
 export interface GetQuestionForEditorOutput extends QuestionCreateOrUpdateDtoBase {
   questionType: number;
-  answers: QuestionAnswerDto[];
+  answers: QuestionOptionDto[];
 }
 
 export interface GetQuestionWithDetailInput {
@@ -20,13 +20,6 @@ export interface GetQuestionsInput extends PagedAndSortedResultRequestDto {
   excludeIds: string[];
 }
 
-export interface QuestionAnswerDto extends EntityDto<string> {
-  right: boolean;
-  content?: string;
-  analysis?: string;
-  sort: number;
-}
-
 export interface QuestionCreateDto extends QuestionCreateOrUpdateDtoBase {
   questionType: number;
   options: QuestionCreateOrUpdateAnswerDto[];
@@ -35,24 +28,24 @@ export interface QuestionCreateDto extends QuestionCreateOrUpdateDtoBase {
 export interface QuestionCreateOrUpdateAnswerDto {
   id?: string;
   right: boolean;
-  content?: string;
+  content: string;
   analysis?: string;
   sort: number;
 }
 
 export interface QuestionCreateOrUpdateDtoBase {
-  content?: string;
+  content: string;
   analysis?: string;
   questionBankId?: string;
   knowledgePointIds: string[];
 }
 
 export interface QuestionDetailDto extends EntityDto<string> {
-  content?: string;
+  content: string;
   analysis?: string;
   questionType: number;
   questionBankId?: string;
-  answers: QuestionAnswerDto[];
+  options: QuestionOptionDto[];
 }
 
 export interface QuestionImportDto {
@@ -62,12 +55,19 @@ export interface QuestionImportDto {
 }
 
 export interface QuestionListDto extends EntityDto<string> {
-  questionBank?: string;
+  questionBank: string;
   knowledgePoints: string[];
   questionType: number;
-  content?: string;
+  content: string;
   analysis?: string;
   creationTime?: string;
+}
+
+export interface QuestionOptionDto extends EntityDto<string> {
+  right: boolean;
+  content: string;
+  analysis?: string;
+  sort: number;
 }
 
 export interface QuestionUpdateDto extends QuestionCreateOrUpdateDtoBase {

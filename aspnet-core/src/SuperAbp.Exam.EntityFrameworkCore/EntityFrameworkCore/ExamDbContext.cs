@@ -1,4 +1,3 @@
-using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using Microsoft.EntityFrameworkCore;
 using SuperAbp.Exam.ExamManagement.Exams;
@@ -27,14 +26,13 @@ using SuperAbp.Exam.ExamManagement.UserExamQuestionReviews;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.KnowledgePoints;
-using SuperAbp.Exam.MistakesReviews;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 using SuperAbp.Exam.PaperManagement.PaperQuestions;
 
-using SuperAbp.Exam.PaperManagement.Papers;
-
 using SuperAbp.Exam.PaperManagement.PaperSections;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
+using SuperAbp.Exam.QuestionManagement.QuestionOptions;
+using SuperAbp.Exam.MistakeReviews;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -81,7 +79,7 @@ public class ExamDbContext :
 
     public DbSet<Question> Questions { get; set; }
     public DbSet<KnowledgePoint> KnowledgePoints { get; set; }
-    public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
+    public DbSet<QuestionOption> QuestionOptions { get; set; }
     public DbSet<QuestionBank> QuestionBanks { get; set; }
     public DbSet<Paper> Papers { get; set; }
 
@@ -100,7 +98,7 @@ public class ExamDbContext :
     public DbSet<Training> Trains { get; set; }
 
     public DbSet<Favorite> Favorites { get; set; }
-    public DbSet<MistakesReview> MistakesReviews { get; set; }
+    public DbSet<MistakeReview> MistakeReviews { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
@@ -143,14 +141,14 @@ public class ExamDbContext :
             b.Property(p => p.Name).IsRequired().HasMaxLength(KnowledgePointConsts.MaxNameLength);
         });
 
-        builder.Entity<QuestionAnswer>(b =>
+        builder.Entity<QuestionOption>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "QuestionAnswers", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "QuestionOptions", ExamConsts.DbSchema);
             b.ConfigureByConvention();
             b.ConfigureAuditedAggregateRoot();
 
-            b.Property(p => p.Content).IsRequired().HasMaxLength(QuestionAnswerConsts.MaxContentLength);
-            b.Property(p => p.Analysis).HasMaxLength(QuestionAnswerConsts.MaxAnalysisLength);
+            b.Property(p => p.Content).IsRequired().HasMaxLength(QuestionOptionConsts.MaxContentLength);
+            b.Property(p => p.Analysis).HasMaxLength(QuestionOptionConsts.MaxAnalysisLength);
             b.Property(p => p.Sort).IsRequired().HasDefaultValue(0);
         });
 
@@ -277,9 +275,9 @@ public class ExamDbContext :
             b.ConfigureByConvention();
         });
 
-        builder.Entity<MistakesReview>(b =>
+        builder.Entity<MistakeReview>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "MistakesReviews", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "MistakeReviews", ExamConsts.DbSchema);
             b.ConfigureByConvention();
         });
     }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using SuperAbp.Exam.Admin.Options;
+using SuperAbp.Exam.Options;
 
 namespace SuperAbp.Exam.Admin.Controllers;
 

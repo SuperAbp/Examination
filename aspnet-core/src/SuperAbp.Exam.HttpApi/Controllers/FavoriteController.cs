@@ -11,7 +11,7 @@ namespace SuperAbp.Exam.Controllers;
 /// <summary>
 /// 我的收藏
 /// </summary>
-[Route("api/favorite")]
+[Route("api/favorites")]
 public class FavoriteController(IFavoriteAppService favoriteAppService) : ExamController, IFavoriteAppService
 {
     /// <summary>

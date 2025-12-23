@@ -9,5 +9,5 @@ public class GetQuestionForEditorOutput : QuestionCreateOrUpdateDtoBase
 {
     public int QuestionType { get; set; }
 
-    public List<QuestionAnswerDto> Answers { get; set; } = [];
+    public List<QuestionOptionDto> Answers { get; set; } = [];
 }

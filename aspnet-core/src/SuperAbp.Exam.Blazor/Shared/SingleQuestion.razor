@@ -218,7 +218,7 @@ else
         else
         {
             _question = await QuestionAppService.GetAsync(id);
-            _questionAnswers = _question.Answers.Select(i => new QuestionAnswerViewModel
+            _questionAnswers = _question.Options.Select(i => new QuestionAnswerViewModel
                 {
                     Id = i.Id,
                     Content = i.Content,

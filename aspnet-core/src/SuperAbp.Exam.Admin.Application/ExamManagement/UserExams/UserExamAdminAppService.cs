@@ -10,8 +10,8 @@ using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using Volo.Abp.Identity;
 using Volo.Abp.Users;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 using Volo.Abp;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.UserExams;
 
@@ -91,7 +91,7 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
                     questionDto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
                 }
                 List<UserExamDetailDto.SectionDto.QuestionDto.OptionDto> answerDtos = [];
-                foreach (QuestionAnswer answer in question.Answers)
+                foreach (QuestionOption answer in question.Options)
                 {
                     UserExamDetailDto.SectionDto.QuestionDto.OptionDto optionDto = new()
                     {
@@ -135,6 +135,10 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
             userExam.ReviewQuestion(GuidGenerator.Create(), question.QuestionId, question.Right, question.Score.Value, question.Reason);
         }
         userExam.UpdateTotalScore();
+
+        // 根据及格分数判断是否通过并存储
+        userExam.CheckPassed(examination.PassingScore);
+
         userExam.Status = UserExamStatus.Scored;
         await UserExamRepository.UpdateAsync(userExam);
     }

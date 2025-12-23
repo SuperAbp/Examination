@@ -16,5 +16,5 @@ public class QuestionDetailDto : EntityDto<Guid>
     public int QuestionType { get; set; }
     public Guid QuestionBankId { get; set; }
 
-    public List<QuestionAnswerDto> Answers { get; set; } = [];
+    public List<QuestionOptionDto> Options { get; set; } = [];
 }

@@ -1,10 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SuperAbp.Exam.EntityFrameworkCore.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.Exams;
-using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.ExamManagement.UserExams;
-using SuperAbp.Exam.QuestionManagement.Questions;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
-using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
 {
@@ -113,6 +108,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
                               CreationTime = ue.CreationTime,
                               FinishedTime = ue.FinishedTime,
                               TotalScore = ue.TotalScore,
+                              IsPassed = ue.IsPassed,
                               Status = ue.Status
                           })
                 .OrderBy(sorting ?? UserExamConsts.DefaultSorting)

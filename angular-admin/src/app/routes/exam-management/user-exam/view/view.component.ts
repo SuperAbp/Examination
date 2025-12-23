@@ -22,24 +22,23 @@ import { finalize, tap } from 'rxjs';
 import { QuestionNumber, QuestionNumberItem } from 'src/app/shared/components/question-number';
 
 @Component({
-  selector: 'app-exam-management-user-exam-view',
-  templateUrl: './view.component.html',
-  styleUrl: './view.component.less',
-  standalone: true,
-  imports: [
-    CoreModule,
-    PageHeaderComponent,
-    FooterToolbarModule,
-    SharedModule,
-    NzCardModule,
-    NzSpinModule,
-    NzButtonModule,
-    NzRadioModule,
-    NzIconModule,
-    NzSwitchModule,
-    NzAffixModule,
-    NzDescriptionsModule
-  ]
+    selector: 'app-exam-management-user-exam-view',
+    templateUrl: './view.component.html',
+    styleUrl: './view.component.less',
+    imports: [
+        CoreModule,
+        PageHeaderComponent,
+        FooterToolbarModule,
+        SharedModule,
+        NzCardModule,
+        NzSpinModule,
+        NzButtonModule,
+        NzRadioModule,
+        NzIconModule,
+        NzSwitchModule,
+        NzAffixModule,
+        NzDescriptionsModule
+    ]
 })
 export class ExamManagementUserExamViewComponent implements OnInit {
   userExamId: string;

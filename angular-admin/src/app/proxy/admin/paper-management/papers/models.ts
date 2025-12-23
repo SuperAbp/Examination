@@ -11,7 +11,7 @@ export interface PaperCreateDto extends PaperCreateOrUpdateDtoBase {
 }
 
 export interface PaperCreateOrUpdateDtoBase {
-  name?: string;
+  name: string;
   description?: string;
   score: number;
   paperType: number;
@@ -20,7 +20,7 @@ export interface PaperCreateOrUpdateDtoBase {
 
 export interface PaperCreateOrUpdateDtoBase_PaperSectionDto {
   id?: string;
-  title?: string;
+  title: string;
   scoreEach: number;
   totalScore: number;
   order: number;

@@ -10,10 +10,9 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, map, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-question-select',
-  templateUrl: './question-select.component.html',
-  standalone: true,
-  imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, STModule, DelonFormModule]
+    selector: 'app-question-select',
+    templateUrl: './question-select.component.html',
+    imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, STModule, DelonFormModule]
 })
 export class QuestionSelectComponent implements OnInit {
   @Input()

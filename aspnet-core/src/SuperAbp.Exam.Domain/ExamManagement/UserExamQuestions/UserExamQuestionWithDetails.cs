@@ -37,9 +37,9 @@ public class UserExamQuestionWithDetails
 
     public string? Answers { get; set; }
 
-    public List<QuestionAnswer> QuestionAnswers { get; set; } = [];
+    public List<Questionption> QuestionOptions { get; set; } = [];
 
-    public class QuestionAnswer
+    public class Questionption
     {
         public Guid Id { get; set; }
 

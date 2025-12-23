@@ -38,11 +38,11 @@ public class TrainingAppService(
         {
             throw new UserFriendlyException("题目不存在");
         }
-        if (await trainingRepository.AnyQuestionAsync(input.TrainingSource, input.QuestionId))
+        if (await trainingRepository.AnyQuestionAsync(TrainingSource.FromValue(input.TrainingSource), input.QuestionId))
         {
             throw new UserFriendlyException("请勿重复答题");
         }
-        Training training = new(GuidGenerator.Create(), CurrentUser.GetId(), input.QuestionBankId, input.QuestionId, input.TrainingSource);
+        Training training = new(GuidGenerator.Create(), CurrentUser.GetId(), input.QuestionBankId, input.QuestionId, TrainingSource.FromValue(input.TrainingSource));
         training.SetRight(input.Right);
         await trainingRepository.InsertAsync(training);
         return ObjectMapper.Map<Training, TrainingListDto>(training);

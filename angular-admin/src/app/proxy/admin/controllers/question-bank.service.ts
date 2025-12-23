@@ -1,12 +1,13 @@
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { GetQuestionBankForEditorOutput, GetQuestionBanksInput, QuestionBankCountDto, QuestionBankCreateDto, QuestionBankDetailDto, QuestionBankListDto, QuestionBankUpdateDto } from '../question-management/question-banks/models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuestionBankService {
+  private restService = inject(RestService);
   apiName = 'Default';
   
 
@@ -67,6 +68,4 @@ export class QuestionBankService {
       body: input,
     },
     { apiName: this.apiName,...config });
-
-  constructor(private restService: RestService) {}
 }

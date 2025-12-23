@@ -18,16 +18,16 @@ else
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Blazor.Model
 @using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.MistakeReviews
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using Volo.Abp.Application.Dtos
 @using Volo.Abp.AspNetCore.Components.Notifications
-@using SuperAbp.Exam.MistakesReviews
 @using SuperAbp.Exam.TrainingManagement
 
 @inject IUiNotificationService NotificationService
 @inject IStringLocalizer<ExamResource> L
 @inject IQuestionAppService QuestionAppService
-@inject IMistakesReviewAppService MistakesReviewAppService
+@inject IMistakeReviewAppService MistakesReviewAppService
 
 @code {
     [Parameter]
@@ -45,7 +45,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         // 先获取错题 QuestionId 列表
-        var mistakeResult = await MistakesReviewAppService.GetListAsync(new GetMistakesReviewInput()
+        var mistakeResult = await MistakesReviewAppService.GetListAsync(new GetMistakeReviewsInput()
         {
             QuestionType = CurrentQuestionType,
             QuestionContent = null,

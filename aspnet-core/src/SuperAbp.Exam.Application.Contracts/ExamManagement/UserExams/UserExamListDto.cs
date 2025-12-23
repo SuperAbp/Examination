@@ -24,6 +24,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public DateTime CreationTime { get; set; }
 
+        /// <summary>
+        /// 是否通过
+        /// </summary>
+        public bool? IsPassed { get; set; }
+
         public int Status { get; set; }
     }
 }

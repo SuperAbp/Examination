@@ -5,7 +5,7 @@ using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.Favorites;
 using SuperAbp.Exam.KnowledgePoints;
-using SuperAbp.Exam.MistakesReviews;
+using SuperAbp.Exam.MistakeReviews;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.PaperQuestions;
 using SuperAbp.Exam.PaperManagement.Papers;
@@ -13,7 +13,7 @@ using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.Questions;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 using SuperAbp.Exam.TrainingManagement;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.Identity;
@@ -56,7 +56,7 @@ public interface IExamDbContext : IEfCoreDbContext
 
     public DbSet<Question> Questions { get; set; }
     public DbSet<KnowledgePoint> KnowledgePoints { get; set; }
-    public DbSet<QuestionAnswer> QuestionAnswers { get; set; }
+    public DbSet<QuestionOption> QuestionOptions { get; set; }
     public DbSet<QuestionBank> QuestionBanks { get; set; }
     public DbSet<Paper> Papers { get; set; }
 
@@ -75,5 +75,5 @@ public interface IExamDbContext : IEfCoreDbContext
     public DbSet<Training> Trains { get; set; }
 
     public DbSet<Favorite> Favorites { get; set; }
-    public DbSet<MistakesReview> MistakesReviews { get; set; }
+    public DbSet<MistakeReview> MistakeReviews { get; set; }
 }

@@ -95,13 +95,13 @@
                         <div class="width-100">
                           @if (questionDetails.get(question.get('questionId').value); as detail) {
                             <h3>{{ $index + 1 }}、 {{ detail.content }}</h3>
-                            @for (answer of detail.answers; track $index) {
+                            @for (option of detail.options; track $index) {
                               <div class="box" nz-flex nzJustify="space-between">
                                 <div>
                                   <span style="color: #1890ff" class="font-weight-bold">{{ 65 + $index | char }}</span>
-                                  {{ answer.content }}
+                                  {{ option.content }}
                                 </div>
-                                @if (answer.right) {
+                                @if (option.right) {
                                   <div nz-icon nzType="check-circle" nzTheme="twotone" nzTwotoneColor="#52c41a"></div>
                                 }
                               </div>

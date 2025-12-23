@@ -10,9 +10,10 @@ using Volo.Abp.TenantManagement;
 namespace SuperAbp.Exam;
 
 [DependsOn(
-    typeof(ExamDomainModule),
-    typeof(AbpAccountApplicationModule),
+    typeof(ExamApplicationSharedModule),
     typeof(ExamApplicationContractsModule),
+    typeof(AbpAutoMapperModule),
+    typeof(AbpAccountApplicationModule),
     typeof(AbpIdentityApplicationModule),
     typeof(AbpPermissionManagementApplicationModule),
     typeof(AbpTenantManagementApplicationModule),

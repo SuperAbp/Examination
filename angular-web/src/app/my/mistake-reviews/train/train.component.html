@@ -1,0 +1,8 @@
+@if (trainConfig) {
+  <app-train
+    [config]="trainConfig"
+    [questionNumbers]="questionNumbers"
+    [trainingRecords]="trainingRecords"
+    (backClick)="goBack()"
+  ></app-train>
+}

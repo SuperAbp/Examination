@@ -11,7 +11,7 @@ public class FavoriteListDto
 
     public required string QuestionContent { get; set; }
 
-    public required QuestionType QuestionType { get; set; }
+    public required int QuestionType { get; set; }
 
     public DateTime CreationTime { get; set; }
 }

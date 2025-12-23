@@ -1,7 +1,7 @@
 
 export interface GetKnowledgePointForEditorOutput {
   parentId?: string;
-  name?: string;
+  name: string;
 }
 
 export interface GetKnowledgePointsInput {
@@ -13,7 +13,7 @@ export interface KnowledgePointCreateDto extends GetKnowledgePointForEditorOutpu
 
 export interface KnowledgePointNodeDto {
   id?: string;
-  name?: string;
+  name: string;
   children: KnowledgePointNodeDto[];
 }
 

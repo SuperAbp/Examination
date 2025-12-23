@@ -34,7 +34,7 @@
         </FormItem>
     </Form>
 
-    <Table TItem="MistakesReviewListDto"
+    <Table TItem="MistakeReviewListDto"
            @ref="Table"
            DataSource="@_mistakes"
            Total="_totalCount"
@@ -61,22 +61,22 @@
 @using AntDesign.TableModels
 @using Microsoft.Extensions.Localization
 @using SuperAbp.Exam.Localization
+@using SuperAbp.Exam.MistakeReviews
 @using SuperAbp.Exam.QuestionManagement.Questions
 @using System.Text
-@using SuperAbp.Exam.MistakesReviews
 @using Volo.Abp.AspNetCore.Components.Notifications
 @inject IStringLocalizer<ExamResource> L
 @inject NavigationManager Navigation
-@inject IMistakesReviewAppService MistakeAppService
+@inject IMistakeReviewAppService MistakeAppService
 @inject IUiNotificationService NotificationService
 @code {
-    Table<MistakesReviewListDto> Table;
-    IReadOnlyList<MistakesReviewListDto> _mistakes;
+    Table<MistakeReviewListDto> Table;
+    IReadOnlyList<MistakeReviewListDto> _mistakes;
     int _currentPage = 1;
     int _pageSize = 10;
     int _totalCount = 0;
     bool _loading = true;
-    GetMistakesReviewInput parameter = new();
+    GetMistakeReviewsInput parameter = new();
 
     public void Search()
     {

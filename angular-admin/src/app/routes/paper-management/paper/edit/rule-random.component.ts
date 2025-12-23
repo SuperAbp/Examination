@@ -5,7 +5,7 @@ import { OptionService, QuestionBankService } from '@proxy/admin/controllers';
 import { QuestionBankCountDto, QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
 import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -16,10 +16,9 @@ export interface RuleRandomParams {
 }
 
 @Component({
-  selector: 'app-rule-random',
-  templateUrl: './rule-random.component.html',
-  standalone: true,
-  imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, NzFormModule, NzSelectModule, NzInputNumberModule]
+    selector: 'app-rule-random',
+    templateUrl: './rule-random.component.html',
+    imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, NzFormModule, NzSelectModule, NzInputNumberLegacyModule]
 })
 export class RuleRandomComponent implements OnInit {
   @Input() selectedRules: Array<{ questionBankId: string; questionType: number; count: number }> = [];

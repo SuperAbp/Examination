@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+	  <RootNamespace>SuperAbp.Exam</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SuperAbp.Exam.Application.Contracts.Shared\SuperAbp.Exam.Application.Contracts.Shared.csproj" />
+    <ProjectReference Include="..\SuperAbp.Exam.Domain\SuperAbp.Exam.Domain.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Volo.Abp.Ddd.Application" Version="10.0.0" />
+	</ItemGroup>
+
+</Project>

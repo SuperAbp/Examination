@@ -15,10 +15,9 @@ import { tap } from 'rxjs';
 import { ExamManagementExamEditComponent } from '../../exam-management/exam/edit/edit.component';
 
 @Component({
-  selector: 'app-exam-management-paper',
-  templateUrl: './paper.component.html',
-  standalone: true,
-  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
+    selector: 'app-exam-management-paper',
+    templateUrl: './paper.component.html',
+    imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class PaperManagementPaperComponent implements OnInit {
   private router = inject(Router);

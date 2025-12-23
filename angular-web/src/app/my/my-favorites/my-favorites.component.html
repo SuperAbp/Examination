@@ -1,0 +1,95 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="mb-0">{{ '::Menu:MyFavorite' | abpLocalization }}</h5>
+  </div>
+  <div class="card-body">
+    <form (ngSubmit)="search()" class="mb-3">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="filters.questionContent"
+              name="questionContent"
+              [placeholder]="
+                '::Placeholder' | abpLocalization: ('::QuestionContent' | abpLocalization)
+              "
+            />
+          </div>
+        </div>
+        <div class="col">
+          <ng-select
+            [placeholder]="
+              '::ChoosePlaceholder' | abpLocalization: ('::QuestionType' | abpLocalization)
+            "
+            [(ngModel)]="filters.questionType"
+            [items]="questionTypes"
+            bindLabel="label"
+            bindValue="value"
+            name="questionType"
+          >
+          </ng-select>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <div>
+              <button type="button" class="btn btn-primary me-2" (click)="search()">
+                <i class="fa fa-search"></i> {{ '::Search' | abpLocalization }}
+              </button>
+              <button type="button" class="btn btn-secondary me-2" (click)="clearFilters()">
+                <i class="fa fa-times"></i> {{ '::Clear' | abpLocalization }}
+              </button>
+              <button type="button" class="btn btn-primary" (click)="startTraining()">
+                {{ '::StartTraining' | abpLocalization }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <ngx-datatable [rows]="favorites.items" [count]="favorites.totalCount" [list]="list" default>
+      <ngx-datatable-column
+        [name]="'::QuestionContent' | abpLocalization"
+        prop="questionContent"
+      ></ngx-datatable-column>
+      <ngx-datatable-column
+        [name]="'::QuestionType' | abpLocalization"
+        [width]="80"
+        [canAutoResize]="false"
+        prop="questionType"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          {{ '::QuestionType:' + row.questionType | abpLocalization }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        [name]="'::CreationTime' | abpLocalization"
+        [width]="150"
+        [canAutoResize]="false"
+        prop="creationTime"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          {{ row.creationTime | date: 'short' }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        [name]="'Exam::Actions' | abpLocalization"
+        [width]="150"
+        [canAutoResize]="false"
+        [sortable]="false"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            (click)="startTraining(row.questionId)"
+          >
+            {{ '::StartTraining' | abpLocalization }}
+          </button>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>

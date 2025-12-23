@@ -1,0 +1,40 @@
+@for (option of options; track $index) {
+  <input
+    type="checkbox"
+    class="btn-check"
+    [id]="'option-' + option.id"
+    [disabled]="disabled"
+    autocomplete="off"
+  />
+  <label
+    class="btn w-100 text-start border"
+    [class.mb-2]="$index !== options.length - 1"
+    (click)="onOptionToggled(option)"
+    [class.border-primary]="isSelectedOption(option)"
+    [for]="'option-' + option.id"
+  >
+    <div class="d-flex justify-content-between">
+      <div>
+        <span class="tag">{{ 65 + $index | char }}</span>
+        {{ option.content }}
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        @if (showAnalysis && option.right) {
+          <i class="fa-regular fa-circle-check text-success"></i>
+        }
+      </div>
+    </div>
+  </label>
+}
+@if (!disabled && !hideSubmitButton) {
+  <div class="mt-3">
+    <button
+      type="button"
+      class="btn btn-primary w-100"
+      [disabled]="isSubmitDisabled()"
+      (click)="onSubmit()"
+    >
+      {{ '::Submit' | abpLocalization }}
+    </button>
+  </div>
+}

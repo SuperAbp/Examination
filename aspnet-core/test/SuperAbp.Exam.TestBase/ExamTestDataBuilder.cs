@@ -1,16 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperAbp.Exam.ExamManagement.Exams;
-using SuperAbp.Exam.ExamManagement.UserExamQuestions;
-using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.KnowledgePoints;
-using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
-using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.Questions;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
 using SuperAbp.Exam.TrainingManagement;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;

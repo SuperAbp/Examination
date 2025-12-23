@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { QuestionService } from '@proxy/admin/controllers';
-import { QuestionAnswerDto } from '@proxy/admin/question-management/questions';
+import { QuestionOptionDto } from '@proxy/admin/question-management/questions';
 
-interface QuestionAnswerTemp extends QuestionAnswerDto {
+interface QuestionOptionTemp extends QuestionOptionDto {
   id?: string;
 }
 @Component({
@@ -38,7 +38,7 @@ export class QuestionManagementAnswerComponent implements OnChanges {
   @Input()
   questionForm: FormGroup;
   @Input()
-  answers: QuestionAnswerDto[];
+  answers: QuestionOptionDto[];
 
   removeIds: string[] = [];
   loading = false;
@@ -72,15 +72,15 @@ export class QuestionManagementAnswerComponent implements OnChanges {
   batchAdd(length) {
     this.options.clear();
     for (let index = 0; index < length; index++) {
-      this.add({ right: false, sort: 0 });
+      this.add({ right: false, sort: 0, content: '' } as QuestionOptionTemp);
     }
   }
 
-  add(item: QuestionAnswerTemp = {} as QuestionAnswerTemp) {
+  add(item: QuestionOptionTemp = {} as QuestionOptionTemp) {
     let fg = this.createAttribute(item);
     this.options.push(fg);
   }
-  createAttribute(item: QuestionAnswerTemp) {
+  createAttribute(item: QuestionOptionTemp) {
     return this.fb.group({
       id: [item.id || null],
       right: [item.right || false],

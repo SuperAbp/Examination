@@ -1,0 +1,71 @@
+@if (unfinishedExam) {
+  <a class="text-decoration-none" [href]="'/exams/start/' + unfinishedExam.id">
+    <ngb-alert [dismissible]="false"> 存在未完成的考试，立即进入 </ngb-alert>
+  </a>
+}
+
+<div class="card">
+  <div class="card-header">
+    <h5 class="mb-0">{{ '::Menu:OnlineExam' | abpLocalization }}</h5>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="searchForm" class="mb-3">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="name"
+              [placeholder]="'::Placeholder' | abpLocalization: ('::Name' | abpLocalization)"
+              (keyup.enter)="search()"
+            />
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <button class="btn btn-primary me-2" type="button" (click)="search()">
+              <i class="fa fa-search"></i> {{ 'AbpUi::Search' | abpLocalization }}
+            </button>
+            <button class="btn btn-secondary" type="button" (click)="clearSearch()">
+              <i class="fa fa-times"></i> {{ 'AbpUi::Clear' | abpLocalization }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <ngx-datatable [rows]="exams.items" [count]="exams.totalCount" [list]="list" default>
+      <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Score' | abpLocalization">
+        <ng-template ngx-datatable-cell-template let-row="row">
+          {{ row.score }}（{{ '::PassingScore' | abpLocalization }}: {{ row.passingScore }}）
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::TotalTime' | abpLocalization" prop="totalTime">
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::ExamTime' | abpLocalization" [sortable]="false">
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <span>
+            {{ row.startTime | date: 'yyyy-MM-dd HH:mm' }}
+            ~
+            {{ row.endTime | date: 'yyyy-MM-dd HH:mm' }}
+          </span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        [name]="'::Actions' | abpLocalization"
+        [width]="150"
+        [canAutoResize]="false"
+        [sortable]="false"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          @if (isExamAvailable(row)) {
+            <button type="button" class="btn btn-primary btn-sm" (click)="StartAsync(row.id)">
+              {{ '::EnterExam' | abpLocalization }}
+            </button>
+          }
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>

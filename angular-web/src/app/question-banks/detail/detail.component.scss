@@ -1,0 +1,36 @@
+.card-header {
+    display: flex;
+    align-items: center;
+
+    h1 {
+        margin: 0;
+        margin-left: 16px;
+        font-size: 24px;
+    }
+}
+
+.section {
+    padding: 16px 0;
+    margin: 0 16px;
+    border-bottom: 1px solid var(--bs-border-color);
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    h2 {
+        font-size: 16px;
+    }
+
+    p {
+        margin: 0;
+        color: var(--bs-secondary);
+    }
+    .btn{
+        margin-right: 16px;
+
+        &:last-child {
+            margin-right: 0px;
+        }
+    }
+}

@@ -14,7 +14,7 @@ public class TrainingCreateDto
     /// </summary>
     public Guid QuestionId { get; set; }
 
-    public TrainingSource TrainingSource { get; set; }
+    public int TrainingSource { get; set; }
 
     public bool Right { get; set; }
 }

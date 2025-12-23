@@ -13,10 +13,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-exam-management-user-exam',
-  templateUrl: './user-exam.component.html',
-  standalone: true,
-  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
+    selector: 'app-exam-management-user-exam',
+    templateUrl: './user-exam.component.html',
+    imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class ExamManagementUserExamComponent implements OnInit {
   @Input()

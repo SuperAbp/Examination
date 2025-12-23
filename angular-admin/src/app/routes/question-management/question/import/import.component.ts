@@ -19,21 +19,20 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, map, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-question-management-question-import',
-  standalone: true,
-  imports: [
-    CoreModule,
-    PageHeaderModule,
-    FooterToolbarModule,
-    NzSpinModule,
-    NzCardModule,
-    NzGridModule,
-    NzFormModule,
-    NzSelectModule,
-    NzInputModule,
-    NzButtonModule
-  ],
-  templateUrl: './import.component.html'
+    selector: 'app-question-management-question-import',
+    imports: [
+        CoreModule,
+        PageHeaderModule,
+        FooterToolbarModule,
+        NzSpinModule,
+        NzCardModule,
+        NzGridModule,
+        NzFormModule,
+        NzSelectModule,
+        NzInputModule,
+        NzButtonModule
+    ],
+    templateUrl: './import.component.html'
 })
 export class QuestionManagementQuestionImportComponent implements OnInit {
   private fb = inject(FormBuilder);

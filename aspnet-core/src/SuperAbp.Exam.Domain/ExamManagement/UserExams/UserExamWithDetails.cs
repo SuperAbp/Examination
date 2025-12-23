@@ -1,5 +1,5 @@
 ﻿using SuperAbp.Exam.QuestionManagement.Questions;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 using System;
 using System.Collections.Generic;
 
@@ -12,6 +12,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public Guid UserId { get; set; }
         public string ExamName { get; set; }
+
+        /// <summary>
+        /// 是否通过
+        /// </summary>
+        public bool? IsPassed { get; set; }
 
         // public Guid QuestionId { get; set; }
         // public required QuestionType QuestionType { get; set; }
@@ -53,6 +58,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public Question Question { get; set; }
 
-        public List<QuestionAnswer> QuestionAnswers { get; set; } = [];
+        public List<QuestionOption> QuestionOptions { get; set; } = [];
     }
 }

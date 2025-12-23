@@ -1,0 +1,37 @@
+@for (option of options; track $index) {
+  <div class="mb-3">
+    <input
+      type="text"
+      class="form-control"
+      [id]="'blank-' + $index"
+      [(ngModel)]="answers[$index]"
+      [disabled]="disabled"
+      (ngModelChange)="onAnswerChange()"
+      [placeholder]="'::Answer' | abpLocalization"
+    />
+  </div>
+}
+
+@if (showAnalysis) {
+  <div class="sa-callout">
+    <div class="mb-1">{{ '::Answer' | abpLocalization }}</div>
+    <div style="font-size: 0.75rem">
+      @for (option of options; track $index) {
+        <div>{{ option.content }}</div>
+      }
+    </div>
+  </div>
+}
+
+@if (!disabled) {
+  <div class="mt-3">
+    <button
+      type="button"
+      class="btn btn-primary w-100"
+      [disabled]="isSubmitDisabled()"
+      (click)="onSubmit()"
+    >
+      {{ '::Submit' | abpLocalization }}
+    </button>
+  </div>
+}

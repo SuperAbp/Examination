@@ -1,12 +1,8 @@
-﻿using SuperAbp.Exam.QuestionManagement.QuestionAnswers;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionAnswers;
+﻿using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Xml.Linq;
-using Volo.Abp;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp.MultiTenancy;
@@ -31,7 +27,7 @@ public class Question : FullAuditedAggregateRoot<Guid>, IMultiTenant
         QuestionType = questionType;
         Content = content;
 
-        Answers = [];
+        Options = [];
     }
 
     public QuestionType QuestionType { get; private set; }
@@ -53,32 +49,32 @@ public class Question : FullAuditedAggregateRoot<Guid>, IMultiTenant
 
     public Guid? TenantId { get; set; }
 
-    public List<QuestionAnswer> Answers { get; private set; }
+    public List<QuestionOption> Options { get; private set; }
 
     public Question AddAnswer(Guid answerId, string content, bool right, int sort = 0, string? analysis = null)
     {
-        if (Answers.Any(x => x.Content == content))
+        if (Options.Any(x => x.Content == content))
         {
-            throw new QuestionAnswerContentAlreadyExistException(content);
+            throw new QuestionOptionContentAlreadyExistException(content);
         }
 
-        QuestionAnswer answer = new(answerId, Id, content, right, sort, analysis);
-        Answers.Add(answer);
+        QuestionOption answer = new(answerId, Id, content, right, sort, analysis);
+        Options.Add(answer);
 
         return this;
     }
 
     public Question UpdateAnswer(Guid answerId, string content, bool right, int sort, string? analysis)
     {
-        if (Answers.Any(a => a.Content == content && a.Id != answerId))
+        if (Options.Any(a => a.Content == content && a.Id != answerId))
         {
-            throw new QuestionAnswerContentAlreadyExistException(content);
+            throw new QuestionOptionContentAlreadyExistException(content);
         }
 
-        QuestionAnswer? answer = Answers.SingleOrDefault(a => a.Id == answerId);
+        QuestionOption? answer = Options.SingleOrDefault(a => a.Id == answerId);
         if (answer is null)
         {
-            throw new EntityNotFoundException(typeof(QuestionAnswer));
+            throw new EntityNotFoundException(typeof(QuestionOption));
         }
 
         answer.Content = content;
@@ -91,12 +87,12 @@ public class Question : FullAuditedAggregateRoot<Guid>, IMultiTenant
 
     public Question RemoveAnswer(Guid answerId)
     {
-        QuestionAnswer? answer = Answers.SingleOrDefault(a => a.Id == answerId);
+        QuestionOption? answer = Options.SingleOrDefault(a => a.Id == answerId);
         if (answer is null)
         {
-            throw new EntityNotFoundException(typeof(QuestionAnswer));
+            throw new EntityNotFoundException(typeof(QuestionOption));
         }
-        Answers.Remove(answer);
+        Options.Remove(answer);
         return this;
     }
 }

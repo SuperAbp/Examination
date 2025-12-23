@@ -4,7 +4,7 @@ export interface ExamCreateDto extends ExamCreateOrUpdateDtoBase {
 }
 
 export interface ExamCreateOrUpdateDtoBase {
-  name?: string;
+  name: string;
   description?: string;
   score: number;
   passingScore: number;
@@ -29,7 +29,7 @@ export interface ExamDetailDto extends EntityDto<string> {
 }
 
 export interface ExamListDto extends EntityDto<string> {
-  name?: string;
+  name: string;
   score: number;
   passingScore: number;
   totalTime: number;

@@ -14,10 +14,9 @@ import { tap } from 'rxjs/operators';
 import { QuestionManagementQuestionBankEditComponent } from './edit/edit.component';
 
 @Component({
-  selector: 'app-question-management-question-bank',
-  templateUrl: './question-bank.component.html',
-  standalone: true,
-  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzButtonModule, NzCardModule]
+    selector: 'app-question-management-question-bank',
+    templateUrl: './question-bank.component.html',
+    imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzButtonModule, NzCardModule]
 })
 export class QuestionManagementQuestionBankComponent implements OnInit {
   private modal = inject(ModalHelper);

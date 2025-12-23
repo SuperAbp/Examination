@@ -1,0 +1,96 @@
+<div class="row">
+  <div class="col-3">
+    <app-question-number
+      [questionNumbers]="questionNumbers"
+      [selectedQuestionId]="selectedQuestionId"
+      [correctQuestionIds]="getCorrectQuestionIds()"
+      [incorrectQuestionIds]="getIncorrectQuestionIds()"
+      (questionNumberSelected)="onQuestionNumberSelected($event)"
+    ></app-question-number>
+  </div>
+  <div class="col-9">
+    <div class="card">
+      <div class="card-header">
+        <span style="cursor: pointer" (click)="goBack()">
+          <i class="fa-solid fa-arrow-left"></i>
+        </span>
+        <span class="ms-3">{{ config.title }}</span>
+      </div>
+      <div class="card-body">
+        @if (selectedQuestion) {
+          <div class="fs-5 mb-3">{{ selectedQuestion.content }}</div>
+
+          @if (selectedQuestion.questionType === 0 || selectedQuestion.questionType === 2) {
+            <app-single-choice
+              [options]="selectedQuestion.options"
+              [selectedAnswerId]="
+                answerMap.get(selectedQuestionId)?.answers.values().next().value ?? null
+              "
+              [showAnalysis]="showAnalysis"
+              [disabled]="isOptionDisabled()"
+              (submitted)="onSubmitted($event)"
+            ></app-single-choice>
+          } @else if (selectedQuestion.questionType === 1) {
+            <app-multiple-choice
+              [options]="selectedQuestion.options"
+              [selectedAnswerIds]="selectedMultipleChoiceAnswerIds()"
+              [showAnalysis]="showAnalysis"
+              [disabled]="showAnalysis"
+              (answerChanged)="onAnswerChanged($event)"
+              (submitted)="onSubmitted($event)"
+            ></app-multiple-choice>
+          } @else if (selectedQuestion.questionType === 3) {
+            <app-fill-blank
+              [options]="selectedQuestion.options"
+              [selectedAnswers]="selectedFillBlankAnswers()"
+              [showAnalysis]="showAnalysis"
+              [disabled]="showAnalysis"
+              (answerChanged)="onFillBlankAnswerChanged($event)"
+              (submitted)="onSubmitted($event)"
+            ></app-fill-blank>
+          }
+
+          @if (showAnalysis && selectedQuestion.analysis) {
+            <div class="sa-callout">
+              <div class="mb-1">{{ '::Analysis' | abpLocalization }}</div>
+              <p style="font-size: 0.75rem">{{ selectedQuestion.analysis }}</p>
+            </div>
+          }
+
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="isPrevDisabled()"
+              (click)="prev()"
+            >
+              <i class="fa-solid fa-arrow-left me-1"></i>
+              {{ '::Previous' | abpLocalization }}
+            </button>
+            <i
+              class="fs-5"
+              [class]="isFavorited ? 'fa-solid fa-star' : 'fa-regular fa-star'"
+              style="cursor: pointer"
+              (click.stop)="favorite()"
+            ></i>
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="isNextDisabled()"
+              (click)="next()"
+            >
+              {{ '::Next' | abpLocalization }}
+              <i class="fa-solid fa-arrow-right ms-1"></i>
+            </button>
+          </div>
+        } @else {
+          <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

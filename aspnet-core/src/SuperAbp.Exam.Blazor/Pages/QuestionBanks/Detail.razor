@@ -27,7 +27,7 @@
             <Title Level="3">题型练习</Title>
             @foreach (var questionType in _questionTypes)
             {
-                <Button OnClick="() => StartTraining(0, (int)questionType)">@L["QuestionType:" + questionType]</Button>
+                <Button OnClick="() => StartTraining(0, questionType)">@L["QuestionType:" + questionType]</Button>
             }
         }
         </ChildContent>
@@ -44,7 +44,7 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    IReadOnlyList<QuestionType> _questionTypes = Array.Empty<QuestionType>();
+    IReadOnlyList<int> _questionTypes = Array.Empty<int>();
 
     QuestionBankDetailDto _questionBank;
 
@@ -54,7 +54,7 @@
         _questionTypes = await GetQuestionTypesAsync();
     }
 
-    private async Task<IReadOnlyList<QuestionType>> GetQuestionTypesAsync()
+    private async Task<IReadOnlyList<int>> GetQuestionTypesAsync()
     {
         return (await QuestionBankAppService.GetQuestionTypesAsync(Id)).Items;
     }
