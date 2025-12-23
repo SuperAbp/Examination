@@ -15,9 +15,9 @@ import { tap } from 'rxjs/operators';
 import { ExamManagementExamEditComponent } from './edit/edit.component';
 
 @Component({
-    selector: 'app-exam-management-exam',
-    templateUrl: './exam.component.html',
-    imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
+  selector: 'app-exam-management-exam',
+  templateUrl: './exam.component.html',
+  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class ExamManagementExamComponent implements OnInit {
   private modal = inject(ModalHelper);
@@ -105,7 +105,7 @@ export class ExamManagementExamComponent implements OnInit {
           children: [
             {
               iif: record => {
-                return record.status === 2;
+                return record.status !== 0 && record.status !== 4;
               },
               text: this.localizationService.instant('Exam::ExamRecord'),
               modal: {

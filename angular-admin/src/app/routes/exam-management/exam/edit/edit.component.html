@@ -23,7 +23,9 @@
             (nzOnSearch)="searchPaper($event)"
             (ngModelChange)="choosePaper($event)"
           >
-            <nz-option *ngFor="let p of papers" [nzLabel]="p.name" [nzValue]="p.id"></nz-option>
+            @for (p of papers; track $index) {
+              <nz-option [nzLabel]="p.name" [nzValue]="p.id"></nz-option>
+            }
           </nz-select>
         </nz-form-control>
       </nz-form-item>
@@ -61,7 +63,11 @@
               [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
               [nzErrorTip]="passingScoreErrorTpl"
             >
-              <nz-input-number formControlName="passingScore" [nzMin]="1" [nzMax]="score.value"></nz-input-number>
+              <nz-input-number
+                formControlName="passingScore"
+                [nzMin]="score.value > 0 ? 1 : 0"
+                [nzMax]="score.value > 0 ? score.value - 1 : 0"
+              ></nz-input-number>
               <ng-template #passingScoreErrorTpl let-control>
                 @if (control.hasError('required')) {
                   {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
@@ -120,15 +126,13 @@
       <nz-form-item>
         <nz-form-label>{{ 'Exam::ExamTime' | abpLocalization }}</nz-form-label>
         <nz-form-control>
-          <span style="margin-left: 20px">
-            <nz-range-picker
-              nzFormat="yyyy-MM-dd HH:mm:ss"
-              [nzDisabledDate]="disabledDate"
-              [nzShowTime]="true"
-              formControlName="examTimes"
-              (ngModelChange)="examTimeChange($event)"
-            ></nz-range-picker>
-          </span>
+          <nz-range-picker
+            nzFormat="yyyy-MM-dd HH:mm:ss"
+            [nzDisabledDate]="disabledDate"
+            [nzShowTime]="true"
+            formControlName="examTimes"
+            (ngModelChange)="examTimeChange($event)"
+          ></nz-range-picker>
         </nz-form-control>
       </nz-form-item>
     </form>

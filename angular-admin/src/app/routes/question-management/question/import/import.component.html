@@ -46,11 +46,9 @@
                 nzAllowClear
                 [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization: ('Exam::QuestionBank' | abpLocalization)"
               >
-                <nz-option
-                  *ngFor="let questionBank of questionBanks"
-                  [nzValue]="questionBank.id"
-                  [nzLabel]="questionBank.title"
-                ></nz-option>
+                @for (questionBank of questionBanks; track $index) {
+                  <nz-option [nzValue]="questionBank.id" [nzLabel]="questionBank.title"></nz-option>
+                }
               </nz-select>
               <ng-template #questionBankErrorTpl let-control>
                 @if (control.hasError('required')) {

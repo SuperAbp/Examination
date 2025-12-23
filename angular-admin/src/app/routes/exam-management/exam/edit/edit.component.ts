@@ -13,7 +13,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
@@ -22,10 +22,10 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, tap } from 'rxjs/operators';
 
 @Component({
-    selector: 'app-exam-management-exam-edit',
-    templateUrl: './edit.component.html',
-    styles: [
-        `
+  selector: 'app-exam-management-exam-edit',
+  templateUrl: './edit.component.html',
+  styles: [
+    `
       nz-select {
         width: 100%;
       }
@@ -34,22 +34,22 @@ import { finalize, tap } from 'rxjs/operators';
         margin-right: 8px;
       }
     `
-    ],
-    providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
-    imports: [
-        CoreModule,
-        NzModalModule,
-        NzFormModule,
-        NzSpinModule,
-        NzSelectModule,
-        NzInputModule,
-        NzInputNumberLegacyModule,
-        NzCheckboxModule,
-        NzDatePickerModule,
-        NzButtonModule,
-        NzRadioModule,
-        EditorComponent
-    ]
+  ],
+  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
+  imports: [
+    CoreModule,
+    NzModalModule,
+    NzFormModule,
+    NzSpinModule,
+    NzSelectModule,
+    NzInputModule,
+    NzInputNumberModule,
+    NzCheckboxModule,
+    NzDatePickerModule,
+    NzButtonModule,
+    NzRadioModule,
+    EditorComponent
+  ]
 })
 export class ExamManagementExamEditComponent implements OnInit {
   @Input()
@@ -134,23 +134,20 @@ export class ExamManagementExamEditComponent implements OnInit {
         tap(res => {
           this.papers = res.items;
 
-          this.form = this.fb.group(
-            {
-              name: [this.exam.name || '', [Validators.required]],
-              description: [this.exam.description || ''],
-              score: [this.exam.score || 0],
-              passingScore: [this.exam.passingScore || 0, [Validators.required, Validators.min(1)]],
-              totalTime: [this.exam.totalTime || 0, [Validators.required, Validators.min(1)]],
-              paperId: [this.exam.paperId || ''],
-              startTime: [new Date()],
-              endTime: [new Date()],
-              isLimitedTime: [false],
-              randomOrderOfOption: [this.exam.randomOrderOfOption || false],
-              answerMode: [this.exam.answerMode || 0],
-              examTimes: [[]]
-            },
-            { validators: this.passingScoreLessThanScoreValidator }
-          );
+          this.form = this.fb.group({
+            name: [this.exam.name || '', [Validators.required]],
+            description: [this.exam.description || ''],
+            score: [this.exam.score || 0],
+            passingScore: [this.exam.passingScore || 0, [Validators.required, Validators.min(1)]],
+            totalTime: [this.exam.totalTime || 0, [Validators.required, Validators.min(1)]],
+            paperId: [this.exam.paperId || ''],
+            startTime: [new Date()],
+            endTime: [new Date()],
+            isLimitedTime: [false],
+            randomOrderOfOption: [this.exam.randomOrderOfOption || false],
+            answerMode: [this.exam.answerMode || 0],
+            examTimes: [[]]
+          });
           if (this.exam.startTime && this.exam.endTime) {
             this.showExamTime = true;
             this.startTime.setValue(new Date(this.exam.startTime));
@@ -166,21 +163,6 @@ export class ExamManagementExamEditComponent implements OnInit {
         })
       )
       .subscribe();
-  }
-  passingScoreLessThanScoreValidator(group: FormGroup) {
-    const score = group.get('score')?.value;
-    const passingScore = group.get('passingScore')?.value;
-    if (passingScore != null && score != null) {
-      if (passingScore >= score) {
-        group.get('passingScore')?.setErrors({ max: { value: score - 1 } });
-        return { max: { max: score - 1 } };
-      } else if (passingScore < 1) {
-        group.get('passingScore')?.setErrors({ min: { value: 1 } });
-        return { min: { min: 1 } };
-      }
-    }
-    group.get('passingScore')?.setErrors(null);
-    return null;
   }
   searchPaper(value: string): void {
     let params = { skipCount: 0, maxResultCount: 100, name: value };

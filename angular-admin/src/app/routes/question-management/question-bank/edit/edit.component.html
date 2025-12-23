@@ -19,9 +19,9 @@
             [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Title' | abpLocalization)"
           />
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
+            @if (control.hasError('required')) {
               {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
-            </ng-container>
+            }
           </ng-template>
         </nz-form-control>
       </nz-form-item>

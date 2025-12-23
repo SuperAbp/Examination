@@ -19,9 +19,9 @@ public class ExamCreateOrUpdateDtoBaseValidator : AbstractValidator<ExamCreateOr
             .NotEmpty()
             .WithMessage(local["The {0} field is required.", "{PropertyName}"]);
         RuleFor(q => q.Score)
-            .GreaterThanOrEqualTo(0);
+            .GreaterThan(0);
         RuleFor(q => q.PassingScore)
-            .GreaterThanOrEqualTo(0)
+            .GreaterThan(0)
             .LessThanOrEqualTo(q => q.Score);
 
         When(q => q.StartTime.HasValue && q.EndTime.HasValue, () =>

@@ -6,16 +6,11 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   selector: 'st-widget-set-price',
   template: `{{ value }}
     <button nz-button nzType="text" (click)="show()">
-      <i nz-icon nzType="dollar" nzTheme="outline" *ngIf="index === -1"></i>
-      <i
-        nz-icon
-        nz-tooltip
-        [nzTooltipTitle]="title"
-        nzType="check-circle"
-        nzTheme="twotone"
-        nzTwotoneColor="#52c41a"
-        *ngIf="index > -1"
-      ></i>
+      @if (index === -1) {
+        <i nz-icon nzType="dollar" nzTheme="outline"></i>
+      } @else if (index > -1) {
+        <i nz-icon nz-tooltip [nzTooltipTitle]="title" nzType="check-circle" nzTheme="twotone" nzTwotoneColor="#52c41a"></i>
+      }
     </button> `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
