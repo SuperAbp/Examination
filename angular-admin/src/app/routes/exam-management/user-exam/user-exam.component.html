@@ -17,7 +17,9 @@
   >
     <ng-template st-row="examTime" let-item let-index="index">
       {{ item.creationTime }}
-      <span *ngIf="item.finishedTime"> ~ {{ item.finishedTime }}</span>
+      @if (item.finishedTime) {
+        <span> ~ {{ item.finishedTime }}</span>
+      }
     </ng-template>
     <ng-template st-row="status" let-item let-index="index">
       {{ 'Exam::UserExamStatus:' + item.status | abpLocalization }}

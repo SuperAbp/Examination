@@ -8,12 +8,12 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 
 import { QuestionManagementAnswerComponent } from './answer.component';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 interface QuestionOptionTemp extends QuestionOptionDto {
   id?: string;
 }
@@ -28,7 +28,7 @@ interface QuestionOptionTemp extends QuestionOptionDto {
     NzFormModule,
     NzCheckboxModule,
     NzInputModule,
-    NzInputNumberLegacyModule,
+    NzInputNumberModule,
     NzPopconfirmModule,
     NzTooltipModule,
     NzIconModule

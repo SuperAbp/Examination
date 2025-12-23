@@ -136,7 +136,6 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
         }
         userExam.UpdateTotalScore();
 
-        // 根据及格分数判断是否通过并存储
         userExam.CheckPassed(examination.PassingScore);
 
         userExam.Status = UserExamStatus.Scored;
