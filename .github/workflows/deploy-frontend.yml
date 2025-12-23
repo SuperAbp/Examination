@@ -16,12 +16,26 @@ jobs:
 
       - name: Build Angular Project
         run: |
+          echo "Publishing Admin..."
           cd angular-admin
           yarn install
           npm run build
+          cd ..
+
+          echo "Publishing Web..."
+          cd angular-web
+          yarn install
+          npm run build
+          cd ..
+
+      - name: Prepare frontend artifact structure
+        run: |
+          mkdir -p frontend/admin frontend/web
+          cp -r angular-admin/dist/angular-admin/browser/* frontend/admin/
+          cp -r angular-web/dist/angular-web/browser/* frontend/web/
 
       - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
         with:
           name: frontend
-          path: angular-admin/dist/angular-admin/browser/*
+          path: frontend/*

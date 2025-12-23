@@ -17,7 +17,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: "10.0.x"
 
       - name: Install ABP CLI
         run: |
@@ -39,7 +39,7 @@ jobs:
           cd SuperAbp.Exam.HttpApi.Host
           abp install-libs
           cd ..
-          
+
           echo "Publishing API..."
           dotnet publish SuperAbp.Exam.HttpApi.Host/SuperAbp.Exam.HttpApi.Host.csproj -c Release -o ../publish/Api
 
@@ -47,24 +47,16 @@ jobs:
           cd SuperAbp.Exam.AuthServer
           abp install-libs
           cd ..
-          
+
           echo "Publishing Auth Server..."
           dotnet publish SuperAbp.Exam.AuthServer/SuperAbp.Exam.AuthServer.csproj -c Release -o ../publish/AuthServer
-
-          echo "Install Libs Web..."
-          cd SuperAbp.Exam.Blazor
-          abp install-libs
-          cd ..
-
-          echo "Publishing Web UI..."
-          dotnet publish SuperAbp.Exam.Blazor/SuperAbp.Exam.Blazor.csproj -c Release -o ../publish/Web
 
           echo "Publishing BackgroundServices..."
           dotnet publish SuperAbp.Exam.BackgroundServices/SuperAbp.Exam.BackgroundServices.csproj -c Release -o ../publish/BackgroundServices
 
           echo "Publishing Db Migrator..."
           dotnet publish SuperAbp.Exam.DbMigrator/SuperAbp.Exam.DbMigrator.csproj -c Release -o ../publish/DbMigrator
-      
+
       - name: Upload backend artifact
         uses: actions/upload-artifact@v4
         with:
