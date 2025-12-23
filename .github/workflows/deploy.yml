@@ -3,7 +3,7 @@ name: Deploy on Tag
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: "10.0.x"
 
       - name: Run Unit Tests
         working-directory: aspnet-core
@@ -41,7 +41,7 @@ jobs:
     with:
       tag: ${{ needs.build.outputs.tag }}
     secrets: inherit
-  
+
   deploy-all:
     name: "Package and Deploy to Server"
     needs: [build, deploy-backend, deploy-frontend]
@@ -55,12 +55,12 @@ jobs:
         with:
           name: backend
           path: ./publish
-      
+
       - name: Download frontend artifacts
         uses: actions/download-artifact@v4
         with:
           name: frontend
-          path: ./publish/Admin
+          path: ./publish
 
       - name: Compress publish folder
         run: tar -czf deploy.tar.gz -C publish .

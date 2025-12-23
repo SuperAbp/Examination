@@ -15,7 +15,6 @@ function configureRoutes() {
     {
       path: '/',
       name: '::Menu:Home',
-      iconClass: 'fas fa-home',
       order: 1,
       layout: eLayoutType.application,
     },
@@ -24,7 +23,6 @@ function configureRoutes() {
     {
       path: '/exams',
       name: '::Menu:OnlineExam',
-      iconClass: 'fas fa-home',
       order: 2,
       layout: eLayoutType.application,
     },
@@ -33,7 +31,6 @@ function configureRoutes() {
     {
       path: '/question-banks',
       name: '::Menu:QuestionBank',
-      iconClass: 'fas fa-home',
       order: 3,
       layout: eLayoutType.application,
     },
@@ -41,7 +38,6 @@ function configureRoutes() {
   routes.add([
     {
       name: '::Menu:My',
-      iconClass: 'fas fa-user',
       order: 4,
       layout: eLayoutType.application,
     },
@@ -49,7 +45,6 @@ function configureRoutes() {
       path: '/my/exams',
       name: '::Menu:MyExam',
       parentName: '::Menu:My',
-      iconClass: 'fas fa-star',
       order: 1,
       layout: eLayoutType.application,
     },
@@ -57,7 +52,6 @@ function configureRoutes() {
       path: '/my/favorites',
       name: '::Menu:MyFavorite',
       parentName: '::Menu:My',
-      iconClass: 'fas fa-star',
       order: 1,
       layout: eLayoutType.application,
     },
@@ -65,7 +59,6 @@ function configureRoutes() {
       path: '/my/mistakes-reviews',
       name: '::Menu:MyMistakeReview',
       parentName: '::Menu:My',
-      iconClass: 'fas fa-star',
       order: 1,
       layout: eLayoutType.application,
     },
