@@ -1,26 +1,28 @@
 @if (loading) {
   <div class="text-center mt-5">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">加载中...</span>
+      <span class="visually-hidden">{{ 'Loading' | abpLocalization }}</span>
     </div>
   </div>
 } @else {
-  <div class="row g-3">
-    <!-- 左侧：题号导航 -->
-    <div class="col-2">
-      <div class="sticky-top" style="top: 1rem">
-        <app-question-number
-          [questionNumbers]="questionNumbers"
-          [correctQuestionIds]="correctQuestionIds"
-          [incorrectQuestionIds]="incorrectQuestionIds"
-          (questionNumberSelected)="scrollToQuestion($event)"
-        >
-        </app-question-number>
+  <div class="row">
+    <div class="col-2 col-md-3 col-lg-2 d-none d-md-block">
+      <div class="question-number-wrapper sticky-top" style="top: 1rem">
+        <div class="card">
+          <div class="card-body">
+            <app-question-number
+              [questionNumbers]="questionNumbers"
+              [correctQuestionIds]="correctQuestionIds"
+              [incorrectQuestionIds]="incorrectQuestionIds"
+              (questionNumberSelected)="scrollToQuestion($event)"
+            >
+            </app-question-number>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- 中间：试卷内容 -->
-    <div class="col-8">
+    <div class="col-12 col-md-6 col-lg-8">
       <div class="card">
         <div class="card-header">
           <span style="cursor: pointer" (click)="goBack()">
@@ -118,9 +120,8 @@
       </div>
     </div>
 
-    <!-- 右侧：成绩统计 -->
-    <div class="col-2">
-      <div class="sticky-top" style="top: 1rem">
+    <div class="col-2 col-md-3 col-lg-2 d-none d-md-block">
+      <div class="score-card-wrapper sticky-top" style="top: 1rem">
         <div class="card">
           <div class="card-body">
             <!-- 总分 -->
@@ -171,4 +172,51 @@
       </div>
     </div>
   </div>
+
+  <!-- 移动端底部状态栏 -->
+  <div
+    class="mobile-status-bar d-md-none"
+    (click)="openQuestionNumberOffcanvas(questionNumberOffcanvas)"
+  >
+    <div class="status-bar-content">
+      <div class="question-info">
+        <span>共 {{ getTotalQuestions() }} 题</span>
+      </div>
+      <div class="stats-info">
+        <span class="score-display me-2">
+          @if (examDetail.isPassed) {
+            <span class="text-success fw-bold">{{ examDetail.totalScore || 0 }}</span>
+          } @else {
+            <span class="text-danger fw-bold">{{ examDetail.totalScore || 0 }}</span>
+          }
+        </span>
+        <span class="text-success me-2">
+          <i class="fa-solid fa-check-circle"></i> {{ getCorrectCount() }}
+        </span>
+        <span class="text-danger">
+          <i class="fa-solid fa-times-circle"></i> {{ getWrongCount() }}
+        </span>
+      </div>
+      <div class="tap-hint">
+        <i class="fa-solid fa-chevron-up"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offcanvas 题号列表 -->
+  <ng-template #questionNumberOffcanvas let-offcanvas>
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">题目列表</h5>
+      <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+    </div>
+    <div class="offcanvas-body">
+      <app-question-number
+        [questionNumbers]="questionNumbers"
+        [correctQuestionIds]="correctQuestionIds"
+        [incorrectQuestionIds]="incorrectQuestionIds"
+        (questionNumberSelected)="scrollToQuestion($event); offcanvas.dismiss()"
+      >
+      </app-question-number>
+    </div>
+  </ng-template>
 }

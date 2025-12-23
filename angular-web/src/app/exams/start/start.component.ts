@@ -1,5 +1,6 @@
-import { Component, OnInit, inject, ViewChild } from '@angular/core';
+import { Component, OnInit, inject, ViewChild, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { UserExamService } from '@proxy/controllers';
 import {
   UserExamDetailDto,
@@ -78,6 +79,7 @@ export class ExamsStartComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly confirmation = inject(ConfirmationService);
   private readonly toaster = inject(ToasterService);
+  private readonly offcanvasService = inject(NgbOffcanvas);
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
@@ -320,6 +322,17 @@ export class ExamsStartComponent implements OnInit {
 
   getUnansweredCount(): number {
     return this.allQuestions.length - this.answeredQuestionIds.size;
+  }
+
+  openQuestionNumberOffcanvas(content: TemplateRef<any>) {
+    this.offcanvasService.open(content, {
+      position: 'bottom',
+      panelClass: 'question-number-offcanvas',
+    });
+  }
+
+  getCurrentQuestionIndex(): number {
+    return this.selectedQuestionIndex + 1;
   }
 
   goBack(): void {

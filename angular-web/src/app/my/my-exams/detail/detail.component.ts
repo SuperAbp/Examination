@@ -1,6 +1,7 @@
 import { CoreModule, PagedResultDto } from '@abp/ng.core';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { UserExamService } from '@proxy/controllers';
 import { UserExamDetailDto } from '@proxy/exam-management/user-exams';
 import { DatePipe, CommonModule } from '@angular/common';
@@ -27,6 +28,7 @@ export class ExamDetailComponent implements OnInit {
   private readonly userExamService = inject(UserExamService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly offcanvasService = inject(NgbOffcanvas);
 
   userExamId: string;
   examDetail: UserExamDetailDto;
@@ -80,6 +82,13 @@ export class ExamDetailComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/my/exams']);
+  }
+
+  openQuestionNumberOffcanvas(content: TemplateRef<any>) {
+    this.offcanvasService.open(content, {
+      position: 'bottom',
+      panelClass: 'question-number-offcanvas',
+    });
   }
 
   scrollToQuestion(questionId: string) {

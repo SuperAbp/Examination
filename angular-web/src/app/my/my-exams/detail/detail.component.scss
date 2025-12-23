@@ -14,3 +14,69 @@
 strong {
   font-weight: 500;
 }
+
+// 移动端底部状态栏
+.mobile-status-bar {
+  display: none;
+
+  @media (max-width: 767.98px) {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    background: #fff;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+
+    &:active {
+      background-color: #e9ecef;
+    }
+  }
+}
+
+.status-bar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  gap: 0.5rem;
+
+  .question-info {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  .stats-info {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .tap-hint {
+    color: #6c757d;
+    animation: bounce 2s infinite;
+  }
+}
+
+// 为底部状态栏预留空间
+@media (max-width: 767.98px) {
+  .row {
+    padding-bottom: 60px;
+  }
+}
+
+// Offcanvas 样式优化
+::ng-deep .question-number-offcanvas {
+  height: 40vh !important;
+}
