@@ -52,14 +52,14 @@ function configureRoutes() {
       path: '/my/favorites',
       name: '::Menu:MyFavorite',
       parentName: '::Menu:My',
-      order: 1,
+      order: 2,
       layout: eLayoutType.application,
     },
     {
       path: '/my/mistakes-reviews',
       name: '::Menu:MyMistakeReview',
       parentName: '::Menu:My',
-      order: 1,
+      order: 3,
       layout: eLayoutType.application,
     },
   ]);
