@@ -5,7 +5,7 @@ using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.Favorites;
 using SuperAbp.Exam.KnowledgePoints;
-using SuperAbp.Exam.MistakeReviews;
+using SuperAbp.Exam.Mistakes;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.PaperQuestions;
 using SuperAbp.Exam.PaperManagement.Papers;
@@ -75,5 +75,5 @@ public interface IExamDbContext : IEfCoreDbContext
     public DbSet<Training> Trains { get; set; }
 
     public DbSet<Favorite> Favorites { get; set; }
-    public DbSet<MistakeReview> MistakeReviews { get; set; }
+    public DbSet<Mistake> Mistakes { get; set; }
 }

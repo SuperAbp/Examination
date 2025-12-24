@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SuperAbp.Exam.MistakeReviews;
+using SuperAbp.Exam.Mistakes;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 
@@ -8,8 +8,8 @@ namespace SuperAbp.Exam.Controllers;
 /// <summary>
 /// 我的错题
 /// </summary>
-[Route("api/mistake-reviews")]
-public class MistakeReviewController(IMistakeReviewAppService mistakesReviewAppService) : ExamController, IMistakeReviewAppService
+[Route("api/mistakes")]
+public class MistakeController(IMistakeAppService mistakesReviewAppService) : ExamController, IMistakeAppService
 {
     /// <summary>
     /// 列表
@@ -17,7 +17,7 @@ public class MistakeReviewController(IMistakeReviewAppService mistakesReviewAppS
     /// <param name="input"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<PagedResultDto<MistakeReviewListDto>> GetListAsync(GetMistakeReviewsInput input)
+    public async Task<PagedResultDto<MistakeListDto>> GetListAsync(GetMistakesInput input)
     {
         return await mistakesReviewAppService.GetListAsync(input);
     }

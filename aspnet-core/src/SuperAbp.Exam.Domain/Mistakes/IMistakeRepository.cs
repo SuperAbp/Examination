@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 using SuperAbp.Exam.QuestionManagement.Questions;
 
-namespace SuperAbp.Exam.MistakeReviews;
+namespace SuperAbp.Exam.Mistakes;
 
-public interface IMistakeReviewRepository : IRepository<MistakeReview, Guid>
+public interface IMistakeRepository : IRepository<Mistake, Guid>
 {
     Task<List<MistakeWithDetails>> GetListAsync(string? sorting = null, int skipCount = 0, int maxResultCount = int.MaxValue,
         Guid? userId = null, string? questionContent = null, QuestionType? questionType = null, CancellationToken cancellationToken = default);

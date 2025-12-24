@@ -1,11 +1,11 @@
 import type { AuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
-export interface GetMistakeReviewsInput extends PagedAndSortedResultRequestDto {
+export interface GetMistakesInput extends PagedAndSortedResultRequestDto {
   questionType?: number;
   questionContent?: string;
 }
 
-export interface MistakeReviewListDto extends AuditedEntityDto<string> {
+export interface MistakeListDto extends AuditedEntityDto<string> {
   questionId?: string;
   questionContent: string;
   errorCount: number;

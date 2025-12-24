@@ -1240,33 +1240,33 @@
             }
           }
         },
-        "SuperAbp.Exam.Controllers.MistakeReviewController": {
-          "controllerName": "MistakeReview",
-          "controllerGroupName": "MistakeReview",
+        "SuperAbp.Exam.Controllers.MistakeController": {
+          "controllerName": "Mistake",
+          "controllerGroupName": "Mistake",
           "isRemoteService": true,
           "isIntegrationService": false,
           "apiVersion": null,
-          "type": "SuperAbp.Exam.Controllers.MistakeReviewController",
+          "type": "SuperAbp.Exam.Controllers.MistakeController",
           "interfaces": [
             {
-              "type": "SuperAbp.Exam.MistakeReviews.IMistakeReviewAppService",
-              "name": "IMistakeReviewAppService",
+              "type": "SuperAbp.Exam.Mistakes.IMistakeAppService",
+              "name": "IMistakeAppService",
               "methods": [
                 {
                   "name": "GetListAsync",
                   "parametersOnMethod": [
                     {
                       "name": "input",
-                      "typeAsString": "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput, SuperAbp.Exam.Application.Contracts",
-                      "type": "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput",
-                      "typeSimple": "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput",
+                      "typeAsString": "SuperAbp.Exam.Mistakes.GetMistakesInput, SuperAbp.Exam.Application.Contracts",
+                      "type": "SuperAbp.Exam.Mistakes.GetMistakesInput",
+                      "typeSimple": "SuperAbp.Exam.Mistakes.GetMistakesInput",
                       "isOptional": false,
                       "defaultValue": null
                     }
                   ],
                   "returnValue": {
-                    "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakeReviews.MistakeReviewListDto>",
-                    "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakeReviews.MistakeReviewListDto>"
+                    "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Mistakes.MistakeListDto>",
+                    "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Mistakes.MistakeListDto>"
                   }
                 }
               ]
@@ -1277,14 +1277,14 @@
               "uniqueName": "GetListAsyncByInput",
               "name": "GetListAsync",
               "httpMethod": "GET",
-              "url": "api/mistake-reviews",
+              "url": "api/mistakes",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
                   "name": "input",
-                  "typeAsString": "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput, SuperAbp.Exam.Application.Contracts",
-                  "type": "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput",
-                  "typeSimple": "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput",
+                  "typeAsString": "SuperAbp.Exam.Mistakes.GetMistakesInput, SuperAbp.Exam.Application.Contracts",
+                  "type": "SuperAbp.Exam.Mistakes.GetMistakesInput",
+                  "typeSimple": "SuperAbp.Exam.Mistakes.GetMistakesInput",
                   "isOptional": false,
                   "defaultValue": null
                 }
@@ -1352,11 +1352,11 @@
                 }
               ],
               "returnValue": {
-                "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakeReviews.MistakeReviewListDto>",
-                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.MistakeReviews.MistakeReviewListDto>"
+                "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Mistakes.MistakeListDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Mistakes.MistakeListDto>"
               },
               "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.MistakeReviews.IMistakeReviewAppService"
+              "implementFrom": "SuperAbp.Exam.Mistakes.IMistakeAppService"
             }
           }
         },
@@ -5627,6 +5627,30 @@
       "genericArguments": null,
       "properties": [
         {
+          "name": "TotalScore",
+          "jsonName": null,
+          "type": "System.Decimal",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "IsPassed",
+          "jsonName": null,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "UserId",
           "jsonName": null,
           "type": "System.Guid",
@@ -6047,6 +6071,18 @@
           "regex": null
         },
         {
+          "name": "IsPassed",
+          "jsonName": null,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "Status",
           "jsonName": null,
           "type": "System.Int32",
@@ -6162,7 +6198,7 @@
         }
       ]
     },
-    "SuperAbp.Exam.MistakeReviews.GetMistakeReviewsInput": {
+    "SuperAbp.Exam.Mistakes.GetMistakesInput": {
       "baseType": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
       "isEnum": false,
       "enumNames": null,
@@ -6195,7 +6231,7 @@
         }
       ]
     },
-    "SuperAbp.Exam.MistakeReviews.MistakeReviewListDto": {
+    "SuperAbp.Exam.Mistakes.MistakeListDto": {
       "baseType": "Volo.Abp.Application.Dtos.AuditedEntityDto<System.Guid>",
       "isEnum": false,
       "enumNames": null,

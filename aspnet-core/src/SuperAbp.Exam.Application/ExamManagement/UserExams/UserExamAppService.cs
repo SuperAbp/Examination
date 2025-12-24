@@ -18,7 +18,7 @@ using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto.QuestionDto;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
-using SuperAbp.Exam.MistakeReviews;
+using SuperAbp.Exam.Mistakes;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
@@ -30,7 +30,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         UserExamManager userExamManager,
         IQuestionRepository questionRepository,
         QuestionManager questionManager,
-        IMistakeReviewRepository mistakesReviewRepository,
+        IMistakeRepository mistakesReviewRepository,
         IBackgroundJobManager backgroundJobManager,
         ILocalEventBus localEventBus)
         : ExamAppService, IUserExamAppService

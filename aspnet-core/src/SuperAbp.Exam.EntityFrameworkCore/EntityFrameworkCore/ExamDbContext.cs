@@ -32,7 +32,7 @@ using SuperAbp.Exam.PaperManagement.PaperQuestions;
 using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 using SuperAbp.Exam.QuestionManagement.QuestionOptions;
-using SuperAbp.Exam.MistakeReviews;
+using SuperAbp.Exam.Mistakes;
 
 namespace SuperAbp.Exam.EntityFrameworkCore;
 
@@ -98,7 +98,7 @@ public class ExamDbContext :
     public DbSet<Training> Trains { get; set; }
 
     public DbSet<Favorite> Favorites { get; set; }
-    public DbSet<MistakeReview> MistakeReviews { get; set; }
+    public DbSet<Mistake> Mistakes { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
@@ -275,9 +275,9 @@ public class ExamDbContext :
             b.ConfigureByConvention();
         });
 
-        builder.Entity<MistakeReview>(b =>
+        builder.Entity<Mistake>(b =>
         {
-            b.ToTable(ExamConsts.DbTablePrefix + "MistakeReviews", ExamConsts.DbSchema);
+            b.ToTable(ExamConsts.DbTablePrefix + "Mistakes", ExamConsts.DbSchema);
             b.ConfigureByConvention();
         });
     }

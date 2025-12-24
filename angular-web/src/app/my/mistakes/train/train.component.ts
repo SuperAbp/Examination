@@ -1,20 +1,19 @@
 import { LocalizationService } from '@abp/ng.core';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MistakeReviewService, QuestionService, TrainingService } from '@proxy/controllers';
+import { MistakeService, QuestionService, TrainingService } from '@proxy/controllers';
 import { GetTrainsInput, TrainingListDto } from '@proxy/training-management';
-import { QuestionNumber } from '@shared/components/question-number/question-number';
 import { TrainComponent, TrainConfig } from '@shared/components/train';
 import { forkJoin } from 'rxjs';
 
 @Component({
-  selector: 'app-mistake-reviews-train',
+  selector: 'app-mistakes-train',
   templateUrl: './train.component.html',
   styleUrls: ['./train.component.css'],
   standalone: true,
   imports: [TrainComponent],
 })
-export class MistakeReviewsTrainComponent implements OnInit {
+export class MistakesTrainComponent implements OnInit {
   mode: number;
   type?: number;
   questionId?: string;
@@ -23,7 +22,7 @@ export class MistakeReviewsTrainComponent implements OnInit {
   questionIds: string[] = [];
   trainingRecords: TrainingListDto[] = [];
 
-  private readonly mistakeReviewService = inject(MistakeReviewService);
+  private readonly mistakeService = inject(MistakeService);
   private readonly questionService = inject(QuestionService);
   private readonly trainingService = inject(TrainingService);
   private readonly router = inject(Router);
@@ -42,11 +41,10 @@ export class MistakeReviewsTrainComponent implements OnInit {
   ngOnInit() {
     this.trainConfig = {
       trainingSource: 3,
-      title: this.localizationService.instant('::Menu:MyMistakeReview'),
+      title: this.localizationService.instant('::Menu:MyMistake'),
       mode: this.mode,
     };
 
-    // 如果指定了单个题目，直接获取该题目详情
     if (this.questionId) {
       forkJoin([
         this.questionService.get(this.questionId),
@@ -63,17 +61,15 @@ export class MistakeReviewsTrainComponent implements OnInit {
         }
       });
     } else {
-      // 构建获取错题列表的参数
       const getMistakesInput: any = {
         errorCount: 1,
         questionType: this.type,
         questionContent: this.questionContent,
-        maxResultCount: 1000, // 获取所有错题
+        maxResultCount: 1000,
       };
 
-      // 通过 MistakesReviewService 获取错题列表
       forkJoin([
-        this.mistakeReviewService.getList(getMistakesInput),
+        this.mistakeService.getList(getMistakesInput),
         this.trainingService.getList({
           trainingSource: 3,
         } as GetTrainsInput),
@@ -90,6 +86,6 @@ export class MistakeReviewsTrainComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/my/mistakes-reviews']);
+    this.router.navigate(['/my/mistakes']);
   }
 }

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using SuperAbp.Exam.Favorites;
-using SuperAbp.Exam.MistakeReviews;
+using SuperAbp.Exam.Mistakes;
 using SuperAbp.Exam.TrainingManagement;
 
 namespace SuperAbp.Exam;
@@ -13,6 +13,6 @@ public class ExamApplicationAutoMapper : Profile
 
         CreateMap<FavoriteWithDetails, FavoriteListDto>();
 
-        CreateMap<MistakeWithDetails, MistakeReviewListDto>();
+        CreateMap<MistakeWithDetails, MistakeListDto>();
     }
 }
