@@ -7,7 +7,10 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
+  TemplateRef,
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { FavoriteService, QuestionService, TrainingService } from '@proxy/controllers';
 import { QuestionDetailDto } from '@proxy/question-management/questions';
 import { TrainingCreateDto, TrainingListDto } from '@proxy/training-management';
@@ -33,6 +36,7 @@ export interface TrainConfig {
   styleUrls: ['./train.component.scss'],
   standalone: true,
   imports: [
+    CommonModule,
     CoreModule,
     QuestionNumberComponent,
     SingleChoiceComponent,
@@ -59,6 +63,22 @@ export class TrainComponent implements OnChanges {
   private readonly trainingService = inject(TrainingService);
   private readonly questionService = inject(QuestionService);
   private readonly favoriteService = inject(FavoriteService);
+  private readonly offcanvasService = inject(NgbOffcanvas);
+
+  openQuestionNumberOffcanvas(content: TemplateRef<any>) {
+    this.offcanvasService.open(content, { 
+      position: 'bottom',
+      panelClass: 'question-number-offcanvas'
+    });
+  }
+
+  getCurrentQuestionIndex(): number {
+    return this.allQuestionIds.indexOf(this.selectedQuestionId) + 1;
+  }
+
+  getTotalQuestions(): number {
+    return this.allQuestionIds.length;
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['trainingRecords'] && this.trainingRecords) {

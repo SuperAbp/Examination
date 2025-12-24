@@ -1,29 +1,25 @@
-<div class="card">
-  <div class="card-body">
-    @for (number of questionNumbers; track $index) {
-      <div class="mb-3">
-        <div class="row">
-          <div class="d-flex justify-content-between">
-            <div class="mb-1 fw-bold">
-              {{ number.title || ('::QuestionType:' + number.questionType | abpLocalization) }}
-            </div>
-            @if (number.totalScore) {
-              <span class="text-muted small">
-                {{ number.questionIds.length }}题 / {{ number.totalScore }}分
-              </span>
-            }
-          </div>
+@for (number of questionNumbers; track $index) {
+  <div class="mb-3">
+    <div class="row">
+      <div class="d-flex justify-content-between">
+        <div class="mb-1 fw-bold">
+          {{ number.title || ('::QuestionType:' + number.questionType | abpLocalization) }}
         </div>
-        <div class="row row-cols-auto gy-2 gx-2">
-          @for (questionId of number.questionIds; track $index) {
-            <div class="col">
-              <span [class]="getClassName(questionId)" (click)="showQuestion(questionId)">
-                {{ $index + 1 }}
-              </span>
-            </div>
-          }
-        </div>
+        @if (number.totalScore) {
+          <span class="text-muted small">
+            {{ number.questionIds.length }}题 / {{ number.totalScore }}分
+          </span>
+        }
       </div>
-    }
+    </div>
+    <div class="row row-cols-auto gy-2 gx-2">
+      @for (questionId of number.questionIds; track $index) {
+        <div class="col">
+          <span [class]="getClassName(questionId)" (click)="showQuestion(questionId)">
+            {{ $index + 1 }}
+          </span>
+        </div>
+      }
+    </div>
   </div>
-</div>
+}

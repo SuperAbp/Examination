@@ -1,14 +1,20 @@
 <div class="row">
-  <div class="col-3">
-    <app-question-number
-      [questionNumbers]="questionNumbers"
-      [selectedQuestionId]="selectedQuestionId"
-      [correctQuestionIds]="getCorrectQuestionIds()"
-      [incorrectQuestionIds]="getIncorrectQuestionIds()"
-      (questionNumberSelected)="onQuestionNumberSelected($event)"
-    ></app-question-number>
+  <div class="col-3 d-none d-md-block">
+    <div class="question-number-wrapper">
+      <div class="card">
+        <div class="card-body">
+          <app-question-number
+            [questionNumbers]="questionNumbers"
+            [selectedQuestionId]="selectedQuestionId"
+            [correctQuestionIds]="getCorrectQuestionIds()"
+            [incorrectQuestionIds]="getIncorrectQuestionIds()"
+            (questionNumberSelected)="onQuestionNumberSelected($event)"
+          ></app-question-number>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="col-9">
+  <div class="col-12 col-md-9 col-lg-9">
     <div class="card">
       <div class="card-header">
         <span style="cursor: pointer" (click)="goBack()">
@@ -86,7 +92,7 @@
         } @else {
           <div class="d-flex justify-content-center">
             <div class="spinner-border" role="status">
-              <span class="visually-hidden">Loading...</span>
+              <span class="visually-hidden">{{ 'Loading' | abpLocalization }}</span>
             </div>
           </div>
         }
@@ -94,3 +100,38 @@
     </div>
   </div>
 </div>
+
+<!-- 移动端底部状态栏 -->
+<div
+  class="mobile-status-bar d-md-none"
+  (click)="openQuestionNumberOffcanvas(questionNumberOffcanvas)"
+>
+  <div class="status-bar-content">
+    <div class="question-info">
+      <span>第 {{ getCurrentQuestionIndex() }} / {{ getTotalQuestions() }} 题</span>
+    </div>
+    <div class="stats-info">
+      <span class="text-success me-2">
+        <i class="fa-solid fa-check-circle"></i> {{ getCorrectQuestionIds().size }}
+      </span>
+      <span class="text-danger">
+        <i class="fa-solid fa-times-circle"></i> {{ getIncorrectQuestionIds().size }}
+      </span>
+    </div>
+    <div class="tap-hint">
+      <i class="fa-solid fa-chevron-up"></i>
+    </div>
+  </div>
+</div>
+
+<ng-template #questionNumberOffcanvas let-offcanvas>
+  <div class="offcanvas-body">
+    <app-question-number
+      [questionNumbers]="questionNumbers"
+      [selectedQuestionId]="selectedQuestionId"
+      [correctQuestionIds]="getCorrectQuestionIds()"
+      [incorrectQuestionIds]="getIncorrectQuestionIds()"
+      (questionNumberSelected)="onQuestionNumberSelected($event); offcanvas.dismiss()"
+    ></app-question-number>
+  </div>
+</ng-template>

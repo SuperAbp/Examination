@@ -1,121 +1,190 @@
-<div class="row g-3">
-  <div class="col-2">
-    <div class="sticky-top" style="top: 1rem">
-      <app-question-number
-        [questionNumbers]="questionNumbers"
-        [selectedQuestionId]="selectedQuestion?.id"
-        [correctQuestionIds]="emptySet"
-        [incorrectQuestionIds]="emptySet"
-        [answeredQuestionIds]="answeredQuestionIds"
-        (questionNumberSelected)="onQuestionNumberSelected($event)"
-      >
-      </app-question-number>
-    </div>
-  </div>
-  <div class="col-8">
-    <div class="card">
-      <div class="card-header">
-        <span class="fw-bold">{{ userExam?.examName }}</span>
-      </div>
-      <div class="card-body">
-        <!-- 逐题模式 -->
-        @if (answerMode === AnswerMode.SingleQuestion && selectedQuestion) {
-          <app-single-question
-            [question]="selectedQuestion"
-            [questionIndex]="selectedQuestionIndex"
-            [totalQuestions]="allQuestions.length"
-            [selectedAnswers]="getSelectedAnswers()"
-            (singleChoiceSubmitted)="onQuestionAnswered($event)"
-            (answerChanged)="onMultipleChoiceChanged($event)"
-            (fillBlankChanged)="onFillBlankChanged($event)"
-            (questionNavigation)="selectQuestion($event)"
-          >
-          </app-single-question>
-        }
-
-        <!-- 整卷模式 -->
-        @if (answerMode === AnswerMode.FullPaper) {
-          <app-full-paper
-            [sections]="userExam.sections"
-            [answerMap]="answerMap"
-            (questionAnswered)="onQuestionAnswered($event)"
-            (multipleChoiceChanged)="onMultipleChoiceChanged($event)"
-            (fillBlankChanged)="onFillBlankChanged($event)"
-          >
-          </app-full-paper>
-        }
-
-        @if (!selectedQuestion && answerMode === AnswerMode.SingleQuestion) {
-          <div class="d-flex justify-content-center">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">加载中...</span>
-            </div>
+@if (userExam) {
+  <div class="row g-3">
+    <div class="col-12 col-md-2 col-lg-2 d-none d-md-block">
+      <div class="question-number-wrapper sticky-top" style="top: 1rem">
+        <div class="card">
+          <div class="card-body">
+            <app-question-number
+              [questionNumbers]="questionNumbers"
+              [selectedQuestionId]="selectedQuestion?.id"
+              [correctQuestionIds]="emptySet"
+              [incorrectQuestionIds]="emptySet"
+              [answeredQuestionIds]="answeredQuestionIds"
+              (questionNumberSelected)="onQuestionNumberSelected($event)"
+            >
+            </app-question-number>
           </div>
-        }
+        </div>
       </div>
     </div>
-  </div>
-  <div class="col-2">
-    <div class="sticky-top" style="top: 1rem">
+    <div class="col-12 col-md-6 col-lg-8">
       <div class="card">
+        <div class="card-header">
+          <span class="fw-bold">{{ userExam?.examName }}</span>
+        </div>
         <div class="card-body">
-          <div class="mb-4">
-            <h6 class="text-muted mb-3"><i class="fas fa-hourglass-half"></i> 剩余时间</h6>
-            <div class="text-center">
-              @if (countdownConfig) {
-                <countdown
-                  [config]="countdownConfig"
-                  (event)="onCountdownEvent($event)"
-                  class="fs-3 fw-bold"
-                  [ngClass]="{
-                    'text-danger': isTimeDanger,
-                    'text-warning': isTimeWarning && !isTimeDanger,
-                    'text-success': !isTimeWarning && !isTimeDanger,
-                  }"
-                >
-                </countdown>
-              } @else {
-                <div class="fs-3 fw-bold text-muted">-</div>
-              }
-            </div>
-          </div>
+          <!-- 逐题模式 -->
+          @if (answerMode === AnswerMode.SingleQuestion && selectedQuestion) {
+            <app-single-question
+              [question]="selectedQuestion"
+              [questionIndex]="selectedQuestionIndex"
+              [totalQuestions]="allQuestions.length"
+              [selectedAnswers]="getSelectedAnswers()"
+              (singleChoiceSubmitted)="onQuestionAnswered($event)"
+              (answerChanged)="onMultipleChoiceChanged($event)"
+              (fillBlankChanged)="onFillBlankChanged($event)"
+              (questionNavigation)="selectQuestion($event)"
+            >
+            </app-single-question>
+          }
 
-          <hr />
+          <!-- 整卷模式 -->
+          @if (answerMode === AnswerMode.FullPaper) {
+            <app-full-paper
+              [sections]="userExam.sections"
+              [answerMap]="answerMap"
+              (questionAnswered)="onQuestionAnswered($event)"
+              (multipleChoiceChanged)="onMultipleChoiceChanged($event)"
+              (fillBlankChanged)="onFillBlankChanged($event)"
+            >
+            </app-full-paper>
+          }
 
-          <!-- 答题统计 -->
-          <div class="mb-4">
-            <h6 class="text-muted mb-3">答题进度</h6>
-            <div class="d-flex justify-content-between mb-2">
-              <span>总题数：</span>
-              <strong>{{ allQuestions.length }}</strong>
+          @if (!selectedQuestion && answerMode === AnswerMode.SingleQuestion) {
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">{{ 'Loading' | abpLocalization }}</span>
+              </div>
             </div>
-            <div class="d-flex justify-content-between mb-2">
-              <span>已答：</span>
-              <strong class="text-success">{{ getAnsweredQuestionIds().size }}</strong>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-2 d-none d-md-block">
+      <div class="timer-card-wrapper sticky-top" style="top: 1rem">
+        <div class="card">
+          <div class="card-body">
+            <div class="mb-4">
+              <h6 class="text-muted mb-3"><i class="fas fa-hourglass-half"></i> 剩余时间</h6>
+              <div class="text-center">
+                @if (countdownConfig) {
+                  <countdown
+                    [config]="countdownConfig"
+                    (event)="onCountdownEvent($event)"
+                    class="fs-3 fw-bold"
+                    [ngClass]="{
+                      'text-danger': isTimeDanger,
+                      'text-warning': isTimeWarning && !isTimeDanger,
+                      'text-success': !isTimeWarning && !isTimeDanger,
+                    }"
+                  >
+                  </countdown>
+                } @else {
+                  <div class="fs-3 fw-bold text-muted">-</div>
+                }
+              </div>
             </div>
-            <div class="d-flex justify-content-between">
-              <span>未答：</span>
-              <strong class="text-warning">{{ getUnansweredCount() }}</strong>
-            </div>
-          </div>
 
-          <hr />
+            <hr />
 
-          <!-- 提交按钮 -->
-          <div>
-            <button class="btn btn-success w-100" [disabled]="isSubmitting" (click)="submitExam()">
-              <i class="fas fa-check"></i>
-              {{ isSubmitting ? '提交中...' : '提交试卷' }}
-            </button>
+            <!-- 答题统计 -->
+            <div class="mb-4">
+              <h6 class="text-muted mb-3">答题进度</h6>
+              <div class="d-flex justify-content-between mb-2">
+                <span>总题数：</span>
+                <strong>{{ allQuestions.length }}</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>已答：</span>
+                <strong class="text-success">{{ getAnsweredQuestionIds().size }}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span>未答：</span>
+                <strong class="text-warning">{{ getUnansweredCount() }}</strong>
+              </div>
+            </div>
+
+            <hr />
+
+            <!-- 提交按钮 -->
+            <div>
+              <button
+                class="btn btn-success w-100"
+                [disabled]="isSubmitting"
+                (click)="submitExam()"
+              >
+                <i class="fas fa-check"></i>
+                {{ isSubmitting ? '提交中...' : '提交试卷' }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div *ngIf="!userExam" class="text-center mt-5">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">加载中...</span>
+  <!-- 移动端底部状态栏 -->
+  <div class="mobile-status-bar d-md-none">
+    <div class="status-bar-content">
+      <div class="question-info" (click)="openQuestionNumberOffcanvas(questionNumberOffcanvas)">
+        <span>第 {{ getCurrentQuestionIndex() }} / {{ allQuestions.length }} 题</span>
+        <i class="fa-solid fa-chevron-up ms-2"></i>
+      </div>
+      <div class="stats-info" (click)="openQuestionNumberOffcanvas(questionNumberOffcanvas)">
+        <span class="me-2">
+          @if (countdownConfig) {
+            <countdown
+              [config]="countdownConfig"
+              (event)="onCountdownEvent($event)"
+              [ngClass]="{
+                'text-danger': isTimeDanger,
+                'text-warning': isTimeWarning && !isTimeDanger,
+                'text-success': !isTimeWarning && !isTimeDanger,
+              }"
+            >
+            </countdown>
+          } @else {
+            <span class="text-muted">-</span>
+          }
+        </span>
+        <span class="text-success me-2">
+          <i class="fa-solid fa-check-circle"></i> {{ answeredQuestionIds.size }}
+        </span>
+        <span class="text-warning">
+          <i class="fa-regular fa-circle"></i> {{ getUnansweredCount() }}
+        </span>
+      </div>
+      <div class="submit-btn-wrapper">
+        <button class="btn btn-success btn-sm" [disabled]="isSubmitting" (click)="submitExam()">
+          <i class="fas fa-check"></i>
+          {{ isSubmitting ? '提交中' : '提交' }}
+        </button>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- Offcanvas 题号列表 -->
+  <ng-template #questionNumberOffcanvas let-offcanvas>
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">题目列表</h5>
+      <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+    </div>
+    <div class="offcanvas-body">
+      <app-question-number
+        [questionNumbers]="questionNumbers"
+        [selectedQuestionId]="selectedQuestion?.id"
+        [correctQuestionIds]="emptySet"
+        [incorrectQuestionIds]="emptySet"
+        [answeredQuestionIds]="answeredQuestionIds"
+        (questionNumberSelected)="onQuestionNumberSelected($event); offcanvas.dismiss()"
+      >
+      </app-question-number>
+    </div>
+  </ng-template>
+} @else {
+  <div class="text-center mt-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'Loading' | abpLocalization }}</span>
+    </div>
+  </div>
+}
