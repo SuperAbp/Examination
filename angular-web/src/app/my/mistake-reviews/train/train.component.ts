@@ -20,7 +20,7 @@ export class MistakeReviewsTrainComponent implements OnInit {
   questionId?: string;
   questionContent?: string;
   trainConfig: TrainConfig;
-  questionNumbers: QuestionNumber[] = [];
+  questionIds: string[] = [];
   trainingRecords: TrainingListDto[] = [];
 
   private readonly mistakeReviewService = inject(MistakeReviewService);
@@ -55,9 +55,7 @@ export class MistakeReviewsTrainComponent implements OnInit {
         } as GetTrainsInput),
       ]).subscribe(([questionDetail, trainingResult]) => {
         if (questionDetail) {
-          const questionNumber = new QuestionNumber(questionDetail.questionType);
-          questionNumber.addQuestionIds([this.questionId!]);
-          this.questionNumbers = [questionNumber];
+          this.questionIds = [this.questionId!];
         }
 
         if (trainingResult && trainingResult.items) {
@@ -81,18 +79,7 @@ export class MistakeReviewsTrainComponent implements OnInit {
         } as GetTrainsInput),
       ]).subscribe(([mistakesResult, trainingResult]) => {
         if (mistakesResult && mistakesResult.items) {
-          this.questionNumbers = Array.from(
-            mistakesResult.items
-              .reduce((acc, mistake) => {
-                const type = mistake.questionType;
-                if (!acc.has(type)) {
-                  acc.set(type, new QuestionNumber(type));
-                }
-                acc.get(type)!.addQuestionIds([mistake.questionId]);
-                return acc;
-              }, new Map<number, QuestionNumber>())
-              .values(),
-          );
+          this.questionIds = mistakesResult.items.map(m => m.questionId);
         }
 
         if (trainingResult && trainingResult.items) {

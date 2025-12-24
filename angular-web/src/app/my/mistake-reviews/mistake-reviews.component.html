@@ -65,6 +65,12 @@
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column
+        [name]="'::ErrorCount' | abpLocalization"
+        prop="errorCount"
+        [width]="80"
+        [canAutoResize]="false"
+      ></ngx-datatable-column>
+      <ngx-datatable-column
         [name]="'::CreationTime' | abpLocalization"
         prop="creationTime"
         [width]="150"

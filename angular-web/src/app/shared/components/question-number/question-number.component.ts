@@ -10,6 +10,7 @@ import { CoreModule } from '@abp/ng.core';
 })
 export class QuestionNumberComponent {
   @Input() questionNumbers: QuestionNumber[] = [];
+  @Input() questionIds: string[] = [];
   @Input() selectedQuestionId: string;
   @Input() correctQuestionIds: Set<string> = new Set();
   @Input() incorrectQuestionIds: Set<string> = new Set();

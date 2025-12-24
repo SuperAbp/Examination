@@ -21,7 +21,7 @@ export class MyFavoritesTrainComponent implements OnInit {
   questionId?: string;
   questionContent?: string;
   trainConfig: TrainConfig;
-  questionNumbers: QuestionNumber[] = [];
+  questionIds: string[] = [];
   trainingRecords: TrainingListDto[] = [];
 
   private readonly questionService = inject(QuestionService);
@@ -66,18 +66,7 @@ export class MyFavoritesTrainComponent implements OnInit {
       } as GetTrainsInput),
     ]).subscribe(([questionsResult, trainingResult]) => {
       if (questionsResult && questionsResult.items) {
-        this.questionNumbers = Array.from(
-          questionsResult.items
-            .reduce((acc, question) => {
-              const type = question.questionType;
-              if (!acc.has(type)) {
-                acc.set(type, new QuestionNumber(type));
-              }
-              acc.get(type)!.addQuestionIds([question.id]);
-              return acc;
-            }, new Map<number, QuestionNumber>())
-            .values(),
-        );
+        this.questionIds = questionsResult.items.map(q => q.id);
       }
 
       if (trainingResult && trainingResult.items) {

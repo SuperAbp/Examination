@@ -21,7 +21,7 @@ export class QuestionBanksTrainComponent implements OnInit {
   questionBankId: string;
   questionBank: QuestionBankDetailDto;
   trainConfig: TrainConfig;
-  questionNumbers: QuestionNumber[] = [];
+  questionIds: string[] = [];
   trainingRecords: TrainingListDto[] = [];
 
   private readonly questionBankService = inject(QuestionBankService);
@@ -61,23 +61,10 @@ export class QuestionBanksTrainComponent implements OnInit {
         mode: this.mode,
       };
 
-      // 构建题号数据
       if (questionsResult && questionsResult.items) {
-        this.questionNumbers = Array.from(
-          questionsResult.items
-            .reduce((acc, question) => {
-              const type = question.questionType;
-              if (!acc.has(type)) {
-                acc.set(type, new QuestionNumber(type));
-              }
-              acc.get(type)!.addQuestionIds([question.id]);
-              return acc;
-            }, new Map<number, QuestionNumber>())
-            .values(),
-        );
+        this.questionIds = questionsResult.items.map(q => q.id);
       }
 
-      // 传递训练记录
       if (trainingResult && trainingResult.items) {
         this.trainingRecords = trainingResult.items;
       }
