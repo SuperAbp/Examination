@@ -6,13 +6,13 @@ import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { MistakeReviewService, OptionService } from '@proxy/controllers';
-import { MistakeReviewListDto, GetMistakeReviewsInput } from '@proxy/mistake-reviews';
+import { MistakeService, OptionService } from '@proxy/controllers';
+import { MistakeListDto, GetMistakesInput } from '@proxy/mistakes';
 
 @Component({
-  selector: 'app-mistake-reviews',
-  templateUrl: './mistake-reviews.component.html',
-  styleUrls: ['./mistake-reviews.component.scss'],
+  selector: 'app-mistakes',
+  templateUrl: './mistakes.component.html',
+  styleUrls: ['./mistakes.component.scss'],
   providers: [ListService],
   imports: [
     CoreModule,
@@ -24,11 +24,11 @@ import { MistakeReviewListDto, GetMistakeReviewsInput } from '@proxy/mistake-rev
     NgxDatatableListDirective,
   ],
 })
-export class MistakeReviewsComponent implements OnInit {
-  mistakes = { items: [], totalCount: 0 } as PagedResultDto<MistakeReviewListDto>;
-  protected readonly list = inject(ListService<GetMistakeReviewsInput>);
+export class MistakesComponent implements OnInit {
+  mistakes = { items: [], totalCount: 0 } as PagedResultDto<MistakeListDto>;
+  protected readonly list = inject(ListService<GetMistakesInput>);
   private localizationService = inject(LocalizationService);
-  private readonly mistakeReviewService = inject(MistakeReviewService);
+  private readonly mistakeService = inject(MistakeService);
   private readonly optionService = inject(OptionService);
   private readonly router = inject(Router);
 
@@ -46,7 +46,7 @@ export class MistakeReviewsComponent implements OnInit {
       .hookToQuery(query => {
         query.questionContent = this.filters.questionContent || undefined;
         query.questionType = this.filters.questionType ?? undefined;
-        return this.mistakeReviewService.getList(query);
+        return this.mistakeService.getList(query);
       })
       .subscribe(response => {
         this.mistakes = response;
@@ -90,6 +90,6 @@ export class MistakeReviewsComponent implements OnInit {
       }
     }
 
-    this.router.navigate(['/my/mistakes-reviews/train'], { queryParams });
+    this.router.navigate(['/my/mistakes/train'], { queryParams });
   }
 }

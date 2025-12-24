@@ -4,19 +4,19 @@ using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.MultiTenancy;
 
-namespace SuperAbp.Exam.MistakeReviews;
+namespace SuperAbp.Exam.Mistakes;
 
 /// <summary>
 /// 错题本
 /// </summary>
-public class MistakeReview : AggregateRoot<Guid>, IHasCreationTime, IMultiTenant
+public class Mistake : AggregateRoot<Guid>, IHasCreationTime, IMultiTenant
 {
-    protected MistakeReview()
+    protected Mistake()
     {
     }
 
     [SetsRequiredMembers]
-    public MistakeReview(Guid id, Guid questionId, Guid userId) :
+    public Mistake(Guid id, Guid questionId, Guid userId) :
         base(id)
     {
         QuestionId = questionId;

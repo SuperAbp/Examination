@@ -1,6 +1,6 @@
 export * from './examination.service';
 export * from './favorite.service';
-export * from './mistake-review.service';
+export * from './mistake.service';
 export * from './option.service';
 export * from './question-bank.service';
 export * from './question.service';

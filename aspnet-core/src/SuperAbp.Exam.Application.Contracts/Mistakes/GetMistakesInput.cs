@@ -1,8 +1,8 @@
 using Volo.Abp.Application.Dtos;
 
-namespace SuperAbp.Exam.MistakeReviews;
+namespace SuperAbp.Exam.Mistakes;
 
-public class GetMistakeReviewsInput : PagedAndSortedResultRequestDto
+public class GetMistakesInput : PagedAndSortedResultRequestDto
 {
     public int? QuestionType { get; set; }
 

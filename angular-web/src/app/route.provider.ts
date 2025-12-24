@@ -56,8 +56,8 @@ function configureRoutes() {
       layout: eLayoutType.application,
     },
     {
-      path: '/my/mistakes-reviews',
-      name: '::Menu:MyMistakeReview',
+      path: '/my/mistakes',
+      name: '::Menu:MyMistake',
       parentName: '::Menu:My',
       order: 3,
       layout: eLayoutType.application,

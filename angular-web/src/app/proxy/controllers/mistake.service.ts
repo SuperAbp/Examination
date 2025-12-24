@@ -1,20 +1,20 @@
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
-import type { GetMistakeReviewsInput, MistakeReviewListDto } from '../mistake-reviews/models';
+import type { GetMistakesInput, MistakeListDto } from '../mistakes/models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MistakeReviewService {
+export class MistakeService {
   private restService = inject(RestService);
   apiName = 'Default';
   
 
-  getList = (input: GetMistakeReviewsInput, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, PagedResultDto<MistakeReviewListDto>>({
+  getList = (input: GetMistakesInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<MistakeListDto>>({
       method: 'GET',
-      url: '/api/mistake-reviews',
+      url: '/api/mistakes',
       params: { questionType: input.questionType, questionContent: input.questionContent, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName,...config });

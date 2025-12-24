@@ -14,14 +14,14 @@ export interface UserExamCreateDto {
 }
 
 export interface UserExamDetailDto extends EntityDto<string> {
+  totalScore: number;
+  isPassed?: boolean;
   userId?: string;
   examId?: string;
   examName: string;
   status: number;
   endTime?: string;
   answerMode: number;
-  totalScore?: number;
-  isPassed?: boolean;
   sections: UserExamDetailDto_SectionDto[];
 }
 
