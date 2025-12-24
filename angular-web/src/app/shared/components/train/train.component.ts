@@ -14,7 +14,6 @@ import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { FavoriteService, QuestionService, TrainingService } from '@proxy/controllers';
 import { QuestionDetailDto } from '@proxy/question-management/questions';
 import { TrainingCreateDto, TrainingListDto } from '@proxy/training-management';
-import { QuestionNumber } from '@shared/components/question-number/question-number';
 import { QuestionNumberComponent } from '@shared/components/question-number/question-number.component';
 import { SingleChoiceComponent } from '@shared/components/single-choice/single-choice.component';
 import { MultipleChoiceComponent } from '@shared/components/multiple-choice/multiple-choice.component';
@@ -46,7 +45,7 @@ export interface TrainConfig {
 })
 export class TrainComponent implements OnChanges {
   @Input() config!: TrainConfig;
-  @Input() questionNumbers: QuestionNumber[] = [];
+  @Input() questionIds: string[] = [];
   @Input() trainingRecords: TrainingListDto[] = [];
   @Output() backClick = new EventEmitter<void>();
 
@@ -54,7 +53,6 @@ export class TrainComponent implements OnChanges {
   selectedQuestionId: string;
   showAnalysis = false;
   answerMap: Map<string, { answers: Set<string>; submitted: boolean; right?: boolean }> = new Map();
-  allQuestionIds: string[] = [];
   isFavorited = false;
   correctQuestionIds: Set<string> = new Set();
   incorrectQuestionIds: Set<string> = new Set();
@@ -66,18 +64,18 @@ export class TrainComponent implements OnChanges {
   private readonly offcanvasService = inject(NgbOffcanvas);
 
   openQuestionNumberOffcanvas(content: TemplateRef<any>) {
-    this.offcanvasService.open(content, { 
+    this.offcanvasService.open(content, {
       position: 'bottom',
-      panelClass: 'question-number-offcanvas'
+      panelClass: 'question-number-offcanvas',
     });
   }
 
   getCurrentQuestionIndex(): number {
-    return this.allQuestionIds.indexOf(this.selectedQuestionId) + 1;
+    return this.questionIds.indexOf(this.selectedQuestionId) + 1;
   }
 
   getTotalQuestions(): number {
-    return this.allQuestionIds.length;
+    return this.questionIds.length;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -85,7 +83,7 @@ export class TrainComponent implements OnChanges {
       this.initializeTrainingRecords();
     }
 
-    if (changes['questionNumbers'] && this.questionNumbers) {
+    if (changes['questionIds']) {
       this.initializeQuestions();
     }
   }
@@ -110,19 +108,14 @@ export class TrainComponent implements OnChanges {
     });
 
     // 如果有题目且还没选中，自动选择第一题或最后答题
-    if (this.allQuestionIds.length > 0 && !this.selectedQuestionId) {
+    if (this.questionIds.length > 0 && !this.selectedQuestionId) {
       this.selectInitialQuestion(lastTrainedQuestionId);
     }
   }
 
   private initializeQuestions(): void {
-    this.allQuestionIds = [];
-    this.questionNumbers.forEach(qn => {
-      this.allQuestionIds.push(...qn.questionIds);
-    });
-
     // 如果有题目且还没选中，自动选择第一题
-    if (this.allQuestionIds.length > 0 && !this.selectedQuestionId) {
+    if (this.questionIds.length > 0 && !this.selectedQuestionId) {
       const lastTrainedQuestionId = this.getLastTrainedQuestionId();
       this.selectInitialQuestion(lastTrainedQuestionId);
     }
@@ -136,14 +129,14 @@ export class TrainComponent implements OnChanges {
   private selectInitialQuestion(lastTrainedQuestionId: string | null): void {
     // mode为1(背题模式)时，从第一题开始；否则跳转到最新答题
     if (this.config.mode === 1) {
-      if (this.allQuestionIds.length > 0) {
-        this.onQuestionNumberSelected(this.allQuestionIds[0]);
+      if (this.questionIds.length > 0) {
+        this.onQuestionNumberSelected(this.questionIds[0]);
       }
     } else {
-      if (lastTrainedQuestionId && this.allQuestionIds.includes(lastTrainedQuestionId)) {
+      if (lastTrainedQuestionId && this.questionIds.includes(lastTrainedQuestionId)) {
         this.onQuestionNumberSelected(lastTrainedQuestionId);
-      } else if (this.allQuestionIds.length > 0) {
-        this.onQuestionNumberSelected(this.allQuestionIds[0]);
+      } else if (this.questionIds.length > 0) {
+        this.onQuestionNumberSelected(this.questionIds[0]);
       }
     }
   }
@@ -245,31 +238,31 @@ export class TrainComponent implements OnChanges {
   }
 
   prev(): void {
-    const currentIndex = this.allQuestionIds.findIndex(id => id === this.selectedQuestionId);
+    const currentIndex = this.questionIds.findIndex(id => id === this.selectedQuestionId);
     if (currentIndex > 0) {
-      this.onQuestionNumberSelected(this.allQuestionIds[currentIndex - 1]);
+      this.onQuestionNumberSelected(this.questionIds[currentIndex - 1]);
     }
   }
 
   next(): void {
-    const currentIndex = this.allQuestionIds.findIndex(id => id === this.selectedQuestionId);
-    if (currentIndex < this.allQuestionIds.length - 1) {
-      this.onQuestionNumberSelected(this.allQuestionIds[currentIndex + 1]);
+    const currentIndex = this.questionIds.findIndex(id => id === this.selectedQuestionId);
+    if (currentIndex < this.questionIds.length - 1) {
+      this.onQuestionNumberSelected(this.questionIds[currentIndex + 1]);
     }
   }
 
   isPrevDisabled(): boolean {
     return (
-      this.allQuestionIds.length === 0 ||
-      this.allQuestionIds.findIndex(id => id === this.selectedQuestionId) === 0
+      this.questionIds.length === 0 ||
+      this.questionIds.findIndex(id => id === this.selectedQuestionId) === 0
     );
   }
 
   isNextDisabled(): boolean {
     return (
-      this.allQuestionIds.length === 0 ||
-      this.allQuestionIds.findIndex(id => id === this.selectedQuestionId) ===
-        this.allQuestionIds.length - 1
+      this.questionIds.length === 0 ||
+      this.questionIds.findIndex(id => id === this.selectedQuestionId) ===
+        this.questionIds.length - 1
     );
   }
 

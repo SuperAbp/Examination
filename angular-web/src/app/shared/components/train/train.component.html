@@ -4,7 +4,7 @@
       <div class="card">
         <div class="card-body">
           <app-question-number
-            [questionNumbers]="questionNumbers"
+            [questionIds]="questionIds"
             [selectedQuestionId]="selectedQuestionId"
             [correctQuestionIds]="getCorrectQuestionIds()"
             [incorrectQuestionIds]="getIncorrectQuestionIds()"
@@ -24,7 +24,12 @@
       </div>
       <div class="card-body">
         @if (selectedQuestion) {
-          <div class="fs-5 mb-3">{{ selectedQuestion.content }}</div>
+          <div class="fs-5 mb-3">
+            <span class="badge bg-secondary me-1">
+              {{ '::QuestionType:' + selectedQuestion.questionType | abpLocalization }}
+            </span>
+            {{ getCurrentQuestionIndex() }}、{{ selectedQuestion.content }}
+          </div>
 
           @if (selectedQuestion.questionType === 0 || selectedQuestion.questionType === 2) {
             <app-single-choice
@@ -127,7 +132,7 @@
 <ng-template #questionNumberOffcanvas let-offcanvas>
   <div class="offcanvas-body">
     <app-question-number
-      [questionNumbers]="questionNumbers"
+      [questionIds]="questionIds"
       [selectedQuestionId]="selectedQuestionId"
       [correctQuestionIds]="getCorrectQuestionIds()"
       [incorrectQuestionIds]="getIncorrectQuestionIds()"
