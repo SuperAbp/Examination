@@ -32,6 +32,6 @@ export class ExamsSubmittedComponent implements OnInit {
   }
 
   viewMyExams(): void {
-    this.router.navigate(['/user-exams']);
+    this.router.navigate(['/my/exams']);
   }
 }
