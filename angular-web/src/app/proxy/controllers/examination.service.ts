@@ -1,7 +1,7 @@
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
-import type { ExamDetailDto, ExamListDto, GetExamsInput } from '../exam-management/exams/models';
+import type { ExamDetailDto, ExamListDto, ExamRankingDto, GetExamsInput } from '../exam-management/exams/models';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +24,14 @@ export class ExaminationService {
       method: 'GET',
       url: '/api/exams',
       params: { name: input.name, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getRankingList = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ExamRankingDto[]>({
+      method: 'GET',
+      url: `/api/exams/${id}/ranking`,
     },
     { apiName: this.apiName,...config });
 }

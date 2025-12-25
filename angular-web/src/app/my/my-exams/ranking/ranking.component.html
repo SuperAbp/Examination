@@ -1,0 +1,73 @@
+<ng-template #rankingModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ '::Ranking' | abpLocalization }}</h5>
+    <button type="button" class="btn-close" (click)="close()" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <ngx-datatable
+      class="bootstrap"
+      [rows]="rankingList"
+      [columnMode]="'force'"
+      [headerHeight]="50"
+      [footerHeight]="0"
+      [rowHeight]="'auto'"
+      [scrollbarH]="false"
+      [rowClass]="getRowClass.bind(this)"
+      [loadingIndicator]="isLoadingRanking"
+      [messages]="{ emptyMessage: ('::NoRankingData' | abpLocalization) }"
+    >
+      <ngx-datatable-column
+        [name]="'::Rank' | abpLocalization"
+        [width]="100"
+        [canAutoResize]="false"
+        [sortable]="false"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+          {{ rowIndex + 1 }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [name]="'::Name' | abpLocalization" [sortable]="false">
+        <ng-template ngx-datatable-cell-template let-row="row">
+          {{ row.userName }}
+          @if (row.userId === currentUserId) {
+            <span class="badge bg-primary ms-2">{{ '::You' | abpLocalization }}</span>
+          }
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column
+        [name]="'::TotalScore' | abpLocalization"
+        [width]="120"
+        [canAutoResize]="false"
+        [sortable]="false"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <strong>{{ row.totalScore }}</strong>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column
+        [name]="'::IsPassed' | abpLocalization"
+        [width]="120"
+        [canAutoResize]="false"
+        [sortable]="false"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          @if (row.isPassed === null || row.isPassed === undefined) {
+            <span class="badge bg-warning">{{ '::NotGradedYet' | abpLocalization }}</span>
+          } @else if (row.isPassed) {
+            <span class="badge bg-success">{{ '::Passed' | abpLocalization }}</span>
+          } @else {
+            <span class="badge bg-danger">{{ '::NotPassed' | abpLocalization }}</span>
+          }
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="close()">
+      {{ '::Close' | abpLocalization }}
+    </button>
+  </div>
+</ng-template>

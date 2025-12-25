@@ -5,12 +5,12 @@ using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
-using SuperAbp.Exam.Permissions;
+using SuperAbp.Exam.ExamManagement.UserExams;
 
 namespace SuperAbp.Exam.ExamManagement.Exams
 {
-    [Authorize(ExamPermissions.Exams.Default)]
-    public class ExaminationAppService(IExamRepository examRepository) : ExamAppService, IExaminationAppService
+    [Authorize]
+    public class ExaminationAppService(IExamRepository examRepository, IUserExamRepository userExamRepository) : ExamAppService, IExaminationAppService
     {
         public virtual async Task<ExamDetailDto> GetAsync(Guid id)
         {
@@ -38,6 +38,15 @@ namespace SuperAbp.Exam.ExamManagement.Exams
             List<ExamListDto> dtos = ObjectMapper.Map<List<Examination>, List<ExamListDto>>(entities);
 
             return new PagedResultDto<ExamListDto>(totalCount, dtos);
+        }
+
+        public virtual async Task<List<ExamRankingDto>> GetRankingListAsync(Guid examId)
+        {
+            await examRepository.GetAsync(examId);
+
+            List<UserExamWithUser> userExams = await userExamRepository.GetRankingListAsync(examId);
+
+            return ObjectMapper.Map<List<UserExamWithUser>, List<ExamRankingDto>>(userExams);
         }
 
         private async Task NormalizeMaxResultCountAsync(PagedAndSortedResultRequestDto input)

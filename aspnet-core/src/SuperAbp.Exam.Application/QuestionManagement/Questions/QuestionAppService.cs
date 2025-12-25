@@ -1,20 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.Favorites;
 using SuperAbp.Exam.KnowledgePoints;
-using SuperAbp.Exam.Permissions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions
 {
-    [Authorize(ExamPermissions.Questions.Default)]
+    [Authorize]
     public class QuestionAppService(IQuestionRepository questionRepository, IFavoriteRepository favoriteRepository, QuestionManager questionManager) : ExamAppService, IQuestionAppService
     {
         public IQuestionRepository QuestionRepository { get; } = questionRepository;

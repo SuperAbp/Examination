@@ -21,6 +21,7 @@ namespace SuperAbp.Exam.ExamManagement
 
             CreateMap<Examination, ExamListDto>();
             CreateMap<Examination, ExamDetailDto>();
+            CreateMap<UserExamWithUser, ExamRankingDto>();
 
             #endregion 考试
 

@@ -80,5 +80,13 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<List<UserExam>> GetTimeoutUserExamsAsync(DateTime now, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 获取考试的排名数据（包含用户信息）
+        /// </summary>
+        /// <param name="examId">考试Id</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<List<UserExamWithUser>> GetRankingListAsync(Guid examId, CancellationToken cancellationToken = default);
     }
 }

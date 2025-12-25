@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -23,5 +24,12 @@ namespace SuperAbp.Exam.ExamManagement.Exams
         /// <param name="input">查询条件</param>
         /// <returns>结果</returns>
         Task<PagedResultDto<ExamListDto>> GetListAsync(GetExamsInput input);
+
+        /// <summary>
+        /// 获取考试排名列表
+        /// </summary>
+        /// <param name="examId">考试ID</param>
+        /// <returns>排名列表</returns>
+        Task<List<ExamRankingDto>> GetRankingListAsync(Guid examId);
     }
 }

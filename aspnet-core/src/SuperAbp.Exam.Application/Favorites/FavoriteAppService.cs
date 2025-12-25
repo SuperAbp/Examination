@@ -1,4 +1,5 @@
-﻿using SuperAbp.Exam.QuestionManagement.Questions;
+﻿using Microsoft.AspNetCore.Authorization;
+using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Volo.Abp.Users;
 
 namespace SuperAbp.Exam.Favorites;
 
+[Authorize]
 public class FavoriteAppService(IFavoriteRepository favoriteRepository) : ExamAppService, IFavoriteAppService
 {
     public async Task<PagedResultDto<FavoriteListDto>> GetListAsync(GetFavoritesInput input)

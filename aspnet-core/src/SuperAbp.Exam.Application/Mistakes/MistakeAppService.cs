@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
 
 namespace SuperAbp.Exam.Mistakes;
 
+[Authorize]
 public class MistakeAppService(IMistakeRepository mistakeRepository)
     : ExamAppService, IMistakeAppService
 {

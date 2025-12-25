@@ -96,7 +96,7 @@
       </ngx-datatable-column>
       <ngx-datatable-column
         [name]="'Exam::Actions' | abpLocalization"
-        [width]="150"
+        [width]="200"
         [canAutoResize]="false"
         [sortable]="false"
       >
@@ -104,7 +104,7 @@
           <button
             *ngIf="row.status === 3"
             type="button"
-            class="btn btn-primary btn-sm"
+            class="btn btn-primary btn-sm me-1"
             (click)="viewDetail(row.id)"
           >
             {{ '::Detail' | abpLocalization }}
@@ -112,13 +112,23 @@
           <button
             *ngIf="row.status === 1"
             type="button"
-            class="btn btn-warning btn-sm"
+            class="btn btn-warning btn-sm me-1"
             (click)="viewExam(row.id)"
           >
             {{ '::Continue' | abpLocalization }}
+          </button>
+          <button
+            *ngIf="row.status === 3"
+            type="button"
+            class="btn btn-primary btn-sm"
+            (click)="viewRanking(row.examId)"
+          >
+            {{ '::Ranking' | abpLocalization }}
           </button>
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
   </div>
 </div>
+
+<app-exam-ranking></app-exam-ranking>
