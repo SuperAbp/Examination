@@ -1,4 +1,6 @@
-@if (form) {
+@if (loading) {
+  <nz-spin class="modal-spin"></nz-spin>
+} @else {
   <div class="modal-header">
     <div class="modal-title">
       @if (examId) {
@@ -9,10 +11,10 @@
     </div>
   </div>
   <div class="modal-body">
-    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
+    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical" [skipValidation]="true">
       <nz-form-item>
-        <nz-form-label>{{ 'Exam::Paper' | abpLocalization }}</nz-form-label>
-        <nz-form-control>
+        <nz-form-label nzRequired>{{ 'Exam::Paper' | abpLocalization }}</nz-form-label>
+        <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization" [nzErrorTip]="paperErrorTpl">
           <nz-select
             nzShowSearch
             nzServerSearch
@@ -27,6 +29,11 @@
               <nz-option [nzLabel]="p.name" [nzValue]="p.id"></nz-option>
             }
           </nz-select>
+          <ng-template #paperErrorTpl let-control>
+            @if (control.hasError('required')) {
+              {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+            }
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -107,8 +114,21 @@
             <nz-form-label>{{ 'Exam::AnswerMode' | abpLocalization }}</nz-form-label>
             <nz-form-control>
               <nz-radio-group formControlName="answerMode">
-                <label nz-radio [nzValue]="0">{{ 'Exam::AnswerMode:0' | abpLocalization }}</label>
-                <label nz-radio [nzValue]="1">{{ 'Exam::AnswerMode:1' | abpLocalization }}</label>
+                @for (mode of answerModes; track mode.value) {
+                  <label nz-radio [nzValue]="mode.value">{{ 'Exam::AnswerMode:' + mode.value | abpLocalization }}</label>
+                }
+              </nz-radio-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>{{ 'Exam::ReviewMode' | abpLocalization }}</nz-form-label>
+            <nz-form-control>
+              <nz-radio-group formControlName="reviewMode">
+                @for (mode of reviewModes; track mode.value) {
+                  <label nz-radio [nzValue]="mode.value">{{ 'Exam::ReviewMode:' + mode.value | abpLocalization }}</label>
+                }
               </nz-radio-group>
             </nz-form-control>
           </nz-form-item>
@@ -145,6 +165,4 @@
       {{ 'Exam::Publish' | abpLocalization }}
     </button>
   </div>
-} @else {
-  <nz-spin class="modal-spin"></nz-spin>
 }

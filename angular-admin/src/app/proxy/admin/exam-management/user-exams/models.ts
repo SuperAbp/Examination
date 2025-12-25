@@ -21,6 +21,8 @@ export interface UserExamDetailDto {
   examId?: string;
   examName: string;
   userName: string;
+  reviewMode: number;
+  examStatus: number;
   status: number;
   sections: UserExamDetailDto_SectionDto[];
 }

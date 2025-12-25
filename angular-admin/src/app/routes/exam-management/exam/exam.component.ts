@@ -61,6 +61,7 @@ export class ExamManagementExamComponent implements OnInit {
     },
     { title: this.localizationService.instant('Exam::Status'), render: 'status' },
     { title: this.localizationService.instant('Exam::AnswerMode'), render: 'answerMode' },
+    { title: this.localizationService.instant('Exam::ReviewMode'), render: 'reviewMode' },
     { title: this.localizationService.instant('Exam::RandomOrderOfOption'), type: 'yn', index: 'randomOrderOfOption' },
     { title: this.localizationService.instant('Exam::StartTime'), index: 'startTime' },
     { title: this.localizationService.instant('Exam::EndTime'), index: 'endTime' },
@@ -200,6 +201,6 @@ export class ExamManagementExamComponent implements OnInit {
     this.st.load(1);
   }
   add() {
-    this.modal.createStatic(ExamManagementExamEditComponent).subscribe(() => this.st.reload());
+    this.modal.createStatic(ExamManagementExamEditComponent, { examId: null, paperId: null }).subscribe(() => this.st.reload());
   }
 }

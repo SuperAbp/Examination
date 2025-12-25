@@ -22,23 +22,23 @@ import { finalize, tap } from 'rxjs';
 import { QuestionNumber, QuestionNumberItem } from 'src/app/shared/components/question-number';
 
 @Component({
-    selector: 'app-exam-management-user-exam-view',
-    templateUrl: './view.component.html',
-    styleUrl: './view.component.less',
-    imports: [
-        CoreModule,
-        PageHeaderComponent,
-        FooterToolbarModule,
-        SharedModule,
-        NzCardModule,
-        NzSpinModule,
-        NzButtonModule,
-        NzRadioModule,
-        NzIconModule,
-        NzSwitchModule,
-        NzAffixModule,
-        NzDescriptionsModule
-    ]
+  selector: 'app-exam-management-user-exam-view',
+  templateUrl: './view.component.html',
+  styleUrl: './view.component.less',
+  imports: [
+    CoreModule,
+    PageHeaderComponent,
+    FooterToolbarModule,
+    SharedModule,
+    NzCardModule,
+    NzSpinModule,
+    NzButtonModule,
+    NzRadioModule,
+    NzIconModule,
+    NzSwitchModule,
+    NzAffixModule,
+    NzDescriptionsModule
+  ]
 })
 export class ExamManagementUserExamViewComponent implements OnInit {
   userExamId: string;
@@ -63,6 +63,22 @@ export class ExamManagementUserExamViewComponent implements OnInit {
 
   get isReview() {
     return this.userExam.status === 3 || this.userExam.status === 2;
+  }
+
+  get canReview(): boolean {
+    if (this.userExam.status !== 2) {
+      return false;
+    }
+
+    if (this.userExam.reviewMode === 0) {
+      return this.userExam.examStatus === 2;
+    }
+
+    if (this.userExam.reviewMode === 1) {
+      return this.userExam.examStatus === 1 || this.userExam.examStatus === 2;
+    }
+
+    return false;
   }
   getOptions(question: UserExamDetailDto_SectionDto_QuestionDto) {
     return question.options.map(o => o.content).join('||');
@@ -126,7 +142,12 @@ export class ExamManagementUserExamViewComponent implements OnInit {
       .reviewQuestions(this.userExamId, this.questionForm.value)
       .pipe(
         tap(() => {
-          this.goback();
+          this.messageService.success('提交成功');
+          // 重新获取数据以更新状态
+          this.userExamService.get(this.userExamId).subscribe(result => {
+            this.userExam = result;
+            this.buildForm();
+          });
         }),
         finalize(() => (this.isConfirmLoading = false))
       )

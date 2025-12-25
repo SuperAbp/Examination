@@ -13,6 +13,8 @@ public class UserExamDetailDto
 
     public required string ExamName { get; set; }
     public required string UserName { get; set; }
+    public int ReviewMode { get; set; }
+    public int ExamStatus { get; set; }
 
     public int Status { get; set; }
 

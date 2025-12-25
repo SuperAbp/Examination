@@ -68,6 +68,8 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
         List<Guid> questionIds = userExam.Sections.SelectMany(s => s.Questions).Select(q => q.QuestionId).ToList();
         List<Question> questions = await QuestionRepository.GetByIdsAsync(questionIds);
         UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
+        dto.ReviewMode = examination.ReviewMode.Value;
+        dto.ExamStatus = examination.Status.Value;
         dto.ExamName = examination.Name;
         dto.UserName = user.UserName;
         dto.Status = userExam.Status;
@@ -122,10 +124,22 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
             throw new InvalidUserExamStatusException(userExam.Status);
         }
         Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
-        if (examination.Status != ExaminationStatus.Grading)
+
+        if (examination.ReviewMode == ReviewMode.Unified)
         {
-            throw new InvalidExamStatusException(examination.Status);
+            if (examination.Status != ExaminationStatus.Grading)
+            {
+                throw new InvalidExamStatusException(examination.Status);
+            }
         }
+        else if (examination.ReviewMode == ReviewMode.RealTime)
+        {
+            if (examination.Status != ExaminationStatus.Published && examination.Status != ExaminationStatus.Grading)
+            {
+                throw new InvalidExamStatusException(examination.Status);
+            }
+        }
+
         foreach (ReviewedQuestionDto question in input)
         {
             if (!question.Score.HasValue)

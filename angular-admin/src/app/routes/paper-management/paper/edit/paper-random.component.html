@@ -13,7 +13,7 @@
     </page-header>
   }
   <ng-container>
-    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="horizontal">
+    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="horizontal" [skipValidation]="true">
       <nz-card [nzTitle]="'Exam::ExamConfig' | abpLocalization">
         <nz-form-item>
           <nz-form-label nzRequired>{{ 'Exam::Name' | abpLocalization }}</nz-form-label>
