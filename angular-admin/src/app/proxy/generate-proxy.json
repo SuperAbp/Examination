@@ -1692,11 +1692,27 @@
           "type": "SuperAbp.Exam.Admin.Controllers.OptionController",
           "interfaces": [
             {
-              "type": "SuperAbp.Exam.Admin.Options.IOptionAppService",
+              "type": "SuperAbp.Exam.Options.IOptionAppService",
               "name": "IOptionAppService",
               "methods": [
                 {
                   "name": "GetQuestionTypes",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                    "typeSimple": "{number:string}"
+                  }
+                },
+                {
+                  "name": "GetAnswerModes",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                    "typeSimple": "{number:string}"
+                  }
+                },
+                {
+                  "name": "GetReviewModes",
                   "parametersOnMethod": [],
                   "returnValue": {
                     "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
@@ -1720,7 +1736,37 @@
                 "typeSimple": "{number:string}"
               },
               "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.Admin.Options.IOptionAppService"
+              "implementFrom": "SuperAbp.Exam.Options.IOptionAppService"
+            },
+            "GetAnswerModes": {
+              "uniqueName": "GetAnswerModes",
+              "name": "GetAnswerModes",
+              "httpMethod": "GET",
+              "url": "api/options/answer-modes",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                "typeSimple": "{number:string}"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Options.IOptionAppService"
+            },
+            "GetReviewModes": {
+              "uniqueName": "GetReviewModes",
+              "name": "GetReviewModes",
+              "httpMethod": "GET",
+              "url": "api/options/review-modes",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                "typeSimple": "{number:string}"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Options.IOptionAppService"
             }
           }
         },
@@ -7535,6 +7581,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "ReviewMode",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -7757,6 +7815,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "ReviewMode",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -7957,6 +8027,30 @@
           "type": "System.String",
           "typeSimple": "string",
           "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ReviewMode",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ExamStatus",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
           "minLength": null,
           "maxLength": null,
           "minimum": null,

@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.ExamManagement.Exams;
-using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.Jobs.SubmittedUserExam;
-using SuperAbp.Exam.Jobs.UserExamCreateQuestion;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.Permissions;
 using System;
@@ -10,11 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
-using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.BackgroundJobs;
-using Volo.Abp.VirtualFileSystem;
-using static SuperAbp.Exam.ExamDomainErrorCodes;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 {
@@ -33,7 +28,6 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             queryable = queryable.WhereIf(!input.Name.IsNullOrWhiteSpace(), e => e.Name.Contains(input.Name));
 
             long totalCount = await AsyncExecuter.CountAsync(queryable);
-
             List<Examination> entities = await AsyncExecuter.ToListAsync(queryable
                 .OrderBy(input.Sorting ?? ExaminationConsts.DefaultSorting)
                 .PageBy(input));
@@ -63,7 +57,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             Paper paper = await paperRepository.GetAsync(input.PaperId);
             Examination examination = new(GuidGenerator.Create(), input.PaperId, input.Name, input.Score,
                 input.PassingScore, input.TotalTime, AnswerMode.FromValue(input.AnswerMode),
-                input.RandomOrderOfOption, paper.ManualReview)
+                input.RandomOrderOfOption, paper.ManualReview, ReviewMode.FromValue(input.ReviewMode))
             {
                 Description = input.Description
             };
@@ -96,6 +90,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             examination.Description = input.Description;
             examination.AnswerMode = AnswerMode.FromValue(input.AnswerMode);
             examination.RandomOrderOfOption = input.RandomOrderOfOption;
+            examination.ReviewMode = ReviewMode.FromValue(input.ReviewMode);
             examination.SetTime(input.StartTime, input.EndTime);
             examination = await ExamRepository.UpdateAsync(examination);
             return ObjectMapper.Map<Examination, ExamListDto>(examination);

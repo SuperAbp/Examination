@@ -9,11 +9,11 @@
       </nz-affix>
     </div>
     <div nz-col nzSpan="18">
-      <nz-card>
-        @for (sect of sections; track $index; let i = $index) {
-          <h2> {{ chineseNumber[i] }}、{{ sect.title }}（共{{ sect.totalCount }}题） </h2>
-          <form nz-form [formGroup]="form">
-            <ng-container formArrayName="questions">
+      <form nz-form [formGroup]="form">
+        <nz-card>
+          <ng-container formArrayName="questions">
+            @for (sect of sections; track $index; let i = $index) {
+              <h2> {{ chineseNumber[i] }}、{{ sect.title }}（共{{ sect.totalCount }}题） </h2>
               @for (question of sect.questions; track $index; let j = $index) {
                 <div class="question">
                   <h3 [id]="question.id"> {{ j + 1 }}.{{ question.content }} </h3>
@@ -80,18 +80,17 @@
                   }
                 </div>
               }
-            </ng-container>
-          </form>
+            }
+          </ng-container>
+        </nz-card>
+        @if (canReview) {
+          <footer-toolbar errorCollect>
+            <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
+              {{ 'Exam::Submit' | abpLocalization }}
+            </button>
+          </footer-toolbar>
         }
-      </nz-card>
+      </form>
     </div>
   </div>
-
-  @if (userExam.status === 2) {
-    <footer-toolbar errorCollect>
-      <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">{{
-        'Exam::Submit' | abpLocalization
-      }}</button>
-    </footer-toolbar>
-  }
 }

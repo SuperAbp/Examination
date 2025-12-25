@@ -1,10 +1,9 @@
-import { CoreModule, LocalizationService } from '@abp/ng.core';
+import { CoreModule, LocalizationService, NgxValidateCoreModule } from '@abp/ng.core';
 import { Component, OnInit, Input, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { I18NService } from '@core';
-import { r } from '@delon/mock';
 import { dateTimePickerUtil, log } from '@delon/util';
-import { ExaminationService, PaperService } from '@proxy/admin/controllers';
+import { ExaminationService, PaperService, OptionService } from '@proxy/admin/controllers';
 import { GetExamForEditorOutput } from '@proxy/admin/exam-management/exams';
 import { PaperListDto } from '@proxy/admin/paper-management/papers';
 import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
@@ -19,6 +18,7 @@ import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { forkJoin } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 
 @Component({
@@ -64,6 +64,8 @@ export class ExamManagementExamEditComponent implements OnInit {
   form: FormGroup = null;
   showExamTime: boolean;
   papers: PaperListDto[] = [];
+  answerModes: Array<{ label: string; value: number }> = [];
+  reviewModes: Array<{ label: string; value: number }> = [];
 
   private fb = inject(FormBuilder);
   private modal = inject(NzModalRef);
@@ -72,6 +74,7 @@ export class ExamManagementExamEditComponent implements OnInit {
   private i18n = inject(I18NService);
   private examService = inject(ExaminationService);
   private paperService = inject(PaperService);
+  private optionService = inject(OptionService);
 
   init: EditorComponent['init'] = {
     base_url: '/tinymce',
@@ -109,60 +112,90 @@ export class ExamManagementExamEditComponent implements OnInit {
   disabledDate = (current: Date): boolean => dateTimePickerUtil.getDiffDays(current, new Date()) < 0;
   ngOnInit(): void {
     this.loading = true;
+
     if (this.examId) {
-      this.examService
-        .getEditor(this.examId)
+      // 有 examId 时，同时获取选项数据、考试数据和试卷列表
+      forkJoin({
+        answerModes: this.optionService.getAnswerModes(),
+        reviewModes: this.optionService.getReviewModes(),
+        exam: this.examService.getEditor(this.examId),
+        papers: this.paperService.getList({ skipCount: 0, maxResultCount: 100 })
+      })
         .pipe(
-          tap(response => {
-            this.exam = response;
+          tap(({ answerModes, reviewModes, exam, papers }) => {
+            this.answerModes = Object.keys(answerModes).map(key => ({
+              label: answerModes[key],
+              value: Number(key)
+            }));
+            this.reviewModes = Object.keys(reviewModes).map(key => ({
+              label: reviewModes[key],
+              value: Number(key)
+            }));
+            this.exam = exam;
+            this.papers = papers.items;
             this.buildForm();
+          }),
+          finalize(() => {
             this.loading = false;
           })
         )
         .subscribe();
     } else {
-      this.exam = {} as GetExamForEditorOutput;
-      this.buildForm();
-      this.loading = false;
+      forkJoin({
+        answerModes: this.optionService.getAnswerModes(),
+        reviewModes: this.optionService.getReviewModes(),
+        papers: this.paperService.getList({ skipCount: 0, maxResultCount: 100 })
+      })
+        .pipe(
+          tap(({ answerModes, reviewModes, papers }) => {
+            this.answerModes = Object.keys(answerModes).map(key => ({
+              label: answerModes[key],
+              value: Number(key)
+            }));
+            this.reviewModes = Object.keys(reviewModes).map(key => ({
+              label: reviewModes[key],
+              value: Number(key)
+            }));
+            this.exam = {} as GetExamForEditorOutput;
+            this.papers = papers.items;
+            this.buildForm();
+          }),
+          finalize(() => {
+            this.loading = false;
+          })
+        )
+        .subscribe();
+      this.exam = { answerMode: 0, reviewMode: 0 } as GetExamForEditorOutput;
     }
   }
 
   buildForm() {
-    this.paperService
-      .getList({ skipCount: 0, maxResultCount: 100 })
-      .pipe(
-        tap(res => {
-          this.papers = res.items;
-
-          this.form = this.fb.group({
-            name: [this.exam.name || '', [Validators.required]],
-            description: [this.exam.description || ''],
-            score: [this.exam.score || 0],
-            passingScore: [this.exam.passingScore || 0, [Validators.required, Validators.min(1)]],
-            totalTime: [this.exam.totalTime || 0, [Validators.required, Validators.min(1)]],
-            paperId: [this.exam.paperId || ''],
-            startTime: [new Date()],
-            endTime: [new Date()],
-            isLimitedTime: [false],
-            randomOrderOfOption: [this.exam.randomOrderOfOption || false],
-            answerMode: [this.exam.answerMode || 0],
-            examTimes: [[]]
-          });
-          if (this.exam.startTime && this.exam.endTime) {
-            this.showExamTime = true;
-            this.startTime.setValue(new Date(this.exam.startTime));
-            this.endTime.setValue(new Date(this.exam.endTime));
-            this.isLimitedTime.setValue(true);
-            this.examTimes.setValue([this.exam.startTime, this.exam.endTime]);
-          }
-          if (this.paperId) {
-            this.form.get('paperId').setValue(this.paperId);
-            this.choosePaper(this.paperId);
-          }
-          log(this.form.value);
-        })
-      )
-      .subscribe();
+    this.form = this.fb.group({
+      name: [this.exam.name || '', [Validators.required]],
+      description: [this.exam.description || ''],
+      score: [this.exam.score || 0],
+      passingScore: [this.exam.passingScore || 0, [Validators.required, Validators.min(1)]],
+      totalTime: [this.exam.totalTime || 0, [Validators.required, Validators.min(1)]],
+      paperId: [this.exam.paperId || '', [Validators.required]],
+      startTime: [new Date()],
+      endTime: [new Date()],
+      isLimitedTime: [false],
+      randomOrderOfOption: [this.exam.randomOrderOfOption || false],
+      answerMode: [this.exam.answerMode ?? this.answerModes[0]?.value ?? 0],
+      reviewMode: [this.exam.reviewMode ?? this.reviewModes[0]?.value ?? 0],
+      examTimes: [[]]
+    });
+    if (this.exam.startTime && this.exam.endTime) {
+      this.showExamTime = true;
+      this.startTime.setValue(new Date(this.exam.startTime));
+      this.endTime.setValue(new Date(this.exam.endTime));
+      this.isLimitedTime.setValue(true);
+      this.examTimes.setValue([this.exam.startTime, this.exam.endTime]);
+    }
+    if (this.paperId) {
+      this.form.get('paperId').setValue(this.paperId);
+      this.choosePaper(this.paperId);
+    }
   }
   searchPaper(value: string): void {
     let params = { skipCount: 0, maxResultCount: 100, name: value };

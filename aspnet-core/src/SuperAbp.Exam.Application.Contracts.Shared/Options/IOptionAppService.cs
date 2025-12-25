@@ -6,4 +6,8 @@ namespace SuperAbp.Exam.Options;
 public interface IOptionAppService : IApplicationService
 {
     public Dictionary<int, string> GetQuestionTypes();
+
+    public Dictionary<int, string> GetAnswerModes();
+
+    public Dictionary<int, string> GetReviewModes();
 }

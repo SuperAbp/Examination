@@ -9,7 +9,7 @@
     </div>
   </div>
   <div class="modal-body">
-    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
+    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical" [skipValidation]="true">
       <nz-form-item>
         <nz-form-label nzRequired>{{ 'Exam::Title' | abpLocalization }}</nz-form-label>
         <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization" [nzErrorTip]="nameErrorTpl">

@@ -15,6 +15,7 @@ export interface ExamCreateOrUpdateDtoBase {
   published: boolean;
   randomOrderOfOption: boolean;
   answerMode: number;
+  reviewMode: number;
 }
 
 export interface ExamDetailDto extends EntityDto<string> {
@@ -38,6 +39,7 @@ export interface ExamListDto extends EntityDto<string> {
   status: number;
   randomOrderOfOption: boolean;
   answerMode: number;
+  reviewMode: number;
 }
 
 export interface ExamUpdateDto extends ExamCreateOrUpdateDtoBase {

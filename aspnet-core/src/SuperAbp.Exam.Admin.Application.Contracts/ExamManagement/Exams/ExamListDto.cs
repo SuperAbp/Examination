@@ -17,6 +17,15 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 
         public int Status { get; set; }
         public bool RandomOrderOfOption { get; set; }
+
+        /// <summary>
+        /// <see cref="SuperAbp.Exam.ExamManagement.Exams.AnswerMode"/>
+        /// </summary>
         public int AnswerMode { get; set; }
+
+        /// <summary>
+        /// <see cref="SuperAbp.Exam.ExamManagement.Exams.ReviewMode"/>
+        /// </summary>
+        public int ReviewMode { get; set; }
     }
 }

@@ -54,7 +54,7 @@ const providers: Array<Provider | EnvironmentProviders> = [
     withOptions({
       environment,
       registerLocaleFn: registerLocale()
-      })
+    })
   ),
   importProvidersFrom([NgxValidateCoreModule.forRoot()]),
   provideHttpClient(withInterceptors([...(environment.interceptorFns ?? []), defaultInterceptor, authJWTInterceptor])),

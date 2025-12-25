@@ -15,4 +15,16 @@ public class OptionController(IOptionAppService optionAppService) : ExamControll
     {
         return optionAppService.GetQuestionTypes();
     }
+
+    [HttpGet("answer-modes")]
+    public Dictionary<int, string> GetAnswerModes()
+    {
+        return optionAppService.GetAnswerModes();
+    }
+
+    [HttpGet("review-modes")]
+    public Dictionary<int, string> GetReviewModes()
+    {
+        return optionAppService.GetReviewModes();
+    }
 }
