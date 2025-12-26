@@ -1,4 +1,5 @@
 ﻿using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,20 @@ public class OptionAppService : ExamAppServiceBase, IOptionAppService
     public Dictionary<int, string> GetReviewModes()
     {
         return ReviewMode.List
+            .Select(r => new { Key = r.Value, Value = r.Name })
+            .ToDictionary(key => key.Key, value => value.Value);
+    }
+
+    public Dictionary<int, string> GetExaminationStatus()
+    {
+        return ExaminationStatus.List
+            .Select(r => new { Key = r.Value, Value = r.Name })
+            .ToDictionary(key => key.Key, value => value.Value);
+    }
+
+    public Dictionary<int, string> GetUserExamStatus()
+    {
+        return UserExamStatus.List
             .Select(r => new { Key = r.Value, Value = r.Name })
             .ToDictionary(key => key.Key, value => value.Value);
     }

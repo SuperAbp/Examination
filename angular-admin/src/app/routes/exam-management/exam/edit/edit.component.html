@@ -144,8 +144,8 @@
       </div>
 
       <nz-form-item>
-        <nz-form-label>{{ 'Exam::ExamTime' | abpLocalization }}</nz-form-label>
-        <nz-form-control>
+        <nz-form-label nzRequired>{{ 'Exam::ExamTime' | abpLocalization }}</nz-form-label>
+        <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization" [nzErrorTip]="examTimesErrorTpl">
           <nz-range-picker
             nzFormat="yyyy-MM-dd HH:mm:ss"
             [nzDisabledDate]="disabledDate"
@@ -153,6 +153,11 @@
             formControlName="examTimes"
             (ngModelChange)="examTimeChange($event)"
           ></nz-range-picker>
+          <ng-template #examTimesErrorTpl let-control>
+            @if (control.hasError('required')) {
+              {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+            }
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
     </form>

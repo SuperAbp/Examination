@@ -183,7 +183,7 @@ export class ExamManagementExamEditComponent implements OnInit {
       randomOrderOfOption: [this.exam.randomOrderOfOption || false],
       answerMode: [this.exam.answerMode ?? this.answerModes[0]?.value ?? 0],
       reviewMode: [this.exam.reviewMode ?? this.reviewModes[0]?.value ?? 0],
-      examTimes: [[]]
+      examTimes: [[], [Validators.required]]
     });
     if (this.exam.startTime && this.exam.endTime) {
       this.showExamTime = true;

@@ -17,6 +17,14 @@ export class OptionService {
     { apiName: this.apiName,...config });
   
 
+  getExaminationStatus = (config?: Partial<Rest.Config>) =>
+    this.restService.request<any, Record<number, string>>({
+      method: 'GET',
+      url: '/api/options/examination-status',
+    },
+    { apiName: this.apiName,...config });
+  
+
   getQuestionTypes = (config?: Partial<Rest.Config>) =>
     this.restService.request<any, Record<number, string>>({
       method: 'GET',
@@ -29,6 +37,14 @@ export class OptionService {
     this.restService.request<any, Record<number, string>>({
       method: 'GET',
       url: '/api/options/review-modes',
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getUserExamStatus = (config?: Partial<Rest.Config>) =>
+    this.restService.request<any, Record<number, string>>({
+      method: 'GET',
+      url: '/api/options/user-exam-status',
     },
     { apiName: this.apiName,...config });
 }

@@ -939,6 +939,23 @@
                   }
                 },
                 {
+                  "name": "CompleteAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
                   "name": "PublishAsync",
                   "parametersOnMethod": [
                     {
@@ -1036,6 +1053,18 @@
                   "jsonName": null,
                   "type": "System.String",
                   "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "Status",
+                  "jsonName": null,
+                  "type": "System.Int32?",
+                  "typeSimple": "number?",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -1296,6 +1325,43 @@
               "name": "TerminateAsync",
               "httpMethod": "PATCH",
               "url": "api/exam/{id}/terminate",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Admin.ExamManagement.Exams.IExaminationAdminAppService"
+            },
+            "CompleteAsyncById": {
+              "uniqueName": "CompleteAsyncById",
+              "name": "CompleteAsync",
+              "httpMethod": "PATCH",
+              "url": "api/exam/{id}/complete",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -1696,6 +1762,14 @@
               "name": "IOptionAppService",
               "methods": [
                 {
+                  "name": "GetExaminationStatus",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                    "typeSimple": "{number:string}"
+                  }
+                },
+                {
                   "name": "GetQuestionTypes",
                   "parametersOnMethod": [],
                   "returnValue": {
@@ -1713,6 +1787,14 @@
                 },
                 {
                   "name": "GetReviewModes",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                    "typeSimple": "{number:string}"
+                  }
+                },
+                {
+                  "name": "GetUserExamStatus",
                   "parametersOnMethod": [],
                   "returnValue": {
                     "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
@@ -1758,6 +1840,36 @@
               "name": "GetReviewModes",
               "httpMethod": "GET",
               "url": "api/options/review-modes",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                "typeSimple": "{number:string}"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Options.IOptionAppService"
+            },
+            "GetExaminationStatus": {
+              "uniqueName": "GetExaminationStatus",
+              "name": "GetExaminationStatus",
+              "httpMethod": "GET",
+              "url": "api/options/examination-status",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                "typeSimple": "{number:string}"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Options.IOptionAppService"
+            },
+            "GetUserExamStatus": {
+              "uniqueName": "GetUserExamStatus",
+              "name": "GetUserExamStatus",
+              "httpMethod": "GET",
+              "url": "api/options/user-exam-status",
               "supportedVersions": [],
               "parametersOnMethod": [],
               "parameters": [],
@@ -7858,6 +7970,18 @@
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Status",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

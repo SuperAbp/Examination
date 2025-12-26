@@ -11,5 +11,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         /// 名称
         /// </summary>
         public string? Name { get; set; }
+
+        public int? Status { get; set; }
     }
 }
