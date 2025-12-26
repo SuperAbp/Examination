@@ -1,4 +1,4 @@
-import { LocalizationParam } from '@abp/ng.core';
+import { LocalizationParam, LocalizationService } from '@abp/ng.core';
 import { HttpErrorResponse, HttpHeaders, HttpResponseBase } from '@angular/common/http';
 import { Injector, inject } from '@angular/core';
 import { Router } from '@angular/router';
@@ -98,7 +98,7 @@ export function checkStatus(injector: Injector, ev: HttpResponseBase): void {
     return;
   }
   if (ev instanceof HttpErrorResponse && ev.headers.get('_AbpErrorFormat')) {
-    const { message, title } = getErrorFromRequestBody(ev?.error?.error);
+    const { message, title } = getErrorFromRequestBody(injector, ev?.error?.error);
     injector.get(NzNotificationService).error(title.toString(), message.toString());
     return;
   }
@@ -106,7 +106,7 @@ export function checkStatus(injector: Injector, ev: HttpResponseBase): void {
   injector.get(NzNotificationService).error(`请求错误 ${ev.status}: ${ev.url}`, errortext);
 }
 
-export function getErrorFromRequestBody(body: { details?: string; message?: string } | undefined) {
+export function getErrorFromRequestBody(injector: Injector, body: { details?: string; message?: string } | undefined) {
   let message: LocalizationParam;
   let title: LocalizationParam;
 
@@ -114,16 +114,16 @@ export function getErrorFromRequestBody(body: { details?: string; message?: stri
     message = body.details;
     title = body.message;
   } else if (body.message) {
-    title = {
+    title = injector.get(LocalizationService).instant({
       key: DEFAULT_ERROR_LOCALIZATIONS.defaultError.title,
       defaultValue: DEFAULT_ERROR_MESSAGES.defaultError.title
-    };
+    });
     message = body.message;
   } else {
-    message = {
+    message = injector.get(LocalizationService).instant({
       key: DEFAULT_ERROR_LOCALIZATIONS.defaultError.title,
       defaultValue: DEFAULT_ERROR_MESSAGES.defaultError.title
-    };
+    });
     title = '';
   }
 
