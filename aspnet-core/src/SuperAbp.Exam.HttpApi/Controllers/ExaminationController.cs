@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SuperAbp.Exam.ExamManagement.Exams;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 
@@ -32,5 +33,16 @@ public class ExaminationController(IExaminationAppService examinationAppService)
     public virtual async Task<PagedResultDto<ExamListDto>> GetListAsync(GetExamsInput input)
     {
         return await examinationAppService.GetListAsync(input);
+    }
+
+    /// <summary>
+    /// 获取考试排名列表
+    /// </summary>
+    /// <param name="id">主键</param>
+    /// <returns>排名列表</returns>
+    [HttpGet("{id}/ranking")]
+    public async Task<List<ExamRankingDto>> GetRankingListAsync(Guid id)
+    {
+        return await examinationAppService.GetRankingListAsync(id);
     }
 }

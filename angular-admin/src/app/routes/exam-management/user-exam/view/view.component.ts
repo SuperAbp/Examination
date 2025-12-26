@@ -7,7 +7,7 @@ import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderComponent } from '@delon/abc/page-header';
 import { UserExamService } from '@proxy/admin/controllers';
 import { UserExamDetailDto, UserExamDetailDto_SectionDto_QuestionDto } from '@proxy/admin/exam-management/user-exams';
-import { SharedModule } from '@shared';
+import { SharedModule, UserExamStatus, ExaminationStatus, ReviewMode } from '@shared';
 import { NzAffixModule } from 'ng-zorro-antd/affix';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -62,20 +62,20 @@ export class ExamManagementUserExamViewComponent implements OnInit {
   }
 
   get isReview() {
-    return this.userExam.status === 3 || this.userExam.status === 2;
+    return this.userExam.status === UserExamStatus.Scored || this.userExam.status === UserExamStatus.Submitted;
   }
 
   get canReview(): boolean {
-    if (this.userExam.status !== 2) {
+    if (this.userExam.status !== UserExamStatus.Submitted) {
       return false;
     }
 
-    if (this.userExam.reviewMode === 0) {
-      return this.userExam.examStatus === 2;
+    if (this.userExam.reviewMode === ReviewMode.Unified) {
+      return this.userExam.examStatus === ExaminationStatus.Grading;
     }
 
-    if (this.userExam.reviewMode === 1) {
-      return this.userExam.examStatus === 1 || this.userExam.examStatus === 2;
+    if (this.userExam.reviewMode === ReviewMode.RealTime) {
+      return this.userExam.examStatus === ExaminationStatus.Published || this.userExam.examStatus === ExaminationStatus.Grading;
     }
 
     return false;

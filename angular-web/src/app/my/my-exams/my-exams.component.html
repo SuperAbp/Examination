@@ -38,6 +38,16 @@
         prop="examName"
       ></ngx-datatable-column>
       <ngx-datatable-column
+        [name]="'::ExaminationStatus' | abpLocalization"
+        prop="examStatus"
+        [width]="120"
+        [canAutoResize]="false"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          {{ '::ExaminationStatus:' + row.examStatus | abpLocalization }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
         [name]="'::Status' | abpLocalization"
         prop="status"
         [width]="120"
@@ -53,12 +63,16 @@
         [canAutoResize]="false"
       >
         <ng-template ngx-datatable-cell-template let-row="row">
-          @if (row.status === 3) {
-            {{ row.totalScore }}
-          } @else if (row.status <= 2) {
-            {{ '::NotGradedYet' | abpLocalization }}
+          @if (row.examStatus !== 2 && row.examStatus !== 3) {
+            -
           } @else {
-            0
+            @if (row.status === 3) {
+              {{ row.totalScore }}
+            } @else if (row.status <= 2) {
+              {{ '::NotGradedYet' | abpLocalization }}
+            } @else {
+              -
+            }
           }
         </ng-template>
       </ngx-datatable-column>
@@ -70,7 +84,7 @@
       >
         <ng-template ngx-datatable-cell-template let-row="row">
           @if (row.isPassed === null || row.isPassed === undefined) {
-            <span class="badge bg-warning">{{ '::NotGradedYet' | abpLocalization }}</span>
+            -
           } @else if (row.isPassed) {
             <span class="badge bg-success">{{ '::Passed' | abpLocalization }}</span>
           } @else {
@@ -96,29 +110,39 @@
       </ngx-datatable-column>
       <ngx-datatable-column
         [name]="'Exam::Actions' | abpLocalization"
-        [width]="150"
+        [width]="200"
         [canAutoResize]="false"
         [sortable]="false"
       >
         <ng-template ngx-datatable-cell-template let-row="row">
           <button
-            *ngIf="row.status === 3"
+            *ngIf="(row.examStatus === 2 || row.examStatus === 3) && row.status === 3"
             type="button"
-            class="btn btn-primary btn-sm"
+            class="btn btn-primary btn-sm me-1"
             (click)="viewDetail(row.id)"
           >
             {{ '::Detail' | abpLocalization }}
           </button>
           <button
-            *ngIf="row.status === 1"
+            *ngIf="row.examStatus === 1 && row.status === 1"
             type="button"
-            class="btn btn-warning btn-sm"
+            class="btn btn-warning btn-sm me-1"
             (click)="viewExam(row.id)"
           >
             {{ '::Continue' | abpLocalization }}
+          </button>
+          <button
+            *ngIf="(row.examStatus === 2 || row.examStatus === 3) && row.status === 3"
+            type="button"
+            class="btn btn-primary btn-sm"
+            (click)="viewRanking(row.examId)"
+          >
+            {{ '::Ranking' | abpLocalization }}
           </button>
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
   </div>
 </div>
+
+<app-exam-ranking></app-exam-ranking>

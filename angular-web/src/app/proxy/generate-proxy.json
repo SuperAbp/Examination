@@ -818,6 +818,23 @@
                     "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.ExamManagement.Exams.ExamListDto>",
                     "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.ExamManagement.Exams.ExamListDto>"
                   }
+                },
+                {
+                  "name": "GetRankingListAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "examId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto>",
+                    "typeSimple": "[SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto]"
+                  }
                 }
               ]
             }
@@ -929,6 +946,43 @@
               "returnValue": {
                 "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.ExamManagement.Exams.ExamListDto>",
                 "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.ExamManagement.Exams.ExamListDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.ExamManagement.Exams.IExaminationAppService"
+            },
+            "GetRankingListAsyncById": {
+              "uniqueName": "GetRankingListAsyncById",
+              "name": "GetRankingListAsync",
+              "httpMethod": "GET",
+              "url": "api/exams/{id}/ranking",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto>",
+                "typeSimple": "[SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto]"
               },
               "allowAnonymous": null,
               "implementFrom": "SuperAbp.Exam.ExamManagement.Exams.IExaminationAppService"
@@ -1379,6 +1433,22 @@
                     "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
                     "typeSimple": "{number:string}"
                   }
+                },
+                {
+                  "name": "GetAnswerModes",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                    "typeSimple": "{number:string}"
+                  }
+                },
+                {
+                  "name": "GetReviewModes",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                    "typeSimple": "{number:string}"
+                  }
                 }
               ]
             }
@@ -1389,6 +1459,36 @@
               "name": "GetQuestionTypes",
               "httpMethod": "GET",
               "url": "api/options/question-types",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                "typeSimple": "{number:string}"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Options.IOptionAppService"
+            },
+            "GetAnswerModes": {
+              "uniqueName": "GetAnswerModes",
+              "name": "GetAnswerModes",
+              "httpMethod": "GET",
+              "url": "api/options/answer-modes",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                "typeSimple": "{number:string}"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Options.IOptionAppService"
+            },
+            "GetReviewModes": {
+              "uniqueName": "GetReviewModes",
+              "name": "GetReviewModes",
+              "httpMethod": "GET",
+              "url": "api/options/review-modes",
               "supportedVersions": [],
               "parametersOnMethod": [],
               "parameters": [],
@@ -5514,6 +5614,99 @@
           "jsonName": null,
           "type": "System.DateTime?",
           "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "UserExamId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "UserId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "UserName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TotalScore",
+          "jsonName": null,
+          "type": "System.Decimal",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "IsPassed",
+          "jsonName": null,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FinishedTime",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Rank",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

@@ -134,8 +134,17 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             List<UserExamWithDetails> entities = await UserExamRepository.GetListWithDetailAsync(
                 input.Sorting ?? UserExamConsts.DefaultSorting, input.SkipCount, input.MaxResultCount,
                 CurrentUser.GetId(), input.ExamId);
-
-            List<UserExamListDto> dtos = ObjectMapper.Map<List<UserExamWithDetails>, List<UserExamListDto>>(entities);
+            List<UserExamListDto> dtos = [];
+            foreach (var entity in entities)
+            {
+                UserExamListDto dto = ObjectMapper.Map<UserExamWithDetails, UserExamListDto>(entity);
+                if (entity.ExamStatus != ExaminationStatus.Completed && entity.ExamStatus != ExaminationStatus.Grading)
+                {
+                    dto.IsPassed = null;
+                    dto.TotalScore = null;
+                }
+                dtos.Add(dto);
+            }
             return new PagedResultDto<UserExamListDto>(totalCount, dtos);
         }
 

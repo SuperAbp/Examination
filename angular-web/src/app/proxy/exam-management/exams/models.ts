@@ -21,6 +21,16 @@ export interface ExamListDto extends EntityDto<string> {
   endTime?: string;
 }
 
+export interface ExamRankingDto {
+  userExamId?: string;
+  userId?: string;
+  userName?: string;
+  totalScore: number;
+  isPassed?: boolean;
+  finishedTime?: string;
+  rank: number;
+}
+
 export interface GetExamsInput extends PagedAndSortedResultRequestDto {
   name?: string;
 }

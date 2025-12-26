@@ -11,11 +11,12 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
+import { UserExamStatus } from '@shared';
 
 @Component({
-    selector: 'app-exam-management-user-exam',
-    templateUrl: './user-exam.component.html',
-    imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
+  selector: 'app-exam-management-user-exam',
+  templateUrl: './user-exam.component.html',
+  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class ExamManagementUserExamComponent implements OnInit {
   @Input()
@@ -59,7 +60,7 @@ export class ExamManagementUserExamComponent implements OnInit {
           icon: 'info',
           type: 'modal',
           iif: record => {
-            return record.status === 2 || record.status === 3 || record.status === 4 || record.status === 5;
+            return record.status === UserExamStatus.Scored || record.status === UserExamStatus.Submitted;
           },
           click: (record: STData, modal?: any, instance?: STComponent) => {
             const url = this.router.serializeUrl(this.router.createUrlTree(['/exam-management/user-exam/', record['id']]));

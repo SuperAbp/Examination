@@ -1,4 +1,5 @@
-﻿using SuperAbp.Exam.QuestionManagement.Questions;
+﻿using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public Guid ExamId { get; set; }
 
         public Guid UserId { get; set; }
+        public ExaminationStatus ExamStatus { get; set; }
         public string ExamName { get; set; }
 
         /// <summary>

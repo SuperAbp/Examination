@@ -1,6 +1,6 @@
 import { CoreModule, ListService, LocalizationService, PagedResultDto } from '@abp/ng.core';
 import { NgxDatatableDefaultDirective, NgxDatatableListDirective } from '@abp/ng.theme.shared';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
@@ -9,6 +9,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 import { UserExamService, ExaminationService } from '@proxy/controllers';
 import { UserExamListDto, GetUserExamsInput } from '@proxy/exam-management/user-exams';
 import { ExamListDto } from '@proxy/exam-management/exams';
+import { ExamRankingComponent } from './ranking/ranking.component';
 
 @Component({
   selector: 'app-my-exams',
@@ -23,6 +24,7 @@ import { ExamListDto } from '@proxy/exam-management/exams';
     NgxDatatableModule,
     NgxDatatableDefaultDirective,
     NgxDatatableListDirective,
+    ExamRankingComponent,
   ],
 })
 export class MyExamsComponent implements OnInit {
@@ -38,6 +40,8 @@ export class MyExamsComponent implements OnInit {
   };
 
   examList: ExamListDto[] = [];
+
+  @ViewChild(ExamRankingComponent) rankingComponent: ExamRankingComponent;
 
   ngOnInit() {
     this.loadExams();
@@ -79,5 +83,9 @@ export class MyExamsComponent implements OnInit {
 
   viewDetail(id: string) {
     this.router.navigate(['/my/exams/detail', id]);
+  }
+
+  viewRanking(examId: string) {
+    this.rankingComponent.open(examId);
   }
 }

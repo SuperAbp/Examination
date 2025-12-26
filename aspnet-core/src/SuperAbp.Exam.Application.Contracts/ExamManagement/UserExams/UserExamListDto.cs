@@ -10,6 +10,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
     {
         public Guid ExamId { get; set; }
 
+        public int ExamStatus { get; set; }
+
         /// <summary>
         /// 考试名称
         /// </summary>
@@ -18,7 +20,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         /// <summary>
         /// 最高分
         /// </summary>
-        public decimal TotalScore { get; set; }
+        public decimal? TotalScore { get; set; }
 
         public DateTime? FinishedTime { get; set; }
 

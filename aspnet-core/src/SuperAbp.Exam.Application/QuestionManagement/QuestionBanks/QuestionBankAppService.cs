@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.QuestionManagement.QuestionBanks
 {
+    [Authorize]
     public class QuestionBankAppService(
         IQuestionBankRepository questionBankRepository,
         IQuestionRepository questionRepository)
