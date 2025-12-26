@@ -88,6 +88,7 @@
     "QuestionBank": "题库",
     "QuestionContent": "题干",
     "Analysis": "解析",
+    "ExaminationStatus": "考试状态",
     "ExaminationStatus:0": "草稿",
     "ExaminationStatus:1": "进行中",
     "ExaminationStatus:2": "评分中",

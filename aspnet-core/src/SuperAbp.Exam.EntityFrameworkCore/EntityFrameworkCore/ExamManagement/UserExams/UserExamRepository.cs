@@ -110,6 +110,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
                               Id = ue.Id,
                               ExamId = e.Id,
                               ExamName = e.Name,
+                              ExamStatus = e.Status,
                               CreationTime = ue.CreationTime,
                               FinishedTime = ue.FinishedTime,
                               TotalScore = ue.TotalScore,

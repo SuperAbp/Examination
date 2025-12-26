@@ -11,6 +11,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
+import { ExaminationStatus } from '@shared';
 
 import { ExamManagementExamEditComponent } from './edit/edit.component';
 
@@ -72,7 +73,7 @@ export class ExamManagementExamComponent implements OnInit {
           icon: 'edit',
           type: 'modal',
           iif: record => {
-            return this.permissionService.getGrantedPolicy('Exam.Exams.Update') && record.status === 0;
+            return this.permissionService.getGrantedPolicy('Exam.Exams.Update') && record.status === ExaminationStatus.Draft;
           },
           modal: {
             component: ExamManagementExamEditComponent,
@@ -91,7 +92,7 @@ export class ExamManagementExamComponent implements OnInit {
             icon: 'star'
           },
           iif: record => {
-            return this.permissionService.getGrantedPolicy('Exam.Exams.Delete') && record.status === 0;
+            return this.permissionService.getGrantedPolicy('Exam.Exams.Delete') && record.status === ExaminationStatus.Draft;
           },
           click: (record, _modal, component) => {
             this.examService.delete(record.id).subscribe(response => {
@@ -106,7 +107,7 @@ export class ExamManagementExamComponent implements OnInit {
           children: [
             {
               iif: record => {
-                return record.status !== 0 && record.status !== 4;
+                return record.status !== ExaminationStatus.Draft && record.status !== ExaminationStatus.Cancelled;
               },
               text: this.localizationService.instant('Exam::ExamRecord'),
               modal: {
@@ -125,7 +126,7 @@ export class ExamManagementExamComponent implements OnInit {
             {
               text: this.localizationService.instant('Exam::Publish'),
               iif: record => {
-                return this.permissionService.getGrantedPolicy('Exam.Exams.Publish') && record.status === 0;
+                return this.permissionService.getGrantedPolicy('Exam.Exams.Publish') && record.status === ExaminationStatus.Draft;
               },
               click: (record, _modal, component) => {
                 this.examService.publish(record.id).subscribe(response => {
@@ -136,7 +137,7 @@ export class ExamManagementExamComponent implements OnInit {
             {
               text: this.localizationService.instant('Exam::Terminate'),
               iif: record => {
-                return this.permissionService.getGrantedPolicy('Exam.Exams.Terminate') && record.status === 1;
+                return this.permissionService.getGrantedPolicy('Exam.Exams.Terminate') && record.status === ExaminationStatus.Published;
               },
               click: (record, _modal, component) => {
                 this.examService.terminate(record.id).subscribe(response => {
@@ -147,7 +148,11 @@ export class ExamManagementExamComponent implements OnInit {
             {
               text: this.localizationService.instant('Exam::Cancel'),
               iif: record => {
-                return this.permissionService.getGrantedPolicy('Exam.Exams.Cancel') && record.status !== 4 && record.status !== 0;
+                return (
+                  this.permissionService.getGrantedPolicy('Exam.Exams.Cancel') &&
+                  record.status !== ExaminationStatus.Cancelled &&
+                  record.status !== ExaminationStatus.Draft
+                );
               },
               click: (record, _modal, component) => {
                 this.examService.cancel(record.id).subscribe(response => {

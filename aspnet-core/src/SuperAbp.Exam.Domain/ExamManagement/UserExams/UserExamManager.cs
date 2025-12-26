@@ -188,7 +188,7 @@ public class UserExamManager(
     }
 
     /// <summary>
-    /// 提交实践
+    /// 提交
     /// </summary>
     /// <param name="examId"></param>
     /// <returns></returns>
