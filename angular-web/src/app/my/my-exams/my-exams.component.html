@@ -132,7 +132,7 @@
             {{ '::Continue' | abpLocalization }}
           </button>
           <button
-            *ngIf="row.examStatus === 3 && row.status === 3"
+            *ngIf="row.examStatus === 3"
             type="button"
             class="btn btn-primary btn-sm"
             (click)="viewRanking(row.examId)"
