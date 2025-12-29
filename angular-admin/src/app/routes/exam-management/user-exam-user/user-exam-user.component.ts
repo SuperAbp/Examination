@@ -17,9 +17,9 @@ import { map, tap } from 'rxjs/operators';
 import { ExamManagementUserExamComponent } from '../user-exam/user-exam.component';
 
 @Component({
-    selector: 'app-exam-management-user-exam-user',
-    templateUrl: './user-exam-user.component.html',
-    imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
+  selector: 'app-exam-management-user-exam-user',
+  templateUrl: './user-exam-user.component.html',
+  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class ExamManagementUserExamUserComponent implements OnInit {
   private location = inject(Location);

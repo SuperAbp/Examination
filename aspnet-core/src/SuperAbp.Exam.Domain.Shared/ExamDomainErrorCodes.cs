@@ -44,5 +44,6 @@ public static class ExamDomainErrorCodes
     {
         public const string OutOfExamTime = "Exam:Exams:0001";
         public const string InvalidStatus = "Exam:Exams:0002";
+        public const string UnfinishedGrading = "Exam:Exams:0003";
     }
 }

@@ -95,7 +95,7 @@ public class ExaminationController(IExaminationAdminAppService examAppService)
     }
 
     /// <summary>
-    /// 结束考试
+    /// 终止考试
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
@@ -103,6 +103,18 @@ public class ExaminationController(IExaminationAdminAppService examAppService)
     public async Task TerminateAsync(Guid id)
     {
         await ExamAppService.TerminateAsync(id);
+    }
+
+    /// <summary>
+    /// 完成考试
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+
+    [HttpPatch("{id}/complete")]
+    public async Task CompleteAsync(Guid id)
+    {
+        await ExamAppService.CompleteAsync(id);
     }
 
     /// <summary>

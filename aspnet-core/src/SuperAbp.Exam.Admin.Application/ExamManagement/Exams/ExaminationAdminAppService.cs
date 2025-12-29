@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.Jobs.SubmittedUserExam;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.Permissions;
@@ -10,13 +11,19 @@ using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.BackgroundJobs;
+using Volo.Abp.Domain.Repositories;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 {
     [Authorize(ExamPermissions.Exams.Default)]
-    public class ExaminationAdminAppService(IPaperRepository paperRepository, IExamRepository examRepository, IBackgroundJobManager backgroundJobManager) : ExamAppService, IExaminationAdminAppService
+    public class ExaminationAdminAppService(IPaperRepository paperRepository,
+        IExamRepository examRepository,
+        IUserExamRepository userExamRepository,
+        IBackgroundJobManager backgroundJobManager)
+        : ExamAppService, IExaminationAdminAppService
     {
         protected IExamRepository ExamRepository { get; } = examRepository;
+        public IUserExamRepository UserExamRepository { get; } = userExamRepository;
         public IBackgroundJobManager BackgroundJobManager { get; } = backgroundJobManager;
 
         public virtual async Task<PagedResultDto<ExamListDto>> GetListAsync(GetExamsInput input)
@@ -25,7 +32,9 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 
             IQueryable<Examination> queryable = await ExamRepository.GetQueryableAsync();
 
-            queryable = queryable.WhereIf(!input.Name.IsNullOrWhiteSpace(), e => e.Name.Contains(input.Name));
+            queryable = queryable
+                .WhereIf(!input.Name.IsNullOrWhiteSpace(), e => e.Name.Contains(input.Name))
+                .WhereIf(input.Status.HasValue, e => input.Status.Value == e.Status.Value);
 
             long totalCount = await AsyncExecuter.CountAsync(queryable);
             List<Examination> entities = await AsyncExecuter.ToListAsync(queryable
@@ -124,6 +133,22 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
                 ExamId = id,
                 TenantId = CurrentTenant.Id
             });
+        }
+
+        [Authorize(ExamPermissions.Exams.Complete)]
+        public async Task CompleteAsync(Guid id)
+        {
+            Examination exam = await ExamRepository.GetAsync(id);
+            if (exam.Status != ExaminationStatus.Grading)
+            {
+                throw new InvalidExamStatusException(exam.Status);
+            }
+            if (await UserExamRepository.AnyAsync(ue => ue.ExamId == id && new UserExamStatus[] { UserExamStatus.Waiting, UserExamStatus.InProgress, UserExamStatus.Submitted }.Contains(ue.Status)))
+            {
+                throw new UnfinishedGradingException();
+            }
+            exam.Status = ExaminationStatus.Completed;
+            await ExamRepository.UpdateAsync(exam);
         }
 
         [Authorize(ExamPermissions.Exams.Publish)]

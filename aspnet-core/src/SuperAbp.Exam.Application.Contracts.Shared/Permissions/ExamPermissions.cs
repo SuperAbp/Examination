@@ -55,6 +55,7 @@ public static class ExamPermissions
         public const string Update = Default + ".Update";
         public const string Publish = Default + ".Publish";
         public const string Terminate = Default + ".Terminate";
+        public const string Complete = Default + ".Complete";
         public const string Cancel = Default + ".Cancel";
         public const string Delete = Default + ".Delete";
     }

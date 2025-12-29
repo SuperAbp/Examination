@@ -42,7 +42,11 @@ namespace SuperAbp.Exam.ExamManagement.Exams
 
         public virtual async Task<List<ExamRankingDto>> GetRankingListAsync(Guid examId)
         {
-            await examRepository.GetAsync(examId);
+            Examination exam = await examRepository.GetAsync(examId);
+            if (exam.Status != ExaminationStatus.Completed)
+            {
+                throw new InvalidExamStatusException(exam.Status);
+            }
 
             List<UserExamWithUser> userExams = await userExamRepository.GetRankingListAsync(examId);
 

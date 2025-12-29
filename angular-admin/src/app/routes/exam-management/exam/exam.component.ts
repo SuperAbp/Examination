@@ -2,18 +2,19 @@ import { ConfigStateService, CoreModule, LocalizationService, PermissionService 
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
-import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
-import { DelonFormModule, SFSchema, SFStringWidgetSchema } from '@delon/form';
+import { STChange, STColumn, STColumnBadge, STComponent, STModule, STPage } from '@delon/abc/st';
+import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFStringWidgetSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
-import { ExaminationService } from '@proxy/admin/controllers';
+import { ExaminationService, OptionService } from '@proxy/admin/controllers';
 import { ExamListDto, GetExamsInput } from '@proxy/admin/exam-management/exams';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ExaminationStatus } from '@shared';
 
 import { ExamManagementExamEditComponent } from './edit/edit.component';
+import { log } from '@delon/util';
 
 @Component({
   selector: 'app-exam-management-exam',
@@ -27,6 +28,7 @@ export class ExamManagementExamComponent implements OnInit {
   private messageService = inject(NzMessageService);
   private permissionService = inject(PermissionService);
   private examService = inject(ExaminationService);
+  private optionService = inject(OptionService);
   exams: ExamListDto[];
   total: number;
   loading = false;
@@ -46,6 +48,26 @@ export class ExamManagementExamComponent implements OnInit {
           width: 250,
           placeholder: this.localizationService.instant('Exam::Placeholder', this.localizationService.instant('Exam::Name'))
         } as SFStringWidgetSchema
+      },
+      status: {
+        type: 'string',
+        title: '',
+        ui: {
+          widget: 'select',
+          width: 150,
+          placeholder: this.localizationService.instant('Exam::ChoosePlaceholder', this.localizationService.instant('Exam::Status')),
+          allowClear: true,
+          asyncData: () =>
+            this.optionService.getExaminationStatus().pipe(
+              map(res => {
+                const temp: SFSchemaEnumType[] = [];
+                Object.keys(res).map(item => {
+                  temp.push({ label: this.localizationService.instant('::ExaminationStatus:' + Number(item)), value: Number(item) });
+                });
+                return temp;
+              })
+            )
+        } as SFSelectWidgetSchema
       }
     }
   };
@@ -103,26 +125,23 @@ export class ExamManagementExamComponent implements OnInit {
           }
         },
         {
+          iif: record => {
+            return record.status !== ExaminationStatus.Draft && record.status !== ExaminationStatus.Cancelled;
+          },
+          text: this.localizationService.instant('Exam::ExamRecord'),
+          modal: {
+            component: ExamManagementExamEditComponent,
+            params: (record: any) => ({
+              examId: record.id
+            })
+          },
+          click: record => {
+            this.router.navigateByUrl(`/exam-management/user-exam-user?examId=${record.id}`);
+          }
+        },
+        {
           text: this.localizationService.instant('Exam::More'),
           children: [
-            {
-              iif: record => {
-                return record.status !== ExaminationStatus.Draft && record.status !== ExaminationStatus.Cancelled;
-              },
-              text: this.localizationService.instant('Exam::ExamRecord'),
-              modal: {
-                component: ExamManagementExamEditComponent,
-                params: (record: any) => ({
-                  examId: record.id
-                })
-              },
-              click: record => {
-                this.router.navigateByUrl(`/exam-management/user-exam-user?examId=${record.id}`);
-              }
-            },
-            {
-              type: 'divider'
-            },
             {
               text: this.localizationService.instant('Exam::Publish'),
               iif: record => {
@@ -141,6 +160,17 @@ export class ExamManagementExamComponent implements OnInit {
               },
               click: (record, _modal, component) => {
                 this.examService.terminate(record.id).subscribe(response => {
+                  this.st.reload();
+                });
+              }
+            },
+            {
+              text: this.localizationService.instant('Exam::Complete'),
+              iif: record => {
+                return this.permissionService.getGrantedPolicy('Exam.Exams.Complete') && record.status === ExaminationStatus.Grading;
+              },
+              click: (record, _modal, component) => {
+                this.examService.complete(record.id).subscribe(response => {
                   this.st.reload();
                 });
               }
@@ -202,6 +232,11 @@ export class ExamManagementExamComponent implements OnInit {
       this.params.name = e.name;
     } else {
       delete this.params.name;
+    }
+    if (e.status !== null && e.status !== undefined) {
+      this.params.status = e.status;
+    } else {
+      delete this.params.status;
     }
     this.st.load(1);
   }

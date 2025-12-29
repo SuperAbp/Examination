@@ -19,6 +19,7 @@
     "Loading": "加载中...",
     "Continue": "继续",
     "Terminate": "终止",
+    "Complete": "完成",
     "RandomlySelectQuestions": "随机抽题",
     "SelectQuestions": "选题",
     "QuestionBanks": "题库",
@@ -33,7 +34,6 @@
     "Title": "标题",
     "Remark": "备注",
     "Passed": "通过",
-    "TotalCount": "总数",
     "CorrectCount": "通过数",
     "WrongCount": "错误数",
     "UnansweredCount": "未答数",
@@ -154,6 +154,7 @@
     "Permission:KnowledgePoints": "知识点",
     "Permission:Management": "管理",
     "Permission:Terminate": "终止",
+    "Permission:Complete": "完成",
     "Permission:Create": "创建",
     "Permission:Publish": "发布",
     "Permission:Cancel": "取消",
@@ -170,6 +171,7 @@
     "Exam:UserExams:0002": "用户考试未完成",
     "Exam:UserExams:0003": "用户考试状态无效",
     "Exam:Exams:0001": "不在考试时间内",
-    "Exam:Exams:0002": "考试状态无效"
+    "Exam:Exams:0002": "考试状态无效",
+    "Exam:Exams:0003": "存在未完成评分的考试"
   }
 }

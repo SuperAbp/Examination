@@ -27,4 +27,16 @@ public class OptionController(IOptionAppService optionAppService) : ExamControll
     {
         return optionAppService.GetReviewModes();
     }
+
+    [HttpGet("examination-status")]
+    public Dictionary<int, string> GetExaminationStatus()
+    {
+        return optionAppService.GetExaminationStatus();
+    }
+
+    [HttpGet("user-exam-status")]
+    public Dictionary<int, string> GetUserExamStatus()
+    {
+        return optionAppService.GetUserExamStatus();
+    }
 }
