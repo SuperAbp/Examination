@@ -12,6 +12,7 @@ using Volo.Abp.Identity;
 using Volo.Abp.Users;
 using Volo.Abp;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
+using SuperAbp.Exam.Admin.ExamManagement.Exams;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.UserExams;
 
@@ -28,27 +29,6 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
     protected QuestionManager QuestionManager { get; } = questionManager;
     public UserExamManager UserExamManager { get; } = userExamManager;
     protected IUserExamRepository UserExamRepository { get; } = userExamRepository;
-
-    public virtual async Task<PagedResultDto<UserExamWithUserDto>> GetListWithUserAsync(GetUserExamWithUsersInput input)
-    {
-        int totalCount = await UserExamRepository.GetCountAsync(examId: input.ExamId);
-
-        List<UserExamWithUser> userExams = await UserExamRepository.GetListByExamIdAsync(input.ExamId,
-            input.Sorting ?? UserExamConsts.DefaultSorting, input.SkipCount, input.MaxResultCount);
-        List<UserExamWithUserDto> dtos = [];
-        List<IdentityUser> users = await UserRepository.GetListByIdsAsync(userExams.Select(e => e.UserId));
-        foreach (UserExamWithUser userExam in userExams)
-        {
-            UserExamWithUserDto dto = ObjectMapper.Map<UserExamWithUser, UserExamWithUserDto>(userExam);
-            IdentityUser? user = users.SingleOrDefault(u => u.Id == userExam.UserId);
-            if (user is not null)
-            {
-                dto.User = user.UserName;
-            }
-            dtos.Add(dto);
-        }
-        return new PagedResultDto<UserExamWithUserDto>(totalCount, dtos);
-    }
 
     public async Task<ListResultDto<UserExamListDto>> GetListAsync(GetUserExamsInput input)
     {

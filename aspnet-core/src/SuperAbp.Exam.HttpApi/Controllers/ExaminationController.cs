@@ -41,7 +41,7 @@ public class ExaminationController(IExaminationAppService examinationAppService)
     /// <param name="id">主键</param>
     /// <returns>排名列表</returns>
     [HttpGet("{id}/ranking")]
-    public async Task<List<ExamRankingDto>> GetRankingListAsync(Guid id)
+    public async Task<ListResultDto<ExamRankingDto>> GetRankingListAsync(Guid id)
     {
         return await examinationAppService.GetRankingListAsync(id);
     }

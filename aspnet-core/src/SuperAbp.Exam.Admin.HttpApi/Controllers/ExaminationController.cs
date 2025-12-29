@@ -4,6 +4,7 @@ using Volo.Abp.Application.Dtos;
 
 using SuperAbp.Exam.Admin.ExamManagement.Exams;
 using System;
+using System.Collections.Generic;
 
 namespace SuperAbp.Exam.Admin.Controllers;
 
@@ -36,6 +37,17 @@ public class ExaminationController(IExaminationAdminAppService examAppService)
     public virtual async Task<PagedResultDto<ExamListDto>> GetListAsync(GetExamsInput input)
     {
         return await ExamAppService.GetListAsync(input);
+    }
+
+    /// <summary>
+    /// 考试排名列表
+    /// </summary>
+    /// <param name="examId">考试ID</param>
+    /// <returns>排名列表</returns>
+    [HttpGet("{examId}/user-exams")]
+    public async Task<ListResultDto<ExamUserExamDto>> GetExamUserExamsAsync(Guid examId)
+    {
+        return await ExamAppService.GetExamUserExamsAsync(examId);
     }
 
     /// <summary>

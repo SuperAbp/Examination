@@ -17,17 +17,6 @@ public class UserExamController(IUserExamAdminAppService userExamAdminAppService
     protected IUserExamAdminAppService UserExamAdminAppService { get; } = userExamAdminAppService;
 
     /// <summary>
-    /// 用户列表
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    [HttpGet("user")]
-    public async Task<PagedResultDto<UserExamWithUserDto>> GetListWithUserAsync(GetUserExamWithUsersInput input)
-    {
-        return await UserExamAdminAppService.GetListWithUserAsync(input);
-    }
-
-    /// <summary>
     /// 列表
     /// </summary>
     /// <param name="input"></param>

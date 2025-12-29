@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuperAbp.Exam.Admin.ExamManagement.Exams;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -11,13 +12,6 @@ namespace SuperAbp.Exam.Admin.ExamManagement.UserExams;
 /// </summary>
 public interface IUserExamAdminAppService : IApplicationService
 {
-    /// <summary>
-    /// 列表
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    Task<PagedResultDto<UserExamWithUserDto>> GetListWithUserAsync(GetUserExamWithUsersInput input);
-
     /// <summary>
     /// 列表
     /// </summary>

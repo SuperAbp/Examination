@@ -1,7 +1,7 @@
 import { RestService, Rest } from '@abp/ng.core';
-import type { PagedResultDto } from '@abp/ng.core';
+import type { ListResultDto, PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
-import type { ExamCreateDto, ExamDetailDto, ExamListDto, ExamUpdateDto, GetExamForEditorOutput, GetExamsInput } from '../exam-management/exams/models';
+import type { ExamCreateDto, ExamDetailDto, ExamListDto, ExamUpdateDto, ExamUserExamDto, GetExamForEditorOutput, GetExamsInput } from '../exam-management/exams/models';
 
 @Injectable({
   providedIn: 'root',
@@ -56,6 +56,14 @@ export class ExaminationService {
     this.restService.request<any, GetExamForEditorOutput>({
       method: 'GET',
       url: `/api/exam/${id}/editor`,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getExamUserExams = (examId: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ListResultDto<ExamUserExamDto>>({
+      method: 'GET',
+      url: `/api/exam/${examId}/user-exams`,
     },
     { apiName: this.apiName,...config });
   

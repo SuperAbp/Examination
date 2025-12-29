@@ -30,6 +30,6 @@ namespace SuperAbp.Exam.ExamManagement.Exams
         /// </summary>
         /// <param name="examId">考试ID</param>
         /// <returns>排名列表</returns>
-        Task<List<ExamRankingDto>> GetRankingListAsync(Guid examId);
+        Task<ListResultDto<ExamRankingDto>> GetRankingListAsync(Guid examId);
     }
 }

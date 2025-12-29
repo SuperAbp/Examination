@@ -1,20 +1,17 @@
-import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
+import { CoreModule, LocalizationService } from '@abp/ng.core';
 import { Location } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import type { CellOptions } from '@delon/abc/cell';
+import { ActivatedRoute } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
-import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
+import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema } from '@delon/form';
-import { ModalHelper } from '@delon/theme';
-import { UserExamService } from '@proxy/admin/controllers';
-import { GetUserExamWithUsersInput, UserExamWithUserDto } from '@proxy/admin/exam-management/user-exams';
+import { ExaminationService, UserExamService } from '@proxy/admin/controllers';
 import { IdentityUserService } from '@super-abp/ng.identity/proxy';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { map, tap } from 'rxjs/operators';
 import { ExamManagementUserExamComponent } from '../user-exam/user-exam.component';
+import { ExamUserExamDto } from '@proxy/admin/exam-management/exams';
 
 @Component({
   selector: 'app-exam-management-user-exam-user',
@@ -25,52 +22,30 @@ export class ExamManagementUserExamUserComponent implements OnInit {
   private location = inject(Location);
   private route = inject(ActivatedRoute);
   private localizationService = inject(LocalizationService);
+  private examinationService = inject(ExaminationService);
   private userExamUserService = inject(UserExamService);
   private userService = inject(IdentityUserService);
 
   examId!: string;
-  userExamUsers: UserExamWithUserDto[];
+  userExamUsers: ExamUserExamDto[];
   total: number;
   loading = false;
-  params: GetUserExamWithUsersInput;
   page: STPage = {
-    show: true,
-    showSize: true,
-    front: false,
-    pageSizes: [10, 20, 30, 40, 50]
+    show: false
   };
   searchSchema: SFSchema = {
-    properties: {
-      repositoryId: {
-        type: 'string',
-        title: '',
-        ui: {
-          placeholder: this.localizationService.instant('Exam::ChoosePlaceholder', this.localizationService.instant('Exam::QuestionBank')),
-          widget: 'select',
-          width: 250,
-          allowClear: true,
-          asyncData: () =>
-            this.userService.getList({ skipCount: 0, maxResultCount: 100 }).pipe(
-              map((res: any) => {
-                const temp: SFSchemaEnumType[] = [];
-                res.items.forEach(item => {
-                  temp.push({ label: item.title, value: item.id });
-                });
-                return temp;
-              })
-            )
-        } as SFSelectWidgetSchema
-      }
-    }
+    properties: {}
   };
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
+    { title: this.localizationService.instant('Exam::Rank'), index: 'rank' },
     { title: this.localizationService.instant('Exam::User'), index: 'user' },
     {
       title: this.localizationService.instant('Exam::TotalCount'),
       index: 'totalCount'
     },
     { title: this.localizationService.instant('Exam::MaxScore'), index: 'maxScore' },
+    { title: this.localizationService.instant('Exam::IsPassed'), index: 'isPassed', type: 'yn' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [
@@ -92,37 +67,15 @@ export class ExamManagementUserExamUserComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.examId = params['examId']!;
-      this.params = this.resetParameters();
       this.getList();
     });
   }
   getList() {
     this.loading = true;
-    this.userExamUserService
-      .getListWithUser(this.params)
+    this.examinationService
+      .getExamUserExams(this.examId)
       .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => ((this.userExamUsers = response.items), (this.total = response.totalCount)));
-  }
-  resetParameters(): GetUserExamWithUsersInput {
-    return {
-      examId: this.examId,
-      skipCount: 0,
-      maxResultCount: 10
-    };
-  }
-  change(e: STChange) {
-    if (e.type === 'pi' || e.type === 'ps') {
-      this.params.skipCount = (e.pi - 1) * e.ps;
-      this.params.maxResultCount = e.ps;
-      this.getList();
-    } else if (e.type === 'sort') {
-      this.params.sorting = `${e.sort?.column?.index as string} ${e.sort.value === 'ascend' ? 'asc' : 'desc'}`;
-      this.getList();
-    }
-  }
-  reset() {
-    this.params = this.resetParameters();
-    this.st.load(1);
+      .subscribe(response => (this.userExamUsers = response.items));
   }
   search(e) {
     //if (e.name) {

@@ -18,13 +18,11 @@
     >
       <ngx-datatable-column
         [name]="'::Rank' | abpLocalization"
+        prop="rank"
         [width]="100"
         [canAutoResize]="false"
         [sortable]="false"
       >
-        <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
-          {{ rowIndex + 1 }}
-        </ng-template>
       </ngx-datatable-column>
 
       <ngx-datatable-column [name]="'::Name' | abpLocalization" [sortable]="false">
@@ -57,9 +55,9 @@
           @if (row.isPassed === null || row.isPassed === undefined) {
             <span class="badge bg-warning">{{ '::NotGradedYet' | abpLocalization }}</span>
           } @else if (row.isPassed) {
-            <span class="badge bg-success">{{ '::Passed' | abpLocalization }}</span>
+            <i class="fa-solid fa-check text-primary"></i>
           } @else {
-            <span class="badge bg-danger">{{ '::NotPassed' | abpLocalization }}</span>
+            <i class="fa-solid fa-xmark text-secondary"></i>
           }
         </ng-template>
       </ngx-datatable-column>
