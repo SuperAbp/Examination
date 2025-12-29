@@ -40,7 +40,7 @@ namespace SuperAbp.Exam.ExamManagement.Exams
             return new PagedResultDto<ExamListDto>(totalCount, dtos);
         }
 
-        public virtual async Task<List<ExamRankingDto>> GetRankingListAsync(Guid examId)
+        public virtual async Task<ListResultDto<ExamRankingDto>> GetRankingListAsync(Guid examId)
         {
             Examination exam = await examRepository.GetAsync(examId);
             if (exam.Status != ExaminationStatus.Completed)
@@ -48,9 +48,10 @@ namespace SuperAbp.Exam.ExamManagement.Exams
                 throw new InvalidExamStatusException(exam.Status);
             }
 
-            List<UserExamWithUser> userExams = await userExamRepository.GetRankingListAsync(examId);
-
-            return ObjectMapper.Map<List<UserExamWithUser>, List<ExamRankingDto>>(userExams);
+            List<UserExamWithRanking> userExams = await userExamRepository.GetRankingListAsync(examId);
+            List<ExamRankingDto> dtos = ObjectMapper.Map<List<UserExamWithRanking>, List<ExamRankingDto>>(userExams);
+            RankingHelper.AssignRank(dtos, dto => dto.TotalScore, (dto, rank) => dto.Rank = rank);
+            return new ListResultDto<ExamRankingDto>(dtos);
         }
 
         private async Task NormalizeMaxResultCountAsync(PagedAndSortedResultRequestDto input)

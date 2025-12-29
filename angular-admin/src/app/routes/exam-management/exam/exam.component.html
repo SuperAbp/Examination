@@ -19,6 +19,9 @@
     [footer]="'Exam::DataEnd' | abpLocalization"
     responsiveHideHeaderFooter
   >
+    <ng-template st-row="examTime" let-item>
+      <span>{{ item.startTime }} ~ {{ item.endTime }}</span>
+    </ng-template>
     <ng-template st-row="score" let-item>
       <span>{{ item.score }}（{{ 'Exam::PassingScore' | abpLocalization }}：{{ item.passingScore }}）</span>
     </ng-template>

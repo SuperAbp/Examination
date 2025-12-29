@@ -846,6 +846,23 @@
                   }
                 },
                 {
+                  "name": "GetExamUserExamsAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "examId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.Admin.ExamManagement.Exams.ExamUserExamDto>",
+                    "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.Admin.ExamManagement.Exams.ExamUserExamDto>"
+                  }
+                },
+                {
                   "name": "GetEditorAsync",
                   "parametersOnMethod": [
                     {
@@ -1111,6 +1128,43 @@
               "returnValue": {
                 "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.ExamManagement.Exams.ExamListDto>",
                 "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.ExamManagement.Exams.ExamListDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Admin.ExamManagement.Exams.IExaminationAdminAppService"
+            },
+            "GetExamUserExamsAsyncByExamId": {
+              "uniqueName": "GetExamUserExamsAsyncByExamId",
+              "name": "GetExamUserExamsAsync",
+              "httpMethod": "GET",
+              "url": "api/exam/{examId}/user-exams",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "examId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "examId",
+                  "name": "examId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.Admin.ExamManagement.Exams.ExamUserExamDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.Admin.ExamManagement.Exams.ExamUserExamDto>"
               },
               "allowAnonymous": null,
               "implementFrom": "SuperAbp.Exam.Admin.ExamManagement.Exams.IExaminationAdminAppService"
@@ -3333,23 +3387,6 @@
               "name": "IUserExamAdminAppService",
               "methods": [
                 {
-                  "name": "GetListWithUserAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "input",
-                      "typeAsString": "SuperAbp.Exam.Admin.ExamManagement.UserExams.GetUserExamWithUsersInput, SuperAbp.Exam.Admin.Application.Contracts",
-                      "type": "SuperAbp.Exam.Admin.ExamManagement.UserExams.GetUserExamWithUsersInput",
-                      "typeSimple": "SuperAbp.Exam.Admin.ExamManagement.UserExams.GetUserExamWithUsersInput",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.ExamManagement.UserExams.UserExamWithUserDto>",
-                    "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.ExamManagement.UserExams.UserExamWithUserDto>"
-                  }
-                },
-                {
                   "name": "GetListAsync",
                   "parametersOnMethod": [
                     {
@@ -3412,79 +3449,6 @@
             }
           ],
           "actions": {
-            "GetListWithUserAsyncByInput": {
-              "uniqueName": "GetListWithUserAsyncByInput",
-              "name": "GetListWithUserAsync",
-              "httpMethod": "GET",
-              "url": "api/user-exam/user",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "input",
-                  "typeAsString": "SuperAbp.Exam.Admin.ExamManagement.UserExams.GetUserExamWithUsersInput, SuperAbp.Exam.Admin.Application.Contracts",
-                  "type": "SuperAbp.Exam.Admin.ExamManagement.UserExams.GetUserExamWithUsersInput",
-                  "typeSimple": "SuperAbp.Exam.Admin.ExamManagement.UserExams.GetUserExamWithUsersInput",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "input",
-                  "name": "ExamId",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "Sorting",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "SkipCount",
-                  "jsonName": null,
-                  "type": "System.Int32",
-                  "typeSimple": "number",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "MaxResultCount",
-                  "jsonName": null,
-                  "type": "System.Int32",
-                  "typeSimple": "number",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                }
-              ],
-              "returnValue": {
-                "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.ExamManagement.UserExams.UserExamWithUserDto>",
-                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Admin.ExamManagement.UserExams.UserExamWithUserDto>"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.Admin.ExamManagement.UserExams.IUserExamAdminAppService"
-            },
             "GetListAsyncByInput": {
               "uniqueName": "GetListAsyncByInput",
               "name": "GetListAsync",
@@ -7950,6 +7914,75 @@
       "genericArguments": null,
       "properties": []
     },
+    "SuperAbp.Exam.Admin.ExamManagement.Exams.ExamUserExamDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "UserId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Rank",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "User",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TotalCount",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "MaxScore",
+          "jsonName": null,
+          "type": "System.Decimal",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "SuperAbp.Exam.Admin.ExamManagement.Exams.GetExamForEditorOutput": {
       "baseType": "SuperAbp.Exam.Admin.ExamManagement.Exams.ExamCreateOrUpdateDtoBase",
       "isEnum": false,
@@ -8012,27 +8045,6 @@
         },
         {
           "name": "UserId",
-          "jsonName": null,
-          "type": "System.Guid",
-          "typeSimple": "string",
-          "isRequired": true,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "SuperAbp.Exam.Admin.ExamManagement.UserExams.GetUserExamWithUsersInput": {
-      "baseType": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
-        {
-          "name": "ExamId",
           "jsonName": null,
           "type": "System.Guid",
           "typeSimple": "string",
@@ -8533,63 +8545,6 @@
           "name": "Status",
           "jsonName": null,
           "type": "System.Int32",
-          "typeSimple": "number",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "SuperAbp.Exam.Admin.ExamManagement.UserExams.UserExamWithUserDto": {
-      "baseType": null,
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
-        {
-          "name": "UserId",
-          "jsonName": null,
-          "type": "System.Guid",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "User",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": true,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "TotalCount",
-          "jsonName": null,
-          "type": "System.Int32",
-          "typeSimple": "number",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "MaxScore",
-          "jsonName": null,
-          "type": "System.Decimal",
           "typeSimple": "number",
           "isRequired": false,
           "minLength": null,

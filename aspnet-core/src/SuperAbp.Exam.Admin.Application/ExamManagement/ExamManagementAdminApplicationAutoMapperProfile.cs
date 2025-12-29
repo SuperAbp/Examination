@@ -27,7 +27,9 @@ namespace SuperAbp.Exam.Admin.ExamManagement
 
             #endregion 考试
 
-            CreateMap<UserExamWithUser, UserExamWithUserDto>();
+            CreateMap<UserExamWithUser, ExamUserExamDto>()
+               .ForMember(s => s.User,
+                    opt => opt.MapFrom(p => p.UserName));
             CreateMap<UserExam, UserExamListDto>();
             CreateMap<UserExam, UserExamDetailDto>()
                 .ForMember(s => s.Sections,

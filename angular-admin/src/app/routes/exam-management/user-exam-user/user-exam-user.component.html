@@ -4,15 +4,13 @@
   </ng-template>
 </page-header>
 <nz-card>
-  <sf mode="search" [schema]="searchSchema" (formSubmit)="search($event)" (formReset)="reset()"></sf>
+  <sf mode="search" [schema]="searchSchema" (formSubmit)="search($event)"></sf>
   <st
     #st
     [data]="userExamUsers"
     [columns]="columns"
     [loading]="loading"
     [page]="page"
-    [total]="total"
-    (change)="change($event)"
     [header]="'Exam::DataStart' | abpLocalization"
     [footer]="'Exam::DataEnd' | abpLocalization"
     responsiveHideHeaderFooter

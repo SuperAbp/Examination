@@ -1,8 +1,8 @@
-import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
+import { CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
-import { STChange, STColumn, STColumnBadge, STComponent, STModule, STPage } from '@delon/abc/st';
+import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFStringWidgetSchema } from '@delon/form';
 import { ModalHelper } from '@delon/theme';
 import { ExaminationService, OptionService } from '@proxy/admin/controllers';
@@ -14,7 +14,6 @@ import { map, tap } from 'rxjs/operators';
 import { ExaminationStatus } from '@shared';
 
 import { ExamManagementExamEditComponent } from './edit/edit.component';
-import { log } from '@delon/util';
 
 @Component({
   selector: 'app-exam-management-exam',
@@ -86,10 +85,10 @@ export class ExamManagementExamComponent implements OnInit {
     { title: this.localizationService.instant('Exam::AnswerMode'), render: 'answerMode' },
     { title: this.localizationService.instant('Exam::ReviewMode'), render: 'reviewMode' },
     { title: this.localizationService.instant('Exam::RandomOrderOfOption'), type: 'yn', index: 'randomOrderOfOption' },
-    { title: this.localizationService.instant('Exam::StartTime'), index: 'startTime' },
-    { title: this.localizationService.instant('Exam::EndTime'), index: 'endTime' },
+    { title: this.localizationService.instant('Exam::ExamTime'), render: 'examTime' },
     {
       title: this.localizationService.instant('Exam::Actions'),
+      width: '220px',
       buttons: [
         {
           icon: 'edit',
@@ -129,12 +128,6 @@ export class ExamManagementExamComponent implements OnInit {
             return record.status !== ExaminationStatus.Draft && record.status !== ExaminationStatus.Cancelled;
           },
           text: this.localizationService.instant('Exam::ExamRecord'),
-          modal: {
-            component: ExamManagementExamEditComponent,
-            params: (record: any) => ({
-              examId: record.id
-            })
-          },
           click: record => {
             this.router.navigateByUrl(`/exam-management/user-exam-user?examId=${record.id}`);
           }

@@ -50,9 +50,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         Task<List<UserExamWithUser>> GetListByExamIdAsync(
             Guid examId,
-            string? sorting = null,
-            int skipCount = 0,
-            int maxResultCount = int.MaxValue,
             CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -87,6 +84,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         /// <param name="examId">考试Id</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<UserExamWithUser>> GetRankingListAsync(Guid examId, CancellationToken cancellationToken = default);
+        Task<List<UserExamWithRanking>> GetRankingListAsync(Guid examId, CancellationToken cancellationToken = default);
     }
 }

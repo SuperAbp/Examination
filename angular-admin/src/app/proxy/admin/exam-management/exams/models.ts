@@ -45,6 +45,14 @@ export interface ExamListDto extends EntityDto<string> {
 export interface ExamUpdateDto extends ExamCreateOrUpdateDtoBase {
 }
 
+export interface ExamUserExamDto {
+  userId?: string;
+  rank: number;
+  user: string;
+  totalCount: number;
+  maxScore: number;
+}
+
 export interface GetExamForEditorOutput extends ExamCreateOrUpdateDtoBase {
 }
 

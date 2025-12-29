@@ -21,12 +21,12 @@ namespace SuperAbp.Exam.ExamManagement
 
             CreateMap<Examination, ExamListDto>();
             CreateMap<Examination, ExamDetailDto>();
-            CreateMap<UserExamWithUser, ExamRankingDto>();
 
             #endregion 考试
 
             #region 用户考试
 
+            CreateMap<UserExamWithRanking, ExamRankingDto>();
             CreateMap<UserExam, UserExamListDto>();
             CreateMap<UserExamWithDetails, UserExamListDto>()
                 .ForMember(dest => dest.TotalScore,

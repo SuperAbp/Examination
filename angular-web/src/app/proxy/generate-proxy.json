@@ -832,8 +832,8 @@
                     }
                   ],
                   "returnValue": {
-                    "type": "System.Collections.Generic.List<SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto>",
-                    "typeSimple": "[SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto]"
+                    "type": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto>",
+                    "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto>"
                   }
                 }
               ]
@@ -981,8 +981,8 @@
                 }
               ],
               "returnValue": {
-                "type": "System.Collections.Generic.List<SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto>",
-                "typeSimple": "[SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto]"
+                "type": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<SuperAbp.Exam.ExamManagement.Exams.ExamRankingDto>"
               },
               "allowAnonymous": null,
               "implementFrom": "SuperAbp.Exam.ExamManagement.Exams.IExaminationAppService"
@@ -1427,6 +1427,14 @@
               "name": "IOptionAppService",
               "methods": [
                 {
+                  "name": "GetExaminationStatus",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                    "typeSimple": "{number:string}"
+                  }
+                },
+                {
                   "name": "GetQuestionTypes",
                   "parametersOnMethod": [],
                   "returnValue": {
@@ -1444,6 +1452,14 @@
                 },
                 {
                   "name": "GetReviewModes",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                    "typeSimple": "{number:string}"
+                  }
+                },
+                {
+                  "name": "GetUserExamStatus",
                   "parametersOnMethod": [],
                   "returnValue": {
                     "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
@@ -1489,6 +1505,36 @@
               "name": "GetReviewModes",
               "httpMethod": "GET",
               "url": "api/options/review-modes",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                "typeSimple": "{number:string}"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Options.IOptionAppService"
+            },
+            "GetExaminationStatus": {
+              "uniqueName": "GetExaminationStatus",
+              "name": "GetExaminationStatus",
+              "httpMethod": "GET",
+              "url": "api/options/examination-status",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.Dictionary<System.Int32,System.String>",
+                "typeSimple": "{number:string}"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Options.IOptionAppService"
+            },
+            "GetUserExamStatus": {
+              "uniqueName": "GetUserExamStatus",
+              "name": "GetUserExamStatus",
+              "httpMethod": "GET",
+              "url": "api/options/user-exam-status",
               "supportedVersions": [],
               "parametersOnMethod": [],
               "parameters": [],
@@ -6216,6 +6262,18 @@
           "regex": null
         },
         {
+          "name": "ExamStatus",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "ExamName",
           "jsonName": null,
           "type": "System.String",
@@ -6230,8 +6288,8 @@
         {
           "name": "TotalScore",
           "jsonName": null,
-          "type": "System.Decimal",
-          "typeSimple": "number",
+          "type": "System.Decimal?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

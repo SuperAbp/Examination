@@ -1,9 +1,5 @@
 import type { PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
-export interface GetUserExamWithUsersInput extends PagedAndSortedResultRequestDto {
-  examId: string;
-}
-
 export interface GetUserExamsInput extends PagedAndSortedResultRequestDto {
   examId: string;
   userId: string;
@@ -62,11 +58,4 @@ export interface UserExamListDto {
   finishedTime?: string;
   creationTime?: string;
   status: number;
-}
-
-export interface UserExamWithUserDto {
-  userId?: string;
-  user: string;
-  totalCount: number;
-  maxScore: number;
 }

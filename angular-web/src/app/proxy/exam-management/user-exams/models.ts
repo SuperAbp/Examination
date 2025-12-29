@@ -56,9 +56,9 @@ export interface UserExamDetailDto_SectionDto_QuestionDto_OptionDto {
 
 export interface UserExamListDto extends EntityDto<string> {
   examId?: string;
-  examName?: string;
   examStatus: number;
-  totalScore: number;
+  examName?: string;
+  totalScore?: number;
   finishedTime?: string;
   creationTime?: string;
   isPassed?: boolean;

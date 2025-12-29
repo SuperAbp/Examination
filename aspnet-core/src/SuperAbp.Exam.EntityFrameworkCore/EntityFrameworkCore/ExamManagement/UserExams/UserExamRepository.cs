@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Polly;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using System;
@@ -66,29 +67,28 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<UserExamWithUser>> GetListByExamIdAsync(Guid examId, string? sorting = null, int skipCount = 0, int maxResultCount = Int32.MaxValue,
+        public async Task<List<UserExamWithUser>> GetListByExamIdAsync(Guid examId,
             CancellationToken cancellationToken = default)
         {
-            var queryable = (await GetQueryableAsync())
-                .Where(e => e.ExamId == examId)
-                .OrderBy(sorting ?? UserExamConsts.DefaultSorting)
-                .Skip(skipCount)
-                .Take(maxResultCount);
-            return await (from e in queryable
-                          where e.ExamId == examId
-                          group e by e.UserId into g
-                          select new UserExamWithUser()
-                          {
-                              UserExamId = g.FirstOrDefault().Id,
-                              UserId = g.Key,
-                              UserName = null,
-                              TotalCount = g.Count(),
-                              MaxScore = g.Max(c => c.TotalScore),
-                              TotalScore = g.Max(c => c.TotalScore),
-                              IsPassed = g.FirstOrDefault().IsPassed,
-                              FinishedTime = g.FirstOrDefault().FinishedTime
-                          })
-                .ToListAsync(cancellationToken);
+            var dbContext = await GetDbContextAsync();
+            var userQueryable = dbContext.Users.AsQueryable();
+            var queryable = (await GetQueryableAsync()).Where(e => e.ExamId == examId);
+            var query = from ue in queryable
+                        join u in userQueryable on ue.UserId equals u.Id
+                        where ue.ExamId == examId
+                        group ue by new { ue.UserId, u.UserName } into g
+                        select new UserExamWithUser()
+                        {
+                            UserId = g.Key.UserId,
+                            UserName = g.Key.UserName,
+                            TotalCount = g.Count(),
+                            MaxScore = g.Max(c => c.TotalScore),
+                            IsPassed = g.Any(x => x.IsPassed ?? false),
+                            FinishedTime = g.Max(x => x.FinishedTime)
+                        };
+            return await query.OrderByDescending(x => x.MaxScore)
+                              .ThenBy(x => x.FinishedTime)
+                              .ToListAsync(cancellationToken);
         }
 
         public async Task<List<UserExamWithDetails>> GetListWithDetailAsync(string? sorting = null,
@@ -142,7 +142,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
             return await query.ToListAsync(cancellationToken);
         }
 
-        public async Task<List<UserExamWithUser>> GetRankingListAsync(Guid examId, CancellationToken cancellationToken = default)
+        public async Task<List<UserExamWithRanking>> GetRankingListAsync(Guid examId, CancellationToken cancellationToken = default)
         {
             var dbContext = await GetDbContextAsync();
             var userExamQueryable = await GetQueryableAsync();
@@ -151,7 +151,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
             var query = from ue in userExamQueryable
                         join u in userQueryable on ue.UserId equals u.Id
                         where ue.ExamId == examId && ue.Status == UserExamStatus.Scored
-                        select new UserExamWithUser
+                        select new UserExamWithRanking
                         {
                             UserExamId = ue.Id,
                             UserId = ue.UserId,

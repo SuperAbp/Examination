@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using SuperAbp.Exam.Admin.ExamManagement.UserExams;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.Jobs.SubmittedUserExam;
@@ -44,6 +45,14 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             List<ExamListDto> dtos = ObjectMapper.Map<List<Examination>, List<ExamListDto>>(entities);
 
             return new PagedResultDto<ExamListDto>(totalCount, dtos);
+        }
+
+        public virtual async Task<ListResultDto<ExamUserExamDto>> GetExamUserExamsAsync(Guid examId)
+        {
+            List<UserExamWithUser> userExams = await UserExamRepository.GetListByExamIdAsync(examId);
+            List<ExamUserExamDto> dtos = ObjectMapper.Map<List<UserExamWithUser>, List<ExamUserExamDto>>(userExams);
+            RankingHelper.AssignRank(dtos, dto => dto.MaxScore, (dto, rank) => dto.Rank = rank);
+            return new ListResultDto<ExamUserExamDto>(dtos);
         }
 
         public virtual async Task<ExamDetailDto> GetAsync(Guid id)

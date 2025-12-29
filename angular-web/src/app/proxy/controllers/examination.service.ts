@@ -1,5 +1,5 @@
 import { RestService, Rest } from '@abp/ng.core';
-import type { PagedResultDto } from '@abp/ng.core';
+import type { ListResultDto, PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
 import type { ExamDetailDto, ExamListDto, ExamRankingDto, GetExamsInput } from '../exam-management/exams/models';
 
@@ -29,7 +29,7 @@ export class ExaminationService {
   
 
   getRankingList = (id: string, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, ExamRankingDto[]>({
+    this.restService.request<any, ListResultDto<ExamRankingDto>>({
       method: 'GET',
       url: `/api/exams/${id}/ranking`,
     },

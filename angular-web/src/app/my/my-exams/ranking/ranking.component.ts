@@ -39,7 +39,7 @@ export class ExamRankingComponent {
 
     this.examinationService.getRankingList(examId).subscribe({
       next: response => {
-        this.rankingList = response;
+        this.rankingList = response.items;
         this.isLoadingRanking = false;
       },
       error: () => {
