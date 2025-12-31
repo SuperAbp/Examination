@@ -19,7 +19,7 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { forkJoin } from 'rxjs';
-import { finalize, tap } from 'rxjs/operators';
+import { finalize, max, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-exam-management-exam-edit',
@@ -93,9 +93,6 @@ export class ExamManagementExamEditComponent implements OnInit {
 
   get disableChoosePaper() {
     return this.paperId != undefined || this.paperId != null || this.examId != undefined || this.examId != null;
-  }
-  get isLimitedTime() {
-    return this.form.get('isLimitedTime');
   }
   get examTimes() {
     return this.form.get('examTimes');
@@ -179,8 +176,8 @@ export class ExamManagementExamEditComponent implements OnInit {
       paperId: [this.exam.paperId || '', [Validators.required]],
       startTime: [new Date()],
       endTime: [new Date()],
-      isLimitedTime: [false],
       randomOrderOfOption: [this.exam.randomOrderOfOption || false],
+      maxNumberOfTimes: [this.exam.maxNumberOfTimes || 0, [Validators.required, Validators.min(0)]],
       answerMode: [this.exam.answerMode ?? this.answerModes[0]?.value ?? 0],
       reviewMode: [this.exam.reviewMode ?? this.reviewModes[0]?.value ?? 0],
       examTimes: [[], [Validators.required]]
@@ -189,7 +186,6 @@ export class ExamManagementExamEditComponent implements OnInit {
       this.showExamTime = true;
       this.startTime.setValue(new Date(this.exam.startTime));
       this.endTime.setValue(new Date(this.exam.endTime));
-      this.isLimitedTime.setValue(true);
       this.examTimes.setValue([this.exam.startTime, this.exam.endTime]);
     }
     if (this.paperId) {
@@ -233,20 +229,11 @@ export class ExamManagementExamEditComponent implements OnInit {
       return;
     }
     this.isConfirmLoading = true;
-
     var dynamicPara = {
       published: published
     };
-    if (!this.isLimitedTime.value) {
-      this.form.removeControl('examTimes');
-      this.form.removeControl('startTime');
-      this.form.removeControl('endTime');
-      this.exam.startTime = null;
-      this.exam.endTime = null;
-    } else {
-      dynamicPara['startTime'] = dateTimePickerUtil.format(this.startTime.value, 'yyyy-MM-dd HH:mm:ss');
-      dynamicPara['endTime'] = dateTimePickerUtil.format(this.endTime.value, 'yyyy-MM-dd HH:mm:ss');
-    }
+    dynamicPara['startTime'] = dateTimePickerUtil.format(this.startTime.value, 'yyyy-MM-dd HH:mm:ss');
+    dynamicPara['endTime'] = dateTimePickerUtil.format(this.endTime.value, 'yyyy-MM-dd HH:mm:ss');
 
     if (this.examId) {
       this.examService

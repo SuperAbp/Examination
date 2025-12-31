@@ -17,7 +17,9 @@ public class Examination : FullAuditedAggregateRoot<Guid>, IMultiTenant
     { Name = String.Empty; }
 
     [SetsRequiredMembers]
-    public Examination(Guid id, Guid paperId, string name, decimal score, decimal passingScore, int totalTime, AnswerMode answerMode, bool randomOrderOfOption, bool manualReview, ReviewMode reviewMode) : base(id)
+    public Examination(Guid id, Guid paperId, string name, decimal score,
+        decimal passingScore, int totalTime, AnswerMode answerMode, bool randomOrderOfOption,
+        bool manualReview, ReviewMode reviewMode) : base(id)
     {
         Name = name;
         Score = score;
@@ -69,6 +71,11 @@ public class Examination : FullAuditedAggregateRoot<Guid>, IMultiTenant
     public ExaminationStatus Status { get; set; }
 
     public AnswerMode AnswerMode { get; set; }
+
+    /// <summary>
+    /// 最大考试次数
+    /// </summary>
+    public int MaxNumberOfTimes { get; set; }
 
     /// <summary>
     /// 选项乱序

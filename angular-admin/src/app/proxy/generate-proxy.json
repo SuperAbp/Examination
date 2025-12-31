@@ -7647,6 +7647,18 @@
           "regex": null
         },
         {
+          "name": "MaxMumberOfTimes",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "AnswerMode",
           "jsonName": null,
           "type": "System.Int32",
@@ -7962,6 +7974,18 @@
           "jsonName": null,
           "type": "System.Int32",
           "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "IsPassed",
+          "jsonName": null,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

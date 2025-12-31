@@ -7,6 +7,7 @@ export interface ExamDetailDto extends EntityDto<string> {
   passingScore: number;
   totalTime: number;
   paperId?: string;
+  maxNumberOfTimesExceeded?: boolean;
   startTime?: string;
   endTime?: string;
 }

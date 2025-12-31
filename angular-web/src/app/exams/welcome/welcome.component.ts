@@ -4,7 +4,7 @@ import { ExaminationService, UserExamService } from '@proxy/controllers';
 import { ExamDetailDto } from '@proxy/exam-management/exams';
 import { CoreModule } from '@abp/ng.core';
 import { CommonModule } from '@angular/common';
-import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAlert, NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { ButtonComponent } from '@abp/ng.theme.shared';
 import * as signalR from '@microsoft/signalr';
 import { environment } from '../../../environments/environment';
@@ -12,7 +12,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-exams-welcome',
   templateUrl: './welcome.component.html',
-  imports: [CoreModule, CommonModule, ButtonComponent, NgbProgressbar],
+  imports: [CoreModule, CommonModule, ButtonComponent, NgbProgressbar, NgbAlert],
 })
 export class ExamsWelcomeComponent implements OnInit, OnDestroy {
   id?: string;
@@ -49,7 +49,6 @@ export class ExamsWelcomeComponent implements OnInit, OnDestroy {
 
     this.userExamService.create({ examId: this.id! }).subscribe({
       next: async userExam => {
-        // 保存userExamId用于跳转
         const userExamId = userExam.id;
         await this.setupSignalRConnection(userExamId);
       },
