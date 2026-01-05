@@ -77,7 +77,8 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
                 input.PassingScore, input.TotalTime, AnswerMode.FromValue(input.AnswerMode),
                 input.RandomOrderOfOption, paper.ManualReview, ReviewMode.FromValue(input.ReviewMode))
             {
-                Description = input.Description
+                Description = input.Description,
+                MaxNumberOfTimes = input.MaxNumberOfTimes
             };
             if (input.Published)
             {
@@ -100,6 +101,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             {
                 examination.Status = ExaminationStatus.Published;
             }
+            examination.MaxNumberOfTimes = input.MaxNumberOfTimes;
             examination.PaperId = input.PaperId;
             examination.Name = input.Name;
             examination.Score = input.Score;

@@ -24,6 +24,8 @@ namespace SuperAbp.Exam.ExamManagement.Exams
         /// </summary>
         public Guid PaperId { get; set; }
 
+        public bool MaxNumberOfTimesExceeded { get; set; }
+
         public System.DateTime? StartTime { get; set; }
         public System.DateTime? EndTime { get; set; }
     }

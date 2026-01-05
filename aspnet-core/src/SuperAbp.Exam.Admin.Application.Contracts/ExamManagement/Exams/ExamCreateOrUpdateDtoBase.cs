@@ -15,6 +15,12 @@ public class ExamCreateOrUpdateDtoBase
 
     public bool Published { get; set; }
     public bool RandomOrderOfOption { get; set; }
+
+    /// <summary>
+    /// 最大考试次数
+    /// </summary>
+    public int MaxNumberOfTimes { get; set; }
+
     /// <summary>
     /// 答题模式 <see cref="SuperAbp.Exam.ExamManagement.Exams.AnswerMode"/>
     /// </summary>

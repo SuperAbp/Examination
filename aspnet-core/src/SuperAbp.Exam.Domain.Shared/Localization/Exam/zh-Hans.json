@@ -27,6 +27,7 @@
     "TimeLeft": "剩余时间",
     "You": "您",
     "Ranking": "排行榜",
+    "MaxNumberOfTimes": "限考次数",
     "Rank": "名次",
     "ExamRecord": "考试记录",
     "OnlineExam": "在线考试",
@@ -170,6 +171,7 @@
     "Exam:UserExams:0001": "用户存在未完成的考试",
     "Exam:UserExams:0002": "用户考试未完成",
     "Exam:UserExams:0003": "用户考试状态无效",
+    "Exam:UserExams:0004": "您已达到本场考试最大次数限制",
     "Exam:Exams:0001": "不在考试时间内",
     "Exam:Exams:0002": "考试状态无效",
     "Exam:Exams:0003": "存在未完成评分的考试"

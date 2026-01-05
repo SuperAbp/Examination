@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
 using SuperAbp.Exam.ExamManagement.UserExams;
+using Volo.Abp.Users;
 
 namespace SuperAbp.Exam.ExamManagement.Exams
 {
@@ -14,9 +15,18 @@ namespace SuperAbp.Exam.ExamManagement.Exams
     {
         public virtual async Task<ExamDetailDto> GetAsync(Guid id)
         {
-            Examination entity = await examRepository.GetAsync(id);
+            Examination examination = await examRepository.GetAsync(id);
 
-            return ObjectMapper.Map<Examination, ExamDetailDto>(entity);
+            var dto = ObjectMapper.Map<Examination, ExamDetailDto>(examination);
+            if (examination.MaxNumberOfTimes > 0)
+            {
+                int takenTimes = await userExamRepository.GetCountAsync(CurrentUser.GetId(), id);
+                if (takenTimes >= examination.MaxNumberOfTimes)
+                {
+                    dto.MaxNumberOfTimesExceeded = true;
+                }
+            }
+            return dto;
         }
 
         public virtual async Task<PagedResultDto<ExamListDto>> GetListAsync(GetExamsInput input)

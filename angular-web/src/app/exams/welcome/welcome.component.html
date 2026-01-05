@@ -1,3 +1,9 @@
+@if (exam.maxNumberOfTimesExceeded) {
+  <a class="text-decoration-none">
+    <ngb-alert type="danger" [dismissible]="false"> 您已达到本场考试最大次数限制! </ngb-alert>
+  </a>
+}
+
 <div class="card">
   <div class="card-body">
     <h3 class="text-center">{{ '::ExamInstructions' | abpLocalization }}</h3>
@@ -5,10 +11,12 @@
       <div [innerHTML]="exam.description"></div>
     }
     <ngb-progressbar class="mb-3" type="primary" [value]="progress" />
-    <div class="d-flex justify-content-center">
-      <abp-button type="primary" [loading]="btnLoading" (click)="start()">
-        {{ '::StartExam' | abpLocalization }}
-      </abp-button>
-    </div>
+    @if (!exam.maxNumberOfTimesExceeded) {
+      <div class="d-flex justify-content-center">
+        <abp-button type="primary" [loading]="btnLoading" (click)="start()">
+          {{ '::StartExam' | abpLocalization }}
+        </abp-button>
+      </div>
+    }
   </div>
 </div>

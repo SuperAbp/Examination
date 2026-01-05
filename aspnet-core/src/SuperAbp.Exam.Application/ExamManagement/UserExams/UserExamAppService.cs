@@ -150,6 +150,19 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
         public virtual async Task<UserExamListDto> CreateAsync(UserExamCreateDto input)
         {
+            Examination examination = await ExamRepository.GetAsync(input.ExamId);
+            if (examination.Status != ExaminationStatus.Published)
+            {
+                throw new InvalidExamStatusException(examination.Status);
+            }
+            if (examination.MaxNumberOfTimes > 0)
+            {
+                int takenTimes = await UserExamRepository.GetCountAsync(CurrentUser.GetId(), input.ExamId);
+                if (takenTimes >= examination.MaxNumberOfTimes)
+                {
+                    throw new MaxNumberOfTimesExceededException(examination.MaxNumberOfTimes);
+                }
+            }
             UserExam userExam = await userExamManager.CreateAsync(input.ExamId, CurrentUser.GetId());
             await UserExamRepository.InsertAsync(userExam);
             await BackgroundJobManager.EnqueueAsync(new UserExamCreateQuestionArgs()
