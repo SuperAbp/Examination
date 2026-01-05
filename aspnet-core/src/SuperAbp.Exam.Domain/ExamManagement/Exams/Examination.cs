@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using SuperAbp.Exam.ExamManagement.Exams.States;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp.MultiTenancy;
@@ -13,8 +14,13 @@ namespace SuperAbp.Exam.ExamManagement.Exams;
 /// </summary>
 public class Examination : FullAuditedAggregateRoot<Guid>, IMultiTenant
 {
+    private IExaminationState _state;
+
     protected Examination()
-    { Name = String.Empty; }
+    {
+        Name = String.Empty;
+        _state = new DraftState();
+    }
 
     [SetsRequiredMembers]
     public Examination(Guid id, Guid paperId, string name, decimal score,
@@ -27,7 +33,7 @@ public class Examination : FullAuditedAggregateRoot<Guid>, IMultiTenant
         ManualReview = manualReview;
         TotalTime = totalTime;
         PaperId = paperId;
-        Status = ExaminationStatus.Draft;
+        _state = new DraftState();
         AnswerMode = answerMode;
         RandomOrderOfOption = randomOrderOfOption;
         ReviewMode = reviewMode;
@@ -68,7 +74,15 @@ public class Examination : FullAuditedAggregateRoot<Guid>, IMultiTenant
     /// </summary>
     public Guid PaperId { get; set; }
 
-    public ExaminationStatus Status { get; set; }
+    public ExaminationStatus Status
+    {
+        get => _state.Status;
+        set
+        {
+            // 用于ORM设置状态
+            _state = ExaminationStateFactory.GetState(value);
+        }
+    }
 
     public AnswerMode AnswerMode { get; set; }
 
@@ -124,5 +138,61 @@ public class Examination : FullAuditedAggregateRoot<Guid>, IMultiTenant
     public void setEndTime(DateTime endTime)
     {
         EndTime = endTime;
+    }
+
+    /// <summary>
+    /// 设置状态（由状态对象调用）
+    /// </summary>
+    internal void SetState(IExaminationState state)
+    {
+        _state = state;
+    }
+
+    /// <summary>
+    /// 发布考试
+    /// </summary>
+    public void Publish()
+    {
+        _state.Publish(this);
+    }
+
+    /// <summary>
+    /// 取消考试
+    /// </summary>
+    public void Cancel()
+    {
+        _state.Cancel(this);
+    }
+
+    /// <summary>
+    /// 终止考试（提前结束）
+    /// </summary>
+    public void Terminate(DateTime endTime)
+    {
+        _state.Terminate(this, endTime);
+    }
+
+    /// <summary>
+    /// 完成考试（评分完成）
+    /// </summary>
+    public void Complete()
+    {
+        _state.Complete(this);
+    }
+
+    /// <summary>
+    /// 作废考试
+    /// </summary>
+    public void Invalidate()
+    {
+        _state.Invalidate(this);
+    }
+
+    /// <summary>
+    /// 检查是否可以更新
+    /// </summary>
+    public bool CanUpdate()
+    {
+        return _state.CanUpdate();
     }
 }

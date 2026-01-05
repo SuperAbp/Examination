@@ -77,6 +77,14 @@ export class ExaminationService {
     { apiName: this.apiName,...config });
   
 
+  invalidate = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, void>({
+      method: 'PATCH',
+      url: `/api/exam/${id}/invalidate`,
+    },
+    { apiName: this.apiName,...config });
+  
+
   publish = (id: string, config?: Partial<Rest.Config>) =>
     this.restService.request<any, void>({
       method: 'PATCH',

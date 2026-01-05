@@ -176,12 +176,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public virtual async Task StartAsync(Guid id)
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
-            if (userExam.Status != UserExamStatus.Waiting)
-            {
-                throw new InvalidUserExamStatusException(userExam.Status);
-            }
-            userExam.Status = UserExamStatus.InProgress;
-            userExam.StartTime = Clock.Now;
+            userExam.Start(Clock.Now);
             await UserExamRepository.UpdateAsync(userExam);
         }
 
@@ -210,12 +205,8 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             {
                 throw new InvalidExamStatusException(examination.Status);
             }
-            if (userExam.Status != UserExamStatus.InProgress)
-            {
-                throw new InvalidUserExamStatusException(userExam.Status);
-            }
-            userExam.FinishedTime = clock.Now;
-            userExam.Status = examination.ManualReview ? UserExamStatus.Submitted : UserExamStatus.Scored;
+
+            userExam.Submit(examination.ManualReview);
 
             decimal totalScore = 0;
             List<Task> publishEvents = [];

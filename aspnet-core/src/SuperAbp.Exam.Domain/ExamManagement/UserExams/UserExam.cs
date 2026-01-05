@@ -1,4 +1,5 @@
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
+using SuperAbp.Exam.ExamManagement.UserExams.States;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,15 +17,18 @@ namespace SuperAbp.Exam.ExamManagement.UserExams;
 /// </summary>
 public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
 {
+    private IUserExamState _state;
+
     protected UserExam()
     {
+        _state = new WaitingState();
     }
 
     public UserExam(Guid id, Guid examId, Guid userId) : base(id)
     {
         UserId = userId;
         ExamId = examId;
-        Status = UserExamStatus.Waiting;
+        _state = new WaitingState();
         Sections = new List<UserExamSection>();
     }
 
@@ -48,7 +52,15 @@ public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
 
     public DateTime? StartTime { get; set; }
 
-    public UserExamStatus Status { get; set; }
+    public UserExamStatus Status
+    {
+        get => _state.Status;
+        set
+        {
+            // 用于ORM设置状态
+            _state = UserExamStateFactory.GetState(value);
+        }
+    }
 
     public Guid? TenantId { get; set; }
 
@@ -68,7 +80,7 @@ public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
 
     public void AnswerQuestion(Guid questionId, string answers)
     {
-        if (Status != UserExamStatus.InProgress)
+        if (!_state.CanAnswer())
         {
             throw new InvalidUserExamStatusException(Status);
         }
@@ -107,5 +119,53 @@ public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
     public void CheckPassed(decimal passingScore)
     {
         IsPassed = TotalScore >= passingScore;
+    }
+
+    /// <summary>
+    /// 设置状态（由状态对象调用）
+    /// </summary>
+    internal void SetState(IUserExamState state)
+    {
+        _state = state;
+    }
+
+    /// <summary>
+    /// 开始考试
+    /// </summary>
+    public void Start(DateTime startTime)
+    {
+        _state.Start(this, startTime);
+    }
+
+    /// <summary>
+    /// 提交考试
+    /// </summary>
+    public void Submit(bool requireManualReview)
+    {
+        _state.Submit(this, requireManualReview);
+    }
+
+    /// <summary>
+    /// 批阅出分
+    /// </summary>
+    public void Score()
+    {
+        _state.Score(this);
+    }
+
+    /// <summary>
+    /// 标记为超时
+    /// </summary>
+    public void Timeout()
+    {
+        _state.Timeout(this);
+    }
+
+    /// <summary>
+    /// 标记为无效
+    /// </summary>
+    public void Invalidate()
+    {
+        _state.Invalidate(this);
     }
 }

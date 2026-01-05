@@ -26,12 +26,4 @@ export class ExamsSubmittedComponent implements OnInit {
       this.examName = params['examName'];
     });
   }
-
-  goToExamList(): void {
-    this.router.navigate(['/exams']);
-  }
-
-  viewMyExams(): void {
-    this.router.navigate(['/my/exams']);
-  }
 }

@@ -990,6 +990,23 @@
                   }
                 },
                 {
+                  "name": "InvalidateAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
                   "name": "DeleteAsync",
                   "parametersOnMethod": [
                     {
@@ -1416,6 +1433,43 @@
               "name": "CompleteAsync",
               "httpMethod": "PATCH",
               "url": "api/exam/{id}/complete",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Admin.ExamManagement.Exams.IExaminationAdminAppService"
+            },
+            "InvalidateAsyncById": {
+              "uniqueName": "InvalidateAsyncById",
+              "name": "InvalidateAsync",
+              "httpMethod": "PATCH",
+              "url": "api/exam/{id}/invalidate",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -7647,7 +7701,7 @@
           "regex": null
         },
         {
-          "name": "MaxMumberOfTimes",
+          "name": "MaxNumberOfTimes",
           "jsonName": null,
           "type": "System.Int32",
           "typeSimple": "number",

@@ -8,16 +8,13 @@ export const routes: Routes = [
   {
     path: 'question-banks',
     component: QuestionBanksComponent,
-    canActivate: [authGuard],
   },
   {
     path: 'question-banks/:id',
     component: QuestionBanksDetailComponent,
-    canActivate: [authGuard],
   },
   {
     path: 'question-banks/:id/train',
     component: QuestionBanksTrainComponent,
-    canActivate: [authGuard],
   },
 ];

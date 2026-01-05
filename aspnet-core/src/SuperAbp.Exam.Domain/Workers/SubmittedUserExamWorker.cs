@@ -30,7 +30,7 @@ public class SubmittedUserExamWorker : AsyncPeriodicBackgroundWorkerBase
         List<UserExam> timeoutUserExams = await userExamRepository.GetTimeoutUserExamsAsync(now);
         foreach (UserExam userExam in timeoutUserExams)
         {
-            userExam.Status = UserExamStatus.Timeout;
+            userExam.Timeout();
             userExam.FinishedTime = now;
         }
         await userExamRepository.UpdateManyAsync(timeoutUserExams);

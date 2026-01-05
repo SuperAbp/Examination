@@ -14,32 +14,26 @@ export const routes: Routes = [
       {
         path: 'exams',
         component: MyExamsComponent,
-        canActivate: [authGuard],
       },
       {
         path: 'exams/detail/:id',
         component: ExamDetailComponent,
-        canActivate: [authGuard],
       },
       {
         path: 'favorites',
         component: MyFavoritesComponent,
-        canActivate: [authGuard],
       },
       {
         path: 'favorites/train',
         component: MyFavoritesTrainComponent,
-        canActivate: [authGuard],
       },
       {
         path: 'mistakes',
         component: MistakesComponent,
-        canActivate: [authGuard],
       },
       {
         path: 'mistakes/train',
         component: MistakesTrainComponent,
-        canActivate: [authGuard],
       },
     ],
   },
