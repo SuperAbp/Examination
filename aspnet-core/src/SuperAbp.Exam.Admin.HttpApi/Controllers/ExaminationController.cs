@@ -130,6 +130,17 @@ public class ExaminationController(IExaminationAdminAppService examAppService)
     }
 
     /// <summary>
+    /// 作废考试
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpPatch("{id}/invalidate")]
+    public async Task InvalidateAsync(Guid id)
+    {
+        await ExamAppService.InvalidateAsync(id);
+    }
+
+    /// <summary>
     /// 删除
     /// </summary>
     /// <param name="id">主键</param>

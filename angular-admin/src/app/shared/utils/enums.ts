@@ -12,7 +12,8 @@ export enum ExaminationStatus {
   /** 已完成 */
   Completed = 3,
   /** 已取消 */
-  Cancelled = 4
+  Cancelled = 4,
+  Invalidated = 99
 }
 
 /**

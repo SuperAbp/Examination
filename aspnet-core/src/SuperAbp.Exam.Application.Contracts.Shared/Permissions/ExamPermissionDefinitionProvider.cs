@@ -47,6 +47,7 @@ public class ExamPermissionDefinitionProvider : PermissionDefinitionProvider
         exams.AddChild(ExamPermissions.Exams.Terminate, L("Permission:Terminate"));
         exams.AddChild(ExamPermissions.Exams.Complete, L("Permission:Complete"));
         exams.AddChild(ExamPermissions.Exams.Cancel, L("Permission:Cancel"));
+        exams.AddChild(ExamPermissions.Exams.Invalidate, L("Permission:Invalidate"));
         exams.AddChild(ExamPermissions.Exams.Delete, L("Permission:Delete"));
     }
 

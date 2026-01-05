@@ -82,7 +82,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             };
             if (input.Published)
             {
-                examination.Status = ExaminationStatus.Published;
+                examination.Publish();
             }
             examination.SetTime(input.StartTime, input.EndTime);
             examination = await ExamRepository.InsertAsync(examination);
@@ -93,13 +93,13 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         public virtual async Task<ExamListDto> UpdateAsync(Guid id, ExamUpdateDto input)
         {
             Examination examination = await ExamRepository.GetAsync(id);
-            if (examination.Status != ExaminationStatus.Draft)
+            if (!examination.CanUpdate())
             {
                 throw new InvalidExamStatusException(examination.Status);
             }
             if (input.Published)
             {
-                examination.Status = ExaminationStatus.Published;
+                examination.Publish();
             }
             examination.MaxNumberOfTimes = input.MaxNumberOfTimes;
             examination.PaperId = input.PaperId;
@@ -120,11 +120,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         public virtual async Task CancelAsync(Guid id)
         {
             Examination exam = await ExamRepository.GetAsync(id);
-            if (exam.Status == ExaminationStatus.Draft || exam.Status == ExaminationStatus.Cancelled)
-            {
-                throw new InvalidExamStatusException(exam.Status);
-            }
-            exam.Status = ExaminationStatus.Cancelled;
+            exam.Cancel();
             await ExamRepository.UpdateAsync(exam);
         }
 
@@ -132,12 +128,7 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         public virtual async Task TerminateAsync(Guid id)
         {
             Examination exam = await ExamRepository.GetAsync(id);
-            if (exam.Status != ExaminationStatus.Published)
-            {
-                throw new InvalidExamStatusException(exam.Status);
-            }
-            exam.setEndTime(Clock.Now);
-            exam.Status = ExaminationStatus.Grading;
+            exam.Terminate(Clock.Now);
             await ExamRepository.UpdateAsync(exam);
             await BackgroundJobManager.EnqueueAsync(new SubmitUserExamArgs()
             {
@@ -150,15 +141,11 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         public async Task CompleteAsync(Guid id)
         {
             Examination exam = await ExamRepository.GetAsync(id);
-            if (exam.Status != ExaminationStatus.Grading)
-            {
-                throw new InvalidExamStatusException(exam.Status);
-            }
             if (await UserExamRepository.AnyAsync(ue => ue.ExamId == id && new UserExamStatus[] { UserExamStatus.Waiting, UserExamStatus.InProgress, UserExamStatus.Submitted }.Contains(ue.Status)))
             {
                 throw new UnfinishedGradingException();
             }
-            exam.Status = ExaminationStatus.Completed;
+            exam.Complete();
             await ExamRepository.UpdateAsync(exam);
         }
 
@@ -166,12 +153,26 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         public virtual async Task PublishAsync(Guid id)
         {
             Examination exam = await ExamRepository.GetAsync(id);
-            if (exam.Status != ExaminationStatus.Draft)
-            {
-                throw new InvalidExamStatusException(exam.Status);
-            }
-            exam.Status = ExaminationStatus.Published;
+            exam.Publish();
             await ExamRepository.UpdateAsync(exam);
+        }
+
+        [Authorize(ExamPermissions.Exams.Invalidate)]
+        public virtual async Task InvalidateAsync(Guid id)
+        {
+            Examination exam = await ExamRepository.GetAsync(id);
+            exam.Invalidate();
+            await ExamRepository.UpdateAsync(exam);
+
+            List<UserExam> userExams = await UserExamRepository.GetListAsync(examId: id);
+            foreach (UserExam userExam in userExams)
+            {
+                userExam.Invalidate();
+            }
+            if (userExams.Count > 0)
+            {
+                await UserExamRepository.UpdateManyAsync(userExams);
+            }
         }
 
         [Authorize(ExamPermissions.Exams.Delete)]

@@ -57,6 +57,7 @@ public static class ExamPermissions
         public const string Terminate = Default + ".Terminate";
         public const string Complete = Default + ".Complete";
         public const string Cancel = Default + ".Cancel";
+        public const string Invalidate = Default + ".Invalidate";
         public const string Delete = Default + ".Delete";
     }
 }

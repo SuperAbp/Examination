@@ -32,6 +32,11 @@ public class ExaminationStatus : SmartEnum<ExaminationStatus>
     /// </summary>
     public static readonly ExaminationStatus Cancelled = new(nameof(Cancelled), 4);
 
+    /// <summary>
+    /// 已作废
+    /// </summary>
+    public static readonly ExaminationStatus Invalidated = new(nameof(Invalidated), 99);
+
     public ExaminationStatus(string name, int value) : base(name, value)
     {
     }

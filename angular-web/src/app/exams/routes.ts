@@ -14,7 +14,6 @@ export const routes: Routes = [
   {
     path: 'exams/start/:id',
     loadComponent: () => import('./start/start.component').then(m => m.ExamsStartComponent),
-    canActivate: [authGuard],
   },
   {
     path: 'exams/submitted/:id',

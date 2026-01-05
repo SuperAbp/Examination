@@ -15,13 +15,16 @@ export const APP_ROUTES: Routes = [
   {
     path: '',
     loadChildren: () => import('./exams/routes').then(m => m.routes),
+    canActivate: [authGuard],
   },
   {
     path: '',
     loadChildren: () => import('./question-banks/routes').then(m => m.routes),
+    canActivate: [authGuard],
   },
   {
     path: '',
     loadChildren: () => import('./my/routes').then(m => m.routes),
+    canActivate: [authGuard],
   },
 ];

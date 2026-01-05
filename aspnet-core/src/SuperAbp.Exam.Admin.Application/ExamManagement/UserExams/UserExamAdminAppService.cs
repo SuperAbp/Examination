@@ -99,10 +99,6 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
     public async Task ReviewQuestionsAsync(Guid id, List<ReviewedQuestionDto> input)
     {
         UserExam userExam = await UserExamRepository.GetAsync(id);
-        if (userExam.Status != UserExamStatus.Submitted)
-        {
-            throw new InvalidUserExamStatusException(userExam.Status);
-        }
         Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
 
         if (examination.ReviewMode == ReviewMode.Unified)
@@ -129,10 +125,8 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
             userExam.ReviewQuestion(GuidGenerator.Create(), question.QuestionId, question.Right, question.Score.Value, question.Reason);
         }
         userExam.UpdateTotalScore();
-
         userExam.CheckPassed(examination.PassingScore);
-
-        userExam.Status = UserExamStatus.Scored;
+        userExam.Score();
         await UserExamRepository.UpdateAsync(userExam);
     }
 }

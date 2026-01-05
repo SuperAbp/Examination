@@ -123,14 +123,13 @@
           >
             {{ '::Detail' | abpLocalization }}
           </button>
-          <button
+          <a
             *ngIf="row.examStatus === 1 && row.status === 1"
-            type="button"
             class="btn btn-warning btn-sm me-1"
-            (click)="viewExam(row.id)"
+            [href]="'/exams/start/' + row.id"
           >
             {{ '::Continue' | abpLocalization }}
-          </button>
+          </a>
           <button
             *ngIf="row.examStatus === 3"
             type="button"

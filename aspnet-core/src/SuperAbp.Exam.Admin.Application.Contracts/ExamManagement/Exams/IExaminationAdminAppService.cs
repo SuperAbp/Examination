@@ -83,6 +83,13 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         Task PublishAsync(Guid id);
 
         /// <summary>
+        /// 作废考试
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task InvalidateAsync(Guid id);
+
+        /// <summary>
         /// 删除
         /// </summary>
         /// <param name="id">主键</param>
