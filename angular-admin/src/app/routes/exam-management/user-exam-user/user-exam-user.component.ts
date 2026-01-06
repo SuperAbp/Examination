@@ -45,7 +45,7 @@ export class ExamManagementUserExamUserComponent implements OnInit {
       index: 'totalCount'
     },
     { title: this.localizationService.instant('Exam::MaxScore'), index: 'maxScore' },
-    { title: this.localizationService.instant('Exam::IsPassed'), index: 'isPassed', type: 'yn' },
+    { title: this.localizationService.instant('Exam::Passed'), index: 'isPassed', type: 'yn' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [

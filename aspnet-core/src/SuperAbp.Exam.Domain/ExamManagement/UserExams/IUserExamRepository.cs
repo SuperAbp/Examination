@@ -48,6 +48,18 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             Guid? userId = null,
             CancellationToken cancellationToken = default);
 
+        /// <summary>
+        /// 获取用户特定考试的活动记录（IsActive=true）
+        /// </summary>
+        /// <param name="userId">用户Id</param>
+        /// <param name="examId">考试Id</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<List<UserExam>> GetActiveListByUserAndExamAsync(
+            Guid userId,
+            Guid examId,
+            CancellationToken cancellationToken = default);
+
         Task<List<UserExamWithUser>> GetListByExamIdAsync(
             Guid examId,
             CancellationToken cancellationToken = default);

@@ -30,7 +30,7 @@ public class UserExamManager(
         await CheckUnfinishedAsync(userId);
         await examManager.CheckCreateUserExamAsync(examId);
 
-        return new UserExam(GuidGenerator.Create(), examId, userId);
+        return new UserExam(GuidGenerator.Create(), examId, userId, isActive: true);
     }
 
     /// <summary>

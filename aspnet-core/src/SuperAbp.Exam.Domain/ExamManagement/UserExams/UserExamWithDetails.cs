@@ -20,6 +20,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         /// </summary>
         public bool? IsPassed { get; set; }
 
+        /// <summary>
+        /// 是否为最新有效提交
+        /// </summary>
+        public bool IsActive { get; set; }
+
         // public Guid QuestionId { get; set; }
         // public required QuestionType QuestionType { get; set; }
         //

@@ -53,6 +53,8 @@ export class ExamManagementUserExamComponent implements OnInit {
     { title: this.localizationService.instant('Exam::TotalScore'), index: 'totalScore' },
     { title: this.localizationService.instant('Exam::ExamTime'), render: 'examTime' },
     { title: this.localizationService.instant('Exam::Status'), render: 'status' },
+    { title: this.localizationService.instant('Exam::Active'), index: 'isActive', type: 'yn' },
+    { title: this.localizationService.instant('Exam::Passed'), index: 'isPassed', type: 'yn' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [

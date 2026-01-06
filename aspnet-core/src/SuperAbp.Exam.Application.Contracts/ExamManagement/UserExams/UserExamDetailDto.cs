@@ -25,6 +25,11 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public required string ExamName { get; set; }
         public int Status { get; set; }
 
+        /// <summary>
+        /// 是否为最新有效提交
+        /// </summary>
+        public bool IsActive { get; set; }
+
         public DateTime EndTime { get; set; }
 
         public required int AnswerMode { get; set; }

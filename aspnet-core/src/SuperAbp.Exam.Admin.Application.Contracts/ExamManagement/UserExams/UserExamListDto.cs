@@ -19,4 +19,14 @@ public class UserExamListDto
     public DateTime CreationTime { get; protected set; }
 
     public int Status { get; set; }
+
+    /// <summary>
+    /// 是否通过
+    /// </summary>
+    public bool? IsPassed { get; set; }
+
+    /// <summary>
+    /// 是否为最新有效提交
+    /// </summary>
+    public bool IsActive { get; set; }
 }

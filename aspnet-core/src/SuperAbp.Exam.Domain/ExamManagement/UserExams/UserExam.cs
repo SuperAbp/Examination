@@ -24,10 +24,11 @@ public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
         _state = new WaitingState();
     }
 
-    public UserExam(Guid id, Guid examId, Guid userId) : base(id)
+    public UserExam(Guid id, Guid examId, Guid userId, bool isActive = true) : base(id)
     {
         UserId = userId;
         ExamId = examId;
+        IsActive = isActive;
         _state = new WaitingState();
         Sections = new List<UserExamSection>();
     }
@@ -63,6 +64,11 @@ public class UserExam : FullAuditedAggregateRoot<Guid>, IMultiTenant
     }
 
     public Guid? TenantId { get; set; }
+
+    /// <summary>
+    /// 是否为最新有效提交
+    /// </summary>
+    public bool IsActive { get; set; }
 
     /// <summary>
     /// 考试的试卷大题
