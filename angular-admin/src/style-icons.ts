@@ -8,7 +8,9 @@ import {
   LinkOutline,
   ProfileOutline,
   VerifiedOutline,
-  DeleteOutline
+  DeleteOutline,
+  CloseOutline,
+  CheckOutline
 } from '@ant-design/icons-angular/icons';
 
 export const ICONS = [
@@ -19,5 +21,7 @@ export const ICONS = [
   LinkOutline,
   VerifiedOutline,
   CheckCircleTwoTone,
-  DeleteOutline
+  DeleteOutline,
+  CloseOutline,
+  CheckOutline
 ];

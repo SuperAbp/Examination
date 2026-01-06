@@ -56,6 +56,7 @@ export class ExamsComponent implements OnInit {
       return this.examinationService.getList({
         ...query,
         name: searchValue || undefined,
+        status: 1,
       });
     };
 

@@ -34,4 +34,5 @@ export interface ExamRankingDto {
 
 export interface GetExamsInput extends PagedAndSortedResultRequestDto {
   name?: string;
+  status?: number;
 }

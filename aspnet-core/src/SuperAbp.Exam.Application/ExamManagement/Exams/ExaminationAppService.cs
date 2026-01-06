@@ -36,7 +36,7 @@ namespace SuperAbp.Exam.ExamManagement.Exams
             IQueryable<Examination> queryable = await examRepository.GetQueryableAsync();
 
             queryable = queryable
-                .Where(e => e.Status == ExaminationStatus.Published)
+                .WhereIf(input.Status.HasValue, e => e.Status == ExaminationStatus.FromValue(input.Status.Value))
                 .WhereIf(!input.Name.IsNullOrWhiteSpace(), e => e.Name.Contains(input.Name));
 
             long totalCount = await AsyncExecuter.CountAsync(queryable);
