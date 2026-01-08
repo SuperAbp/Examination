@@ -1,10 +1,11 @@
-import { LocalizationParam, LocalizationService } from '@abp/ng.core';
+import { AuthService, LocalizationParam, LocalizationService } from '@abp/ng.core';
 import { HttpErrorResponse, HttpHeaders, HttpResponseBase } from '@angular/common/http';
 import { Injector, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 export interface ReThrowHttpError {
   body: any;
@@ -80,7 +81,17 @@ export function goTo(injector: Injector, url: string): void {
 
 export function toLogin(injector: Injector): void {
   injector.get(NzNotificationService).error(`未登录或登录已过期，请重新登录。`, ``);
-  goTo(injector, injector.get(DA_SERVICE_TOKEN).login_url!);
+
+  // 清除所有token和认证信息，避免死循环
+  const tokenService = injector.get(DA_SERVICE_TOKEN);
+  const oAuthService = injector.get(OAuthService);
+
+  tokenService.clear();
+  oAuthService.logOut(false); // false 表示只清除本地token，不调用服务器端点
+
+  // 直接跳转到OAuth服务器，而不是先跳转到本地login页面
+  const authService = injector.get(AuthService);
+  setTimeout(() => authService.navigateToLogin());
 }
 
 export function getAdditionalHeaders(headers?: HttpHeaders): { [name: string]: string } {

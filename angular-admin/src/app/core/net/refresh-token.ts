@@ -25,6 +25,25 @@ function reAttachToken(injector: Injector, req: HttpRequest<any>): HttpRequest<a
 
 function refreshTokenRequest(injector: Injector): Observable<TokenResponse> {
   const oAuthService = injector.get(OAuthService);
+
+  // 检查是否有 refresh_token
+  const refreshToken = oAuthService.getRefreshToken();
+  if (!refreshToken) {
+    return throwError(() => new Error('No refresh_token available. User needs to login again.'));
+  }
+
+  // 确保 tokenEndpoint 已配置，如果没有则先加载 discovery document
+  if (!oAuthService.tokenEndpoint) {
+    return from(
+      oAuthService.loadDiscoveryDocument().then(() => {
+        if (!oAuthService.tokenEndpoint) {
+          throw new Error('OAuth configuration not loaded properly. tokenEndpoint is still null.');
+        }
+        return oAuthService.refreshToken();
+      })
+    );
+  }
+
   return from(oAuthService.refreshToken());
 }
 
@@ -49,11 +68,18 @@ export function tryRefreshToken(injector: Injector, ev: HttpResponseBase, req: H
       // 通知后续请求继续执行
       refreshToking = false;
       refreshToken$.next(res);
-      // 重新保存新 token
+
+      // 从 OAuthService 读取最新的 token（refreshToken() 会自动更新）
+      const oAuthService = injector.get(OAuthService);
+      const newAccessToken = oAuthService.getAccessToken();
+      const newExpiration = oAuthService.getAccessTokenExpiration();
+
+      // 同步到 DA_SERVICE_TOKEN
       injector.get(DA_SERVICE_TOKEN).set({
-        token: res.access_token,
-        expired: res.expires_in
+        token: newAccessToken,
+        expired: newExpiration
       });
+
       // 重新发起请求
       return next(reAttachToken(injector, req));
     }),
@@ -67,6 +93,8 @@ export function tryRefreshToken(injector: Injector, ev: HttpResponseBase, req: H
 
 function buildAuthRefresh(injector: Injector) {
   const tokenSrv = injector.get(DA_SERVICE_TOKEN);
+  const oAuthService = injector.get(OAuthService);
+
   tokenSrv.refresh
     .pipe(
       filter(() => !refreshToking),
@@ -78,9 +106,11 @@ function buildAuthRefresh(injector: Injector) {
     .subscribe({
       next: res => {
         refreshToking = false;
+        const newAccessToken = oAuthService.getAccessToken();
+        const newExpiration = oAuthService.getAccessTokenExpiration();
         tokenSrv.set({
-          token: res.access_token,
-          expired: res.expires_in
+          token: newAccessToken,
+          expired: newExpiration
         });
       },
       error: () => toLogin(injector)

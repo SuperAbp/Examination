@@ -2,8 +2,9 @@ import { Injectable, Inject, Provider, APP_INITIALIZER, Injector } from '@angula
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { MenuService, SettingsService, TitleService } from '@delon/theme';
+import { ALAIN_I18N_TOKEN, MenuService, SettingsService, TitleService } from '@delon/theme';
 import { ACLService } from '@delon/acl';
+import { I18NService } from '../i18n/i18n.service';
 import { Observable, of, catchError, map } from 'rxjs';
 import type { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { NzIconService } from 'ng-zorro-antd/icon';
@@ -37,6 +38,7 @@ export class StartupService {
     private aclService: ACLService,
     private titleService: TitleService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private injector: Injector,
     private appService: AppService,
     private httpClient: HttpClient,
@@ -47,6 +49,13 @@ export class StartupService {
 
   private viaHttp(): Observable<void> {
     var tokenService = this.injector.get(DA_SERVICE_TOKEN) as ITokenService;
+
+    // Initialize i18n
+    const defaultLang = this.i18n.defaultLang;
+    this.i18n.loadLangData(defaultLang).subscribe(langData => {
+      this.i18n.use(defaultLang, langData);
+    });
+
     if (tokenService.get().token !== undefined && tokenService.get().token !== null && tokenService.get().token !== '') {
       return this.appService.getData().pipe(
         // catchError(res => {
@@ -84,6 +93,12 @@ export class StartupService {
   }
 
   private viaMock(): Observable<void> {
+    // Initialize i18n
+    const defaultLang = this.i18n.defaultLang;
+    this.i18n.loadLangData(defaultLang).subscribe(langData => {
+      this.i18n.use(defaultLang, langData);
+    });
+
     // const tokenData = this.tokenService.get();
     // if (!tokenData.token) {
     //   this.router.navigateByUrl(this.tokenService.login_url!);

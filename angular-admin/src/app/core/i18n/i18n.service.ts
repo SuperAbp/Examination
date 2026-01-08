@@ -93,7 +93,7 @@ export class I18NService extends AlainI18nBaseService {
   use(lang: string, data: Record<string, unknown>): void {
     if (this._currentLang === lang) return;
 
-    // this._data = this.flatData(data, []);
+    this._data = this.flatData(data, []);
 
     const item = LANGS[lang];
     registerLocaleData(item.ng);
