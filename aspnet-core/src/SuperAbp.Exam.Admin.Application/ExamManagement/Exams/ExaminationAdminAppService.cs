@@ -141,7 +141,10 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         public async Task CompleteAsync(Guid id)
         {
             Examination exam = await ExamRepository.GetAsync(id);
-            if (await UserExamRepository.AnyAsync(ue => ue.ExamId == id && new UserExamStatus[] { UserExamStatus.Waiting, UserExamStatus.InProgress, UserExamStatus.Submitted }.Contains(ue.Status)))
+            if (await UserExamRepository
+                .AnyAsync(ue => ue.ExamId == id
+                && ue.IsActive
+                && new UserExamStatus[] { UserExamStatus.Waiting, UserExamStatus.InProgress, UserExamStatus.Submitted }.Contains(ue.Status)))
             {
                 throw new UnfinishedGradingException();
             }

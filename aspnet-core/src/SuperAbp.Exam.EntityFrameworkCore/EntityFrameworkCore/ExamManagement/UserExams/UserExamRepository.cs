@@ -67,6 +67,13 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<List<UserExam>> GetActiveListByUserAndExamAsync(Guid userId, Guid examId, CancellationToken cancellationToken = default)
+        {
+            return await (await GetQueryableAsync())
+                .Where(c => c.UserId == userId && c.ExamId == examId && c.IsActive)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<List<UserExamWithUser>> GetListByExamIdAsync(Guid examId,
             CancellationToken cancellationToken = default)
         {
@@ -115,6 +122,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
                               FinishedTime = ue.FinishedTime,
                               TotalScore = ue.TotalScore,
                               IsPassed = ue.IsPassed,
+                              IsActive = ue.IsActive,
                               Status = ue.Status
                           })
                 .OrderBy(sorting ?? UserExamConsts.DefaultSorting)
@@ -150,7 +158,7 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.UserExams
 
             var query = from ue in userExamQueryable
                         join u in userQueryable on ue.UserId equals u.Id
-                        where ue.ExamId == examId && ue.Status == UserExamStatus.Scored
+                        where ue.ExamId == examId && ue.Status == UserExamStatus.Scored && ue.IsActive
                         select new UserExamWithRanking
                         {
                             UserExamId = ue.Id,

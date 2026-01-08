@@ -12,11 +12,12 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { tap } from 'rxjs/operators';
 import { UserExamStatus } from '@shared';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-exam-management-user-exam',
   templateUrl: './user-exam.component.html',
-  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
+  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule, NzIconModule]
 })
 export class ExamManagementUserExamComponent implements OnInit {
   @Input()
@@ -53,6 +54,8 @@ export class ExamManagementUserExamComponent implements OnInit {
     { title: this.localizationService.instant('Exam::TotalScore'), index: 'totalScore' },
     { title: this.localizationService.instant('Exam::ExamTime'), render: 'examTime' },
     { title: this.localizationService.instant('Exam::Status'), render: 'status' },
+    { title: this.localizationService.instant('Exam::Active'), index: 'isActive', type: 'yn' },
+    { title: this.localizationService.instant('Exam::Passed'), render: 'passed' },
     {
       title: this.localizationService.instant('Exam::Actions'),
       buttons: [

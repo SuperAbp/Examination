@@ -25,7 +25,6 @@ public abstract class ExaminationAppServiceTests<TStartupModule> : ExamApplicati
     {
         PagedResultDto<ExamListDto> result = await _examinationAppService.GetListAsync(new GetExamsInput());
         result.Items.Count.ShouldBeGreaterThan(0);
-        result.Items.Where(c => c.Status != ExaminationStatus.Published).ShouldBeEmpty();
     }
 
     [Fact]

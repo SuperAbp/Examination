@@ -86,9 +86,22 @@
           @if (row.isPassed === null || row.isPassed === undefined) {
             -
           } @else if (row.isPassed) {
-            <span class="badge bg-success">{{ '::Passed' | abpLocalization }}</span>
+            <i class="fa-solid fa-check text-success"></i>
           } @else {
-            <span class="badge bg-danger">{{ '::NotPassed' | abpLocalization }}</span>
+            <i class="fa-solid fa-xmark text-danger"></i>
+          }
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        [name]="'::IsActive' | abpLocalization"
+        [width]="80"
+        [canAutoResize]="false"
+      >
+        <ng-template ngx-datatable-cell-template let-row="row">
+          @if (row.isActive === null || row.isActive === undefined || row.isActive === false) {
+            <i class="fa-solid fa-xmark text-danger"></i>
+          } @else {
+            <i class="fa-solid fa-check text-success"></i>
           }
         </ng-template>
       </ngx-datatable-column>

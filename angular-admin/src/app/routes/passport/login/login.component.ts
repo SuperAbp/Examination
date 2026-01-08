@@ -7,11 +7,11 @@ import { _HttpClient } from '@delon/theme';
 import { OAuthService } from 'angular-oauth2-oidc';
 
 @Component({
-    selector: 'passport-login',
-    template: '',
-    providers: [SocialService],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'passport-login',
+  template: '',
+  providers: [SocialService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class UserLoginComponent implements OnInit {
   private router = inject(Router);

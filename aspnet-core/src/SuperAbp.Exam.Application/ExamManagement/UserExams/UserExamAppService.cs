@@ -163,6 +163,15 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                     throw new MaxNumberOfTimesExceededException(examination.MaxNumberOfTimes);
                 }
             }
+
+            List<UserExam> activeUserExams = await UserExamRepository.GetActiveListByUserAndExamAsync(
+                CurrentUser.GetId(), input.ExamId);
+            foreach (var activeUserExam in activeUserExams)
+            {
+                activeUserExam.IsActive = false;
+                await UserExamRepository.UpdateAsync(activeUserExam);
+            }
+
             UserExam userExam = await userExamManager.CreateAsync(input.ExamId, CurrentUser.GetId());
             await UserExamRepository.InsertAsync(userExam);
             await BackgroundJobManager.EnqueueAsync(new UserExamCreateQuestionArgs()

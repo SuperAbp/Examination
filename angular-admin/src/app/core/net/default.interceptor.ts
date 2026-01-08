@@ -54,7 +54,12 @@ function handleData(injector: Injector, ev: HttpResponseBase, req: HttpRequest<a
       // }
       break;
     case 401:
-      if (environment.api.refreshTokenEnabled && environment.api.refreshTokenType === 're-request') {
+      debugger;
+      // const tokenService = injector.get(DA_SERVICE_TOKEN) as ITokenService;
+      // tokenService.referrer
+      // let authService = injector.get(AuthService);
+      // authService.refreshToken();
+      if (environment.api.refreshTokenEnabled && environment.api.refreshTokenType === 'auth-refresh') {
         return tryRefreshToken(injector, ev, req, next);
       }
       toLogin(injector);
