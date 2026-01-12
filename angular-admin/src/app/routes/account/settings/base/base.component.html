@@ -1,0 +1,84 @@
+<nz-spin [nzSpinning]="userLoading">
+  @if (user) {
+    <div class="main">
+      <div class="left">
+        <form nz-form [formGroup]="form" [nzLayout]="'vertical'" [skipValidation]="true">
+          <nz-form-item>
+            <nz-form-label nzRequired>{{ 'AbpAccount::DisplayName:UserName' | abpLocalization }}</nz-form-label>
+            <nz-form-control [nzErrorTip]="'::ThisFieldIsRequired.' | abpLocalization">
+              <input
+                nz-input
+                formControlName="userName"
+                [placeholder]="'::Placeholder' | abpLocalization: ('AbpAccount::DisplayName:UserName' | abpLocalization)"
+              />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-row [nzGutter]="16">
+            <nz-col [nzSpan]="12">
+              <nz-form-item>
+                <nz-form-label>{{ 'AbpAccount::DisplayName:Name' | abpLocalization }}</nz-form-label>
+                <nz-form-control>
+                  <input
+                    nz-input
+                    formControlName="name"
+                    [placeholder]="'::Placeholder' | abpLocalization: ('AbpAccount::DisplayName:Name' | abpLocalization)"
+                  />
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+            <nz-col [nzSpan]="12">
+              <nz-form-item>
+                <nz-form-label>{{ 'AbpAccount::DisplayName:Surname' | abpLocalization }}</nz-form-label>
+                <nz-form-control>
+                  <input
+                    nz-input
+                    formControlName="surname"
+                    [placeholder]="'::Placeholder' | abpLocalization: ('AbpAccount::DisplayName:Surname' | abpLocalization)"
+                  />
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+          </nz-row>
+
+          <nz-form-item>
+            <nz-form-label nzRequired>{{ 'AbpAccount::DisplayName:Email' | abpLocalization }}</nz-form-label>
+            <nz-form-control [nzErrorTip]="emailErrorTpl">
+              <input
+                nz-input
+                formControlName="email"
+                [placeholder]="'::Placeholder' | abpLocalization: ('AbpAccount::DisplayName:Email' | abpLocalization)"
+              />
+              <ng-template #emailErrorTpl let-control>
+                @if (control.hasError('required')) {
+                  <span>{{ '::ThisFieldIsRequired.' | abpLocalization }}</span>
+                }
+                @if (control.hasError('email')) {
+                  <span>{{ '::ThisFieldIsNotAValidEmailAddress.' | abpLocalization }}</span>
+                }
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>{{ 'AbpAccount::DisplayName:PhoneNumber' | abpLocalization }}</nz-form-label>
+            <nz-form-control>
+              <input
+                nz-input
+                formControlName="phoneNumber"
+                [placeholder]="'::Placeholder' | abpLocalization: ('AbpAccount::DisplayName:PhoneNumber' | abpLocalization)"
+              />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-control>
+              <button nz-button nzType="primary" [disabled]="!form.valid" (click)="save()">{{
+                'AbpAccount::Save' | abpLocalization
+              }}</button>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </div>
+    </div>
+  }
+</nz-spin>

@@ -20,6 +20,7 @@ export interface UserExamDetailDto {
   reviewMode: number;
   examStatus: number;
   status: number;
+  isActive: boolean;
   sections: UserExamDetailDto_SectionDto[];
 }
 
@@ -58,4 +59,6 @@ export interface UserExamListDto {
   finishedTime?: string;
   creationTime?: string;
   status: number;
+  isPassed?: boolean;
+  isActive: boolean;
 }

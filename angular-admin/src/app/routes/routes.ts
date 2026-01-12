@@ -49,6 +49,10 @@ export const routes: Routes = [
         path: 'exam-management',
         loadChildren: () => import('./exam-management/routes').then(m => m.routes)
       },
+      {
+        path: 'account',
+        loadChildren: () => import('./account/routes').then(m => m.routes)
+      },
       { path: 'sys', loadChildren: () => import('./sys/routes').then(m => m.routes) }
     ]
   },

@@ -17,7 +17,7 @@ import { tap } from 'rxjs';
     </div>
     <nz-dropdown-menu #userMenu="nzDropdownMenu">
       <div nz-menu class="width-sm">
-        <div nz-menu-item routerLink="/pro/account/settings">
+        <div nz-menu-item routerLink="/account/settings">
           <i nz-icon nzType="setting" class="mr-sm"></i>
           {{ 'AbpAccount::MyAccount' | abpLocalization }}
         </div>

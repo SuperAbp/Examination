@@ -1,5 +1,6 @@
 {
   "generated": [
+    "account",
     "app"
   ],
   "modules": {
@@ -8284,6 +8285,18 @@
           "regex": null
         },
         {
+          "name": "IsActive",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "Sections",
           "jsonName": null,
           "type": "[SuperAbp.Exam.Admin.ExamManagement.UserExams.UserExamDetailDto_SectionDto]",
@@ -8624,6 +8637,30 @@
           "jsonName": null,
           "type": "System.Int32",
           "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "IsPassed",
+          "jsonName": null,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "IsActive",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
