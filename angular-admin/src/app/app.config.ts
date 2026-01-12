@@ -1,6 +1,5 @@
-import { CoreModule, NgxValidateCoreModule, provideAbpCore, withOptions } from '@abp/ng.core';
-import { registerLocale } from '@abp/ng.core/locale';
-import { AbpOAuthModule, provideAbpOAuth } from '@abp/ng.oauth';
+import { NgxValidateCoreModule } from '@abp/ng.core';
+import { provideAbpOAuth } from '@abp/ng.oauth';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { default as ngLang } from '@angular/common/locales/zh';
 import { ApplicationConfig, EnvironmentProviders, Provider, importProvidersFrom } from '@angular/core';
@@ -9,12 +8,12 @@ import { provideRouter, withComponentInputBinding, withInMemoryScrolling, withHa
 import { I18NService, defaultInterceptor, provideBindAuthRefresh, provideStartup } from '@core';
 import { provideCellWidgets } from '@delon/abc/cell';
 import { provideSTWidgets } from '@delon/abc/st';
-import { authJWTInterceptor, authSimpleInterceptor, provideAuth } from '@delon/auth';
+import { authJWTInterceptor, provideAuth } from '@delon/auth';
 import { provideSFConfig } from '@delon/form';
 import { AlainProvideLang, provideAlain, zh_CN as delonLang } from '@delon/theme';
 import { AlainConfig } from '@delon/util/config';
 import { environment } from '@env/environment';
-import { CELL_WIDGETS, SF_WIDGETS, ST_WIDGETS, SharedModule } from '@shared';
+import { CELL_WIDGETS, SF_WIDGETS, ST_WIDGETS } from '@shared';
 import { zhCN as dateLang } from 'date-fns/locale';
 import { NzConfig, provideNzConfig } from 'ng-zorro-antd/core/config';
 import { zh_CN as zorroLang } from 'ng-zorro-antd/i18n';
@@ -50,12 +49,6 @@ const routerFeatures: RouterFeatures[] = [withComponentInputBinding(), withInMem
 if (environment.useHash) routerFeatures.push(withHashLocation());
 
 const providers: Array<Provider | EnvironmentProviders> = [
-  provideAbpCore(
-    withOptions({
-      environment,
-      registerLocaleFn: registerLocale()
-    })
-  ),
   importProvidersFrom([NgxValidateCoreModule.forRoot()]),
   provideHttpClient(withInterceptors([...(environment.interceptorFns ?? []), defaultInterceptor, authJWTInterceptor])),
   provideAnimations(),
