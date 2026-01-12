@@ -57,7 +57,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/angular-admin",
+            "outputPath": "dist/exam-admin",
             "index": "src/index.html",
             "polyfills": [
               "zone.js"

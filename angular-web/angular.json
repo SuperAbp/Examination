@@ -22,7 +22,7 @@
           "builder": "@angular/build:application",
           "options": {
             "outputPath": {
-              "base": "dist/Exam"
+              "base": "dist/exam-web"
             },
             "index": "src/index.html",
             "polyfills": [
