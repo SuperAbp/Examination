@@ -64,15 +64,10 @@ export class AccountSettingsPasswordComponent implements OnInit {
       newPassword: this.passwordForm.value.newPassword
     };
 
-    this.profileService.changePassword(input).subscribe({
-      next: () => {
-        this.passwordForm.reset();
-        this.cdr.markForCheck();
-        this.msg.success(this.localizationService.instant('AbpAccount::PasswordChangedMessage'));
-      },
-      error: () => {
-        this.msg.error(this.localizationService.instant('AbpAccount::DefaultErrorMessage'));
-      }
+    this.profileService.changePassword(input).subscribe(() => {
+      this.passwordForm.reset();
+      this.cdr.markForCheck();
+      this.msg.success(this.localizationService.instant('AbpAccount::PasswordChangedMessage'));
     });
   }
 }

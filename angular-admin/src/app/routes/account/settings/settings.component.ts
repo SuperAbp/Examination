@@ -33,19 +33,19 @@ export class AccountSettingsComponent implements OnInit, AfterViewInit {
 
   mode: NzMenuModeType = 'inline';
   title!: string;
-  menus: Array<{ key: string; title: string; selected?: boolean }>;
+  menus: Array<{ key: string; title: string; selected?: boolean }> = [
+    {
+      key: 'base',
+      title: this.localizationService.instant('AbpAccount::ProfileTab:PersonalInfo')
+    },
+    {
+      key: 'password',
+      title: this.localizationService.instant('AbpAccount::ProfileTab:Password')
+    }
+  ];
 
   ngOnInit(): void {
-    this.menus = [
-      {
-        key: 'base',
-        title: this.localizationService.instant('AbpAccount::ProfileTab:PersonalInfo')
-      },
-      {
-        key: 'password',
-        title: this.localizationService.instant('AbpAccount::ProfileTab:Password')
-      }
-    ];
+    // this.menus;
   }
   private setActive(): void {
     const key = this.router.url.substring(this.router.url.lastIndexOf('/') + 1);
