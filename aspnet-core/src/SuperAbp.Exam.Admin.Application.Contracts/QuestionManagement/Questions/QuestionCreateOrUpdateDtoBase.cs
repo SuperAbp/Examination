@@ -20,5 +20,10 @@ public class QuestionCreateOrUpdateDtoBase
     /// </summary>
     public Guid QuestionBankId { get; set; }
 
+    /// <summary>
+    /// 固定顺序（仅填空题有效）
+    /// </summary>
+    public bool FixedOrder { get; set; }
+
     public IReadOnlyList<Guid>? KnowledgePointIds { get; set; }
 }

@@ -249,12 +249,52 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 }
                 else if (question.QuestionType == QuestionType.FillInTheBlanks)
                 {
-                    string[] allAnswers = item.Answers.Split(ExamConsts.Splitter);
-                    if (allAnswers.Length == question.Options.Count && allAnswers.SequenceEqual(question.Options.Select(a => a.Content)))
+                    string[] userAnswers = item.Answers.Split(ExamConsts.Splitter);
+
+                    if (question.FixedOrder)
                     {
-                        // TODO:一空多项，多空多项，无序
-                        right = true;
-                        score = item.QuestionScore;
+                        var correctAnswers = question.Options
+                            .Where(o => o.Right)
+                            .Select(o => o.Content)
+                            .ToList();
+
+                        if (userAnswers.Length == correctAnswers.Count)
+                        {
+                            bool allCorrect = true;
+                            for (int i = 0; i < userAnswers.Length; i++)
+                            {
+                                var possibleAnswers = correctAnswers[i]
+                                    .Split(ExamConsts.Splitter)
+                                    .ToHashSet();
+
+                                if (!possibleAnswers.Contains(userAnswers[i]))
+                                {
+                                    allCorrect = false;
+                                    break;
+                                }
+                            }
+
+                            if (allCorrect)
+                            {
+                                right = true;
+                                score = item.QuestionScore;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var correctAnswers = question.Options
+                            .Where(o => o.Right)
+                            .Select(o => o.Content)
+                            .ToHashSet();
+
+                        var userAnswerSet = new HashSet<string>(userAnswers);
+
+                        if (userAnswerSet.All(a => correctAnswers.Contains(a)) && userAnswerSet.Count <= correctAnswers.Count)
+                        {
+                            right = true;
+                            score = item.QuestionScore;
+                        }
                     }
                 }
 

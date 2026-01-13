@@ -13,6 +13,7 @@ import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 
 import { QuestionManagementAnswerComponent } from './answer.component';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 
 interface QuestionOptionTemp extends QuestionOptionDto {
   id?: string;
@@ -30,7 +31,8 @@ interface QuestionOptionTemp extends QuestionOptionDto {
     NzInputNumberModule,
     NzPopconfirmModule,
     NzTooltipModule,
-    NzIconModule
+    NzIconModule,
+    NzSwitchModule
   ]
 })
 export class BlankComponent extends QuestionManagementAnswerComponent {

@@ -1,8 +1,11 @@
 <ng-container>
-  <button (click)="add()" nz-button type="button" nzType="primary">
-    {{ 'Exam::NewQuestionAnswer' | abpLocalization }}
-  </button>
+  <nz-form-item>
+    <button (click)="add()" nz-button type="button" nzType="primary">
+      {{ 'Exam::NewQuestionAnswer' | abpLocalization }}
+    </button>
+  </nz-form-item>
 </ng-container>
+
 @if (options.length > 0) {
   <ng-container [formGroup]="questionForm">
     <nz-table
@@ -62,5 +65,11 @@
         }
       </tbody>
     </nz-table>
+    <nz-form-item>
+      <nz-form-label>{{ 'Exam::FixedOrder' | abpLocalization }}</nz-form-label>
+      <nz-form-control>
+        <nz-switch formControlName="fixedOrder"></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
   </ng-container>
 }

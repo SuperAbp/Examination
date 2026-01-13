@@ -24,25 +24,25 @@ import { JudgeComponent } from '../../answer/judge.component';
 import { MultiSelectComponent } from '../../answer/multi-select.component';
 import { SingleSelectComponent } from '../../answer/single-select.component';
 @Component({
-    selector: 'app-question-management-question-edit',
-    templateUrl: './edit.component.html',
-    imports: [
-        CoreModule,
-        PageHeaderModule,
-        FooterToolbarModule,
-        NzSpinModule,
-        NzCardModule,
-        NzGridModule,
-        NzFormModule,
-        NzSelectModule,
-        NzInputModule,
-        NzButtonModule,
-        JudgeComponent,
-        SingleSelectComponent,
-        MultiSelectComponent,
-        BlankComponent,
-        NzTreeSelectModule
-    ]
+  selector: 'app-question-management-question-edit',
+  templateUrl: './edit.component.html',
+  imports: [
+    CoreModule,
+    PageHeaderModule,
+    FooterToolbarModule,
+    NzSpinModule,
+    NzCardModule,
+    NzGridModule,
+    NzFormModule,
+    NzSelectModule,
+    NzInputModule,
+    NzButtonModule,
+    JudgeComponent,
+    SingleSelectComponent,
+    MultiSelectComponent,
+    BlankComponent,
+    NzTreeSelectModule
+  ]
 })
 export class QuestionManagementQuestionEditComponent implements OnInit {
   questionId: string;
@@ -143,6 +143,7 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
             questionType: [this.question.questionType >= 0 ? this.question.questionType : null, [Validators.required]],
             questionBankId: [this.question.questionBankId || '', [Validators.required]],
             knowledgePointIds: [this.question.knowledgePointIds || []],
+            fixedOrder: [this.question.fixedOrder || true],
             options: this.fb.array([], [Validators.required])
           });
           // 修复 ExpressionChangedAfterItHasBeenCheckedError

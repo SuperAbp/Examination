@@ -38,6 +38,7 @@ export interface QuestionCreateOrUpdateDtoBase {
   analysis?: string;
   questionBankId?: string;
   knowledgePointIds: string[];
+  fixedOrder: boolean;
 }
 
 export interface QuestionDetailDto extends EntityDto<string> {

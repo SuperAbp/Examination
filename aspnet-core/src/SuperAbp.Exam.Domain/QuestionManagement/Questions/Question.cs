@@ -47,6 +47,11 @@ public class Question : FullAuditedAggregateRoot<Guid>, IMultiTenant
     /// </summary>
     public Guid QuestionBankId { get; set; }
 
+    /// <summary>
+    /// 固定顺序（仅填空题有效）
+    /// </summary>
+    public bool FixedOrder { get; set; }
+
     public Guid? TenantId { get; set; }
 
     public List<QuestionOption> Options { get; private set; }
