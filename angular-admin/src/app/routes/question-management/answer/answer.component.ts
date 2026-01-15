@@ -34,8 +34,6 @@ export class QuestionManagementAnswerComponent implements OnChanges {
   @Input()
   questionId: string;
   @Input()
-  questionType: number;
-  @Input()
   questionForm: FormGroup;
   @Input()
   answers: QuestionOptionDto[];

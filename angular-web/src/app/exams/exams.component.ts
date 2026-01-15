@@ -93,6 +93,6 @@ export class ExamsComponent implements OnInit {
     const endTime = new Date(exam.endTime).getTime();
     const bufferTimeMs = this.bufferTime * 60 * 1000;
 
-    return now >= startTime - bufferTimeMs && now <= endTime + bufferTimeMs;
+    return exam.status === 1 && now >= startTime - bufferTimeMs && now <= endTime + bufferTimeMs;
   }
 }

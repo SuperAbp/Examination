@@ -42,7 +42,8 @@ namespace SuperAbp.Exam.ExamManagement
             CreateMap<Question, UserExamDetailDto.SectionDto.QuestionDto>()
                 .Ignore(s => s.Right)
                 .Ignore(s => s.Options);
-            CreateMap<QuestionOption, UserExamDetailDto.SectionDto.QuestionDto.OptionDto>();
+            CreateMap<QuestionOption, UserExamDetailDto.SectionDto.QuestionDto.OptionDto>()
+                .Ignore(s => s.Right);
 
             #endregion 用户考试
         }

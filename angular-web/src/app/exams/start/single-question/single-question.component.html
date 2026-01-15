@@ -3,9 +3,7 @@
   <div>
     <span class="text-primary">第 {{ questionIndex + 1 }} 题</span>
     <span class="badge bg-secondary ms-2">
-      {{
-        question.questionType === 1 ? '单选题' : question.questionType === 2 ? '多选题' : '填空题'
-      }}
+      {{ '::QuestionType:' + question.questionType | abpLocalization }}
     </span>
     <span class="text-muted ms-2">({{ question.questionScore }}分)</span>
   </div>
@@ -15,7 +13,7 @@
 <div class="fs-5 mb-3">{{ question.content }}</div>
 
 <!-- 单选题 -->
-@if (question.questionType === 1) {
+@if (question.questionType === 0 || question.questionType === 2) {
   <app-single-choice
     [options]="question.options"
     [selectedAnswerId]="selectedAnswerId"
@@ -27,7 +25,7 @@
 }
 
 <!-- 多选题 -->
-@if (question.questionType === 2) {
+@if (question.questionType === 1) {
   <app-multiple-choice
     [options]="question.options"
     [selectedAnswerIds]="selectedAnswers"
@@ -43,11 +41,12 @@
 @if (question.questionType === 3) {
   <app-fill-blank
     [options]="question.options"
+    [optionsCount]="question.blankOptionsCount"
     [selectedAnswers]="fillBlankAnswers"
     [showAnalysis]="false"
     [disabled]="false"
     [hideSubmitButton]="true"
-    (answersChanged)="onFillBlankChanged($event)"
+    (answerChanged)="onFillBlankChanged($event)"
   >
   </app-fill-blank>
 }

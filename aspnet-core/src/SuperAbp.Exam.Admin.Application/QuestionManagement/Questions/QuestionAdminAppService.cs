@@ -95,6 +95,8 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             ValidationCorrectCountAsync(input.QuestionType, input.Options.Count(a => a.Right));
             Question question = await questionManager.CreateAsync(input.QuestionBankId, QuestionType.FromValue(input.QuestionType), input.Content);
             question.Analysis = input.Analysis;
+            question.FixedOrder = input.FixedOrder;
+            question.RequiredAnswerCount = input.RequiredAnswerCount;
             question = await questionRepository.InsertAsync(question);
             if (input.KnowledgePointIds is not null)
             {
@@ -113,6 +115,8 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             await questionManager.SetContentAsync(question, input.Content);
             question.Analysis = input.Analysis;
             question.QuestionBankId = input.QuestionBankId;
+            question.FixedOrder = input.FixedOrder;
+            question.RequiredAnswerCount = input.RequiredAnswerCount;
             question = await questionRepository.UpdateAsync(question);
             if (input.KnowledgePointIds is not null)
             {

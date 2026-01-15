@@ -1,8 +1,11 @@
 <ng-container>
-  <button (click)="add()" nz-button type="button" nzType="primary">
-    {{ 'Exam::NewQuestionAnswer' | abpLocalization }}
-  </button>
+  <nz-form-item>
+    <button (click)="add()" nz-button type="button" nzType="primary">
+      {{ 'Exam::NewQuestionAnswer' | abpLocalization }}
+    </button>
+  </nz-form-item>
 </ng-container>
+
 @if (options.length > 0) {
   <ng-container [formGroup]="questionForm">
     <nz-table

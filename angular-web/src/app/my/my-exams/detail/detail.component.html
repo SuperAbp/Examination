@@ -32,14 +32,16 @@
         </div>
         <div class="card-body">
           @if (examDetail.sections && examDetail.sections.length > 0) {
-            <!-- 按章节显示 -->
             @for (section of examDetail.sections; track section.id; let sectionIdx = $index) {
               @if (section.title) {
                 <div class="mb-4">
                   <h5>
                     {{ getChineseNumber(sectionIdx + 1) }}、{{ section.title }}
                     <small class="text-muted">
-                      (共{{ section.questions?.length }}题，每题{{ section.scoreEach }}分)
+                      （{{
+                        '::TotalQuestion{0}EachScore{1}.'
+                          | abpLocalization: section.questions?.length : section.scoreEach
+                      }}）
                     </small>
                   </h5>
                 </div>
@@ -47,7 +49,6 @@
 
               @for (question of section.questions; track question.id; let questionIdx = $index) {
                 <div class="mb-4" [id]="'question-' + question.id">
-                  <!-- 题目内容 -->
                   <div class="fs-5 mb-3">{{ questionIdx + 1 }}、{{ question.content }}</div>
 
                   @if (question.questionType === 0 || question.questionType === 2) {
@@ -70,6 +71,8 @@
                   } @else if (question.questionType === 3) {
                     <app-fill-blank
                       [options]="question.options"
+                      [optionsCount]="question.blankOptionsCount"
+                      [fixedOrder]="question.fixedOrder"
                       [selectedAnswers]="getFillBlankAnswers(question)"
                       [showAnalysis]="true"
                       [disabled]="true"
@@ -100,18 +103,15 @@
                         <div [innerHTML]="question.analysis"></div>
                       </div>
                     }
-                  </div>
-
-                  @if (question.knowledgePoints && question.knowledgePoints.length > 0) {
-                    <div class="mt-2">
-                      <small class="text-muted">
-                        <i class="fa fa-tags"></i> 知识点：
+                    @if (question.knowledgePoints && question.knowledgePoints.length > 0) {
+                      <div>
+                        <strong>{{ '::KnowledgePoints' | abpLocalization }}：</strong>
                         @for (kp of question.knowledgePoints; track kp; let last = $last) {
-                          <span class="badge bg-light text-dark">{{ kp }}</span>
+                          <span class="badge text-bg-info">{{ kp }}</span>
                         }
-                      </small>
-                    </div>
-                  }
+                      </div>
+                    }
+                  </div>
                 </div>
               }
             }

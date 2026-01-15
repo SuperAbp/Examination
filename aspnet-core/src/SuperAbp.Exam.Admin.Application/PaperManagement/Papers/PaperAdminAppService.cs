@@ -47,17 +47,17 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         [Authorize(ExamPermissions.Papers.Create)]
         public virtual async Task<PaperListDto> CreateAsync(PaperCreateDto input)
         {
-            bool manualReview;
+            bool manualReview = false;
             PaperType paperType = PaperType.FromValue(input.PaperType);
-            if (PaperType.Random == paperType)
-            {
-                manualReview = input.Sections.Any(s => s.PaperQuestionRules.Any(r => r.QuestionType == QuestionType.FillInTheBlanks));
-            }
-            else
-            {
-                List<Guid> questionIds = input.Sections.SelectMany(s => s.PaperQuestions).Select(q => q.QuestionId).Distinct().ToList();
-                manualReview = await questionRepository.ExistsQuestionTypeAsync(QuestionType.FillInTheBlanks.Value, questionIds);
-            }
+            //if (PaperType.Random == paperType)
+            //{
+            //    manualReview = input.Sections.Any(s => s.PaperQuestionRules.Any(r => r.QuestionType == QuestionType.FillInTheBlanks));
+            //}
+            //else
+            //{
+            //    List<Guid> questionIds = input.Sections.SelectMany(s => s.PaperQuestions).Select(q => q.QuestionId).Distinct().ToList();
+            //    manualReview = await questionRepository.ExistsQuestionTypeAsync(QuestionType.FillInTheBlanks.Value, questionIds);
+            //}
             Paper paper = await paperManager.CreateAsync(paperType, input.Name,
                 input.Sections.Sum(s => s.TotalScore), input.Sections.Sum(s => s.TotalCount), manualReview);
             paper.Description = input.Description;

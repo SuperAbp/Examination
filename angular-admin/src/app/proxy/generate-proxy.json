@@ -9729,6 +9729,18 @@
           "regex": null
         },
         {
+          "name": "FixedOrder",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "KnowledgePointIds",
           "jsonName": null,
           "type": "[System.Guid]",

@@ -20,7 +20,7 @@ interface QuestionOptionTemp extends QuestionOptionDto {
 }
 
 @Component({
-  selector: 'judge',
+  selector: 'app-question-management-answer-judge',
   templateUrl: './judge.component.html',
   imports: [
     CoreModule,
@@ -35,7 +35,7 @@ interface QuestionOptionTemp extends QuestionOptionDto {
     NzIconModule
   ]
 })
-export class JudgeComponent extends QuestionManagementAnswerComponent {
+export class QuestionManagementAnswerJudgeComponent extends QuestionManagementAnswerComponent {
   constructor(
     protected override fb: FormBuilder,
     protected override questionService: QuestionService

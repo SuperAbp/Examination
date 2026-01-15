@@ -37,6 +37,8 @@ export interface QuestionCreateOrUpdateDtoBase {
   content: string;
   analysis?: string;
   questionBankId?: string;
+  fixedOrder: boolean;
+  requiredAnswerCount?: number;
   knowledgePointIds: string[];
 }
 

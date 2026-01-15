@@ -78,7 +78,20 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
                 public IReadOnlyList<string> KnowledgePoints { get; set; } = [];
 
-                public List<OptionDto> Options { get; set; } = [];
+                /// <summary>
+                /// 固定顺序（仅填空题有效）
+                /// </summary>
+                public bool FixedOrder { get; set; }
+
+                /// <summary>
+                /// 填空题空格数量
+                /// </summary>
+                public int BlankOptionsCount { get; set; }
+
+                /// <summary>
+                /// 选择题提供
+                /// </summary>
+                public IReadOnlyList<OptionDto> Options { get; set; } = [];
 
                 public class OptionDto
                 {
