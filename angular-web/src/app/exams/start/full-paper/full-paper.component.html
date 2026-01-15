@@ -40,11 +40,12 @@
       @if (question.questionType === 3) {
         <app-fill-blank
           [options]="question.options"
+          [optionsCount]="question.blankOptionsCount"
           [selectedAnswers]="getFillBlankAnswers(question.id!)"
           [showAnalysis]="false"
           [disabled]="false"
           [hideSubmitButton]="true"
-          (answersChanged)="onFillBlankChanged(question.id!, $event)"
+          (answerChanged)="onFillBlankChanged(question.id!, $event)"
         >
         </app-fill-blank>
       }

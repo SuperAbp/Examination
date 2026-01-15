@@ -90,32 +90,44 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                     questionDto.QuestionScore = userExamQuestion.QuestionScore;
                     questionDto.Score = userExamQuestion.Score;
 
-                    // Get knowledge points
-                    List<KnowledgePoint> knowledgePoints = await questionManager.GetKnowledgePointsAsync(question.Id);
-                    if (knowledgePoints.Count > 0)
+                    if (userExam.IsSubmitted())
                     {
-                        questionDto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
+                        List<KnowledgePoint> knowledgePoints = await questionManager.GetKnowledgePointsAsync(question.Id);
+                        if (knowledgePoints.Count > 0)
+                        {
+                            questionDto.KnowledgePoints = knowledgePoints.Select(kp => kp.Name).ToArray();
+                        }
                     }
 
-                    List<OptionDto> answerDtos = [];
-                    List<QuestionOption> answers = question.Options.OrderBy(a => a.Sort).ToList();
+                    if (question.QuestionType == QuestionType.FillInTheBlanks)
+                    {
+                        int requiredAnswerCount = question.RequiredAnswerCount > 0 ? question.RequiredAnswerCount : question.Options.Count;
+                        questionDto.BlankOptionsCount = requiredAnswerCount;
+                        if (!userExam.IsSubmitted())
+                        {
+                            questionDto.Options = new OptionDto[requiredAnswerCount];
+                            sectionQuestions.Add(questionDto);
+                            continue;
+                        }
+                    }
+                    List<OptionDto> optionDtos = [];
+                    List<QuestionOption> options = question.Options.OrderBy(a => a.Sort).ToList();
                     if (exam.RandomOrderOfOption && new List<QuestionType> { QuestionType.SingleSelect, QuestionType.MultiSelect }.Contains(question.QuestionType))
                     {
                         // TODO:用户创建考试后顺序应该固定，而不是每次获取都随机。但是创建时并不存选项，如何解决？
-                        answers = answers.OrderBy(_ => Guid.NewGuid()).ToList();
+                        options = options.OrderBy(_ => Guid.NewGuid()).ToList();
                     }
-
-                    foreach (QuestionOption answer in answers)
+                    foreach (QuestionOption option in options)
                     {
-                        OptionDto optionDto = ObjectMapper.Map<QuestionOption, OptionDto>(answer);
+                        OptionDto optionDto = ObjectMapper.Map<QuestionOption, OptionDto>(option);
 
                         if (userExam.IsSubmitted())
                         {
-                            optionDto.Right = answer.Right;
+                            optionDto.Right = option.Right;
                         }
-                        answerDtos.Add(optionDto);
+                        optionDtos.Add(optionDto);
                     }
-                    questionDto.Options = answerDtos;
+                    questionDto.Options = optionDtos;
                     sectionQuestions.Add(questionDto);
                 }
 
@@ -236,14 +248,13 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 if ((question.QuestionType == QuestionType.SingleSelect || question.QuestionType == QuestionType.Judge)
                     && item.Answers == (question.Options.SingleOrDefault(a => a.Right)?.Id.ToString() ?? ""))
                 {
-                    totalScore += item.QuestionScore;
                     score = item.QuestionScore;
                     right = true;
                 }
                 else if (question.QuestionType == QuestionType.MultiSelect
                     && (new HashSet<string>(item.Answers.Split(ExamConsts.Splitter)).SetEquals(question.Options.Where(a => a.Right).Select(a => a.Id.ToString()))))
                 {
-                    totalScore += item.QuestionScore;
+                    // TODO: 部分得分逻辑
                     score = item.QuestionScore;
                     right = true;
                 }
@@ -290,8 +301,10 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
                         var userAnswerSet = new HashSet<string>(userAnswers);
 
-                        if (userAnswerSet.All(a => correctAnswers.Contains(a)) && userAnswerSet.Count <= correctAnswers.Count)
+                        if (userAnswerSet.All(correctAnswers.Contains) &&
+                            userAnswerSet.Count == question.RequiredAnswerCount)
                         {
+                            // TODO: 部分得分逻辑
                             right = true;
                             score = item.QuestionScore;
                         }
@@ -300,6 +313,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
 
                 item.Right = right;
                 item.Score = score;
+                totalScore += score;
 
                 publishEvents.Add(localEventBus.PublishAsync(new AnsweredQuestionEvent(
                     item.QuestionId,

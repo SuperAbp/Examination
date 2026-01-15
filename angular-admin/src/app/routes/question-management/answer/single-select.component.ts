@@ -19,7 +19,7 @@ interface QuestionOptionTemp extends QuestionOptionDto {
 }
 
 @Component({
-  selector: 'single-select',
+  selector: 'app-question-management-answer-single-select',
   templateUrl: './single-select.component.html',
   imports: [
     CoreModule,
@@ -34,7 +34,7 @@ interface QuestionOptionTemp extends QuestionOptionDto {
     NzIconModule
   ]
 })
-export class SingleSelectComponent extends QuestionManagementAnswerComponent {
+export class QuestionManagementAnswerSingleSelectComponent extends QuestionManagementAnswerComponent {
   constructor(
     protected override fb: FormBuilder,
     protected override questionService: QuestionService

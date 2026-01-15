@@ -19,7 +19,7 @@ interface QuestionOptionTemp extends QuestionOptionDto {
 }
 
 @Component({
-  selector: 'multi-select',
+  selector: 'app-question-management-answer-multi-select',
   templateUrl: './multi-select.component.html',
   imports: [
     CoreModule,
@@ -34,7 +34,7 @@ interface QuestionOptionTemp extends QuestionOptionDto {
     NzIconModule
   ]
 })
-export class MultiSelectComponent extends QuestionManagementAnswerComponent {
+export class QuestionManagementAnswerMultiSelectComponent extends QuestionManagementAnswerComponent {
   constructor(
     protected override fb: FormBuilder,
     protected override questionService: QuestionService

@@ -20,7 +20,7 @@ interface QuestionOptionTemp extends QuestionOptionDto {
 }
 
 @Component({
-  selector: 'blank',
+  selector: 'app-question-management-answer-blank',
   templateUrl: './blank.component.html',
   imports: [
     CoreModule,
@@ -35,7 +35,7 @@ interface QuestionOptionTemp extends QuestionOptionDto {
     NzSwitchModule
   ]
 })
-export class BlankComponent extends QuestionManagementAnswerComponent {
+export class QuestionManagementAnswerBlankComponent extends QuestionManagementAnswerComponent {
   constructor(
     protected override fb: FormBuilder,
     protected override questionService: QuestionService

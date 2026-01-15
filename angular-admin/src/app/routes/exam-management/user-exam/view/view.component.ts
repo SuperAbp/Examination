@@ -83,6 +83,9 @@ export class ExamManagementUserExamViewComponent implements OnInit {
   getOptions(question: UserExamDetailDto_SectionDto_QuestionDto) {
     return question.options.map(o => o.content).join('||');
   }
+  getOptions1(question: UserExamDetailDto_SectionDto_QuestionDto) {
+    return question.options.map(o => o.content);
+  }
   getAnswer(amswers: string) {
     return amswers != null && amswers.split('||');
   }
@@ -120,11 +123,12 @@ export class ExamManagementUserExamViewComponent implements OnInit {
       .forEach(q => {
         let questionForm = this.fb.group({
           questionId: [q.id, [Validators.required]],
-          right: [q.right || false, [Validators.required]],
+          right: [q.right ?? false, [Validators.required]],
           score: [q.score || 0, [Validators.required, Validators.max(q.questionScore)]],
           reason: [q.reason]
         });
         this.questionForm.push(questionForm);
+        console.log('questionForm', questionForm);
       });
   }
 

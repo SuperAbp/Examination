@@ -110,16 +110,46 @@
       @if (questionType.value != null) {
         @switch (questionType.value) {
           @case (0) {
-            <single-select [questionId]="questionId" [questionForm]="form" [answers]="question.answers"></single-select>
+            <app-question-management-answer-single-select
+              [questionId]="questionId"
+              [questionForm]="form"
+              [answers]="question.answers"
+            ></app-question-management-answer-single-select>
           }
           @case (1) {
-            <multi-select [questionId]="questionId" [questionForm]="form" [answers]="question.answers"></multi-select>
+            <app-question-management-answer-multi-select
+              [questionId]="questionId"
+              [questionForm]="form"
+              [answers]="question.answers"
+            ></app-question-management-answer-multi-select>
           }
           @case (2) {
-            <judge [questionId]="questionId" [questionForm]="form" [answers]="question.answers"></judge>
+            <app-question-management-answer-judge
+              [questionId]="questionId"
+              [questionForm]="form"
+              [answers]="question.answers"
+            ></app-question-management-answer-judge>
           }
           @case (3) {
-            <blank [questionId]="questionId" [questionForm]="form" [answers]="question.answers"></blank>
+            <app-question-management-answer-blank
+              [questionId]="questionId"
+              [questionForm]="form"
+              [answers]="question.answers"
+            ></app-question-management-answer-blank>
+            <nz-form-item>
+              <nz-form-label>{{ 'Exam::FixedOrder' | abpLocalization }}</nz-form-label>
+              <nz-form-control>
+                <nz-switch formControlName="fixedOrder"></nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+            @if (!fixedOrder) {
+              <nz-form-item>
+                <nz-form-label>{{ 'Exam::RequiredAnswerCount' | abpLocalization }}</nz-form-label>
+                <nz-form-control>
+                  <nz-input-number formControlName="requiredAnswerCount" [nzMin]="1" [nzMax]="options.length"></nz-input-number>
+                </nz-form-control>
+              </nz-form-item>
+            }
           }
         }
       }

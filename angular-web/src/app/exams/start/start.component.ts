@@ -169,31 +169,25 @@ export class ExamsStartComponent implements OnInit {
     }
   }
 
-  // 统一的答案更新方法
   private updateAnswer(questionId: string, answers: Set<string>): void {
     this.answerMap.set(questionId, answers);
 
-    // 更新已答状态
     if (answers.size > 0) {
       this.answeredQuestionIds.add(questionId);
     } else {
       this.answeredQuestionIds.delete(questionId);
     }
 
-    // 保存到本地缓存
     this.saveAnswersToCache();
   }
 
-  // 单选题答题（逐题和整卷模式通用）
   onQuestionAnswered(event: { questionId: string; answers: Set<string> }): void {
     this.updateAnswer(event.questionId, event.answers);
   }
 
-  // 多选题答题（逐题和整卷模式通用）
   onMultipleChoiceChanged(event: { questionId: string; answerId: string }): void {
     const currentAnswers = this.answerMap.get(event.questionId) || new Set<string>();
 
-    // 切换答案
     if (currentAnswers.has(event.answerId)) {
       currentAnswers.delete(event.answerId);
     } else {
@@ -203,24 +197,20 @@ export class ExamsStartComponent implements OnInit {
     this.updateAnswer(event.questionId, currentAnswers);
   }
 
-  // 填空题答题（逐题和整卷模式通用）
   onFillBlankChanged(event: { questionId: string; answers: string[] }): void {
     const answerSet = new Set(event.answers.filter(a => a && a.trim()));
     this.updateAnswer(event.questionId, answerSet);
   }
 
-  // 获取当前题目的已选答案
   getSelectedAnswers(): Set<string> {
     if (!this.selectedQuestion) return new Set();
     return this.answerMap.get(this.selectedQuestion.id!) || new Set();
   }
 
-  // 获取localStorage的key
   private getCacheKey(): string {
     return `exam_answers_${this.userExamId}`;
   }
 
-  // 保存答案到localStorage
   private saveAnswersToCache(): void {
     if (!this.userExamId) return;
 
@@ -236,7 +226,6 @@ export class ExamsStartComponent implements OnInit {
     }
   }
 
-  // 从localStorage加载答案
   private loadAnswersFromCache(): Map<string, Set<string>> {
     const result = new Map<string, Set<string>>();
     if (!this.userExamId) return result;
@@ -256,7 +245,6 @@ export class ExamsStartComponent implements OnInit {
     return result;
   }
 
-  // 清除localStorage中的答案
   private clearAnswersCache(): void {
     if (!this.userExamId) return;
     try {
@@ -269,7 +257,6 @@ export class ExamsStartComponent implements OnInit {
   submitExam(): void {
     if (this.isSubmitting) return;
 
-    // 检查是否有未答题
     const unansweredCount = this.getUnansweredCount();
     let message: string;
     if (unansweredCount > 0) {
@@ -286,14 +273,13 @@ export class ExamsStartComponent implements OnInit {
   }
 
   private doSubmit(): void {
-    // 收集所有答案
     const answers: UserExamAnswerDto[] = [];
     this.allQuestions.forEach(question => {
       const answerSet = this.answerMap.get(question.id!);
       if (answerSet && answerSet.size > 0) {
         answers.push({
           questionId: question.id!,
-          answers: Array.from(answerSet).join(','),
+          answers: Array.from(answerSet).join('||'),
         });
       }
     });
@@ -301,10 +287,8 @@ export class ExamsStartComponent implements OnInit {
     this.isSubmitting = true;
     this.userExamService.finished(this.userExam!.id, answers).subscribe({
       next: () => {
-        // 清除本地缓存
         this.clearAnswersCache();
 
-        // 提交成功，跳转到提交成功页面
         this.router.navigate(['/exams/submitted', this.userExam!.id], {
           queryParams: { examName: this.userExam!.examName },
         });

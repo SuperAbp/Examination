@@ -23,7 +23,6 @@
                   @if (question.questionType == 3) {
                     <div nz-row nzGutter="16">
                       <div nz-col [nzSpan]="isReview ? 12 : 24">
-                        <blank [answers]="getAnswer(question.answers)"></blank>
                         <nz-descriptions [nzColumn]="1">
                           <nz-descriptions-item [nzTitle]="'Exam::UserAnswer' | abpLocalization">
                             {{ question.answers }}
@@ -39,7 +38,7 @@
                         </nz-descriptions>
                       </div>
                       @if (isReview) {
-                        <div nz-col nzSpan="12" [formGroupName]="i">
+                        <div nz-col nzSpan="12" [formGroupName]="j">
                           <nz-form-item>
                             <nz-form-label>{{ 'Exam::IsAnswer' | abpLocalization }}</nz-form-label>
                             <nz-form-control>

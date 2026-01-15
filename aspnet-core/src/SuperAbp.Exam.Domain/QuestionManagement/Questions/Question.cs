@@ -52,6 +52,11 @@ public class Question : FullAuditedAggregateRoot<Guid>, IMultiTenant
     /// </summary>
     public bool FixedOrder { get; set; }
 
+    /// <summary>
+    /// 答案数量（仅填空题非固定顺序有效）<see cref="FixedOrder"/>
+    /// </summary>
+    public int RequiredAnswerCount { get; set; }
+
     public Guid? TenantId { get; set; }
 
     public List<QuestionOption> Options { get; private set; }

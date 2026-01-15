@@ -21,6 +21,8 @@ import { AnswerSubmission } from '@shared/components/choice-answer';
 })
 export class FillBlankComponent implements OnInit, OnChanges {
   @Input() options: QuestionOptionDto[] = [];
+  @Input() fixedOrder: boolean = false;
+  @Input() optionsCount: number = 0;
   @Input() selectedAnswers: string[] = [];
   @Input() showAnalysis = false;
   @Input() disabled = false;
@@ -46,7 +48,7 @@ export class FillBlankComponent implements OnInit, OnChanges {
     this.answers =
       this.selectedAnswers.length > 0
         ? [...this.selectedAnswers]
-        : new Array(this.options.length).fill('');
+        : new Array(this.optionsCount).fill('');
   }
 
   onAnswerChange(): void {

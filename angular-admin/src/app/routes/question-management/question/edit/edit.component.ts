@@ -19,10 +19,13 @@ import { forkJoin, Observable } from 'rxjs';
 import { expand, finalize, map, tap } from 'rxjs/operators';
 
 import { QuestionManagementAnswerComponent } from '../../answer/answer.component';
-import { BlankComponent } from '../../answer/blank.component';
-import { JudgeComponent } from '../../answer/judge.component';
-import { MultiSelectComponent } from '../../answer/multi-select.component';
-import { SingleSelectComponent } from '../../answer/single-select.component';
+import { QuestionManagementAnswerBlankComponent } from '../../answer/blank.component';
+import { QuestionManagementAnswerJudgeComponent } from '../../answer/judge.component';
+import { QuestionManagementAnswerMultiSelectComponent } from '../../answer/multi-select.component';
+import { QuestionManagementAnswerSingleSelectComponent } from '../../answer/single-select.component';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 @Component({
   selector: 'app-question-management-question-edit',
   templateUrl: './edit.component.html',
@@ -36,12 +39,14 @@ import { SingleSelectComponent } from '../../answer/single-select.component';
     NzFormModule,
     NzSelectModule,
     NzInputModule,
+    NzInputNumberModule,
     NzButtonModule,
-    JudgeComponent,
-    SingleSelectComponent,
-    MultiSelectComponent,
-    BlankComponent,
-    NzTreeSelectModule
+    QuestionManagementAnswerJudgeComponent,
+    QuestionManagementAnswerSingleSelectComponent,
+    QuestionManagementAnswerMultiSelectComponent,
+    QuestionManagementAnswerBlankComponent,
+    NzTreeSelectModule,
+    NzSwitchModule
   ]
 })
 export class QuestionManagementQuestionEditComponent implements OnInit {
@@ -71,6 +76,9 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
 
   get options() {
     return this.form.get('options') as FormArray;
+  }
+  get fixedOrder() {
+    return this.form.get('fixedOrder').value;
   }
   get questionType() {
     return this.form.get('questionType');
@@ -116,7 +124,9 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
       children: item.children ? this.mapTreeData(item.children) : []
     }));
   }
-
+  get fix() {
+    return this.form.get('fixedOrder').value;
+  }
   buildForm() {
     this.questionBankService
       .getList({ skipCount: 0, maxResultCount: 100 })
@@ -143,7 +153,8 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
             questionType: [this.question.questionType >= 0 ? this.question.questionType : null, [Validators.required]],
             questionBankId: [this.question.questionBankId || '', [Validators.required]],
             knowledgePointIds: [this.question.knowledgePointIds || []],
-            fixedOrder: [this.question.fixedOrder || true],
+            fixedOrder: [this.question.fixedOrder ?? true],
+            requiredAnswerCount: [this.question.requiredAnswerCount || 1, [Validators.min(1)]],
             options: this.fb.array([], [Validators.required])
           });
           // 修复 ExpressionChangedAfterItHasBeenCheckedError
@@ -162,7 +173,6 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
       return;
     }
     this.isConfirmLoading = true;
-
     if (this.questionId) {
       this.questionService
         .update(this.questionId, {

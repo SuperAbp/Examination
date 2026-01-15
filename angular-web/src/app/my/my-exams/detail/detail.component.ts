@@ -115,7 +115,7 @@ export class ExamDetailComponent implements OnInit {
     if (!question.answers) return ids;
 
     const answerIds = question.answers
-      .split(',')
+      .split('||')
       .map((a: string) => a.trim())
       .filter(Boolean);
 
@@ -136,7 +136,7 @@ export class ExamDetailComponent implements OnInit {
 
   getFillBlankAnswers(question: any): string[] {
     if (!question.answers) return [];
-    return question.answers.split('|||').map((a: string) => a.trim());
+    return question.answers.split('||').map((a: string) => a.trim());
   }
 
   getTotalQuestions(): number {
