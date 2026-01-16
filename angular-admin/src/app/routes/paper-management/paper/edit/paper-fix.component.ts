@@ -28,45 +28,36 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, tap } from 'rxjs/operators';
-
+import { NzAnchorModule } from 'ng-zorro-antd/anchor';
 import { QuestionRandomComponent } from './question-random.component';
 import { QuestionSelectComponent } from './question-select.component';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 @Component({
-    selector: 'app-paper-fix',
-    templateUrl: './paper-fix.component.html',
-    styles: [
-        `
-      .ant-form-item-label {
-        width: 95px;
-      }
-      .box {
-        border: 1px solid #ddd;
-        padding: 10px;
-        margin: 15px 0;
-        border-radius: 4px;
-      }
-    `
-    ],
-    imports: [
-        SharedModule,
-        CoreModule,
-        PageHeaderModule,
-        FooterToolbarModule,
-        NzSpinModule,
-        NzCardModule,
-        NzFormModule,
-        NzIconModule,
-        NzInputModule,
-        NzListModule,
-        NzInputNumberModule,
-        NzButtonModule,
-        NzFlexModule,
-        NzSpaceModule,
-        NzModalModule,
-        NzRadioModule,
-        NzDescriptionsModule
-    ]
+  selector: 'app-paper-fix',
+  templateUrl: './paper-fix.component.html',
+  styleUrls: ['./paper-fix.component.less'],
+  imports: [
+    SharedModule,
+    CoreModule,
+    PageHeaderModule,
+    FooterToolbarModule,
+    NzSpinModule,
+    NzCardModule,
+    NzFormModule,
+    NzIconModule,
+    NzInputModule,
+    NzListModule,
+    NzInputNumberModule,
+    NzButtonModule,
+    NzFlexModule,
+    NzSpaceModule,
+    NzModalModule,
+    NzRadioModule,
+    NzAnchorModule,
+    NzGridModule,
+    NzDescriptionsModule
+  ]
 })
 export class PaperManagementPaperFixEditComponent implements OnInit {
   private modal = inject(ModalHelper);
@@ -91,6 +82,9 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
 
   get sections() {
     return this.form?.get('sections') as FormArray;
+  }
+  getQuestionsArray1(section: any): FormArray {
+    return section.get('paperQuestions') as FormArray;
   }
   getQuestionsArray(sectionIndex: number): FormArray {
     return this.sections.at(sectionIndex).get('paperQuestions') as FormArray;
