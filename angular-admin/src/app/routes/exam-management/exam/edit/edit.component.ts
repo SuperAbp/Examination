@@ -232,8 +232,8 @@ export class ExamManagementExamEditComponent implements OnInit {
     var dynamicPara = {
       published: published
     };
-    dynamicPara['startTime'] = dateTimePickerUtil.format(this.startTime.value, 'yyyy-MM-dd HH:mm:ss');
-    dynamicPara['endTime'] = dateTimePickerUtil.format(this.endTime.value, 'yyyy-MM-dd HH:mm:ss');
+    dynamicPara['startTime'] = dateTimePickerUtil.format(this.startTime.value, 'yyyy-MM-dd HH:mm') + ':00';
+    dynamicPara['endTime'] = dateTimePickerUtil.format(this.endTime.value, 'yyyy-MM-dd HH:mm') + ':00';
 
     if (this.examId) {
       this.examService

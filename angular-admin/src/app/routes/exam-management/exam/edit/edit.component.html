@@ -170,9 +170,9 @@
               [nzErrorTip]="examTimesErrorTpl"
             >
               <nz-range-picker
-                nzFormat="yyyy-MM-dd HH:mm:ss"
+                [nzShowTime]="{ nzFormat: 'HH:mm', nzMinuteStep: 15 }"
+                nzFormat="yyyy-MM-dd HH:mm"
                 [nzDisabledDate]="disabledDate"
-                [nzShowTime]="true"
                 formControlName="examTimes"
                 (ngModelChange)="examTimeChange($event)"
               ></nz-range-picker>
