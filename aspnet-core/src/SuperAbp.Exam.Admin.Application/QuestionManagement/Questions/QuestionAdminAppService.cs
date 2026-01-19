@@ -81,7 +81,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
                 {
                     QuestionImportModel.Option option = item.Options[i];
 
-                    question.AddAnswer(GuidGenerator.Create(), option.Content, item.Answers.Contains(i), 0, option.Analysis);
+                    question.AddOption(GuidGenerator.Create(), option.Content, item.Answers.Contains(i), 0, option.Analysis);
                 }
 
                 questions.Add(question);
@@ -146,11 +146,11 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             {
                 if (answer.Id.HasValue)
                 {
-                    question.UpdateAnswer(answer.Id.Value, answer.Content, answer.Right, answer.Sort, answer.Analysis);
+                    question.UpdateOption(answer.Id.Value, answer.Content, answer.Right, answer.Sort, answer.Analysis);
                 }
                 else
                 {
-                    question.AddAnswer(GuidGenerator.Create(), answer.Content, answer.Right, answer.Sort, answer.Analysis);
+                    question.AddOption(GuidGenerator.Create(), answer.Content, answer.Right, answer.Sort, answer.Analysis);
                 }
             }
         }
@@ -165,7 +165,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         public virtual async Task DeleteAnswerAsync(Guid id, Guid answerId)
         {
             Question question = await questionRepository.GetAsync(id);
-            question.RemoveAnswer(answerId);
+            question.RemoveOption(answerId);
             await questionRepository.UpdateAsync(question);
         }
 

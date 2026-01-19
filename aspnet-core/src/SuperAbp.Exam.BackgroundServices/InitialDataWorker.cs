@@ -1,10 +1,22 @@
 using Dapper;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 using SuperAbp.Exam.BackgroundServices.Sql;
+using SuperAbp.Exam.EntityFrameworkCore;
+using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.UserExamQuestions;
+using SuperAbp.Exam.ExamManagement.UserExams;
+using SuperAbp.Exam.KnowledgePoints;
+using SuperAbp.Exam.PaperManagement.Papers;
+using SuperAbp.Exam.PaperManagement.PaperSections;
+using SuperAbp.Exam.QuestionManagement.QuestionBanks;
+using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
+using SuperAbp.Exam.QuestionManagement.Questions;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,7 +26,12 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Volo.Abp.BackgroundWorkers;
+using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Guids;
+using Volo.Abp.MultiTenancy;
+using Volo.Abp.TenantManagement;
 using Volo.Abp.Threading;
+using Volo.Abp.Uow;
 using static System.Collections.Specialized.BitVector32;
 
 namespace SuperAbp.Exam.BackgroundServices;
@@ -24,9 +41,16 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
     public InitialDataWorker(AbpAsyncTimer timer, IServiceScopeFactory serviceScopeFactory) : base(timer, serviceScopeFactory)
     {
         Timer.Period = 600_000;
+#if DEBUG
         timer.RunOnStart = true;
+#else
+        timer.RunOnStart = true;
+#endif
     }
 
+    private PeriodicBackgroundWorkerContext _workerContext;
+    private ITenantRepository _tenantRepository;
+    private Guid _tenantId;
     private const int CountForSection = 10;
     private static readonly Random _rand = new Random();
 
@@ -40,10 +64,15 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         {0, "单选题" },{1, "多选题" },{2, "判断题" },{3, "填空题" }
     };
 
+    [UnitOfWork(isTransactional: false)]
     protected override async Task DoWorkAsync(PeriodicBackgroundWorkerContext workerContext)
     {
+        _workerContext = workerContext;
         IConfiguration configuration = workerContext.ServiceProvider.GetRequiredService<IConfiguration>();
         ILogger<InitialDataWorker> logger = workerContext.ServiceProvider.GetRequiredService<ILogger<InitialDataWorker>>();
+        _tenantRepository = workerContext.ServiceProvider.GetRequiredService<ITenantRepository>();
+        Tenant tenant = await _tenantRepository.FindByNameAsync("Demo");
+        _tenantId = tenant.Id;
 
         ISqlProvider sqlProvider;// = SqlProviderFactory.CreateProvider("sqlserver");
         IDbConnection connection;//= new MySqlConnection(configuration.GetConnectionString("Default"));
@@ -81,193 +110,116 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         }
 #endif
 
-        Guid? tenantId = await connection.QuerySingleOrDefaultAsync<Guid?>(sqlProvider.GetTenantIdByName(), new { Name = "Demo" });
-        if (tenantId == null || tenantId == Guid.Empty)
-        {
-            logger.LogWarning("Demo tenant not found, skipping initial data.");
-            return;
-        }
-        var finalTenantId = tenantId.Value;
         logger.LogDebug("Clear data……");
-        await ClearDataAsync(connection, finalTenantId, sqlProvider);
-        logger.LogDebug("Create Question……");
-        bool flowControl = await CreateQuestionAsync(connection, finalTenantId, sqlProvider);
-        if (!flowControl)
+        ICurrentTenant currentTenant = _workerContext.ServiceProvider.GetRequiredService<ICurrentTenant>();
+        using (currentTenant.Change(_tenantId))
         {
-            return;
+            await ClearDataAsync();
+            logger.LogDebug("Create Question……");
+            bool flowControl = await CreateQuestionAsync();
+            if (!flowControl)
+            {
+                return;
+            }
+            logger.LogDebug("Create Paper……");
+            await CreatePaperAsync();
+            logger.LogDebug("Create Exam……");
+            await CreateExamAsync();
+            logger.LogDebug("Create Record……");
+            await connection.ExecuteAsync(sqlProvider.InsertInitialDataExecutionLog(), new { LastExecutedTime = DateTime.Now });
+            logger.LogDebug("Created successfully.");
         }
-        logger.LogDebug("Create Paper……");
-        await CreatePaperAsync(connection, finalTenantId, sqlProvider);
-        logger.LogDebug("Create Exam……");
-        await CreateExamAsync(connection, finalTenantId, sqlProvider);
-        logger.LogDebug("Create Record……");
-        await connection.ExecuteAsync(sqlProvider.InsertInitialDataExecutionLog(), new { LastExecutedTime = DateTime.Now });
-        logger.LogDebug("Created successfully.");
     }
 
-    private async Task CreatePaperAsync(IDbConnection connection, Guid tenantId, ISqlProvider sqlProvider)
+    private async Task CreatePaperAsync()
     {
-        List<dynamic> questionBanks = (await connection.QueryAsync<dynamic>(
-            sqlProvider.GetQuestionBanks(),
-            new { TenantId = tenantId })).ToList();
+        var paperRepository = _workerContext.ServiceProvider.GetRequiredService<IPaperRepository>();
+        IQuestionBankRepository questionBankRepository = _workerContext.ServiceProvider.GetRequiredService<IQuestionBankRepository>();
+        var questionBanks = await questionBankRepository.GetListAsync();
 
+        List<Paper> papers = [];
         foreach (var questionBank in questionBanks)
         {
             Guid questionBankId = questionBank.Id;
             string bankName = questionBank.Title ?? "";
 
-            await CreateRandomPaper(connection, tenantId, questionBankId, bankName, sqlProvider);
-            await CreateFixedPaper(connection, tenantId, questionBankId, bankName, sqlProvider);
+            papers.Add(await CreateRandomPaper(questionBankId, bankName));
+            papers.Add(await CreateFixedPaper(questionBankId, bankName));
         }
+        await paperRepository.InsertManyAsync(papers, true);
     }
 
-    private async Task CreateRandomPaper(IDbConnection connection, Guid tenantId, Guid questionBankId, string bankName, ISqlProvider sqlProvider)
+    private async Task<Paper> CreateRandomPaper(Guid questionBankId, string bankName)
     {
-        Guid paperId = Guid.NewGuid();
-        string countsSql = sqlProvider.GetQuestionCountsByType();
-        Dictionary<int, int> counts = (await connection.QueryAsync<dynamic>(countsSql, new { QuestionBankId = questionBankId, TenantId = tenantId }))
-                .ToDictionary(r => (int)r.QuestionType, r => (int)r.Cnt);
+        var guidGenerator = _workerContext.ServiceProvider.GetRequiredService<IGuidGenerator>();
+        var questionRepository = _workerContext.ServiceProvider.GetRequiredService<IQuestionRepository>();
+        var paperManager = _workerContext.ServiceProvider.GetRequiredService<PaperManager>();
 
-        List<PaperSection> sections = [];
-        List<PaperQuestionRule> rules = [];
+        Dictionary<QuestionType, int> counts = await (await questionRepository.GetQueryableAsync())
+            .GroupBy(q => q.QuestionType)
+            .Select(c => new { key = c.Key, Count = c.Count() })
+            .ToDictionaryAsync(g => g.key, g => g.Count);
         int sectionOrder = 1;
-        foreach (KeyValuePair<int, int> item in counts)
+        Paper paper = await paperManager.CreateAsync(PaperType.Random, $"{bankName} 随机组卷", false);
+        paper.Description = "考试须知";
+        foreach (KeyValuePair<QuestionType, int> item in counts)
         {
-            Guid sectionId = Guid.NewGuid();
+            Guid sectionId = guidGenerator.Create();
             decimal score = QuestionTypeScores[item.Key];
             int count = Math.Min(item.Value, CountForSection);
-            rules.Add(new PaperQuestionRule()
-            {
-                Id = Guid.NewGuid(),
-                PaperSectionId = sectionId,
-                TenantId = tenantId,
-                QuestionBankId = questionBankId,
-                QuestionType = item.Key,
-                Count = count,
-                Score = score,
-            });
-            sections.Add(new PaperSection()
-            {
-                Id = sectionId,
-                PaperId = paperId,
-                Title = QuestionTypeNames[item.Key],
-                ScoreEach = QuestionTypeScores[item.Key],
-                Order = sectionOrder++,
-                TotalCount = count,
-                TotalScore = count * score,
-                TenantId = tenantId
-            });
+            paper.AddSection(sectionId, QuestionTypeNames[item.Key], QuestionTypeScores[item.Key], sectionOrder++);
+            paper.AddRule(sectionId, guidGenerator.Create(), questionBankId, item.Key, count, score);
         }
-        await connection.ExecuteAsync(
-            sqlProvider.InsertPaper(), new Paper()
-            {
-                Id = paperId,
-                Name = $"{bankName} 随机组卷",
-                Description = "考试须知",
-                TotalQuestionCount = sections.Sum(s => s.TotalCount),
-                Score = sections.Sum(s => s.TotalScore),
-                TenantId = tenantId,
-                PaperType = 1
-            });
-        await connection.ExecuteAsync(
-                sqlProvider.InsertPaperSections(), sections);
-        await connection.ExecuteAsync(
-                sqlProvider.InsertPaperQuestionRules(), rules);
+        return paper;
     }
 
-    private async Task CreateFixedPaper(IDbConnection connection, Guid tenantId, Guid questionBankId, string bankName, ISqlProvider sqlProvider)
+    private async Task<Paper> CreateFixedPaper(Guid questionBankId, string bankName)
     {
-        Guid paperId = Guid.NewGuid();
+        var guidGenerator = _workerContext.ServiceProvider.GetRequiredService<IGuidGenerator>();
+        var questionRepository = _workerContext.ServiceProvider.GetRequiredService<IQuestionRepository>();
+        var paperManager = _workerContext.ServiceProvider.GetRequiredService<PaperManager>();
+        var questions = await (await questionRepository.GetQueryableAsync()).Where(q => q.QuestionBankId == questionBankId).ToListAsync();
+        var questionsTypes = questions.GroupBy(q => q.QuestionType).Select(q => q.Key).ToList();
 
-        List<dynamic> questions = (await connection.QueryAsync<dynamic>(sqlProvider.GetQuestions(), new
-        {
-            QuestionBankId = questionBankId,
-            TenantId = tenantId
-        })).ToList();
-        List<dynamic> questionsTypes = questions.GroupBy(q => q.QuestionType).Select(q => q.Key).ToList();
-        List<PaperSection> paperSections = [];
-        List<PaperQuestion> paperQuestions = [];
+        Paper paper = await paperManager.CreateAsync(PaperType.Random, $"{bankName} 固定试卷", false);
+        paper.Description = "考试须知";
+
         int sectionOrder = 1;
-        foreach (dynamic questionsType in questionsTypes)
+        foreach (var questionsType in questionsTypes)
         {
-            List<dynamic> currentQuestions = questions.Where(q => q.QuestionType == questionsType).Take(CountForSection).ToList();
-            decimal sectionTotalScore = 0;
-            int sectionTotalQuestionCount = 0;
+            var currentQuestions = questions.Where(q => q.QuestionType == questionsType).Take(CountForSection).ToList();
             int questionOrder = 1;
-            Guid sectionId = Guid.NewGuid();
-            foreach (dynamic question in currentQuestions)
+            Guid sectionId = guidGenerator.Create();
+            paper.AddSection(sectionId, QuestionTypeNames[questionsType], QuestionTypeScores[questionsType], sectionOrder++);
+
+            foreach (var question in currentQuestions)
             {
-                sectionTotalQuestionCount++;
-                decimal score = QuestionTypeScores[questionsType];
-                sectionTotalScore += score;
-                paperQuestions.Add(new PaperQuestion()
-                {
-                    Id = Guid.NewGuid(),
-                    PaperSectionId = sectionId,
-                    QuestionId = question.Id,
-                    Order = questionOrder++,
-                    Score = score,
-                    TenantId = tenantId
-                });
+                paper.AddQuestion(sectionId, guidGenerator.Create(), question.Id, QuestionTypeScores[questionsType], questionOrder++);
             }
-            paperSections.Add(new PaperSection()
-            {
-                Id = sectionId,
-                PaperId = paperId,
-                Title = QuestionTypeNames[questionsType],
-                ScoreEach = QuestionTypeScores[questionsType],
-                Order = sectionOrder++,
-                TotalCount = sectionTotalQuestionCount,
-                TotalScore = sectionTotalScore,
-                TenantId = tenantId
-            });
         }
-        await connection.ExecuteAsync(sqlProvider.InsertPaper(), new Paper()
-        {
-            Id = paperId,
-            Name = $"{bankName} 固定试卷",
-            Description = "考试须知",
-            TotalQuestionCount = paperSections.Sum(s => s.TotalCount),
-            Score = paperSections.Sum(s => s.TotalScore),
-            TenantId = tenantId,
-            PaperType = 0
-        });
-        await connection.ExecuteAsync(
-                sqlProvider.InsertPaperSections(), paperSections);
-        await connection.ExecuteAsync(
-                sqlProvider.InsertPaperQuestions(), paperQuestions);
+
+        return paper;
     }
 
-    private async Task CreateExamAsync(IDbConnection connection, Guid tenantId, ISqlProvider sqlProvider)
+    private async Task CreateExamAsync()
     {
-        List<Paper> papers = (await connection.QueryAsync<Paper>(
-            sqlProvider.GetPapers(),
-            new { TenantId = tenantId })).ToList();
+        var guidGenerator = _workerContext.ServiceProvider.GetRequiredService<IGuidGenerator>();
+        var paperRepository = _workerContext.ServiceProvider.GetRequiredService<IPaperRepository>();
+        var examRepository = _workerContext.ServiceProvider.GetRequiredService<IExamRepository>();
+        var papers = await paperRepository.GetListAsync();
 
         List<Examination> examinations = [];
         foreach (Paper paper in papers)
         {
-            examinations.Add(new Examination()
-            {
-                Id = Guid.NewGuid(),
-                TenantId = tenantId,
-                Name = paper.Name + " 测试",
-                Description = paper.Description,
-                Score = paper.Score,
-                PassingScore = paper.Score * 0.6m,
-                TotalTime = 60,
-                PaperId = paper.Id,
-                Status = 1,
-                AnswerMode = _rand.Next(0, 2),
-                RandomOrderOfOption = true,
-                StartTime = DateTime.Now,
-                EndTime = DateTime.Now.AddDays(7),
-            });
+            Examination examination = new(guidGenerator.Create(), paper.Id, paper.Name + " 测试", paper.Score,
+                paper.Score * 0.6m, 60, AnswerMode.FromValue(_rand.Next(0, 2)), true, false, ReviewMode.FromValue(_rand.Next(0, 2)));
+            examination.SetTime(DateTime.Now, DateTime.Now.AddDays(7));
+            examinations.Add(examination);
         }
-        await connection.ExecuteAsync(sqlProvider.InsertExaminations(), examinations);
+        await examRepository.InsertManyAsync(examinations);
     }
 
-    private async Task<bool> CreateQuestionAsync(IDbConnection connection, Guid tenantId, ISqlProvider sqlProvider)
+    private async Task<bool> CreateQuestionAsync()
     {
         var jsonPath = Path.Combine(AppContext.BaseDirectory, "questions.json");
         if (!File.Exists(jsonPath))
@@ -281,6 +233,19 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
             return false;
         }
 
+        var guidGenerator = _workerContext.ServiceProvider.GetRequiredService<IGuidGenerator>();
+        var questionBankRepository = _workerContext.ServiceProvider.GetRequiredService<IQuestionBankRepository>();
+        var questionBankManager = _workerContext.ServiceProvider.GetRequiredService<QuestionBankManager>();
+        var questionManager = _workerContext.ServiceProvider.GetRequiredService<QuestionManager>();
+        var questionRepository = _workerContext.ServiceProvider.GetRequiredService<IQuestionRepository>();
+        var questionKnowledgePointRepository = _workerContext.ServiceProvider.GetRequiredService<IQuestionKnowledgePointRepository>();
+        List<QuestionBank> questionBanks = [];
+        List<Question> questions = [];
+        List<QuestionOption> options = [];
+        List<QuestionKnowledgePoint> knowledgePoints = [];
+
+        Question tempQuestion;
+        QuestionBank tempBank;
         var bankParams = new List<object>();
         var questionParams = new List<object>();
         var answerParams = new List<object>();
@@ -288,19 +253,17 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
 
         var seenKnowledgePoints = new HashSet<string>();
 
-        // insert banks, questions and options (collect params first)
         foreach (var bank in doc.QuesiontBanks)
         {
-            var bankId = Guid.NewGuid();
-            bankParams.Add(new { Id = bankId, Title = bank.Name, Remark = bank.Description, CreationTime = DateTime.Now, TenantId = tenantId });
+            tempBank = await questionBankManager.CreateAsync(bank.Name ?? String.Empty);
+            questionBanks.Add(tempBank);
 
             if (bank.Questions == null) continue;
 
             foreach (var q in bank.Questions)
             {
-                var qid = Guid.NewGuid();
-                // note: DB column for question text is `Content` (per migrations), map DTO Title -> Content
-                questionParams.Add(new { Id = qid, QuestionBankId = bankId, QuestionType = q.Type, Content = q.Title ?? string.Empty, CreationTime = DateTime.Now, TenantId = tenantId, Analysis = q.Analysis });
+                tempQuestion = await questionManager.CreateAsync(tempBank.Id, QuestionType.FromValue(q.Type), q.Title ?? string.Empty);
+                questions.Add(tempQuestion);
 
                 if (q.KnowledgePoints != null)
                 {
@@ -310,10 +273,13 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
                         seenKnowledgePoints.Add(kpId);
                     }
 
-                    // link all KP for this question
                     foreach (var kpId in q.KnowledgePoints)
                     {
-                        knowledgepointParams.Add(new { QuestionId = qid, KnowledgePointId = kpId, CreationTime = DateTime.Now, TenantId = tenantId });
+                        if (kpId is null)
+                        {
+                            continue;
+                        }
+                        knowledgePoints.Add(new QuestionKnowledgePoint(tempQuestion.Id, new Guid(kpId)));
                     }
                 }
 
@@ -321,55 +287,43 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
 
                 foreach (var opt in q.Options.Select((o, idx) => new { Opt = o, Index = idx }))
                 {
-                    answerParams.Add(new
-                    {
-                        Id = Guid.NewGuid(),
-                        QuestionId = qid,
-                        Content = opt.Opt.Content,
-                        Right = opt.Opt.Right,
-                        Sort = opt.Index + 1,
-                        CreationTime = DateTime.Now,
-                        TenantId = tenantId
-                    });
+                    tempQuestion.AddOption(guidGenerator.Create(), opt.Opt.Content ?? String.Empty, opt.Opt.Right, opt.Index + 1);
                 }
             }
         }
-
-        if (bankParams.Count > 0)
+        if (questionBanks.Count > 0)
         {
-            await connection.ExecuteAsync(sqlProvider.InsertQuestionBanks(), bankParams);
+            await questionBankRepository.InsertManyAsync(questionBanks, true);
         }
-        if (questionParams.Count > 0)
+        if (questions.Count > 0)
         {
-            await connection.ExecuteAsync(sqlProvider.InsertQuestions(), questionParams);
+            await questionRepository.InsertManyAsync(questions, true);
         }
-        if (answerParams.Count > 0)
+        if (knowledgePoints.Count > 0)
         {
-            await connection.ExecuteAsync(sqlProvider.InsertQuestionOptions(), answerParams);
-        }
-        if (knowledgepointParams.Count > 0)
-        {
-            await connection.ExecuteAsync(sqlProvider.InsertQuestionKnowledgePoints(), knowledgepointParams);
+            await questionKnowledgePointRepository.InsertManyAsync(knowledgePoints);
         }
 
         return true;
     }
 
-    private async Task ClearDataAsync(IDbConnection connection, Guid tenantId, ISqlProvider sqlProvider)
+    private async Task ClearDataAsync()
     {
-        await connection.ExecuteAsync(sqlProvider.DeletePaperQuestions(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeletePaperQuestionRules(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeletePaperSections(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeletePapers(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeleteUserExamQuestions(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeleteUserExamSections(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeleteUserExams(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeleteKnowledgePoints(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeleteExaminations(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeleteQuestionOptions(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeleteQuestions(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeleteQuestionKnowledgePoints(), new { TenantId = tenantId });
-        await connection.ExecuteAsync(sqlProvider.DeleteQuestionBanks(), new { TenantId = tenantId });
+        ExamDbContext dbContext = _workerContext.ServiceProvider.GetRequiredService<ExamDbContext>();
+        await dbContext.PaperQuestions.ExecuteDeleteAsync();
+        await dbContext.PaperQuestionRules.ExecuteDeleteAsync();
+        await dbContext.PaperSections.ExecuteDeleteAsync();
+        await dbContext.Papers.ExecuteDeleteAsync();
+        await dbContext.UserExamQuestionReviews.ExecuteDeleteAsync();
+        await dbContext.UerExamQuestions.ExecuteDeleteAsync();
+        await dbContext.UserExamSections.ExecuteDeleteAsync();
+        await dbContext.UserExams.ExecuteDeleteAsync();
+        await dbContext.Exams.ExecuteDeleteAsync();
+        await dbContext.QuestionOptions.ExecuteDeleteAsync();
+        await dbContext.Questions.ExecuteDeleteAsync();
+        await dbContext.QuestionKnowledgePoints.ExecuteDeleteAsync();
+        await dbContext.QuestionBanks.ExecuteDeleteAsync();
+        await dbContext.KnowledgePoints.ExecuteDeleteAsync();
     }
 
     // DTOs for parsing questions.json
@@ -398,140 +352,5 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
     {
         public string? Content { get; set; }
         public bool Right { get; set; }
-    }
-
-    public class Paper
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        public string? Name { get; internal set; }
-
-        /// <summary>
-        /// 描述
-        /// </summary>
-        public string? Description { get; set; }
-
-        /// <summary>
-        /// 总题数
-        /// </summary>
-        public int TotalQuestionCount { get; set; }
-
-        /// <summary>
-        /// 分数
-        /// </summary>
-        public decimal Score { get; set; }
-
-        public int PaperType { get; set; }
-    }
-
-    public class PaperSection
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public Guid PaperId { get; set; }
-        public string? Title { get; set; }
-        public decimal ScoreEach { get; set; }
-        public decimal TotalScore { get; set; }
-        public int Order { get; set; }
-        public int TotalCount { get; set; }
-        public string? Remark { get; set; }
-    }
-
-    public class PaperQuestion
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public Guid PaperSectionId { get; set; }
-        public Guid QuestionId { get; set; }
-        public int Order { get; set; }
-        public decimal Score { get; set; }
-    }
-
-    public class PaperQuestionRule
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-
-        /// <summary>
-        /// 大题Id
-        /// </summary>
-        public Guid PaperSectionId { get; set; }
-
-        /// <summary>
-        /// 题库Id
-        /// </summary>
-        public Guid QuestionBankId { get; set; }
-
-        public int QuestionType { get; set; }
-
-        /// <summary>
-        /// 数量
-        /// </summary>
-        public int Count { get; set; }
-
-        /// <summary>
-        /// 分数
-        /// </summary>
-        public decimal Score { get; set; }
-    }
-
-    public class Examination
-    {
-        public Guid Id { get; set; }
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        public string? Name { get; set; }
-
-        /// <summary>
-        /// 描述
-        /// </summary>
-        public string? Description { get; set; }
-
-        /// <summary>
-        /// 分数
-        /// </summary>
-        public decimal Score { get; set; }
-
-        /// <summary>
-        /// 及格分
-        /// </summary>
-        public decimal PassingScore { get; set; }
-
-        /// <summary>
-        /// 时长
-        /// </summary>
-        public int TotalTime { get; set; }
-
-        /// <summary>
-        /// 试卷Id
-        /// </summary>
-        public Guid PaperId { get; set; }
-
-        public int Status { get; set; }
-
-        public int AnswerMode { get; set; }
-
-        /// <summary>
-        /// 选项乱序
-        /// </summary>
-        public bool RandomOrderOfOption { get; set; }
-
-        /// <summary>
-        /// 开始时间
-        /// </summary>
-        public DateTime? StartTime { get; set; }
-
-        /// <summary>
-        /// 结束时间
-        /// </summary>
-        public DateTime? EndTime { get; set; }
-
-        public Guid? TenantId { get; set; }
     }
 }

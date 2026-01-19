@@ -44,8 +44,8 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     private async Task CreatePaperAsync()
     {
         await paperRepository.InsertManyAsync([
-            new Paper(testData.Paper1Id, PaperType.Fixed, testData.Paper1Name, 100, 10, false),
-            new Paper(testData.Paper2Id, PaperType.Fixed, testData.Paper2Name, 100, 10, false),
+            new Paper(testData.Paper1Id, PaperType.Fixed, testData.Paper1Name, false),
+            new Paper(testData.Paper2Id, PaperType.Fixed, testData.Paper2Name, false),
         ]);
     }
 
@@ -111,33 +111,33 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     {
         await questionRepository.InsertManyAsync([
             new Question(testData.Question11Id, testData.QuestionBank1Id, QuestionType.SingleSelect, testData.Question11Content)
-                .AddAnswer(testData.Answer111Id,testData.Answer111Content, false)
-                .AddAnswer(testData.Answer112Id,testData.Answer112Content, true)
-                .AddAnswer(testData.Answer113Id,testData.Answer113Content, false)
-                .AddAnswer(testData.Answer114Id,testData.Answer114Content, false),
+                .AddOption(testData.Answer111Id,testData.Answer111Content, false)
+                .AddOption(testData.Answer112Id,testData.Answer112Content, true)
+                .AddOption(testData.Answer113Id,testData.Answer113Content, false)
+                .AddOption(testData.Answer114Id,testData.Answer114Content, false),
             new Question(testData.Question12Id, testData.QuestionBank1Id, QuestionType.MultiSelect, testData.Question12Content)
-                .AddAnswer(testData.Answer121Id, testData.Answer121Content, false)
-                .AddAnswer(testData.Answer122Id, testData.Answer122Content, true)
-                .AddAnswer(testData.Answer123Id, testData.Answer123Content, true)
-                .AddAnswer(testData.Answer124Id, testData.Answer124Content, false),
+                .AddOption(testData.Answer121Id, testData.Answer121Content, false)
+                .AddOption(testData.Answer122Id, testData.Answer122Content, true)
+                .AddOption(testData.Answer123Id, testData.Answer123Content, true)
+                .AddOption(testData.Answer124Id, testData.Answer124Content, false),
             new Question(testData.Question13Id, testData.QuestionBank1Id, QuestionType.Judge, testData.Question13Content)
-                .AddAnswer(testData.Answer131Id,testData.Answer131Content, false)
-                .AddAnswer(testData.Answer132Id,testData.Answer132Content, true),
+                .AddOption(testData.Answer131Id,testData.Answer131Content, false)
+                .AddOption(testData.Answer132Id,testData.Answer132Content, true),
             new Question(testData.Question14Id, testData.QuestionBank1Id, QuestionType.FillInTheBlanks, testData.Question14Content)
-                .AddAnswer(testData.Answer141Id, testData.Answer141Content, true),
+                .AddOption(testData.Answer141Id, testData.Answer141Content, true),
             new Question(testData.Question21Id, testData.QuestionBank2Id, QuestionType.SingleSelect, testData.Question21Content)
-                .AddAnswer(testData.Answer211Id,testData.Answer211Content, false)
-                .AddAnswer(testData.Answer212Id,testData.Answer212Content, true),
+                .AddOption(testData.Answer211Id,testData.Answer211Content, false)
+                .AddOption(testData.Answer212Id,testData.Answer212Content, true),
             new Question(testData.Question22Id, testData.QuestionBank2Id, QuestionType.MultiSelect, testData.Question22Content)
-                .AddAnswer(testData.Answer221Id,testData.Answer221Content, false)
-                .AddAnswer(testData.Answer222Id,testData.Answer222Content, true)
-                .AddAnswer(testData.Answer223Id,testData.Answer223Content, false)
-                .AddAnswer(testData.Answer224Id, testData.Answer224Content, false),
+                .AddOption(testData.Answer221Id,testData.Answer221Content, false)
+                .AddOption(testData.Answer222Id,testData.Answer222Content, true)
+                .AddOption(testData.Answer223Id,testData.Answer223Content, false)
+                .AddOption(testData.Answer224Id, testData.Answer224Content, false),
             new Question(testData.Question23Id, testData.QuestionBank2Id, QuestionType.Judge, testData.Question23Content)
-                .AddAnswer(testData.Answer231Id,testData.Answer231Content, false)
-                .AddAnswer(testData.Answer232Id,testData.Answer232Content, true),
+                .AddOption(testData.Answer231Id,testData.Answer231Content, false)
+                .AddOption(testData.Answer232Id,testData.Answer232Content, true),
             new Question(testData.Question24Id, testData.QuestionBank2Id, QuestionType.FillInTheBlanks, testData.Question24Content)
-                .AddAnswer(testData.Answer241Id, testData.Answer241Content, true),
+                .AddOption(testData.Answer241Id, testData.Answer241Content, true),
         ]);
     }
 

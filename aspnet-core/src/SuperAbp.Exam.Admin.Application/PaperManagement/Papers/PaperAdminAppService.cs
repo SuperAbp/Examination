@@ -58,8 +58,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
             //    List<Guid> questionIds = input.Sections.SelectMany(s => s.PaperQuestions).Select(q => q.QuestionId).Distinct().ToList();
             //    manualReview = await questionRepository.ExistsQuestionTypeAsync(QuestionType.FillInTheBlanks.Value, questionIds);
             //}
-            Paper paper = await paperManager.CreateAsync(paperType, input.Name,
-                input.Sections.Sum(s => s.TotalScore), input.Sections.Sum(s => s.TotalCount), manualReview);
+            Paper paper = await paperManager.CreateAsync(paperType, input.Name, manualReview);
             paper.Description = input.Description;
 
             CreateOrUpdatePaperQuestion(paper, input.Sections);
@@ -87,8 +86,6 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
                 List<Guid> questionIds = input.Sections.SelectMany(s => s.PaperQuestions).Select(q => q.QuestionId).Distinct().ToList();
                 paper.ManualReview = await questionRepository.ExistsQuestionTypeAsync(QuestionType.FillInTheBlanks.Value, questionIds);
             }
-            paper.Score = input.Sections.Sum(s => s.TotalScore);
-            paper.TotalQuestionCount = input.Sections.Sum(s => s.TotalCount);
 
             await paperRepository.UpdateAsync(paper);
             return ObjectMapper.Map<Paper, PaperListDto>(paper);
@@ -137,12 +134,12 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
                 if (sectionDto.Id.HasValue)
                 {
                     paper.UpdateSection(sectionId, sectionDto.Title,
-                        sectionDto.ScoreEach, sectionDto.TotalScore, sectionDto.Order, sectionDto.TotalCount);
+                        sectionDto.ScoreEach, sectionDto.Order);
                 }
                 else
                 {
                     paper.AddSection(sectionId, sectionDto.Title,
-                        sectionDto.ScoreEach, sectionDto.TotalScore, sectionDto.Order, sectionDto.TotalCount);
+                        sectionDto.ScoreEach, sectionDto.Order);
                 }
 
                 if (PaperType.Fixed == paper.PaperType)

@@ -22,14 +22,14 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
     }
 
     [SetsRequiredMembers]
-    protected internal Paper(Guid id, PaperType paperType, string name, decimal score, int totalQuestionCount, bool manualReview) : base(id)
+    protected internal Paper(Guid id, PaperType paperType, string name, bool manualReview) : base(id)
     {
         Name = name;
-        Score = score;
         PaperType = paperType;
-        TotalQuestionCount = totalQuestionCount;
         ManualReview = manualReview;
         PaperSections = [];
+        Score = 0;
+        TotalQuestionCount = 0;
     }
 
     /// <summary>
@@ -63,21 +63,21 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
 
     public Guid? TenantId { get; set; }
 
-    public Paper AddSection(Guid sectionId, string title, decimal scoreEach, decimal totalScore, int order, int totalCount)
+    public Paper AddSection(Guid sectionId, string title, decimal scoreEach, int order)
     {
-        PaperSection section = new(sectionId, Id, title, scoreEach, totalScore, order, totalCount);
+        PaperSection section = new(sectionId, Id, title, scoreEach, order);
         PaperSections.Add(section);
+        RecalculateTotals();
         return this;
     }
 
-    public Paper UpdateSection(Guid sectionId, string title, decimal scoreEach, decimal totalScore, int order, int totalCount)
+    public Paper UpdateSection(Guid sectionId, string title, decimal scoreEach, int order)
     {
         PaperSection section = GetSection(sectionId);
         section.Title = title;
         section.ScoreEach = scoreEach;
-        section.TotalScore = totalScore;
         section.Order = order;
-        section.TotalCount = totalCount;
+        RecalculateTotals();
         return this;
     }
 
@@ -85,6 +85,7 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
     {
         PaperSection section = GetSection(sectionId);
         PaperSections.Remove(section);
+        RecalculateTotals();
         return this;
     }
 
@@ -94,6 +95,7 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
         {
             RemoveSection(sectionId);
         }
+        RecalculateTotals();
         return this;
     }
 
@@ -101,6 +103,7 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
     {
         PaperSection section = GetSection(sectionId);
         section.AddQuestion(paperQuestionId, questionId, score, order);
+        RecalculateTotals();
         return this;
     }
 
@@ -108,6 +111,7 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
     {
         PaperSection section = GetSection(sectionId);
         section.UpdateQuestion(paperQuestionId, score, order);
+        RecalculateTotals();
         return this;
     }
 
@@ -115,6 +119,7 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
     {
         PaperSection section = GetSection(sectionId);
         section.RemoveQuestion(questionId);
+        RecalculateTotals();
         return this;
     }
 
@@ -122,6 +127,7 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
     {
         PaperSection section = GetSection(sectionId);
         section.AddRule(ruleId, questionBankId, questionType, count, score);
+        RecalculateTotals();
         return this;
     }
 
@@ -129,6 +135,7 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
     {
         PaperSection section = GetSection(sectionId);
         section.UpdateRule(ruleId, questionBankId, questionType, count, score);
+        RecalculateTotals();
         return this;
     }
 
@@ -136,6 +143,7 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
     {
         PaperSection section = GetSection(sectionId);
         section.RemoveRule(ruleId);
+        RecalculateTotals();
         return this;
     }
 
@@ -146,6 +154,7 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
         {
             section.RemoveRule(ruleId);
         }
+        RecalculateTotals();
         return this;
     }
 
@@ -153,5 +162,11 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
     {
         return PaperSections.SingleOrDefault(x => x.Id == sectionId)
             ?? throw new EntityNotFoundException(typeof(PaperSection), sectionId);
+    }
+
+    private void RecalculateTotals()
+    {
+        Score = PaperSections.Sum(s => s.TotalScore);
+        TotalQuestionCount = PaperSections.Sum(s => s.TotalCount);
     }
 }
