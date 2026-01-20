@@ -49,15 +49,6 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         {
             bool manualReview = false;
             PaperType paperType = PaperType.FromValue(input.PaperType);
-            //if (PaperType.Random == paperType)
-            //{
-            //    manualReview = input.Sections.Any(s => s.PaperQuestionRules.Any(r => r.QuestionType == QuestionType.FillInTheBlanks));
-            //}
-            //else
-            //{
-            //    List<Guid> questionIds = input.Sections.SelectMany(s => s.PaperQuestions).Select(q => q.QuestionId).Distinct().ToList();
-            //    manualReview = await questionRepository.ExistsQuestionTypeAsync(QuestionType.FillInTheBlanks.Value, questionIds);
-            //}
             Paper paper = await paperManager.CreateAsync(paperType, input.Name, manualReview);
             paper.Description = input.Description;
 
@@ -180,6 +171,7 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         [Authorize(ExamPermissions.Papers.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
+            // TODO: 如何同时删除子实体？
             await paperRepository.DeleteAsync(id);
         }
 

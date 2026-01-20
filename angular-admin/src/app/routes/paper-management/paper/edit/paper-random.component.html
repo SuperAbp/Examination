@@ -44,7 +44,7 @@
         <nz-form-item>
           <nz-form-label nzRequired>{{ 'Exam::TotalScore' | abpLocalization }}</nz-form-label>
           <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization" [nzErrorTip]="scoreErrorTpl">
-            <nz-input-number nzDisabled formControlName="score"></nz-input-number>
+            <nz-form-control>{{ totalScore }}</nz-form-control>
             <ng-template #scoreErrorTpl let-control>
               @if (control.hasError('required')) {
                 {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
@@ -67,7 +67,7 @@
               <nz-space>
                 <input *nzSpaceItem nz-input formControlName="title" placeholder="Section Title" />
                 <span *nzSpaceItem>
-                  共{{ sections.value[i].totalCount || 0 }}题 每题
+                  共{{ getTotalQuestionsCount(i) }}题 每题
                   <nz-input-number
                     nz-input
                     formControlName="scoreEach"

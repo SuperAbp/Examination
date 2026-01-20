@@ -45,18 +45,8 @@
               </nz-form-control>
             </nz-form-item>
             <nz-form-item>
-              <nz-form-label nzRequired>{{ 'Exam::TotalScore' | abpLocalization }}</nz-form-label>
-              <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization" [nzErrorTip]="scoreErrorTpl">
-                <nz-input-number nzDisabled formControlName="score"></nz-input-number>
-                <ng-template #scoreErrorTpl let-control>
-                  @if (control.hasError('required')) {
-                    {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
-                  }
-                  @if (control.hasError('min')) {
-                    {{ 'AbpValidation::ThisFieldMustBeGreaterThanOrEqual{0}' | abpLocalization: '1' }}
-                  }
-                </ng-template>
-              </nz-form-control>
+              <nz-form-label>{{ 'Exam::TotalScore' | abpLocalization }}</nz-form-label>
+              <nz-form-control>{{ totalScore }}</nz-form-control>
             </nz-form-item>
           </nz-card>
           <div class="mb-md" nz-flex nzJustify="space-between">
@@ -75,7 +65,7 @@
                       [placeholder]="'::Placeholder' | abpLocalization: '::Title' | abpLocalization"
                     />
                     <span *nzSpaceItem>
-                      共{{ sections.value[i].totalCount || 0 }}题 每题
+                      共{{ this.sections.value[i].paperQuestions.length || 0 }}题 每题
                       <nz-input-number nz-input formControlName="scoreEach" (ngModelChange)="onQuestionScoreChange(i)"></nz-input-number>
                       分
                     </span>

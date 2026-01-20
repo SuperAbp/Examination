@@ -6,7 +6,6 @@ public class PaperCreateOrUpdateDtoBase
 {
     public required string Name { get; set; }
     public string? Description { get; set; }
-    public decimal Score { get; set; }
     public int PaperType { get; set; }
     public PaperSectionDto[] Sections { get; set; } = [];
 
@@ -15,9 +14,7 @@ public class PaperCreateOrUpdateDtoBase
         public Guid? Id { get; set; }
         public required string Title { get; set; }
         public decimal ScoreEach { get; set; }
-        public decimal TotalScore { get; set; }
         public int Order { get; set; }
-        public int TotalCount { get; set; }
         public string? Remark { get; set; }
 
         public PaperQuestionRuleDto[] PaperQuestionRules { get; set; } = [];

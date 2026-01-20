@@ -45,12 +45,12 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
     /// <summary>
     /// 总题数
     /// </summary>
-    public int TotalQuestionCount { get; set; }
+    public int TotalQuestionCount { get; private set; }
 
     /// <summary>
     /// 分数
     /// </summary>
-    public decimal Score { get; set; }
+    public decimal Score { get; private set; }
 
     /// <summary>
     /// 人工批阅
@@ -59,7 +59,7 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
 
     public PaperType PaperType { get; set; }
 
-    public List<PaperSection> PaperSections { get; set; }
+    public List<PaperSection> PaperSections { get; private set; }
 
     public Guid? TenantId { get; set; }
 

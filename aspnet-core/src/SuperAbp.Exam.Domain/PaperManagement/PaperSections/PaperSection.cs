@@ -41,13 +41,14 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
     public Guid PaperId { get; set; }
     public string Title { get; set; }
     public decimal ScoreEach { get; set; }
-    public decimal TotalScore { get; set; }
+    public decimal TotalScore { get; private set; }
+    public int TotalCount { get; private set; }
     public int Order { get; set; }
-    public int TotalCount { get; set; }
+
     public string? Remark { get; set; }
 
-    public List<PaperQuestion> PaperQuestions { get; set; }
-    public List<PaperQuestionRule> PaperQuestionRules { get; set; }
+    public List<PaperQuestion> PaperQuestions { get; private set; }
+    public List<PaperQuestionRule> PaperQuestionRules { get; private set; }
 
     public DateTime CreationTime { get; set; }
 

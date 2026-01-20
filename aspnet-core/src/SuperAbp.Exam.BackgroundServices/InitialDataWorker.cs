@@ -190,7 +190,7 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         var questions = await (await questionRepository.GetQueryableAsync()).Where(q => q.QuestionBankId == questionBankId).ToListAsync();
         var questionsTypes = questions.GroupBy(q => q.QuestionType).Select(q => q.Key).ToList();
 
-        Paper paper = await paperManager.CreateAsync(PaperType.Random, $"{bankName} 固定试卷", false);
+        Paper paper = await paperManager.CreateAsync(PaperType.Fixed, $"{bankName} 固定试卷", false);
         paper.Description = "考试须知";
 
         int sectionOrder = 1;

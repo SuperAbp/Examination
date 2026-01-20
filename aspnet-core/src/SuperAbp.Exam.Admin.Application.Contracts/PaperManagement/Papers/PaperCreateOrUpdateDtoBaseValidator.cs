@@ -23,12 +23,6 @@ public class PaperCreateOrUpdateDtoBaseValidator : AbstractValidator<PaperCreate
             .Must(type => PaperType.TryFromValue(type, out _))
             .WithMessage(local["The field {0} is invalid.", "{PropertyName}"]);
 
-        RuleFor(q => q.Score)
-            .GreaterThan(0)
-            .WithMessage(local["The field {0} must be greater than 0.", "{PropertyName}"])
-            .Must((a, score) => score == a.Sections.Sum(r => r.TotalScore))
-            .WithMessage(local["The field {0} does not match the sum of section scores.", "{PropertyName}"]);
-
         RuleFor(q => q.Sections)
             .NotNull()
             .NotEmpty()
@@ -53,19 +47,9 @@ public class PaperSectionDtoValidator : AbstractValidator<PaperCreateOrUpdateDto
             .MaximumLength(PaperSectionConsts.MaxTitleLength)
             .WithMessage(local["The {0} field must not exceed {1} characters.", "{PropertyName}", "256"]);
 
-        RuleFor(s => s.TotalScore)
-            .GreaterThan(0)
-            .WithMessage(local["The {0} field must be greater than 0.", "{PropertyName}"]);
-
-        RuleFor(s => s.TotalCount)
-            .GreaterThan(0)
-            .WithMessage(local["The {0} field must be greater than 0.", "{PropertyName}"]);
-
         RuleFor(s => s.ScoreEach)
             .GreaterThan(0)
-            .WithMessage(local["The {0} field must be greater than 0.", "{PropertyName}"])
-            .Must((section, scoreEach) => scoreEach * section.TotalCount == section.TotalScore)
-            .WithMessage(local["The field {0} multiplied by TotalCount does not equal TotalScore.", "{PropertyName}"]);
+            .WithMessage(local["The {0} field must be greater than 0.", "{PropertyName}"]);
 
         RuleFor(s => s.Order)
             .GreaterThanOrEqualTo(0)
@@ -75,10 +59,7 @@ public class PaperSectionDtoValidator : AbstractValidator<PaperCreateOrUpdateDto
             .NotNull()
             .WithMessage(local["The {0} field is required.", "{PropertyName}"])
             .NotEmpty()
-            .WithMessage(local["The {0} field is required.", "{PropertyName}"])
-            .Must((section, questions) => section.PaperQuestions.Length == section.TotalCount)
-            .WithMessage(local["The number of {0} must match TotalCount.", "{PropertyName}"])
-            .When(s => _paperType == PaperType.Fixed.Value);
+            .WithMessage(local["The {0} field is required.", "{PropertyName}"]);
 
         RuleForEach(s => s.PaperQuestions)
             .SetValidator(new PaperQuestionDtoValidator(local))
