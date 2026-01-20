@@ -8,11 +8,7 @@ using MySql.Data.MySqlClient;
 using SuperAbp.Exam.BackgroundServices.Sql;
 using SuperAbp.Exam.EntityFrameworkCore;
 using SuperAbp.Exam.ExamManagement.Exams;
-using SuperAbp.Exam.ExamManagement.UserExamQuestions;
-using SuperAbp.Exam.ExamManagement.UserExams;
-using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.PaperManagement.Papers;
-using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.Questions;
@@ -24,7 +20,6 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
@@ -32,7 +27,6 @@ using Volo.Abp.MultiTenancy;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.Threading;
 using Volo.Abp.Uow;
-using static System.Collections.Specialized.BitVector32;
 
 namespace SuperAbp.Exam.BackgroundServices;
 
@@ -49,7 +43,6 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
     }
 
     private PeriodicBackgroundWorkerContext _workerContext;
-    private ITenantRepository _tenantRepository;
     private Guid _tenantId;
     private const int CountForSection = 10;
     private static readonly Random _rand = new Random();
@@ -70,40 +63,22 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         _workerContext = workerContext;
         IConfiguration configuration = workerContext.ServiceProvider.GetRequiredService<IConfiguration>();
         ILogger<InitialDataWorker> logger = workerContext.ServiceProvider.GetRequiredService<ILogger<InitialDataWorker>>();
-        _tenantRepository = workerContext.ServiceProvider.GetRequiredService<ITenantRepository>();
-        Tenant tenant = await _tenantRepository.FindByNameAsync("Demo");
+        ITenantRepository tenantRepository = workerContext.ServiceProvider.GetRequiredService<ITenantRepository>();
+        Tenant tenant = await tenantRepository.FindByNameAsync("Demo");
         _tenantId = tenant.Id;
 
-        ISqlProvider sqlProvider;// = SqlProviderFactory.CreateProvider("sqlserver");
-        IDbConnection connection;//= new MySqlConnection(configuration.GetConnectionString("Default"));
-        string databaseType = "sqlserver";
-        if (databaseType == "mysql")
+        (ISqlProvider sqlProvider, IDbConnection connection) = GetSqlProvider(configuration);
+        if (!await CheckTimeAsync(configuration, logger, sqlProvider, connection))
         {
-            sqlProvider = new MySqlProvider();
-            connection = new MySqlConnection(configuration.GetConnectionString("Default"));
+            return;
         }
-        else
-        {
-            sqlProvider = new SqlServerProvider();
-            connection = new SqlConnection(configuration.GetConnectionString("Default"));
-        }
-        // TODO:Remove InitialDataExecutionLog Table
-        DateTime lastExecutedTime = await connection.ExecuteScalarAsync<DateTime>(sqlProvider.GetLastExecutedTime());
-        if (!int.TryParse(configuration["InitialData:IntervalDays"], out int intervalDays))
-        {
-            intervalDays = 1;
-        }
+
+#if DEBUG
+#else
         if (!int.TryParse(configuration["InitialData:TargetHour"], out int targetHour))
         {
             targetHour = 1;
         }
-        if ((Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00") - Convert.ToDateTime(lastExecutedTime.ToString("yyyy-MM-dd") + " 00:00:00")).Days < intervalDays)
-        {
-            logger.LogInformation("Initial data has already been executed today, skipping.");
-            return;
-        }
-#if DEBUG
-#else
         if (DateTime.Now.Hour != targetHour)
         {
             return;
@@ -129,6 +104,40 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
             await connection.ExecuteAsync(sqlProvider.InsertInitialDataExecutionLog(), new { LastExecutedTime = DateTime.Now });
             logger.LogDebug("Created successfully.");
         }
+    }
+
+    private static (ISqlProvider, IDbConnection) GetSqlProvider(IConfiguration configuration)
+    {
+        ISqlProvider sqlProvider;
+        IDbConnection connection;
+        if (configuration["DatabaseType"] == "mysql")
+        {
+            sqlProvider = new MySqlProvider();
+            connection = new MySqlConnection(configuration.GetConnectionString("Default"));
+        }
+        else
+        {
+            sqlProvider = new SqlServerProvider();
+            connection = new SqlConnection(configuration.GetConnectionString("Default"));
+        }
+        return (sqlProvider, connection);
+    }
+
+    private static async Task<bool> CheckTimeAsync(IConfiguration configuration, ILogger<InitialDataWorker> logger, ISqlProvider sqlProvider, IDbConnection connection)
+    {
+        // TODO:Remove InitialDataExecutionLog Table
+        DateTime lastExecutedTime = await connection.ExecuteScalarAsync<DateTime>(sqlProvider.GetLastExecutedTime());
+        if (!int.TryParse(configuration["InitialData:IntervalDays"], out int intervalDays))
+        {
+            intervalDays = 1;
+        }
+        if ((Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00") - Convert.ToDateTime(lastExecutedTime.ToString("yyyy-MM-dd") + " 00:00:00")).Days < intervalDays)
+        {
+            logger.LogInformation("Initial data has already been executed today, skipping.");
+            return false;
+        }
+
+        return true;
     }
 
     private async Task CreatePaperAsync()
