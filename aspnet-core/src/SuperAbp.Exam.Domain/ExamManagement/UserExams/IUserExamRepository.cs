@@ -49,7 +49,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 获取用户特定考试的活动记录（IsActive=true）
+        /// 获取启用的考试记录
         /// </summary>
         /// <param name="userId">用户Id</param>
         /// <param name="examId">考试Id</param>
@@ -81,14 +81,6 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
             Guid? userId = null,
             Guid? examId = null,
             CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// 查询所有超时的UserExam
-        /// </summary>
-        /// <param name="now"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<List<UserExam>> GetTimeoutUserExamsAsync(DateTime now, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 获取考试的排名数据（包含用户信息）

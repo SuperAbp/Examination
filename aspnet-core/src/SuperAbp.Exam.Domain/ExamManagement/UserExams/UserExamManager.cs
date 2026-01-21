@@ -28,7 +28,7 @@ public class UserExamManager(
     public async Task<UserExam> CreateAsync(Guid examId, Guid userId)
     {
         await CheckUnfinishedAsync(userId);
-        await examManager.CheckCreateUserExamAsync(examId);
+        await examManager.CheckTimeAsync(examId);
 
         return new UserExam(GuidGenerator.Create(), examId, userId, isActive: true);
     }

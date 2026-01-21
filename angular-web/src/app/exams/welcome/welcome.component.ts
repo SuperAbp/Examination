@@ -18,6 +18,7 @@ export class ExamsWelcomeComponent implements OnInit, OnDestroy {
   id?: string;
   exam?: ExamDetailDto;
   progress: number = 0;
+  loading: boolean = true;
   btnLoading: boolean = false;
   private hubConnection?: signalR.HubConnection;
 
@@ -35,6 +36,7 @@ export class ExamsWelcomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.examinationService.get(this.id!).subscribe(res => {
       this.exam = res;
+      this.loading = false;
     });
   }
 

@@ -70,13 +70,6 @@ public class ExamHttpApiHostModule : AbpModule
         {
             ConfigureSwaggerServices(context, configuration);
         }
-#if DEBUG
-#else
-        Configure<AbpBackgroundWorkerOptions>(options =>
-        {
-            options.IsEnabled = false;
-        });
-#endif
     }
 
     private void ConfigureCache(IConfiguration configuration)

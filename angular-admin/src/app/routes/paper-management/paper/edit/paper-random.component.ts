@@ -44,10 +44,10 @@ export interface PaperQuestionRuleCreateTemp extends PaperCreateOrUpdateDtoBase_
   questionTypeName: string;
 }
 @Component({
-    selector: 'app-paper-random',
-    templateUrl: './paper-random.component.html',
-    styles: [
-        `
+  selector: 'app-paper-random',
+  templateUrl: './paper-random.component.html',
+  styles: [
+    `
       .ant-form-item-label {
         width: 95px;
       }
@@ -58,30 +58,30 @@ export interface PaperQuestionRuleCreateTemp extends PaperCreateOrUpdateDtoBase_
         border-radius: 4px;
       }
     `
-    ],
-    imports: [
-        SharedModule,
-        CoreModule,
-        PageHeaderModule,
-        FooterToolbarModule,
-        NzSpinModule,
-        NzCardModule,
-        NzFormModule,
-        NzIconModule,
-        NzInputModule,
-        NzListModule,
-        NzInputNumberModule,
-        NzButtonModule,
-        NzFlexModule,
-        NzSpaceModule,
-        NzModalModule,
-        NzRadioModule,
-        NzDescriptionsModule,
-        NzSelectModule,
-        NzTableModule,
-        NzPopconfirmModule,
-        NzTooltipModule
-    ]
+  ],
+  imports: [
+    SharedModule,
+    CoreModule,
+    PageHeaderModule,
+    FooterToolbarModule,
+    NzSpinModule,
+    NzCardModule,
+    NzFormModule,
+    NzIconModule,
+    NzInputModule,
+    NzListModule,
+    NzInputNumberModule,
+    NzButtonModule,
+    NzFlexModule,
+    NzSpaceModule,
+    NzModalModule,
+    NzRadioModule,
+    NzDescriptionsModule,
+    NzSelectModule,
+    NzTableModule,
+    NzPopconfirmModule,
+    NzTooltipModule
+  ]
 })
 export class PaperManagementPaperRandomEditComponent implements OnInit {
   private modal = inject(ModalHelper);
@@ -107,10 +107,16 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
   currentSectionIndex = -1;
   questionBanks: QuestionBankListDto[] = [];
 
-  get score() {
-    return this.form.get('score');
+  get totalScore() {
+    return this.sections.controls.reduce((total, section) => {
+      const questionsArray = section.get('paperQuestionRules') as FormArray;
+      const sectionTotalScore = questionsArray.controls.reduce(
+        (sum, q) => sum + (q.get('score')?.value || 0) * (q.get('count')?.value || 0),
+        0
+      );
+      return total + sectionTotalScore;
+    }, 0);
   }
-
   get sections() {
     return this.form?.get('sections') as FormArray;
   }
@@ -118,6 +124,11 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
   getRules(sectionIndex: number): FormArray {
     const section = this.sections.at(sectionIndex);
     return section.get('paperQuestionRules') as FormArray;
+  }
+
+  getTotalQuestionsCount(sectionIndex: number): number {
+    const rulesArray = this.getRules(sectionIndex);
+    return rulesArray.controls.reduce((sum, rule) => sum + (rule.get('count')?.value || 0), 0);
   }
 
   getQuestionBankName(questionBankId: string): string {
@@ -165,7 +176,6 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
       name: [this.paper.name || '', [Validators.required]],
       description: [this.paper.description || ''],
       paperType: [1],
-      score: [this.paper.score || 0, [Validators.required, Validators.min(1)]],
       sections: this.fb.array((this.paper.sections || []).map(s => this.createSection(s)))
     });
 
@@ -178,8 +188,6 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
       id: [section?.id || ''],
       title: [section?.title || '', [Validators.required]],
       scoreEach: [section?.scoreEach, [Validators.required, Validators.min(1)]],
-      totalScore: [section?.totalScore, [Validators.required, Validators.min(1)]],
-      totalCount: [section?.totalCount, [Validators.required, Validators.min(1)]],
       order: [section?.order || 0],
       remark: [section?.remark || ''],
       paperQuestionRules: this.fb.array((section?.paperQuestionRules || []).map(r => this.createRule(r)))
@@ -291,7 +299,6 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
 
       totalScore += sectionTotalScore;
     });
-    this.form.get('score').setValue(totalScore);
   }
 
   private assignOrderValues(formValue: any) {

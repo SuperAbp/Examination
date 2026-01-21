@@ -31,6 +31,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SuperAbp.Exam.EntityFrameworkCore\SuperAbp.Exam.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="questions.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

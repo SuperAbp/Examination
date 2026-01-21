@@ -1,6 +1,7 @@
 {
   "culture": "zh-Hans",
   "texts": {
+    "AppName": "考试系统",
     "Menu:Home": "首页",
     "Menu:My": "我的",
     "Menu:MyExam": "我的考试",

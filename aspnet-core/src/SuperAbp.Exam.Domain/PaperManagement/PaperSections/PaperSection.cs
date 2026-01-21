@@ -24,16 +24,16 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
     }
 
     [SetsRequiredMembers]
-    public PaperSection(Guid id, Guid paperId, string title, decimal scoreEach, decimal totalScore, int order, int totalCount)
+    public PaperSection(Guid id, Guid paperId, string title, decimal scoreEach, int order)
         : base(id)
     {
         Id = id;
         PaperId = paperId;
         Title = title;
         ScoreEach = scoreEach;
-        TotalScore = totalScore;
+        TotalScore = 0;
         Order = order;
-        TotalCount = totalCount;
+        TotalCount = 0;
         PaperQuestions = [];
         PaperQuestionRules = [];
     }
@@ -41,13 +41,14 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
     public Guid PaperId { get; set; }
     public string Title { get; set; }
     public decimal ScoreEach { get; set; }
-    public decimal TotalScore { get; set; }
+    public decimal TotalScore { get; private set; }
+    public int TotalCount { get; private set; }
     public int Order { get; set; }
-    public int TotalCount { get; set; }
+
     public string? Remark { get; set; }
 
-    public List<PaperQuestion> PaperQuestions { get; set; }
-    public List<PaperQuestionRule> PaperQuestionRules { get; set; }
+    public List<PaperQuestion> PaperQuestions { get; private set; }
+    public List<PaperQuestionRule> PaperQuestionRules { get; private set; }
 
     public DateTime CreationTime { get; set; }
 
@@ -65,6 +66,7 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
         };
 
         PaperQuestions.Add(question);
+        RecalculateTotals();
         return this;
     }
 
@@ -73,6 +75,7 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
         PaperQuestion question = GetPaperQuestion(paperQuestionId);
         question.Score = score;
         question.Order = order;
+        RecalculateTotals();
         return this;
     }
 
@@ -82,15 +85,14 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
         {
             RemoveQuestion(questionId);
         }
+        RecalculateTotals();
     }
 
     public void RemoveQuestion(Guid paperQuestionId)
     {
-        PaperQuestion? question = GetPaperQuestion(paperQuestionId);
-        if (question != null)
-        {
-            PaperQuestions.Remove(question);
-        }
+        PaperQuestion question = GetPaperQuestion(paperQuestionId);
+        PaperQuestions.Remove(question);
+        RecalculateTotals();
     }
 
     private PaperQuestion GetPaperQuestion(Guid paperQuestionId)
@@ -111,6 +113,7 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
         };
 
         PaperQuestionRules.Add(rule);
+        RecalculateTotals();
         return rule;
     }
 
@@ -121,6 +124,7 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
         rule.QuestionType = questionType;
         rule.Count = count;
         rule.Score = score;
+        RecalculateTotals();
         return rule;
     }
 
@@ -130,15 +134,15 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
         {
             RemoveRule(reuleId);
         }
+        RecalculateTotals();
     }
 
     public void RemoveRule(Guid reuleId)
     {
-        PaperQuestionRule? rule = GetPaperQuestionRule(reuleId);
-        if (rule != null)
-        {
-            PaperQuestionRules.Remove(rule);
-        }
+        PaperQuestionRule rule = GetPaperQuestionRule(reuleId);
+
+        PaperQuestionRules.Remove(rule);
+        RecalculateTotals();
     }
 
     private PaperQuestionRule GetPaperQuestionRule(Guid ruleId)
@@ -149,5 +153,11 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
             throw new EntityNotFoundException(typeof(PaperQuestionRule), ruleId);
         }
         return rule;
+    }
+
+    private void RecalculateTotals()
+    {
+        TotalScore = PaperQuestions.Sum(q => q.Score) + PaperQuestionRules.Sum(r => r.Score);
+        TotalCount = PaperQuestions.Count + PaperQuestionRules.Sum(r => r.Count);
     }
 }

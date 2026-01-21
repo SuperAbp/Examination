@@ -61,27 +61,27 @@ public class Question : FullAuditedAggregateRoot<Guid>, IMultiTenant
 
     public List<QuestionOption> Options { get; private set; }
 
-    public Question AddAnswer(Guid answerId, string content, bool right, int sort = 0, string? analysis = null)
+    public Question AddOption(Guid optionId, string content, bool right, int sort = 0, string? analysis = null)
     {
         if (Options.Any(x => x.Content == content))
         {
             throw new QuestionOptionContentAlreadyExistException(content);
         }
 
-        QuestionOption answer = new(answerId, Id, content, right, sort, analysis);
+        QuestionOption answer = new(optionId, Id, content, right, sort, analysis);
         Options.Add(answer);
 
         return this;
     }
 
-    public Question UpdateAnswer(Guid answerId, string content, bool right, int sort, string? analysis)
+    public Question UpdateOption(Guid optionId, string content, bool right, int sort, string? analysis)
     {
-        if (Options.Any(a => a.Content == content && a.Id != answerId))
+        if (Options.Any(a => a.Content == content && a.Id != optionId))
         {
             throw new QuestionOptionContentAlreadyExistException(content);
         }
 
-        QuestionOption? answer = Options.SingleOrDefault(a => a.Id == answerId);
+        QuestionOption? answer = Options.SingleOrDefault(a => a.Id == optionId);
         if (answer is null)
         {
             throw new EntityNotFoundException(typeof(QuestionOption));
@@ -95,7 +95,7 @@ public class Question : FullAuditedAggregateRoot<Guid>, IMultiTenant
         return this;
     }
 
-    public Question RemoveAnswer(Guid answerId)
+    public Question RemoveOption(Guid answerId)
     {
         QuestionOption? answer = Options.SingleOrDefault(a => a.Id == answerId);
         if (answer is null)

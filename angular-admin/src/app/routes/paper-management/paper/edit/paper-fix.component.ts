@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { ModalHelper } from '@delon/theme';
-import { dateTimePickerUtil } from '@delon/util';
+import { dateTimePickerUtil, log } from '@delon/util';
 import { PaperService, QuestionService } from '@proxy/admin/controllers';
 import {
   GetPaperForEditorOutput,
@@ -76,10 +76,11 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
   questionIds: string[] = [];
   questionDetails = new Map<string, QuestionDetailDto>();
 
-  get score() {
-    return this.form.get('score');
+  get totalScore() {
+    return this.sections.controls.reduce((total, section) => {
+      return total + section.get('paperQuestions').value.length * section.get('scoreEach').value;
+    }, 0);
   }
-
   get sections() {
     return this.form?.get('sections') as FormArray;
   }
@@ -121,7 +122,6 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
       name: [this.paper.name || '', [Validators.required]],
       description: [this.paper.description || ''],
       paperType: [0],
-      score: [this.paper.score || 0, [Validators.required, Validators.min(1)]],
       sections: this.fb.array((this.paper.sections || []).map(s => this.createSection(s)))
     });
     console.log(this.form.value);
@@ -131,8 +131,6 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
       id: [section?.id || ''],
       title: [section?.title || '', [Validators.required]],
       scoreEach: [section?.scoreEach, [Validators.required]],
-      totalScore: [section?.totalScore, [Validators.required]],
-      totalCount: [section?.totalCount, [Validators.required]],
       order: [section?.order || 0],
       remark: [section?.remark || ''],
       paperQuestions: this.fb.array((section?.paperQuestions || []).map(q => this.createQuestion(q)))
@@ -283,8 +281,6 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
 
       totalScore += sectionTotalScore;
     });
-
-    this.form.get('score').setValue(totalScore);
   }
   // Assign order values to all sections and questions before submission
   private assignOrderValues(formValue: any) {
@@ -333,10 +329,6 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
         )
         .subscribe();
     }
-  }
-
-  changeTotalScore(e) {
-    this.score.setValue(e);
   }
 
   back(e: MouseEvent) {
