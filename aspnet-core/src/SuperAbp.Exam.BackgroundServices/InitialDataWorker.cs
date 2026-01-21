@@ -36,7 +36,7 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
     {
         Timer.Period = 600_000;
 #if DEBUG
-        timer.RunOnStart = true;
+        //timer.RunOnStart = true;
 #else
         timer.RunOnStart = true;
 #endif

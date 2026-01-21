@@ -62,7 +62,6 @@ export class ExamManagementExamEditComponent implements OnInit {
   isConfirmLoading = false;
 
   form: FormGroup = null;
-  showExamTime: boolean;
   papers: PaperListDto[] = [];
   answerModes: Array<{ label: string; value: number }> = [];
   reviewModes: Array<{ label: string; value: number }> = [];
@@ -174,16 +173,15 @@ export class ExamManagementExamEditComponent implements OnInit {
       passingScore: [this.exam.passingScore || 0, [Validators.required, Validators.min(1)]],
       totalTime: [this.exam.totalTime || 0, [Validators.required, Validators.min(1)]],
       paperId: [this.exam.paperId || '', [Validators.required]],
-      startTime: [new Date()],
-      endTime: [new Date()],
+      startTime: [null],
+      endTime: [null],
       randomOrderOfOption: [this.exam.randomOrderOfOption || false],
       maxNumberOfTimes: [this.exam.maxNumberOfTimes || 0, [Validators.required, Validators.min(0)]],
       answerMode: [this.exam.answerMode ?? this.answerModes[0]?.value ?? 0],
       reviewMode: [this.exam.reviewMode ?? this.reviewModes[0]?.value ?? 0],
-      examTimes: [[], [Validators.required]]
+      examTimes: [[]]
     });
     if (this.exam.startTime && this.exam.endTime) {
-      this.showExamTime = true;
       this.startTime.setValue(new Date(this.exam.startTime));
       this.endTime.setValue(new Date(this.exam.endTime));
       this.examTimes.setValue([this.exam.startTime, this.exam.endTime]);
@@ -216,9 +214,6 @@ export class ExamManagementExamEditComponent implements OnInit {
     this.startTime.setValue(e[0]);
     this.endTime.setValue(e[1]);
   }
-  changeExamTimeStatus(e) {
-    this.showExamTime = e;
-  }
 
   save(published: boolean = false) {
     if (!this.form.valid || this.isConfirmLoading) {
@@ -232,8 +227,11 @@ export class ExamManagementExamEditComponent implements OnInit {
     var dynamicPara = {
       published: published
     };
-    dynamicPara['startTime'] = dateTimePickerUtil.format(this.startTime.value, 'yyyy-MM-dd HH:mm') + ':00';
-    dynamicPara['endTime'] = dateTimePickerUtil.format(this.endTime.value, 'yyyy-MM-dd HH:mm') + ':00';
+    debugger;
+    if (this.startTime.value != null && this.endTime.value != null) {
+      dynamicPara['startTime'] = dateTimePickerUtil.format(this.startTime.value, 'yyyy-MM-dd HH:mm') + ':00';
+      dynamicPara['endTime'] = dateTimePickerUtil.format(this.endTime.value, 'yyyy-MM-dd HH:mm') + ':00';
+    }
 
     if (this.examId) {
       this.examService

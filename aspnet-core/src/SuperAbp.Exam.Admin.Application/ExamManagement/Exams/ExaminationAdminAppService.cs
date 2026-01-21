@@ -181,7 +181,12 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
         [Authorize(ExamPermissions.Exams.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
-            await ExamRepository.DeleteAsync(id);
+            Examination examination = await ExamRepository.GetAsync(id);
+            if (!examination.CanUpdate())
+            {
+                throw new InvalidExamStatusException(examination.Status);
+            }
+            await ExamRepository.DeleteAsync(examination);
         }
 
         /// <summary>
