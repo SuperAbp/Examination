@@ -48,7 +48,7 @@ const LANGS: Record<string, LangConfigData> = {
     date: dfEn,
     delon: delonEnUS,
     abbr: '🇬🇧',
-    abp: 'en-US'
+    abp: 'en'
   }
 };
 

@@ -1,4 +1,6 @@
 {
+  "account.personalinfo": "Personal Information",
+  "account.password": "Change Password",
   "menu.search.placeholder": "Search for people, file, photos...",
   "menu.fullscreen": "Fullscreen",
   "menu.fullscreen.exit": "Exit Fullscreen",
