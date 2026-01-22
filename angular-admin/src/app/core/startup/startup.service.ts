@@ -88,7 +88,6 @@ export class StartupService {
           });
           this.menuService.add(menus);
           // Can be set page suffix title, https://ng-alain.com/theme/title
-          this.titleService.default = '';
           this.titleService.suffix = res.app.name;
         })
       );

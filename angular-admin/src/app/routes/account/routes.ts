@@ -12,11 +12,13 @@ export const routes: Routes = [
       { path: '', redirectTo: 'base', pathMatch: 'full' },
       {
         path: 'base',
-        component: AccountSettingsBaseComponent
+        component: AccountSettingsBaseComponent,
+        data: { titleI18n: 'account.personalinfo' }
       },
       {
         path: 'password',
-        component: AccountSettingsPasswordComponent
+        component: AccountSettingsPasswordComponent,
+        data: { titleI18n: 'account.password' }
       }
     ]
   }

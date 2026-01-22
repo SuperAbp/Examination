@@ -4,7 +4,14 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { default as ngLang } from '@angular/common/locales/zh';
 import { ApplicationConfig, EnvironmentProviders, Provider, importProvidersFrom } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideRouter, withComponentInputBinding, withInMemoryScrolling, withHashLocation, RouterFeatures } from '@angular/router';
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withInMemoryScrolling,
+  withHashLocation,
+  RouterFeatures,
+  TitleStrategy
+} from '@angular/router';
 import { I18NService, defaultInterceptor, provideBindAuthRefresh, provideStartup } from '@core';
 import { provideCellWidgets } from '@delon/abc/cell';
 import { provideSTWidgets } from '@delon/abc/st';
@@ -21,6 +28,7 @@ import { zh_CN as zorroLang } from 'ng-zorro-antd/i18n';
 import { ICONS } from '../style-icons';
 import { ICONS_AUTO } from '../style-icons-auto';
 import { routes } from './routes/routes';
+import { EmptyTitleStrategy } from './services/empty-title-strategy.service';
 
 const defaultLang: AlainProvideLang = {
   abbr: 'zh-CN',
@@ -61,6 +69,10 @@ const providers: Array<Provider | EnvironmentProviders> = [
   provideSTWidgets(...ST_WIDGETS),
   provideSFConfig({ widgets: SF_WIDGETS }),
   provideStartup(),
+  {
+    provide: TitleStrategy,
+    useExisting: EmptyTitleStrategy
+  },
   ...(environment.providers || [])
 ];
 
