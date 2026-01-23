@@ -93,6 +93,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
         ui: {
           widget: 'tree-select',
           width: 250,
+          allowClear: true,
           placeholder: this.localizationService.instant(
             'Exam::ChoosePlaceholder',
             this.localizationService.instant('Exam::KnowledgePoint')
