@@ -4,18 +4,19 @@ import { Router } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFStringWidgetSchema } from '@delon/form';
-import { OptionService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
+import { SFTreeSelectWidgetSchema } from '@delon/form/widgets/tree-select';
+import { KnowledgePointService, OptionService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
 import { GetQuestionsInput, QuestionListDto } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { delay, map, tap } from 'rxjs/operators';
 
 @Component({
-    selector: 'app-question-management-question',
-    templateUrl: './question.component.html',
-    imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
+  selector: 'app-question-management-question',
+  templateUrl: './question.component.html',
+  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class QuestionManagementQuestionComponent implements OnInit {
   private router = inject(Router);
@@ -24,6 +25,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
   private permissionService = inject(PermissionService);
   private questionService = inject(QuestionService);
   private questionBankService = inject(QuestionBankService);
+  private knowledgePointService = inject(KnowledgePointService);
   private optionService = inject(OptionService);
 
   questions: QuestionListDto[];
@@ -84,6 +86,38 @@ export class QuestionManagementQuestionComponent implements OnInit {
               })
             )
         } as SFSelectWidgetSchema
+      },
+      knowledgePointId: {
+        type: 'string',
+        title: '基本',
+        ui: {
+          widget: 'tree-select',
+          width: 250,
+          placeholder: this.localizationService.instant(
+            'Exam::ChoosePlaceholder',
+            this.localizationService.instant('Exam::KnowledgePoint')
+          ),
+          asyncData: () =>
+            this.knowledgePointService.getAll({}).pipe(
+              map((res: any) => {
+                const temp: SFSchemaEnumType[] = [];
+                const transformTreeData = (items: any[]): SFSchemaEnumType[] => {
+                  return items.map(item => {
+                    const node: any = {
+                      title: item.name,
+                      key: item.id,
+                      isLeaf: !item.children || item.children.length === 0
+                    };
+                    if (item.children && item.children.length > 0) {
+                      node.children = transformTreeData(item.children);
+                    }
+                    return node;
+                  });
+                };
+                return transformTreeData(res.items);
+              })
+            )
+        } as SFTreeSelectWidgetSchema
       }
     }
   };
@@ -151,7 +185,8 @@ export class QuestionManagementQuestionComponent implements OnInit {
       skipCount: 0,
       maxResultCount: 10,
       questionBankIds: [],
-      excludeIds: []
+      excludeIds: [],
+      knowledgePointId: null
     };
   }
   change(e: STChange) {
@@ -183,6 +218,11 @@ export class QuestionManagementQuestionComponent implements OnInit {
       this.params.questionType = e.questionType;
     } else {
       delete this.params.questionType;
+    }
+    if (e.knowledgePointId) {
+      this.params.knowledgePointId = e.knowledgePointId;
+    } else {
+      delete this.params.knowledgePointId;
     }
     this.st.load(1);
   }

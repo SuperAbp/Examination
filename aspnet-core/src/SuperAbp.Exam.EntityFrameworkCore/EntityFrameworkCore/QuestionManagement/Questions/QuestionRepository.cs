@@ -49,9 +49,22 @@ public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProv
         int? questionType = null,
         List<Guid>? questionBankIds = null,
         List<Guid>? excludeIds = null,
+        Guid? knowledgePointId = null,
         CancellationToken cancellationToken = default)
     {
+        var dbContext = await GetDbContextAsync();
         var questionQueryable = await GetQueryableAsync(content, questionType, questionBankIds, excludeIds);
+
+        if (knowledgePointId.HasValue)
+        {
+            var questionKnowledgePointQueryable = dbContext.Set<QuestionKnowledgePoint>().AsQueryable();
+            questionQueryable = (from q in questionQueryable
+                                 join qkp in questionKnowledgePointQueryable
+                                 on q.Id equals qkp.QuestionId
+                                 where qkp.KnowledgePointId == knowledgePointId.Value
+                                 select q).Distinct();
+        }
+
         return await questionQueryable.CountAsync(cancellationToken);
     }
 
@@ -69,6 +82,7 @@ public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProv
         List<Guid>? questionBankIds = null,
         List<Guid>? includeIds = null,
         List<Guid>? excludeIds = null,
+        Guid? knowledgePointId = null,
         bool? includeDetails = false,
         CancellationToken cancellationToken = default)
     {
@@ -83,28 +97,32 @@ public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProv
 
         var pointQueryable = from qkp in questionKnowledgePointQueryable
                              join kp in knowledgePointQueryable on qkp.KnowledgePointId equals kp.Id
-                             select new { qkp.QuestionId, kp.Name };
+                             select new { kp.Id, qkp.QuestionId, kp.Name };
 
         var queryable = (from q in questionQueryable
                          join qb in questionBankQueryable on q.QuestionBankId equals qb.Id
                          join kp in pointQueryable on q.Id equals kp.QuestionId into kpGroup
-                         select new QuestionWithDetails
-                         {
-                             Id = q.Id,
-                             QuestionBank = qb.Title,
-                             Content = q.Content,
-                             Analysis = q.Analysis,
-                             QuestionType = q.QuestionType,
-                             CreationTime = q.CreationTime,
-                             KnowledgePoints = kpGroup.Select(k => k.Name).ToList(),
-                             Options = q.Options
-                         })
-                        .PageBy(skipCount, maxResultCount);
+                         select new { q, qb, kpGroup });
+        var result = queryable
+             .WhereIf(knowledgePointId.HasValue, k => k.kpGroup.Any(k => k.Id == knowledgePointId.Value))
+             .Select(s => new QuestionWithDetails
+             {
+                 Id = s.q.Id,
+                 QuestionBank = s.qb.Title,
+                 Content = s.q.Content,
+                 Analysis = s.q.Analysis,
+                 QuestionType = s.q.QuestionType,
+                 CreationTime = s.q.CreationTime,
+                 KnowledgePoints = s.kpGroup.Select(k => k.Name).ToList(),
+                 Options = s.q.Options
+             })
+             .PageBy(skipCount, maxResultCount);
 
-        return await queryable.ToListAsync(cancellationToken);
+        return await result.ToListAsync(cancellationToken);
     }
 
-    private async Task<IQueryable<Question>> GetQueryableAsync(string? content, int? questionType, List<Guid>? questionBankIds, List<Guid>? excludeIds = null)
+    private async Task<IQueryable<Question>> GetQueryableAsync(string? content, int? questionType,
+        List<Guid>? questionBankIds, List<Guid>? excludeIds = null)
     {
         return (await GetQueryableAsync())
             .WhereIf(questionBankIds is not null && questionBankIds.Count > 0, q => questionBankIds.Contains(q.QuestionBankId))

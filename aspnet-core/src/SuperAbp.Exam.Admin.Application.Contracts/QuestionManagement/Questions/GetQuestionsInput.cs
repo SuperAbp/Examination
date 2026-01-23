@@ -17,5 +17,6 @@ public class GetQuestionsInput : PagedAndSortedResultRequestDto
     public int? QuestionType { get; set; }
 
     public Guid[] QuestionBankIds { get; set; } = [];
+    public Guid? KnowledgePointId { get; set; }
     public List<Guid>? ExcludeIds { get; set; }
 }

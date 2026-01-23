@@ -23,9 +23,9 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
             await NormalizeMaxResultCountAsync(input);
 
             int totalCount = await questionRepository.GetCountAsync(input.Content, input.QuestionType, input.QuestionBankIds.ToList(),
-                excludeIds: input.ExcludeIds);
+                excludeIds: input.ExcludeIds, knowledgePointId: input.KnowledgePointId);
             List<QuestionWithDetails> questions = await questionRepository.GetListAsync(input.Sorting, input.SkipCount, input.MaxResultCount,
-                input.Content, input.QuestionType, input.QuestionBankIds.ToList(), excludeIds: input.ExcludeIds);
+                input.Content, input.QuestionType, input.QuestionBankIds.ToList(), excludeIds: input.ExcludeIds, knowledgePointId: input.KnowledgePointId);
 
             var dtos = ObjectMapper.Map<List<QuestionWithDetails>, List<QuestionListDto>>(questions);
 

@@ -17,6 +17,7 @@ export interface GetQuestionsInput extends PagedAndSortedResultRequestDto {
   content?: string;
   questionType?: number;
   questionBankIds: string[];
+  knowledgePointId?: string;
   excludeIds: string[];
 }
 
