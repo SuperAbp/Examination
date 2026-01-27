@@ -16,13 +16,14 @@ public class PaperQuestionRule : Entity<Guid>, IHasCreationTime, ISoftDelete, IM
     protected PaperQuestionRule()
     { }
 
-    public PaperQuestionRule(Guid id, Guid paperSectionId, Guid questionBankId, QuestionType questionType, int count, decimal score) : base(id)
+    public PaperQuestionRule(Guid id, Guid paperSectionId, Guid questionBankId, QuestionType questionType, int count, decimal score, Guid? knowledgePointId = null) : base(id)
     {
         PaperSectionId = paperSectionId;
         QuestionBankId = questionBankId;
         QuestionType = questionType;
         Count = count;
         Score = score;
+        KnowledgePointId = knowledgePointId;
     }
 
     /// <summary>
@@ -46,6 +47,11 @@ public class PaperQuestionRule : Entity<Guid>, IHasCreationTime, ISoftDelete, IM
     /// 分数
     /// </summary>
     public decimal Score { get; set; }
+
+    /// <summary>
+    /// 知识点Id（可选）
+    /// </summary>
+    public Guid? KnowledgePointId { get; set; }
 
     public PaperSection PaperSection { get; set; }
 

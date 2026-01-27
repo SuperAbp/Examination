@@ -156,12 +156,12 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
                         if (ruleDto.Id.HasValue)
                         {
                             paper.UpdateRule(sectionId, ruleDto.Id.Value, ruleDto.QuestionBankId,
-                                QuestionType.FromValue(ruleDto.QuestionType), ruleDto.Count, ruleDto.Score);
+                                QuestionType.FromValue(ruleDto.QuestionType), ruleDto.Count, ruleDto.Score, ruleDto.KnowledgePointId);
                         }
                         else
                         {
                             paper.AddRule(sectionId, GuidGenerator.Create(), ruleDto.QuestionBankId,
-                                QuestionType.FromValue(ruleDto.QuestionType), ruleDto.Count, ruleDto.Score);
+                                QuestionType.FromValue(ruleDto.QuestionType), ruleDto.Count, ruleDto.Score, ruleDto.KnowledgePointId);
                         }
                     }
                 }

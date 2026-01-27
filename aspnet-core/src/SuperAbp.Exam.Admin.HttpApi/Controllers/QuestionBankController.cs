@@ -24,17 +24,6 @@ namespace SuperAbp.Exam.Admin.Controllers
         }
 
         /// <summary>
-        /// 获取题目数量
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet("{id}/question-count")]
-        public async Task<QuestionBankCountDto> GetQuestionCountAsync(Guid id)
-        {
-            return await questionRepoAppService.GetQuestionCountAsync(id);
-        }
-
-        /// <summary>
         /// 列表
         /// </summary>
         /// <param name="input">查询条件</param>

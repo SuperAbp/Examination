@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Volo.Abp.Application.Dtos;
-
+﻿using Microsoft.AspNetCore.Mvc;
+using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.Admin.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.Admin.Controllers;
 
@@ -14,6 +14,17 @@ namespace SuperAbp.Exam.Admin.Controllers;
 [Route("api/question-management/question")]
 public class QuestionController(IQuestionAdminAppService questionAppService) : ExamController, IQuestionAdminAppService
 {
+    /// <summary>
+    /// 获取题目数量
+    /// </summary>
+    /// <param name="input">查询条件</param>
+    /// <returns></returns>
+    [HttpGet("count")]
+    public async Task<int> GetCountAsync(GetQuestionCountInput input)
+    {
+        return await questionAppService.GetCountAsync(input);
+    }
+
     /// <summary>
     /// 列表
     /// </summary>

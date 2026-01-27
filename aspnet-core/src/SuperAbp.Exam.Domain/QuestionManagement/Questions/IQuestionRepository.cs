@@ -15,23 +15,6 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     Task<bool> ExistsQuestionTypeAsync(int questionType, List<Guid> ids, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 数量
-    /// </summary>
-    /// <param name="questionBankId">题库Id</param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task<int> GetCountAsync(Guid questionBankId, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// 数量
-    /// </summary>
-    /// <param name="questionBankId">题库Id</param>
-    /// <param name="questionType">问题类型</param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task<int> GetCountAsync(Guid questionBankId, QuestionType questionType, CancellationToken cancellationToken = default);
-
-    /// <summary>
     /// 题型
     /// </summary>
     /// <param name="questionBankId"></param>

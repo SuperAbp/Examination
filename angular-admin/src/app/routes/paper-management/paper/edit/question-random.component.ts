@@ -4,7 +4,7 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn,
 import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFStringWidgetSchema } from '@delon/form';
 import { OptionService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
-import { QuestionBankCountDto, QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
+import { GetQuestionCountInput, QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
 import { GetQuestionsInput, QuestionDetailDto, QuestionListDto } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -25,6 +25,7 @@ export class QuestionRandomComponent implements OnInit {
 
   private localizationService = inject(LocalizationService);
   private questionBankService = inject(QuestionBankService);
+  private questionService = inject(QuestionService);
   private fb = inject(FormBuilder);
   private optionService = inject(OptionService);
   private modal = inject(NzModalRef);
@@ -32,7 +33,6 @@ export class QuestionRandomComponent implements OnInit {
   questions: QuestionListDto[];
   questionTypes: Array<{ label: string; value: number }> = [];
   questionBanks: QuestionBankListDto[];
-  questionBankCount: QuestionBankCountDto;
   totalQuestionCount: number = 0;
   total: number;
   loading = true;
@@ -80,34 +80,33 @@ export class QuestionRandomComponent implements OnInit {
       .subscribe();
   }
   getQuestionBankWithQuestionCount(questionBankId: string) {
-    this.questionBankService
-      .getQuestionCount(questionBankId)
+    const questionType = this.form.get('questionType')?.value;
+    if (questionBankId && questionType !== null && questionType !== undefined) {
+      this.updateAvailableQuestionCount(questionBankId, questionType);
+    }
+  }
+
+  private updateAvailableQuestionCount(questionBankId: string, questionType: number) {
+    const input: GetQuestionCountInput = {
+      questionBankId,
+      questionType
+    };
+
+    this.questionService
+      .getCount(input)
       .pipe(
-        tap(res => {
-          this.questionBankCount = res;
+        tap(count => {
+          this.totalQuestionCount = count;
         })
       )
       .subscribe();
   }
+
   getQuestionCount(value: number) {
-    let count = 0;
-    switch (value) {
-      case 0:
-        count = this.questionBankCount.singleCount;
-        break;
-      case 1:
-        count = this.questionBankCount.judgeCount;
-        break;
-      case 2:
-        count = this.questionBankCount.multiCount;
-        break;
-      case 3:
-        count = this.questionBankCount.blankCount;
-        break;
-      default:
-        count = 0;
+    const questionBankId = this.form.get('questionBankId')?.value;
+    if (questionBankId) {
+      this.updateAvailableQuestionCount(questionBankId, value);
     }
-    this.totalQuestionCount = count;
   }
   save() {
     this.modal.close(this.form.value);

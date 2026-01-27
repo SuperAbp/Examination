@@ -1,6 +1,7 @@
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
+import type { GetQuestionCountInput } from '../question-management/question-banks/models';
 import type { GetQuestionForEditorOutput, GetQuestionWithDetailInput, GetQuestionsInput, QuestionCreateDto, QuestionDetailDto, QuestionImportDto, QuestionListDto, QuestionUpdateDto } from '../question-management/questions/models';
 
 @Injectable({
@@ -32,6 +33,15 @@ export class QuestionService {
     this.restService.request<any, void>({
       method: 'DELETE',
       url: `/api/question-management/question/${id}/answer/${answerId}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getCount = (input: GetQuestionCountInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, number>({
+      method: 'GET',
+      url: '/api/question-management/question/count',
+      params: { questionBankId: input.questionBankId, questionType: input.questionType, knowledgePointId: input.knowledgePointId },
     },
     { apiName: this.apiName,...config });
   

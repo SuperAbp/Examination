@@ -23,18 +23,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
             return ObjectMapper.Map<QuestionBank, QuestionBankDetailDto>(entity);
         }
 
-        public virtual async Task<QuestionBankCountDto> GetQuestionCountAsync(Guid id)
-        {
-            var dto = new QuestionBankCountDto
-            {
-                SingleCount = await questionRepository.GetCountAsync(id, QuestionType.SingleSelect),
-                JudgeCount = await questionRepository.GetCountAsync(id, QuestionType.Judge),
-                MultiCount = await questionRepository.GetCountAsync(id, QuestionType.MultiSelect),
-                BlankCount = await questionRepository.GetCountAsync(id, QuestionType.FillInTheBlanks)
-            };
-            return dto;
-        }
-
         public virtual async Task<PagedResultDto<QuestionBankListDto>> GetListAsync(GetQuestionBanksInput input)
         {
             long totalCount = await questionBankRepository.GetCountAsync(input.Title);
@@ -47,10 +35,10 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
             foreach (var item in entities)
             {
                 var dto = ObjectMapper.Map<QuestionBank, QuestionBankListDto>(item);
-                dto.SingleCount = await questionRepository.GetCountAsync(item.Id, QuestionType.SingleSelect);
-                dto.JudgeCount = await questionRepository.GetCountAsync(item.Id, QuestionType.Judge);
-                dto.MultiCount = await questionRepository.GetCountAsync(item.Id, QuestionType.MultiSelect);
-                dto.BlankCount = await questionRepository.GetCountAsync(item.Id, QuestionType.FillInTheBlanks);
+                dto.SingleCount = await questionRepository.GetCountAsync(questionBankIds: new List<Guid> { item.Id }, questionType: QuestionType.SingleSelect);
+                dto.JudgeCount = await questionRepository.GetCountAsync(questionBankIds: new List<Guid> { item.Id }, questionType: QuestionType.Judge);
+                dto.MultiCount = await questionRepository.GetCountAsync(questionBankIds: new List<Guid> { item.Id }, questionType: QuestionType.MultiSelect);
+                dto.BlankCount = await questionRepository.GetCountAsync(questionBankIds: new List<Guid> { item.Id }, questionType: QuestionType.FillInTheBlanks);
                 dtos.Add(dto);
             }
             return new PagedResultDto<QuestionBankListDto>(totalCount, dtos);

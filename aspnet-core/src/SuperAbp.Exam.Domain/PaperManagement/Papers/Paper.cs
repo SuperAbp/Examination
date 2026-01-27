@@ -123,18 +123,18 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
         return this;
     }
 
-    public Paper AddRule(Guid sectionId, Guid ruleId, Guid questionBankId, QuestionType questionType, int count, decimal score)
+    public Paper AddRule(Guid sectionId, Guid ruleId, Guid questionBankId, QuestionType questionType, int count, decimal score, Guid? knowledgePointId = null)
     {
         PaperSection section = GetSection(sectionId);
-        section.AddRule(ruleId, questionBankId, questionType, count, score);
+        section.AddRule(ruleId, questionBankId, questionType, count, score, knowledgePointId);
         RecalculateTotals();
         return this;
     }
 
-    public Paper UpdateRule(Guid sectionId, Guid ruleId, Guid questionBankId, QuestionType questionType, int count, decimal score)
+    public Paper UpdateRule(Guid sectionId, Guid ruleId, Guid questionBankId, QuestionType questionType, int count, decimal score, Guid? knowledgePointId = null)
     {
         PaperSection section = GetSection(sectionId);
-        section.UpdateRule(ruleId, questionBankId, questionType, count, score);
+        section.UpdateRule(ruleId, questionBankId, questionType, count, score, knowledgePointId);
         RecalculateTotals();
         return this;
     }

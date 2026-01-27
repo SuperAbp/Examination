@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -11,6 +12,13 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions;
 /// </summary>
 public interface IQuestionAdminAppService : IApplicationService
 {
+    /// <summary>
+    /// 获取题目数量
+    /// </summary>
+    /// <param name="input">查询条件</param>
+    /// <returns></returns>
+    Task<int> GetCountAsync(GetQuestionCountInput input);
+
     /// <summary>
     /// 列表
     /// </summary>

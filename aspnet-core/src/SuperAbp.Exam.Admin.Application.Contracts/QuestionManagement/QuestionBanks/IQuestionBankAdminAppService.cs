@@ -18,13 +18,6 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
         Task<QuestionBankDetailDto> GetAsync(Guid id);
 
         /// <summary>
-        /// 获取题目数量
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        Task<QuestionBankCountDto> GetQuestionCountAsync(Guid id);
-
-        /// <summary>
         /// 列表
         /// </summary>
         /// <param name="input">查询条件</param>
