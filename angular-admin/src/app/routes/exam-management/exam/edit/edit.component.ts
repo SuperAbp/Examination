@@ -227,7 +227,6 @@ export class ExamManagementExamEditComponent implements OnInit {
     var dynamicPara = {
       published: published
     };
-    debugger;
     if (this.startTime.value != null && this.endTime.value != null) {
       dynamicPara['startTime'] = dateTimePickerUtil.format(this.startTime.value, 'yyyy-MM-dd HH:mm') + ':00';
       dynamicPara['endTime'] = dateTimePickerUtil.format(this.endTime.value, 'yyyy-MM-dd HH:mm') + ':00';

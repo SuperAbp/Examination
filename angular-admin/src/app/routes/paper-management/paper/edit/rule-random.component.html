@@ -3,78 +3,75 @@
 </div>
 <div class="modal-body">
   @if (loading) {
-    <nz-spin class="modal-spin"></nz-spin>
+  <nz-spin class="modal-spin"></nz-spin>
   } @else {
-    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
-      <nz-form-item>
-        <nz-form-label nzRequired>{{ 'Exam::QuestionBank' | abpLocalization }}</nz-form-label>
-        <nz-form-control
-          nzHasFeedback
-          [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
-          [nzErrorTip]="questionBankErrorTpl"
-        >
-          <nz-select
-            formControlName="questionBankId"
-            nzShowSearch
-            nzAllowClear
-            [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization: ('Exam::QuestionBank' | abpLocalization)"
-            (ngModelChange)="getQuestionBankWithQuestionCount($event)"
-          >
-            @for (questionBank of questionBanks; track $index) {
-              <nz-option [nzValue]="questionBank.id" [nzLabel]="questionBank.title"></nz-option>
-            }
-          </nz-select>
-          <ng-template #questionBankErrorTpl let-control>
-            @if (control.hasError('required')) {
-              {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
-            }
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label nzRequired>{{ 'Exam::QuestionType' | abpLocalization }}</nz-form-label>
-        <nz-form-control
-          nzHasFeedback
-          [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
-          [nzErrorTip]="questionTypeErrorTpl"
-        >
-          <nz-select
-            formControlName="questionType"
-            nzShowSearch
-            nzAllowClear
-            [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization: ('Exam::QuestionType' | abpLocalization)"
-            (ngModelChange)="getQuestionCount($event)"
-          >
-            @for (questionType of questionTypes; track $index) {
-              <nz-option [nzValue]="questionType.value" [nzLabel]="questionType.label"></nz-option>
-            }
-          </nz-select>
-          <ng-template #questionTypeErrorTpl let-control>
-            @if (control.hasError('required')) {
-              {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
-            }
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label nzRequired>{{ 'Exam::Count' | abpLocalization }}</nz-form-label>
-        <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization" [nzErrorTip]="countErrorTpl">
-          <nz-input-number formControlName="count" [nzMin]="1" [nzMax]="totalQuestionCount" [nzStep]="1"></nz-input-number>
-          {{ totalQuestionCount }}可用
-          <ng-template #countErrorTpl let-control>
-            @if (control.hasError('required')) {
-              {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
-            }
-            @if (control.hasError('max')) {
-              {{ 'AbpValidation::ThisFieldMustBeLessOrEqual{0}' | abpLocalization: totalQuestionCount.toString() }}
-            }
-            @if (control.hasError('min')) {
-              {{ 'AbpValidation::ThisFieldMustBeGreaterThanOrEqual{0}' | abpLocalization: '1' }}
-            }
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-    </form>
+  <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical">
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'Exam::QuestionBank' | abpLocalization }}</nz-form-label>
+      <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
+        [nzErrorTip]="questionBankErrorTpl">
+        <nz-select formControlName="questionBankId" nzShowSearch nzAllowClear
+          [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization: ('Exam::QuestionBank' | abpLocalization)"
+          (ngModelChange)="getQuestionBankWithQuestionCount($event)">
+          @for (questionBank of questionBanks; track $index) {
+          <nz-option [nzValue]="questionBank.id" [nzLabel]="questionBank.title"></nz-option>
+          }
+        </nz-select>
+        <ng-template #questionBankErrorTpl let-control>
+          @if (control.hasError('required')) {
+          {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'Exam::QuestionType' | abpLocalization }}</nz-form-label>
+      <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
+        [nzErrorTip]="questionTypeErrorTpl">
+        <nz-select formControlName="questionType" nzShowSearch nzAllowClear
+          [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization: ('Exam::QuestionType' | abpLocalization)"
+          (ngModelChange)="getQuestionBankWithQuestionCount(form.get('questionBankId')?.value)">
+          @for (questionType of questionTypes; track $index) {
+          <nz-option [nzValue]="questionType.value" [nzLabel]="questionType.label"></nz-option>
+          }
+        </nz-select>
+        <ng-template #questionTypeErrorTpl let-control>
+          @if (control.hasError('required')) {
+          {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>{{ 'Exam::KnowledgePoint' | abpLocalization }}</nz-form-label>
+      <nz-form-control>
+        <nz-tree-select formControlName="knowledgePointId" nzShowSearch nzAllowClear
+          [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization: ('Exam::KnowledgePoint' | abpLocalization)"
+          [nzNodes]="knowledgePoints" (ngModelChange)="onKnowledgePointChanged($event)">
+        </nz-tree-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'Exam::Count' | abpLocalization }}</nz-form-label>
+      <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
+        [nzErrorTip]="countErrorTpl">
+        <nz-input-number formControlName="count" [nzMin]="1" [nzMax]="totalQuestionCount"
+          [nzStep]="1"></nz-input-number>
+        {{ totalQuestionCount }}可用
+        <ng-template #countErrorTpl let-control>
+          @if (control.hasError('required')) {
+          {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+          }
+          @if (control.hasError('max')) {
+          {{ 'AbpValidation::ThisFieldMustBeLessOrEqual{0}' | abpLocalization: totalQuestionCount.toString() }}
+          }
+          @if (control.hasError('min')) {
+          {{ 'AbpValidation::ThisFieldMustBeGreaterThanOrEqual{0}' | abpLocalization: '1' }}
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
   }
 </div>
 <div class="modal-footer">

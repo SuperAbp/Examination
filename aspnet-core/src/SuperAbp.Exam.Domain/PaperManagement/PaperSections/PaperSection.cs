@@ -105,9 +105,9 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
         return question;
     }
 
-    internal PaperQuestionRule AddRule(Guid ruleId, Guid questionBankId, QuestionType questionType, int count, decimal score)
+    internal PaperQuestionRule AddRule(Guid ruleId, Guid questionBankId, QuestionType questionType, int count, decimal score, Guid? knowledgePointId = null)
     {
-        PaperQuestionRule rule = new(ruleId, Id, questionBankId, questionType, count, score)
+        PaperQuestionRule rule = new(ruleId, Id, questionBankId, questionType, count, score, knowledgePointId)
         {
             TenantId = TenantId
         };
@@ -117,13 +117,14 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
         return rule;
     }
 
-    internal PaperQuestionRule UpdateRule(Guid ruleId, Guid questionBankId, QuestionType questionType, int count, decimal score)
+    internal PaperQuestionRule UpdateRule(Guid ruleId, Guid questionBankId, QuestionType questionType, int count, decimal score, Guid? knowledgePointId = null)
     {
         PaperQuestionRule rule = GetPaperQuestionRule(ruleId);
         rule.QuestionBankId = questionBankId;
         rule.QuestionType = questionType;
         rule.Count = count;
         rule.Score = score;
+        rule.KnowledgePointId = knowledgePointId;
         RecalculateTotals();
         return rule;
     }

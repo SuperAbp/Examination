@@ -7,11 +7,10 @@ export interface GetQuestionBanksInput extends PagedAndSortedResultRequestDto {
   title?: string;
 }
 
-export interface QuestionBankCountDto {
-  singleCount: number;
-  multiCount: number;
-  judgeCount: number;
-  blankCount: number;
+export interface GetQuestionCountInput {
+  questionBankId?: string;
+  questionType?: number;
+  knowledgePointId?: string;
 }
 
 export interface QuestionBankCreateDto extends QuestionBankCreateOrUpdateDtoBase {

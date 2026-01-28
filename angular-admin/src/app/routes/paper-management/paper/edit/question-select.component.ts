@@ -2,7 +2,8 @@ import { CoreModule, LocalizationService } from '@abp/ng.core';
 import { Component, EventEmitter, inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFStringWidgetSchema } from '@delon/form';
-import { OptionService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
+import { SFTreeSelectWidgetSchema } from '@delon/form/widgets/tree-select';
+import { KnowledgePointService, OptionService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
 import { GetQuestionsInput, QuestionListDto } from '@proxy/admin/question-management/questions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
@@ -10,9 +11,9 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, map, tap } from 'rxjs';
 
 @Component({
-    selector: 'app-question-select',
-    templateUrl: './question-select.component.html',
-    imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, STModule, DelonFormModule]
+  selector: 'app-question-select',
+  templateUrl: './question-select.component.html',
+  imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, STModule, DelonFormModule]
 })
 export class QuestionSelectComponent implements OnInit {
   @Input()
@@ -22,6 +23,7 @@ export class QuestionSelectComponent implements OnInit {
   private questionBankService = inject(QuestionBankService);
   private questionService = inject(QuestionService);
   private optionService = inject(OptionService);
+  private knowledgePointService = inject(KnowledgePointService);
   private modal = inject(NzModalRef);
 
   questions: QuestionListDto[];
@@ -84,6 +86,35 @@ export class QuestionSelectComponent implements OnInit {
               })
             )
         } as SFSelectWidgetSchema
+      },
+      knowledgePointId: {
+        type: 'string',
+        title: '',
+        ui: {
+          widget: 'tree-select',
+          width: 250,
+          allowClear: true,
+          placeholder: this.localizationService.instant('Exam::ChoosePlaceholder', this.localizationService.instant('Exam::KnowledgePoint')),
+          asyncData: () =>
+            this.knowledgePointService.getAll({}).pipe(
+              map((res: any) => {
+                const transformTreeData = (items: any[]): SFSchemaEnumType[] => {
+                  return items.map(item => {
+                    const node: any = {
+                      title: item.name,
+                      key: item.id,
+                      isLeaf: !item.children || item.children.length === 0
+                    };
+                    if (item.children && item.children.length > 0) {
+                      node.children = transformTreeData(item.children);
+                    }
+                    return node;
+                  });
+                };
+                return transformTreeData(res.items);
+              })
+            )
+        } as SFTreeSelectWidgetSchema
       }
     }
   };
@@ -167,6 +198,11 @@ export class QuestionSelectComponent implements OnInit {
       this.params.questionType = e.questionType;
     } else {
       delete this.params.questionType;
+    }
+    if (e.knowledgePointId) {
+      this.params.knowledgePointId = e.knowledgePointId;
+    } else {
+      delete this.params.knowledgePointId;
     }
     this.st.load(1);
   }

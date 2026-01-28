@@ -158,10 +158,10 @@ public class UserExamManager(
 
         foreach (var paperRule in section.PaperQuestionRules)
         {
-            List<Question> randomQuestions = await GetRandomQuestions(paperRule.QuestionBankId, paperRule.QuestionType, paperRule.Count);
+            List<Question> randomQuestions = await GetRandomQuestions(paperRule.QuestionBankId, paperRule.QuestionType, paperRule.Count, knowledgePointId: paperRule.KnowledgePointId);
             foreach (var question in randomQuestions)
             {
-                var userExamQuestion = new UserExamQuestion(
+                UserExamQuestion userExamQuestion = new(
                     GuidGenerator.Create(),
                     userExamSection.Id,
                     question.Id,
@@ -181,10 +181,10 @@ public class UserExamManager(
         });
     }
 
-    private async Task<List<Question>> GetRandomQuestions(Guid questionRepositoryId, QuestionType questionType, int count)
+    private async Task<List<Question>> GetRandomQuestions(Guid questionRepositoryId, QuestionType questionType, int count, Guid? knowledgePointId = null)
     {
         return await questionRepository.GetRandomListAsync(questionRepositoryId: questionRepositoryId,
-            questionType: questionType, maxResultCount: count);
+            questionType: questionType, maxResultCount: count, knowledgePointId: knowledgePointId);
     }
 
     /// <summary>

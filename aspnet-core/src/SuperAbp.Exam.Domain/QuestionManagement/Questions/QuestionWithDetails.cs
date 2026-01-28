@@ -30,7 +30,7 @@ namespace SuperAbp.Exam.QuestionManagement.Questions
         /// <summary>
         /// 解析
         /// </summary>
-        public string Analysis { get; set; }
+        public string? Analysis { get; set; }
 
         public DateTime CreationTime { get; set; }
     }

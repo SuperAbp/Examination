@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks;
+using SuperAbp.Exam.Permissions;
+using SuperAbp.Exam.QuestionManagement.Questions;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Volo.Abp.Application.Dtos;
-using SuperAbp.Exam.QuestionManagement.Questions;
-using SuperAbp.Exam.Permissions;
 using Volo.Abp;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
+using Volo.Abp.Application.Dtos;
 
 namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
 {
@@ -18,14 +19,24 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         Func<int, IQuestionAnalysis> questionAnalysis)
         : ExamAppService, IQuestionAdminAppService
     {
+        public virtual async Task<int> GetCountAsync(GetQuestionCountInput input)
+        {
+            List<Guid> questionBankIds = [];
+            if (input.QuestionBankId.HasValue)
+            {
+                questionBankIds.Add(input.QuestionBankId.Value);
+            }
+            return await questionRepository.GetCountAsync(questionType: input.QuestionType, questionBankIds: questionBankIds, knowledgePointId: input.KnowledgePointId);
+        }
+
         public virtual async Task<PagedResultDto<QuestionListDto>> GetListAsync(GetQuestionsInput input)
         {
             await NormalizeMaxResultCountAsync(input);
 
             int totalCount = await questionRepository.GetCountAsync(input.Content, input.QuestionType, input.QuestionBankIds.ToList(),
-                excludeIds: input.ExcludeIds);
+                excludeIds: input.ExcludeIds, knowledgePointId: input.KnowledgePointId);
             List<QuestionWithDetails> questions = await questionRepository.GetListAsync(input.Sorting, input.SkipCount, input.MaxResultCount,
-                input.Content, input.QuestionType, input.QuestionBankIds.ToList(), excludeIds: input.ExcludeIds);
+                input.Content, input.QuestionType, input.QuestionBankIds.ToList(), excludeIds: input.ExcludeIds, knowledgePointId: input.KnowledgePointId);
 
             var dtos = ObjectMapper.Map<List<QuestionWithDetails>, List<QuestionListDto>>(questions);
 

@@ -1,6 +1,7 @@
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
+import type { GetQuestionCountInput } from '../question-management/question-banks/models';
 import type { GetQuestionForEditorOutput, GetQuestionWithDetailInput, GetQuestionsInput, QuestionCreateDto, QuestionDetailDto, QuestionImportDto, QuestionListDto, QuestionUpdateDto } from '../question-management/questions/models';
 
 @Injectable({
@@ -36,6 +37,15 @@ export class QuestionService {
     { apiName: this.apiName,...config });
   
 
+  getCount = (input: GetQuestionCountInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, number>({
+      method: 'GET',
+      url: '/api/question-management/question/count',
+      params: { questionBankId: input.questionBankId, questionType: input.questionType, knowledgePointId: input.knowledgePointId },
+    },
+    { apiName: this.apiName,...config });
+  
+
   getEditor = (id: string, config?: Partial<Rest.Config>) =>
     this.restService.request<any, GetQuestionForEditorOutput>({
       method: 'GET',
@@ -48,7 +58,7 @@ export class QuestionService {
     this.restService.request<any, PagedResultDto<QuestionListDto>>({
       method: 'GET',
       url: '/api/question-management/question',
-      params: { content: input.content, questionType: input.questionType, questionBankIds: input.questionBankIds, excludeIds: input.excludeIds, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+      params: { content: input.content, questionType: input.questionType, questionBankIds: input.questionBankIds, knowledgePointId: input.knowledgePointId, excludeIds: input.excludeIds, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName,...config });
   

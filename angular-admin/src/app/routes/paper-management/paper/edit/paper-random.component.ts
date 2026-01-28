@@ -6,13 +6,14 @@ import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { ModalHelper } from '@delon/theme';
 import { dateTimePickerUtil } from '@delon/util';
-import { OptionService, PaperService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
 import {
   GetPaperForEditorOutput,
   PaperCreateOrUpdateDtoBase_PaperSectionDto,
   PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto
 } from '@proxy/admin/paper-management/papers';
 import { QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
+import { KnowledgePointNodeDto } from '@proxy/admin/knowledge-points';
+import { KnowledgePointService, OptionService, PaperService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
 import { SharedModule, simplifiedOrdinary } from '@shared';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -42,6 +43,7 @@ export interface PaperQuestionRuleCreateTemp extends PaperCreateOrUpdateDtoBase_
   id?: string;
   questionBankName: string;
   questionTypeName: string;
+  knowledgePointId?: string;
 }
 @Component({
   selector: 'app-paper-random',
@@ -91,6 +93,7 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
   private paperService = inject(PaperService);
   private questionService = inject(QuestionService);
   private questionBankService = inject(QuestionBankService);
+  private knowledgePointService = inject(KnowledgePointService);
   private optionService = inject(OptionService);
   private messageService = inject(NzMessageService);
   private localizationService = inject(LocalizationService);
@@ -106,6 +109,7 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
   // Modal related
   currentSectionIndex = -1;
   questionBanks: QuestionBankListDto[] = [];
+  knowledgePoints: KnowledgePointNodeDto[] = [];
 
   get totalScore() {
     return this.sections.controls.reduce((total, section) => {
@@ -133,6 +137,24 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
 
   getQuestionBankName(questionBankId: string): string {
     return this.questionBanks.find(b => b.id === questionBankId)?.title || '';
+  }
+
+  getKnowledgePointName(knowledgePointId: string): string {
+    if (!knowledgePointId) return '-';
+    // Use recursive search or flatten list if knowledgePoints is tree
+    // KnowledgePointNodeDto has children.
+    // For simplicity, let's assume we can flatten it or search recursively.
+    const findName = (nodes: KnowledgePointNodeDto[], id: string): string | undefined => {
+      for (const node of nodes) {
+        if (node.id === id) return node.name;
+        if (node.children) {
+          const found = findName(node.children, id);
+          if (found) return found;
+        }
+      }
+      return undefined;
+    };
+    return findName(this.knowledgePoints, knowledgePointId) || knowledgePointId;
   }
 
   ngOnInit(): void {
@@ -169,6 +191,10 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
         })
       )
       .subscribe();
+
+    this.knowledgePointService.getAll({}).subscribe(res => {
+      this.knowledgePoints = res.items;
+    });
   }
 
   buildForm() {
@@ -200,7 +226,8 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
       questionBankId: [rule?.questionBankId || null, [Validators.required]],
       questionType: [rule?.questionType !== null && rule?.questionType !== undefined ? rule.questionType : null, [Validators.required]],
       count: [rule?.count || 0, [Validators.required, Validators.min(1)]],
-      score: [rule?.score || 0, [Validators.required, Validators.min(1)]]
+      score: [rule?.score || 0, [Validators.required, Validators.min(1)]],
+      knowledgePointId: [rule?.knowledgePointId || null]
     });
   }
 
@@ -222,7 +249,8 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
     const selectedRules = rulesArray.controls.map(control => ({
       questionBankId: control.get('questionBankId').value,
       questionType: control.get('questionType').value,
-      count: control.get('count').value
+      count: control.get('count').value,
+      knowledgePointId: control.get('knowledgePointId')?.value
     }));
 
     this.modal.createStatic(RuleRandomComponent, { selectedRules }, { size: 'lg' }).subscribe(result => {
@@ -230,7 +258,9 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
         // Check for duplicates and merge count if found
         const duplicateIndex = rulesArray.controls.findIndex(
           control =>
-            control.get('questionBankId').value === result.questionBankId && control.get('questionType').value === result.questionType
+            control.get('questionBankId').value === result.questionBankId &&
+            control.get('questionType').value === result.questionType &&
+            control.get('knowledgePointId')?.value === result.knowledgePointId
         );
 
         if (duplicateIndex > -1) {
@@ -246,7 +276,8 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
             count: result.count,
             score: 0,
             questionBankName: '',
-            questionTypeName: ''
+            questionTypeName: '',
+            knowledgePointId: result.knowledgePointId
           };
 
           rulesArray.push(this.createRule(rule));

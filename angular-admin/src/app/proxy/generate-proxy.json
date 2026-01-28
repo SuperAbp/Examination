@@ -2373,23 +2373,6 @@
                   }
                 },
                 {
-                  "name": "GetQuestionCountAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "id",
-                      "typeAsString": "System.Guid, System.Private.CoreLib",
-                      "type": "System.Guid",
-                      "typeSimple": "string",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.QuestionBankCountDto",
-                    "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.QuestionBankCountDto"
-                  }
-                },
-                {
                   "name": "GetListAsync",
                   "parametersOnMethod": [
                     {
@@ -2519,43 +2502,6 @@
               "returnValue": {
                 "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.QuestionBankDetailDto",
                 "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.QuestionBankDetailDto"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.IQuestionBankAdminAppService"
-            },
-            "GetQuestionCountAsyncById": {
-              "uniqueName": "GetQuestionCountAsyncById",
-              "name": "GetQuestionCountAsync",
-              "httpMethod": "GET",
-              "url": "api/question-management/question-bank/{id}/question-count",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "id",
-                  "typeAsString": "System.Guid, System.Private.CoreLib",
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "id",
-                  "name": "id",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.QuestionBankCountDto",
-                "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.QuestionBankCountDto"
               },
               "allowAnonymous": null,
               "implementFrom": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.IQuestionBankAdminAppService"
@@ -2816,6 +2762,23 @@
               "name": "IQuestionAdminAppService",
               "methods": [
                 {
+                  "name": "GetCountAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.GetQuestionCountInput, SuperAbp.Exam.Admin.Application.Contracts",
+                      "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.GetQuestionCountInput",
+                      "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.GetQuestionCountInput",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Int32",
+                    "typeSimple": "number"
+                  }
+                },
+                {
                   "name": "GetListAsync",
                   "parametersOnMethod": [
                     {
@@ -2971,6 +2934,67 @@
             }
           ],
           "actions": {
+            "GetCountAsyncByInput": {
+              "uniqueName": "GetCountAsyncByInput",
+              "name": "GetCountAsync",
+              "httpMethod": "GET",
+              "url": "api/question-management/question/count",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.GetQuestionCountInput, SuperAbp.Exam.Admin.Application.Contracts",
+                  "type": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.GetQuestionCountInput",
+                  "typeSimple": "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.GetQuestionCountInput",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "QuestionBankId",
+                  "jsonName": null,
+                  "type": "System.Guid?",
+                  "typeSimple": "string?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "QuestionType",
+                  "jsonName": null,
+                  "type": "System.Int32?",
+                  "typeSimple": "number?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "KnowledgePointId",
+                  "jsonName": null,
+                  "type": "System.Guid?",
+                  "typeSimple": "string?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                }
+              ],
+              "returnValue": {
+                "type": "System.Int32",
+                "typeSimple": "number"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Admin.QuestionManagement.Questions.IQuestionAdminAppService"
+            },
             "GetListAsyncByInput": {
               "uniqueName": "GetListAsyncByInput",
               "name": "GetListAsync",
@@ -3018,6 +3042,18 @@
                   "jsonName": null,
                   "type": "System.Guid[]",
                   "typeSimple": "[string]",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "KnowledgePointId",
+                  "jsonName": null,
+                  "type": "System.Guid?",
+                  "typeSimple": "string?",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -9083,6 +9119,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "KnowledgePointId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -9180,7 +9228,7 @@
         }
       ]
     },
-    "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.QuestionBankCountDto": {
+    "SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks.GetQuestionCountInput": {
       "baseType": null,
       "isEnum": false,
       "enumNames": null,
@@ -9188,10 +9236,10 @@
       "genericArguments": null,
       "properties": [
         {
-          "name": "SingleCount",
+          "name": "QuestionBankId",
           "jsonName": null,
-          "type": "System.Int32",
-          "typeSimple": "number",
+          "type": "System.Guid?",
+          "typeSimple": "string?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -9200,10 +9248,10 @@
           "regex": null
         },
         {
-          "name": "MultiCount",
+          "name": "QuestionType",
           "jsonName": null,
-          "type": "System.Int32",
-          "typeSimple": "number",
+          "type": "System.Int32?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -9212,22 +9260,10 @@
           "regex": null
         },
         {
-          "name": "JudgeCount",
+          "name": "KnowledgePointId",
           "jsonName": null,
-          "type": "System.Int32",
-          "typeSimple": "number",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "BlankCount",
-          "jsonName": null,
-          "type": "System.Int32",
-          "typeSimple": "number",
+          "type": "System.Guid?",
+          "typeSimple": "string?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -9457,6 +9493,18 @@
           "jsonName": null,
           "type": "[System.Guid]",
           "typeSimple": "[string]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "KnowledgePointId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

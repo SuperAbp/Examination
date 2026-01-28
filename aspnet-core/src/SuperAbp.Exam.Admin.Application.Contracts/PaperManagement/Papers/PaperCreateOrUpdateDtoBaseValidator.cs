@@ -55,26 +55,30 @@ public class PaperSectionDtoValidator : AbstractValidator<PaperCreateOrUpdateDto
             .GreaterThanOrEqualTo(0)
             .WithMessage(local["The {0} field must be greater than or equal to 0.", "{PropertyName}"]);
 
-        RuleFor(s => s.PaperQuestions)
-            .NotNull()
-            .WithMessage(local["The {0} field is required.", "{PropertyName}"])
-            .NotEmpty()
-            .WithMessage(local["The {0} field is required.", "{PropertyName}"]);
+        if (_paperType == PaperType.Fixed.Value)
+        {
+            RuleFor(s => s.PaperQuestions)
+                .NotNull()
+                .WithMessage(local["The {0} field is required.", "{PropertyName}"])
+                .NotEmpty()
+                .WithMessage(local["The {0} field is required.", "{PropertyName}"]);
 
-        RuleForEach(s => s.PaperQuestions)
-            .SetValidator(new PaperQuestionDtoValidator(local))
-            .When(s => s.PaperQuestions != null && s.PaperQuestions.Length > 0 && _paperType == PaperType.Fixed.Value);
+            RuleForEach(s => s.PaperQuestions)
+                .SetValidator(new PaperQuestionDtoValidator(local))
+                .When(s => s.PaperQuestions != null && s.PaperQuestions.Length > 0);
+        }
+        else if (_paperType == PaperType.Random.Value)
+        {
+            RuleFor(s => s.PaperQuestionRules)
+                .NotNull()
+                .WithMessage(local["The {0} field is required.", "{PropertyName}"])
+                .NotEmpty()
+                .WithMessage(local["The {0} field is required.", "{PropertyName}"]);
 
-        RuleFor(s => s.PaperQuestionRules)
-            .NotNull()
-            .WithMessage(local["The {0} field is required.", "{PropertyName}"])
-            .NotEmpty()
-            .WithMessage(local["The {0} field is required.", "{PropertyName}"])
-            .When(s => _paperType != PaperType.Fixed.Value);
-
-        RuleForEach(s => s.PaperQuestionRules)
-            .SetValidator(new PaperQuestionRuleDtoValidator(local))
-            .When(s => s.PaperQuestionRules != null && s.PaperQuestionRules.Length > 0 && _paperType != PaperType.Fixed.Value);
+            RuleForEach(s => s.PaperQuestionRules)
+                .SetValidator(new PaperQuestionRuleDtoValidator(local))
+                .When(s => s.PaperQuestionRules != null && s.PaperQuestionRules.Length > 0);
+        }
     }
 }
 

@@ -15,23 +15,6 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     Task<bool> ExistsQuestionTypeAsync(int questionType, List<Guid> ids, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 数量
-    /// </summary>
-    /// <param name="questionBankId">题库Id</param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task<int> GetCountAsync(Guid questionBankId, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// 数量
-    /// </summary>
-    /// <param name="questionBankId">题库Id</param>
-    /// <param name="questionType">问题类型</param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task<int> GetCountAsync(Guid questionBankId, QuestionType questionType, CancellationToken cancellationToken = default);
-
-    /// <summary>
     /// 题型
     /// </summary>
     /// <param name="questionBankId"></param>
@@ -46,12 +29,14 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// <param name="questionBankIds">题库Id</param>
     /// <param name="questionType">问题类型</param>
     /// <param name="excludeIds">剔除Id</param>
+    /// <param name="knowledgePointId">知识点Id</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<int> GetCountAsync(string? content = null,
         int? questionType = null,
         List<Guid>? questionBankIds = null,
         List<Guid>? excludeIds = null,
+        Guid? knowledgePointId = null,
         CancellationToken cancellationToken = default);
 
     Task<List<Question>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
@@ -67,6 +52,7 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// <param name="questionBankIds">题库Id</param>
     /// <param name="includeIds">包含Id</param>
     /// <param name="excludeIds">剔除Id</param>
+    /// <param name="knowledgePointId">知识点Id</param>
     /// <param name="includeDetails">加载详情</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
@@ -78,6 +64,7 @@ public interface IQuestionRepository : IRepository<Question, Guid>
         List<Guid>? questionBankIds = null,
         List<Guid>? includeIds = null,
         List<Guid>? excludeIds = null,
+        Guid? knowledgePointId = null,
         bool? includeDetails = false,
         CancellationToken cancellationToken = default);
 
@@ -87,12 +74,14 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// <param name="maxResultCount"></param>
     /// <param name="questionRepositoryId">题库Id</param>
     /// <param name="questionType">题型</param>
+    /// <param name="knowledgePointId">知识点Id</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<List<Question>> GetRandomListAsync(
         int maxResultCount = int.MaxValue,
         Guid? questionRepositoryId = null,
         int? questionType = null,
+        Guid? knowledgePointId = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>

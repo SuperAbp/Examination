@@ -1,7 +1,7 @@
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
-import type { GetQuestionBankForEditorOutput, GetQuestionBanksInput, QuestionBankCountDto, QuestionBankCreateDto, QuestionBankDetailDto, QuestionBankListDto, QuestionBankUpdateDto } from '../question-management/question-banks/models';
+import type { GetQuestionBankForEditorOutput, GetQuestionBanksInput, QuestionBankCreateDto, QuestionBankDetailDto, QuestionBankListDto, QuestionBankUpdateDto } from '../question-management/question-banks/models';
 
 @Injectable({
   providedIn: 'root',
@@ -49,14 +49,6 @@ export class QuestionBankService {
       method: 'GET',
       url: '/api/question-management/question-bank',
       params: { title: input.title, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
-    },
-    { apiName: this.apiName,...config });
-  
-
-  getQuestionCount = (id: string, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, QuestionBankCountDto>({
-      method: 'GET',
-      url: `/api/question-management/question-bank/${id}/question-count`,
     },
     { apiName: this.apiName,...config });
   

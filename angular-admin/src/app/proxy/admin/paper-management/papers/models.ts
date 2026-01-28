@@ -39,6 +39,7 @@ export interface PaperCreateOrUpdateDtoBase_PaperSectionDto_PaperQuestionRuleDto
   questionType: number;
   count: number;
   score: number;
+  knowledgePointId?: string;
 }
 
 export interface PaperListDto extends EntityDto<string> {

@@ -34,6 +34,11 @@ public class PaperCreateOrUpdateDtoBase
             public int QuestionType { get; set; }
             public int Count { get; set; }
             public decimal Score { get; set; }
+
+            /// <summary>
+            /// 知识点Id（可选）
+            /// </summary>
+            public Guid? KnowledgePointId { get; set; }
         }
     }
 }
