@@ -158,10 +158,10 @@ public class UserExamManager(
 
         foreach (var paperRule in section.PaperQuestionRules)
         {
-            List<Question> randomQuestions = await GetRandomQuestions(paperRule.QuestionBankId, paperRule.QuestionType, paperRule.Count);
+            List<Question> randomQuestions = await GetRandomQuestions(paperRule.QuestionBankId, paperRule.QuestionType, paperRule.Count, knowledgePointId: paperRule.KnowledgePointId);
             foreach (var question in randomQuestions)
             {
-                var userExamQuestion = new UserExamQuestion(
+                UserExamQuestion userExamQuestion = new(
                     GuidGenerator.Create(),
                     userExamSection.Id,
                     question.Id,
