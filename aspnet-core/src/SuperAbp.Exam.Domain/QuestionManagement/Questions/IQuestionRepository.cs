@@ -74,12 +74,14 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     /// <param name="maxResultCount"></param>
     /// <param name="questionRepositoryId">题库Id</param>
     /// <param name="questionType">题型</param>
+    /// <param name="knowledgePointId">知识点Id</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<List<Question>> GetRandomListAsync(
         int maxResultCount = int.MaxValue,
         Guid? questionRepositoryId = null,
         int? questionType = null,
+        Guid? knowledgePointId = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>

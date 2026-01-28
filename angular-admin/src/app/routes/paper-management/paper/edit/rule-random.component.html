@@ -45,13 +45,10 @@
     <nz-form-item>
       <nz-form-label>{{ 'Exam::KnowledgePoint' | abpLocalization }}</nz-form-label>
       <nz-form-control>
-        <nz-select formControlName="knowledgePointId" nzShowSearch nzAllowClear
+        <nz-tree-select formControlName="knowledgePointId" nzShowSearch nzAllowClear
           [nzPlaceHolder]="'Exam::Placeholder' | abpLocalization: ('Exam::KnowledgePoint' | abpLocalization)"
-          (ngModelChange)="onKnowledgePointChanged($event)">
-          @for (knowledgePoint of knowledgePoints; track $index) {
-          <nz-option [nzValue]="knowledgePoint.id" [nzLabel]="knowledgePoint.name"></nz-option>
-          }
-        </nz-select>
+          [nzNodes]="knowledgePoints" (ngModelChange)="onKnowledgePointChanged($event)">
+        </nz-tree-select>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>

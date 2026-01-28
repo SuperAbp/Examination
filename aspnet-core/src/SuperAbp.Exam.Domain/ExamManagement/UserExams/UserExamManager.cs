@@ -181,10 +181,10 @@ public class UserExamManager(
         });
     }
 
-    private async Task<List<Question>> GetRandomQuestions(Guid questionRepositoryId, QuestionType questionType, int count)
+    private async Task<List<Question>> GetRandomQuestions(Guid questionRepositoryId, QuestionType questionType, int count, Guid? knowledgePointId = null)
     {
         return await questionRepository.GetRandomListAsync(questionRepositoryId: questionRepositoryId,
-            questionType: questionType, maxResultCount: count);
+            questionType: questionType, maxResultCount: count, knowledgePointId: knowledgePointId);
     }
 
     /// <summary>

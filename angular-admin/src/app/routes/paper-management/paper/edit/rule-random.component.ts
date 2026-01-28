@@ -3,11 +3,14 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { KnowledgePointService, OptionService, QuestionBankService, QuestionService } from '@proxy/admin/controllers';
 import { GetQuestionCountInput, QuestionBankListDto } from '@proxy/admin/question-management/question-banks';
+import { KnowledgePointNodeDto } from '@proxy/admin/knowledge-points';
+import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { map, tap } from 'rxjs';
 
@@ -18,7 +21,7 @@ export interface RuleRandomParams {
 @Component({
   selector: 'app-rule-random',
   templateUrl: './rule-random.component.html',
-  imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, NzFormModule, NzSelectModule, NzInputNumberModule]
+  imports: [CoreModule, NzButtonModule, NzSpinModule, NzModalModule, NzFormModule, NzSelectModule, NzTreeSelectModule, NzInputNumberModule]
 })
 export class RuleRandomComponent implements OnInit {
   @Input() selectedRules: Array<{ questionBankId: string; questionType: number; count: number; knowledgePointId?: string }> = [];
@@ -33,7 +36,7 @@ export class RuleRandomComponent implements OnInit {
 
   questionTypes: Array<{ label: string; value: number }> = [];
   questionBanks: QuestionBankListDto[] = [];
-  knowledgePoints: any[] = [];
+  knowledgePoints: NzTreeNodeOptions[] = [];
   totalQuestionCount: number = 0;
   loading = true;
   isConfirmLoading = false;
@@ -72,7 +75,7 @@ export class RuleRandomComponent implements OnInit {
 
           // Load Knowledge Points
           this.knowledgePointService.getAll({}).subscribe(res => {
-            this.knowledgePoints = res.items;
+            this.knowledgePoints = this.transformToTreeNodes(res.items);
           });
 
           this.questionBanks = res.items;
@@ -144,6 +147,15 @@ export class RuleRandomComponent implements OnInit {
     const countControl = this.form.get('count');
     countControl.setValidators([Validators.required, Validators.min(1), Validators.max(this.totalQuestionCount)]);
     countControl.updateValueAndValidity();
+  }
+
+  private transformToTreeNodes(nodes: KnowledgePointNodeDto[]): NzTreeNodeOptions[] {
+    return nodes.map(node => ({
+      title: node.name,
+      key: node.id,
+      isLeaf: !node.children || node.children.length === 0,
+      children: node.children && node.children.length > 0 ? this.transformToTreeNodes(node.children) : []
+    }));
   }
 
   save() {

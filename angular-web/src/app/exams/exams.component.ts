@@ -88,11 +88,14 @@ export class ExamsComponent implements OnInit {
   }
 
   isExamAvailable(exam: ExamListDto): boolean {
+    if (!exam.startTime || !exam.endTime) {
+      return exam.status === 1;
+    }
+
     const now = new Date().getTime();
     const startTime = new Date(exam.startTime).getTime();
     const endTime = new Date(exam.endTime).getTime();
     const bufferTimeMs = this.bufferTime * 60 * 1000;
-
     return exam.status === 1 && now >= startTime - bufferTimeMs && now <= endTime + bufferTimeMs;
   }
 }

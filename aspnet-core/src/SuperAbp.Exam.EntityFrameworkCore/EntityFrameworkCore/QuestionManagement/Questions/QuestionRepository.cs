@@ -132,12 +132,24 @@ public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProv
     }
 
     public async Task<List<Question>> GetRandomListAsync(int maxResultCount = Int32.MaxValue, Guid? questionRepositoryId = null,
-        int? questionType = null, CancellationToken cancellationToken = default)
+        int? questionType = null, Guid? knowledgePointId = null, CancellationToken cancellationToken = default)
     {
         IQueryable<Question> queryable = (await GetQueryableAsync())
             .WhereIf(questionRepositoryId.HasValue, p => p.QuestionBankId == questionRepositoryId.Value)
             .WhereIf(questionType.HasValue, p => p.QuestionType == questionType.Value);
+
         var dbContext = await GetDbContextAsync();
+
+        if (knowledgePointId.HasValue)
+        {
+            var questionKnowledgePointQueryable = dbContext.Set<QuestionKnowledgePoint>().AsQueryable();
+            queryable = (from q in queryable
+                         join qkp in questionKnowledgePointQueryable
+                         on q.Id equals qkp.QuestionId
+                         where qkp.KnowledgePointId == knowledgePointId.Value
+                         select q).Distinct();
+        }
+
         if (dbContext.Database.ProviderName?.ToLower().Contains("sqlserver") ?? false)
         {
             return await queryable
