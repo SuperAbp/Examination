@@ -17,4 +17,9 @@ public interface IPaperRepository : IRepository<Paper, Guid>
     /// 获取包含指定题目的试卷列表
     /// </summary>
     Task<List<Paper>> GetPapersByQuestionIdAsync(Guid questionId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 获取包含指定知识点的试卷列表
+    /// </summary>
+    Task<List<Paper>> GetPapersByKnowledgePointIdAsync(Guid knowledgePointId, CancellationToken cancellationToken = default);
 }

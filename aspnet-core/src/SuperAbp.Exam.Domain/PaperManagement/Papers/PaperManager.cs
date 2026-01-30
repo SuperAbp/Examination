@@ -72,4 +72,25 @@ public class PaperManager(IPaperRepository paperRepository,
         // 批量更新，提高性能
         await PaperRepository.UpdateManyAsync(papers);
     }
+
+    /// <summary>
+    /// 移除知识点在所有试卷规则中的引用
+    /// 用于知识点删除时的清理工作，通过聚合根的方法确保数据一致性
+    /// </summary>
+    public virtual async Task RemoveKnowledgePointFromAllPapersAsync(Guid knowledgePointId, Guid? tenantId = null)
+    {
+        var papers = await PaperRepository.GetPapersByKnowledgePointIdAsync(knowledgePointId);
+
+        if (papers.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var paper in papers)
+        {
+            paper.RemoveRulesByKnowledgePointId(knowledgePointId);
+        }
+
+        await PaperRepository.UpdateManyAsync(papers);
+    }
 }

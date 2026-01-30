@@ -145,6 +145,23 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
         RecalculateTotals();
     }
 
+    /// <summary>
+    /// 根据知识点ID移除相关的抽题规则
+    /// 用于知识点删除时的清理工作
+    /// </summary>
+    public void RemoveRulesByKnowledgePointId(Guid knowledgePointId)
+    {
+        var rulesToRemove = PaperQuestionRules
+            .Where(r => r.KnowledgePointId == knowledgePointId)
+            .ToList();
+
+        foreach (var rule in rulesToRemove)
+        {
+            PaperQuestionRules.Remove(rule);
+        }
+        RecalculateTotals();
+    }
+
     private PaperQuestionRule GetPaperQuestionRule(Guid ruleId)
     {
         PaperQuestionRule? rule = PaperQuestionRules.SingleOrDefault(q => q.Id == ruleId);

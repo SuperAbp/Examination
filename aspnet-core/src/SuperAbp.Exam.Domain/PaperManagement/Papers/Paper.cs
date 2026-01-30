@@ -181,6 +181,20 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
             ?? throw new EntityNotFoundException(typeof(PaperSection), sectionId);
     }
 
+    /// <summary>
+    /// 根据知识点ID移除相关的抽题规则
+    /// 用于知识点删除时的清理工作
+    /// </summary>
+    public Paper RemoveRulesByKnowledgePointId(Guid knowledgePointId)
+    {
+        foreach (var section in PaperSections)
+        {
+            section.RemoveRulesByKnowledgePointId(knowledgePointId);
+        }
+        RecalculateTotals();
+        return this;
+    }
+
     private void RecalculateTotals()
     {
         Score = PaperSections.Sum(s => s.TotalScore);

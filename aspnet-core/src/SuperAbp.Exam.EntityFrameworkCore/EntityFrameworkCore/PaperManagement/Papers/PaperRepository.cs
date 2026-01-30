@@ -35,4 +35,19 @@ public class PaperRepository(IDbContextProvider<IExamDbContext> dbContextProvide
 
         return papers;
     }
+
+    public async Task<List<Paper>> GetPapersByKnowledgePointIdAsync(Guid knowledgePointId, CancellationToken cancellationToken = default)
+    {
+        var dbContext = await GetDbContextAsync();
+
+        var papers = await dbContext.Papers
+            .Where(p => p.PaperSections
+                .Any(s => s.PaperQuestionRules
+                    .Any(r => r.KnowledgePointId == knowledgePointId)))
+            .Include(p => p.PaperSections)
+            .ThenInclude(s => s.PaperQuestionRules)
+            .ToListAsync(cancellationToken);
+
+        return papers;
+    }
 }
