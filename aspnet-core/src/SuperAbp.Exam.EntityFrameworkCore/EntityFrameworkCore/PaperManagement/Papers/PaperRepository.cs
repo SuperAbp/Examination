@@ -9,7 +9,7 @@ using Volo.Abp.EntityFrameworkCore;
 namespace SuperAbp.Exam.EntityFrameworkCore.PaperManagement.Papers;
 
 /// <summary>
-/// 考试
+/// 试卷
 /// </summary>
 public class PaperRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
     : EfCoreRepository<IExamDbContext, Paper, Guid>(dbContextProvider), IPaperRepository
@@ -17,5 +17,15 @@ public class PaperRepository(IDbContextProvider<IExamDbContext> dbContextProvide
     public async Task<bool> NameExistsAsync(string name, CancellationToken cancellationToken = default)
     {
         return await (await GetQueryableAsync()).AnyAsync(e => e.Name == name, cancellationToken);
+    }
+
+    public async Task RemovePaperQuestionsByQuestionIdAsync(Guid questionId, CancellationToken cancellationToken = default)
+    {
+        var dbContext = await GetDbContextAsync(cancellationToken);
+        var paperQuestions = await dbContext.PaperQuestions
+            .Where(pq => pq.QuestionId == questionId)
+            .ToListAsync(cancellationToken);
+
+        dbContext.PaperQuestions.RemoveRange(paperQuestions);
     }
 }

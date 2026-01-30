@@ -6,7 +6,7 @@ using Volo.Abp.MultiTenancy;
 namespace SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 
 /// <summary>
-/// 答案
+/// 选项
 /// </summary>
 public class QuestionOption : FullAuditedEntity<Guid>, IMultiTenant
 {

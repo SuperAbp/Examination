@@ -1,18 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Volo.Abp.Application.Dtos;
+using SuperAbp.Exam.Admin.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.UserExamQuestions;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.Questions;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using SuperAbp.Exam.ExamManagement.Exams;
-using SuperAbp.Exam.ExamManagement.UserExamQuestions;
+using System.Threading.Tasks;
+using Volo.Abp;
+using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 using Volo.Abp.Identity;
 using Volo.Abp.Users;
-using Volo.Abp;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
-using SuperAbp.Exam.Admin.ExamManagement.Exams;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.UserExams;
 
@@ -21,13 +22,15 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
     IIdentityUserRepository userRepository,
     IExamRepository examRepository,
     QuestionManager questionManager,
-    UserExamManager userExamManager) : ExamAppService, IUserExamAdminAppService
+    UserExamManager userExamManager,
+    IDataFilter<ISoftDelete> softDeleteFilter) : ExamAppService, IUserExamAdminAppService
 {
     protected IQuestionRepository QuestionRepository { get; } = questionRepository;
     public IIdentityUserRepository UserRepository { get; } = userRepository;
     public IExamRepository ExamRepository { get; } = examRepository;
     protected QuestionManager QuestionManager { get; } = questionManager;
     public UserExamManager UserExamManager { get; } = userExamManager;
+    public IDataFilter<ISoftDelete> SoftDeleteFilter { get; } = softDeleteFilter;
     protected IUserExamRepository UserExamRepository { get; } = userExamRepository;
 
     public async Task<ListResultDto<UserExamListDto>> GetListAsync(GetUserExamsInput input)
@@ -46,7 +49,20 @@ public class UserExamAdminAppService(IUserExamRepository userExamRepository,
         Examination examination = await ExamRepository.GetAsync(userExam.ExamId);
         IdentityUser user = await UserRepository.GetAsync(userExam.UserId);
         List<Guid> questionIds = userExam.Sections.SelectMany(s => s.Questions).Select(q => q.QuestionId).ToList();
-        List<Question> questions = await QuestionRepository.GetByIdsAsync(questionIds);
+
+        List<Question> questions;
+        if (userExam.IsSubmitted())
+        {
+            using (SoftDeleteFilter.Disable())
+            {
+                questions = await QuestionRepository.GetByIdsAsync(questionIds);
+            }
+        }
+        else
+        {
+            questions = await QuestionRepository.GetByIdsAsync(questionIds);
+        }
+
         UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
         dto.ReviewMode = examination.ReviewMode.Value;
         dto.ExamStatus = examination.Status.Value;

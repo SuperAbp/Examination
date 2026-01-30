@@ -1,24 +1,26 @@
 using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.UserExamQuestions;
+using SuperAbp.Exam.Jobs.UserExamCreateQuestion;
+using SuperAbp.Exam.KnowledgePoints;
+using SuperAbp.Exam.Mistakes;
+using SuperAbp.Exam.MistakesReviews.Events;
 using SuperAbp.Exam.QuestionManagement.Questions;
+using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SuperAbp.Exam.ExamManagement.UserExamQuestions;
-using SuperAbp.Exam.Jobs.UserExamCreateQuestion;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.BackgroundJobs;
+using Volo.Abp.Data;
+using Volo.Abp.EventBus.Local;
 using Volo.Abp.Timing;
 using Volo.Abp.Users;
-using SuperAbp.Exam.KnowledgePoints;
-using Volo.Abp.BackgroundJobs;
-using Volo.Abp.EventBus.Local;
-using SuperAbp.Exam.MistakesReviews.Events;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto;
 using static SuperAbp.Exam.ExamManagement.UserExams.UserExamDetailDto.SectionDto.QuestionDto;
-using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
-using SuperAbp.Exam.Mistakes;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams
 {
@@ -32,12 +34,15 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         QuestionManager questionManager,
         IMistakeRepository mistakesReviewRepository,
         IBackgroundJobManager backgroundJobManager,
+        IDataFilter<ISoftDelete> softDeleteFilter,
         ILocalEventBus localEventBus)
         : ExamAppService, IUserExamAppService
     {
         protected IUserExamRepository UserExamRepository { get; } = userExamRepository;
         protected IExamRepository ExamRepository { get; } = examRepository;
+        protected IMistakeRepository MistakesReviewRepository { get; } = mistakesReviewRepository;
         protected IBackgroundJobManager BackgroundJobManager { get; } = backgroundJobManager;
+        protected IDataFilter<ISoftDelete> SoftDeleteFilter { get; } = softDeleteFilter;
 
         public async Task<UserExamDetailDto?> GetUnfinishedAsync()
         {
@@ -48,9 +53,21 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
         public virtual async Task<UserExamDetailDto> GetAsync(Guid id)
         {
             UserExam userExam = await UserExamRepository.GetAsync(id);
-            Examination exam = await examRepository.GetAsync(userExam.ExamId);
+            Examination exam = await ExamRepository.GetAsync(userExam.ExamId);
             List<Guid> questionIds = userExam.Sections.SelectMany(s => s.Questions).Select(q => q.QuestionId).ToList();
-            List<Question> questions = await questionRepository.GetByIdsAsync(questionIds);
+            List<Question> questions;
+            if (userExam.IsSubmitted())
+            {
+                using (SoftDeleteFilter.Disable())
+                {
+                    questions = await questionRepository.GetByIdsAsync(questionIds);
+                }
+            }
+            else
+            {
+                questions = await questionRepository.GetByIdsAsync(questionIds);
+            }
+
             UserExamDetailDto dto = ObjectMapper.Map<UserExam, UserExamDetailDto>(userExam);
             dto.ExamName = exam.Name;
             dto.AnswerMode = exam.AnswerMode;
@@ -61,6 +78,7 @@ namespace SuperAbp.Exam.ExamManagement.UserExams
                 {
                     endTime = exam.EndTime.Value;
                 }
+
                 dto.EndTime = endTime;
             }
             else

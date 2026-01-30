@@ -15,4 +15,14 @@ public class QuestionKnowledgePointRepository(IDbContextProvider<IExamDbContext>
     {
         return await GetListAsync(qk => qk.QuestionId == questionId, cancellationToken: cancellationToken);
     }
+
+    public async Task DeleteByQuestionIdAsync(Guid questionId)
+    {
+        await DeleteAsync(qk => qk.QuestionId == questionId);
+    }
+
+    public async Task DeleteByKnowledgePointIdAsync(Guid knowledgePointId)
+    {
+        await DeleteAsync(qk => qk.KnowledgePointId == knowledgePointId);
+    }
 }

@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using SuperAbp.Exam.ExamManagement.Exams;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
-using SuperAbp.Exam.ExamManagement.Exams;
 
 namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.Exams
 {
@@ -11,6 +14,10 @@ namespace SuperAbp.Exam.EntityFrameworkCore.ExamManagement.Exams
     public class ExamRepository(IDbContextProvider<IExamDbContext> dbContextProvider)
         : EfCoreRepository<IExamDbContext, Examination, Guid>(dbContextProvider), IExamRepository
     {
-        // TODO:编写仓储代码
+        public async Task<bool> ExistsByPaperIdAsync(Guid paperId, CancellationToken cancellationToken = default)
+        {
+            var dbSet = await GetDbSetAsync();
+            return await dbSet.AnyAsync(q => q.PaperId == paperId, cancellationToken);
+        }
     }
 }

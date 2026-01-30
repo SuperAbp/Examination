@@ -174,4 +174,9 @@ public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProv
     {
         return await (await GetDbSetAsync()).AnyAsync(x => x.Content == content, cancellationToken);
     }
+
+    public async Task DeleteByQuestionBankIdAsync(Guid questionBankId, CancellationToken cancellationToken = default)
+    {
+        await DeleteAsync(q => q.QuestionBankId == questionBankId);
+    }
 }

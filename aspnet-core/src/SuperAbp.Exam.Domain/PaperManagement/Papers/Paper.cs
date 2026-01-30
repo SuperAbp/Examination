@@ -1,5 +1,4 @@
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
-using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;

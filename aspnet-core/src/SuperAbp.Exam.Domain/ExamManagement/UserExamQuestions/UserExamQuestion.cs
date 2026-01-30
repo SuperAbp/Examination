@@ -1,11 +1,8 @@
 using SuperAbp.Exam.ExamManagement.UserExamQuestionReviews;
-using SuperAbp.Exam.ExamManagement.UserExams;
-using SuperAbp.Exam.MistakesReviews.Events;
 using System;
 using System.Collections.Generic;
 using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp.MultiTenancy;
-using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 
 namespace SuperAbp.Exam.ExamManagement.UserExamQuestions;
 

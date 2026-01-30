@@ -13,4 +13,11 @@ public interface IMistakeRepository : IRepository<Mistake, Guid>
         Guid? userId = null, string? questionContent = null, QuestionType? questionType = null, CancellationToken cancellationToken = default);
 
     Task<long> CountAsync(Guid? userId, string? questionContent = null, QuestionType? questionType = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 删除
+    /// </summary>
+    /// <param name="questionId">题目Id</param>
+    /// <returns></returns>
+    Task DeleteByQuestionIdAsync(Guid questionId);
 }

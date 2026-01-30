@@ -27,7 +27,6 @@ using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
-using SuperAbp.Exam.PaperManagement.PaperQuestions;
 
 using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;

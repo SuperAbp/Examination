@@ -23,6 +23,7 @@ public static class ExamDomainErrorCodes
     {
         public const string NameAlreadyExists = "Exam:Paper:0001";
         public const string SectionOrderAlreadyExist = "Exam:Paper:0002";
+        public const string PaperUsedByExam = "Exam:Paper:0003";
     }
 
     public static class PaperSections

@@ -1,5 +1,4 @@
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
-using SuperAbp.Exam.PaperManagement.PaperQuestions;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.MultiTenancy;
 
-namespace SuperAbp.Exam.PaperManagement.PaperSections;
+namespace SuperAbp.Exam.PaperManagement.Papers;
 
 /// <summary>
 /// 试卷大题
