@@ -122,6 +122,24 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
         return this;
     }
 
+    public Paper RemoveQuestionByQuestionId(Guid questionId)
+    {
+        foreach (var section in PaperSections)
+        {
+            var questionsToRemove = section.PaperQuestions
+                .Where(pq => pq.QuestionId == questionId)
+                .ToList();
+
+            foreach (var question in questionsToRemove)
+            {
+                section.PaperQuestions.Remove(question);
+            }
+        }
+
+        RecalculateTotals();
+        return this;
+    }
+
     public Paper AddRule(Guid sectionId, Guid ruleId, Guid questionBankId, QuestionType questionType, int count, decimal score, Guid? knowledgePointId = null)
     {
         PaperSection section = GetSection(sectionId);

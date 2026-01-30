@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -19,13 +21,18 @@ public class PaperRepository(IDbContextProvider<IExamDbContext> dbContextProvide
         return await (await GetQueryableAsync()).AnyAsync(e => e.Name == name, cancellationToken);
     }
 
-    public async Task RemovePaperQuestionsByQuestionIdAsync(Guid questionId, CancellationToken cancellationToken = default)
+    public async Task<List<Paper>> GetPapersByQuestionIdAsync(Guid questionId, CancellationToken cancellationToken = default)
     {
-        var dbContext = await GetDbContextAsync(cancellationToken);
-        var paperQuestions = await dbContext.PaperQuestions
-            .Where(pq => pq.QuestionId == questionId)
+        var dbContext = await GetDbContextAsync();
+
+        var papers = await dbContext.Papers
+            .Where(p => p.PaperSections
+                .Any(s => s.PaperQuestions
+                    .Any(pq => pq.QuestionId == questionId)))
+            .Include(p => p.PaperSections)
+            .ThenInclude(s => s.PaperQuestions)
             .ToListAsync(cancellationToken);
 
-        dbContext.PaperQuestions.RemoveRange(paperQuestions);
+        return papers;
     }
 }

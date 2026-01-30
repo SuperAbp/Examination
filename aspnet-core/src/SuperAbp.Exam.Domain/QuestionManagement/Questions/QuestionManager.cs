@@ -2,21 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SuperAbp.Exam.Favorites;
 using SuperAbp.Exam.KnowledgePoints;
-using SuperAbp.Exam.Mistakes;
-using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 using Volo.Abp.Domain.Services;
+using Volo.Abp.EventBus.Local;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions;
 
-public class QuestionManager(IQuestionRepository questionRepository,
+public class QuestionManager(
+    IQuestionRepository questionRepository,
     IQuestionKnowledgePointRepository questionKnowledgePointRepository,
     IKnowledgePointRepository knowledgePointRepository,
-    IFavoriteRepository favoriteRepository,
-    IMistakeRepository mistakeRepository,
-    IPaperRepository paperRepository) : DomainService
+    ILocalEventBus localEventBus) : DomainService
 {
     protected IQuestionRepository QuestionRepository { get; } = questionRepository;
 
@@ -24,9 +21,7 @@ public class QuestionManager(IQuestionRepository questionRepository,
         questionKnowledgePointRepository;
 
     protected IKnowledgePointRepository KnowledgePointRepository { get; } = knowledgePointRepository;
-    protected IFavoriteRepository FavoriteRepository { get; } = favoriteRepository;
-    protected IMistakeRepository MistakeRepository { get; } = mistakeRepository;
-    protected IPaperRepository PaperRepository { get; } = paperRepository;
+    protected ILocalEventBus LocalEventBus { get; } = localEventBus;
 
     public virtual async Task<List<Guid>> GetKnowledgePointIdsAsync(Guid questionId)
     {
@@ -90,10 +85,12 @@ public class QuestionManager(IQuestionRepository questionRepository,
     {
         question.Options.Clear();
         await QuestionKnowledgePointRepository.DeleteByQuestionIdAsync(question.Id);
-        await FavoriteRepository.DeleteByQuestionIdAsync(question.Id);
-        await MistakeRepository.DeleteByQuestionIdAsync(question.Id);
 
-        await PaperRepository.RemovePaperQuestionsByQuestionIdAsync(question.Id);
+        await LocalEventBus.PublishAsync(new QuestionDeletedEvent
+        {
+            QuestionId = question.Id,
+            TenantId = question.TenantId
+        });
 
         await QuestionRepository.UpdateAsync(question);
         await QuestionRepository.DeleteAsync(question);
