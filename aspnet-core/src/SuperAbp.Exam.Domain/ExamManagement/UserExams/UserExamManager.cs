@@ -1,8 +1,6 @@
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
-using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
-using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
@@ -18,11 +16,8 @@ public class UserExamManager(
     IExamRepository examRepository,
     IQuestionRepository questionRepository,
     IPaperRepository paperRepository,
-    IPaperQuestionRuleRepository paperQuestionRuleRepository,
     IUserExamRepository userExamRepository,
-    ILocalEventBus eventBus,
-    IUserExamQuestionRepository userExamQuestionRepository,
-    IPaperSectionRepository paperSectionRepository)
+    ILocalEventBus eventBus)
     : DomainService
 {
     public async Task<UserExam> CreateAsync(Guid examId, Guid userId)
@@ -68,11 +63,10 @@ public class UserExamManager(
         Examination exam = await examRepository.GetAsync(userExam.ExamId);
         Paper paper = await paperRepository.GetAsync(exam.PaperId);
 
-        List<PaperSection> sections = await paperSectionRepository.GetListByPaperIdAsync(paper.Id);
         int sectionIndex = 0;
-        int totalSections = sections.Count;
+        int totalSections = paper.PaperSections.Count;
 
-        foreach (var section in sections)
+        foreach (var section in paper.PaperSections)
         {
             sectionIndex++;
 

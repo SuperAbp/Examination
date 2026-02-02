@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
-using SuperAbp.Exam.PaperManagement.PaperQuestions;
 using SuperAbp.Exam.PaperManagement.Papers;
-using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.Permissions;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
@@ -171,8 +169,8 @@ namespace SuperAbp.Exam.Admin.PaperManagement.Papers
         [Authorize(ExamPermissions.Papers.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
-            // TODO: 如何同时删除子实体？
-            await paperRepository.DeleteAsync(id);
+            Paper paper = await paperRepository.GetAsync(id);
+            await paperManager.DeleteAsync(paper);
         }
 
         /// <summary>

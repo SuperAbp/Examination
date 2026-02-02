@@ -5,25 +5,31 @@ using System.Threading.Tasks;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 using Volo.Abp.Domain.Services;
+using Volo.Abp.EventBus.Local;
 
 namespace SuperAbp.Exam.QuestionManagement.Questions;
 
-public class QuestionManager(IQuestionRepository questionRepository, IQuestionKnowledgePointRepository questionKnowledgePointRepository, IKnowledgePointRepository knowledgePointRepository) : DomainService
+public class QuestionManager(
+    IQuestionRepository questionRepository,
+    IQuestionKnowledgePointRepository questionKnowledgePointRepository,
+    IKnowledgePointRepository knowledgePointRepository,
+    ILocalEventBus localEventBus) : DomainService
 {
     protected IQuestionRepository QuestionRepository { get; } = questionRepository;
 
     protected IQuestionKnowledgePointRepository QuestionKnowledgePointRepository { get; } =
         questionKnowledgePointRepository;
 
-    public IKnowledgePointRepository KnowledgePointRepository { get; } = knowledgePointRepository;
+    protected IKnowledgePointRepository KnowledgePointRepository { get; } = knowledgePointRepository;
+    protected ILocalEventBus LocalEventBus { get; } = localEventBus;
 
-    public async Task<List<Guid>> GetKnowledgePointIdsAsync(Guid questionId)
+    public virtual async Task<List<Guid>> GetKnowledgePointIdsAsync(Guid questionId)
     {
         List<QuestionKnowledgePoint> points = await QuestionKnowledgePointRepository.GetByQuestionIdAsync(questionId);
         return points.Select(p => p.KnowledgePointId).ToList();
     }
 
-    public async Task<List<KnowledgePoint>> GetKnowledgePointsAsync(Guid questionId)
+    public virtual async Task<List<KnowledgePoint>> GetKnowledgePointsAsync(Guid questionId)
     {
         return await KnowledgePointRepository.GetByQuestionIdAsync(questionId);
     }
@@ -73,5 +79,23 @@ public class QuestionManager(IQuestionRepository questionRepository, IQuestionKn
         {
             throw new QuestionContentAlreadyExistException(content);
         }
+    }
+
+    public virtual async Task DeleteAsync(Question question)
+    {
+        question.Options?.Clear();
+        await QuestionKnowledgePointRepository.DeleteByQuestionIdAsync(question.Id);
+
+        await LocalEventBus.PublishAsync(new QuestionDeletedEvent
+        {
+            QuestionId = question.Id,
+            TenantId = question.TenantId
+        });
+
+        if (question.Options != null && question.Options.Count > 0)
+        {
+            await QuestionRepository.UpdateAsync(question);
+        }
+        await QuestionRepository.DeleteAsync(question);
     }
 }

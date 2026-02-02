@@ -1,5 +1,4 @@
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
-using SuperAbp.Exam.PaperManagement.PaperQuestions;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.MultiTenancy;
 
-namespace SuperAbp.Exam.PaperManagement.PaperSections;
+namespace SuperAbp.Exam.PaperManagement.Papers;
 
 /// <summary>
 /// 试卷大题
@@ -146,6 +145,23 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
         RecalculateTotals();
     }
 
+    /// <summary>
+    /// 根据知识点ID移除相关的抽题规则
+    /// 用于知识点删除时的清理工作
+    /// </summary>
+    public void RemoveRulesByKnowledgePointId(Guid knowledgePointId)
+    {
+        var rulesToRemove = PaperQuestionRules
+            .Where(r => r.KnowledgePointId == knowledgePointId)
+            .ToList();
+
+        foreach (var rule in rulesToRemove)
+        {
+            PaperQuestionRules.Remove(rule);
+        }
+        RecalculateTotals();
+    }
+
     private PaperQuestionRule GetPaperQuestionRule(Guid ruleId)
     {
         PaperQuestionRule? rule = PaperQuestionRules.SingleOrDefault(q => q.Id == ruleId);
@@ -158,7 +174,7 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
 
     private void RecalculateTotals()
     {
-        TotalScore = PaperQuestions.Sum(q => q.Score) + PaperQuestionRules.Sum(r => r.Score);
-        TotalCount = PaperQuestions.Count + PaperQuestionRules.Sum(r => r.Count);
+        TotalScore = (PaperQuestions?.Sum(q => q.Score) ?? 0) + (PaperQuestionRules?.Sum(r => r.Score) ?? 0);
+        TotalCount = (PaperQuestions?.Count ?? 0) + (PaperQuestionRules?.Sum(r => r.Count) ?? 0);
     }
 }

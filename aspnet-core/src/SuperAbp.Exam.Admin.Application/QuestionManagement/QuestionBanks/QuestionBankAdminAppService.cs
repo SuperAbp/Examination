@@ -12,22 +12,28 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
     [Authorize(ExamPermissions.QuestionBanks.Default)]
     public class QuestionBankAdminAppService(
         QuestionBankManager questionRepoManager,
+        QuestionBankManager questionBankManager,
         IQuestionBankRepository questionBankRepository,
         IQuestionRepository questionRepository)
         : ExamAppService, IQuestionBankAdminAppService
     {
+        protected QuestionBankManager QuestionRepoManager { get; } = questionRepoManager;
+        protected QuestionBankManager QuestionBankManager { get; } = questionBankManager;
+        protected IQuestionBankRepository QuestionBankRepository { get; } = questionBankRepository;
+        protected IQuestionRepository QuestionRepository { get; } = questionRepository;
+
         public virtual async Task<QuestionBankDetailDto> GetAsync(Guid id)
         {
-            QuestionBank entity = await questionBankRepository.GetAsync(id);
+            QuestionBank entity = await QuestionBankRepository.GetAsync(id);
 
             return ObjectMapper.Map<QuestionBank, QuestionBankDetailDto>(entity);
         }
 
         public virtual async Task<PagedResultDto<QuestionBankListDto>> GetListAsync(GetQuestionBanksInput input)
         {
-            long totalCount = await questionBankRepository.GetCountAsync(input.Title);
+            long totalCount = await QuestionBankRepository.GetCountAsync(input.Title);
 
-            var entities = await questionBankRepository
+            var entities = await QuestionBankRepository
                 .GetListAsync(input.Sorting ?? QuestionBankConsts.DefaultSorting, input.SkipCount,
                     input.MaxResultCount, input.Title);
 
@@ -35,10 +41,10 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
             foreach (var item in entities)
             {
                 var dto = ObjectMapper.Map<QuestionBank, QuestionBankListDto>(item);
-                dto.SingleCount = await questionRepository.GetCountAsync(questionBankIds: new List<Guid> { item.Id }, questionType: QuestionType.SingleSelect);
-                dto.JudgeCount = await questionRepository.GetCountAsync(questionBankIds: new List<Guid> { item.Id }, questionType: QuestionType.Judge);
-                dto.MultiCount = await questionRepository.GetCountAsync(questionBankIds: new List<Guid> { item.Id }, questionType: QuestionType.MultiSelect);
-                dto.BlankCount = await questionRepository.GetCountAsync(questionBankIds: new List<Guid> { item.Id }, questionType: QuestionType.FillInTheBlanks);
+                dto.SingleCount = await QuestionRepository.GetCountAsync(questionBankIds: new List<Guid> { item.Id }, questionType: QuestionType.SingleSelect);
+                dto.JudgeCount = await QuestionRepository.GetCountAsync(questionBankIds: new List<Guid> { item.Id }, questionType: QuestionType.Judge);
+                dto.MultiCount = await QuestionRepository.GetCountAsync(questionBankIds: new List<Guid> { item.Id }, questionType: QuestionType.MultiSelect);
+                dto.BlankCount = await QuestionRepository.GetCountAsync(questionBankIds: new List<Guid> { item.Id }, questionType: QuestionType.FillInTheBlanks);
                 dtos.Add(dto);
             }
             return new PagedResultDto<QuestionBankListDto>(totalCount, dtos);
@@ -46,7 +52,7 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
 
         public virtual async Task<GetQuestionBankForEditorOutput> GetEditorAsync(Guid id)
         {
-            QuestionBank entity = await questionBankRepository.GetAsync(id);
+            QuestionBank entity = await QuestionBankRepository.GetAsync(id);
 
             return ObjectMapper.Map<QuestionBank, GetQuestionBankForEditorOutput>(entity);
         }
@@ -54,41 +60,28 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
         [Authorize(ExamPermissions.QuestionBanks.Create)]
         public virtual async Task<QuestionBankListDto> CreateAsync(QuestionBankCreateDto input)
         {
-            QuestionBank repository = await questionRepoManager.CreateAsync(input.Title);
+            QuestionBank repository = await QuestionRepoManager.CreateAsync(input.Title);
             repository.Remark = input.Remark;
 
-            repository = await questionBankRepository.InsertAsync(repository);
+            repository = await QuestionBankRepository.InsertAsync(repository);
             return ObjectMapper.Map<QuestionBank, QuestionBankListDto>(repository);
         }
 
         [Authorize(ExamPermissions.QuestionBanks.Update)]
         public virtual async Task<QuestionBankListDto> UpdateAsync(Guid id, QuestionBankUpdateDto input)
         {
-            QuestionBank repository = await questionBankRepository.GetAsync(id);
-            await questionRepoManager.SetTitleAsync(repository, input.Title);
+            QuestionBank repository = await QuestionBankRepository.GetAsync(id);
+            await QuestionRepoManager.SetTitleAsync(repository, input.Title);
             repository.Remark = input.Remark;
-            repository = await questionBankRepository.UpdateAsync(repository);
+            repository = await QuestionBankRepository.UpdateAsync(repository);
             return ObjectMapper.Map<QuestionBank, QuestionBankListDto>(repository);
         }
 
         [Authorize(ExamPermissions.QuestionBanks.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
-            await questionBankRepository.DeleteAsync(id);
-        }
-
-        /// <summary>
-        /// 规范最大记录数
-        /// </summary>
-        /// <param name="input">参数</param>
-        /// <returns></returns>
-        private async Task NormalizeMaxResultCountAsync(PagedAndSortedResultRequestDto input)
-        {
-            var maxPageSize = (await SettingProvider.GetOrNullAsync(QuestionBankSettings.MaxPageSize))?.To<int>();
-            if (maxPageSize.HasValue && input.MaxResultCount > maxPageSize.Value)
-            {
-                input.MaxResultCount = maxPageSize.Value;
-            }
+            QuestionBank questionBank = await QuestionBankRepository.GetAsync(id);
+            await QuestionBankManager.DeleteAsync(questionBank);
         }
     }
 }

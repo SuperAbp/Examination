@@ -11,11 +11,15 @@ using Volo.Abp.ObjectMapping;
 namespace SuperAbp.Exam.Admin.KnowledgePoints;
 
 [Authorize(ExamPermissions.KnowledgePoints.Default)]
-public class KnowledgePointAdminAppService(IKnowledgePointRepository knowledgePointRepository) : ExamAppService, IKnowledgePointAdminAppService
+public class KnowledgePointAdminAppService(IKnowledgePointRepository knowledgePointRepository,
+    KnowledgePointManager knowledgePointManager) : ExamAppService, IKnowledgePointAdminAppService
 {
+    public IKnowledgePointRepository KnowledgePointRepository { get; } = knowledgePointRepository;
+    public KnowledgePointManager KnowledgePointManager { get; } = knowledgePointManager;
+
     public async Task<ListResultDto<KnowledgePointNodeDto>> GetAllAsync(GetKnowledgePointsInput input)
     {
-        List<KnowledgePoint> knowledgePoints = await knowledgePointRepository.GetListAsync(input.Name);
+        List<KnowledgePoint> knowledgePoints = await KnowledgePointRepository.GetListAsync(input.Name);
         List<KnowledgePointNodeDto> dtos = BuildTree(knowledgePoints);
         return new ListResultDto<KnowledgePointNodeDto>(dtos);
     }
@@ -46,7 +50,7 @@ public class KnowledgePointAdminAppService(IKnowledgePointRepository knowledgePo
 
     public async Task<GetKnowledgePointForEditorOutput> GetEditorAsync(Guid id)
     {
-        KnowledgePoint category = await knowledgePointRepository.GetAsync(id);
+        KnowledgePoint category = await KnowledgePointRepository.GetAsync(id);
         return ObjectMapper.Map<KnowledgePoint, GetKnowledgePointForEditorOutput>(category);
     }
 
@@ -54,22 +58,23 @@ public class KnowledgePointAdminAppService(IKnowledgePointRepository knowledgePo
     public async Task<Guid> CreateAsync(KnowledgePointCreateDto input)
     {
         KnowledgePoint category = new(GuidGenerator.Create(), input.Name, input.ParentId);
-        await knowledgePointRepository.InsertAsync(category);
+        await KnowledgePointRepository.InsertAsync(category);
         return category.Id;
     }
 
     [Authorize(ExamPermissions.KnowledgePoints.Update)]
     public async Task UpdateAsync(Guid id, KnowledgePointUpdateDto input)
     {
-        KnowledgePoint category = await knowledgePointRepository.GetAsync(id);
+        KnowledgePoint category = await KnowledgePointRepository.GetAsync(id);
         category.Name = input.Name;
         category.ParentId = input.ParentId;
-        await knowledgePointRepository.UpdateAsync(category);
+        await KnowledgePointRepository.UpdateAsync(category);
     }
 
     [Authorize(ExamPermissions.KnowledgePoints.Delete)]
     public async Task DeleteAsync(Guid id)
     {
-        await knowledgePointRepository.DeleteAsync(id);
+        KnowledgePoint knowledgePoint = await KnowledgePointRepository.GetAsync(id);
+        await KnowledgePointManager.DeleteAsync(knowledgePoint);
     }
 }

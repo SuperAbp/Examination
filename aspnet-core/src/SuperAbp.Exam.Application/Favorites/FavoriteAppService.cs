@@ -40,7 +40,7 @@ public class FavoriteAppService(IFavoriteRepository favoriteRepository) : ExamAp
             return;
         }
 
-        Favorite favorite = new Favorite(GuidGenerator.Create(), questionId, CurrentUser.GetId(), Clock.Now);
+        Favorite favorite = new(GuidGenerator.Create(), questionId, CurrentUser.GetId(), Clock.Now);
         await favoriteRepository.InsertAsync(favorite);
     }
 

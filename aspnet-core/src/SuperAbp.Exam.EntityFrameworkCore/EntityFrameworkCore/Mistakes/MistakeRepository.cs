@@ -52,4 +52,9 @@ public class MistakeRepository(IDbContextProvider<IExamDbContext> dbContextProvi
                 .WhereIf(!string.IsNullOrWhiteSpace(questionContent), f => f.QuestionContent.Contains(questionContent))
                 .WhereIf(questionType is not null, f => f.QuestionType == questionType);
     }
+
+    public async Task DeleteByQuestionIdAsync(Guid questionId)
+    {
+        await DeleteAsync(m => m.QuestionId == questionId);
+    }
 }

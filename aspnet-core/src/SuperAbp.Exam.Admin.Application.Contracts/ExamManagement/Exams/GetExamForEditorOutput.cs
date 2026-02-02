@@ -1,9 +1,9 @@
-﻿namespace SuperAbp.Exam.Admin.ExamManagement.Exams
+﻿namespace SuperAbp.Exam.Admin.ExamManagement.Exams;
+
+/// <summary>
+/// 修改输出
+/// </summary>
+public class GetExamForEditorOutput : ExamCreateOrUpdateDtoBase
 {
-    /// <summary>
-    /// 修改输出
-    /// </summary>
-    public class GetExamForEditorOutput : ExamCreateOrUpdateDtoBase
-    {
-    }
+    public int Status { get; set; }
 }

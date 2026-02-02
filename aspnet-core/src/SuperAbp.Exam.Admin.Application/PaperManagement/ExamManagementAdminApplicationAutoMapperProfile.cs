@@ -2,9 +2,7 @@
 using SuperAbp.Exam.Admin.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.Admin.PaperManagement.Papers;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
-using SuperAbp.Exam.PaperManagement.PaperQuestions;
 using SuperAbp.Exam.PaperManagement.Papers;
-using SuperAbp.Exam.PaperManagement.PaperSections;
 using System.Linq;
 using static SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase;
 using static SuperAbp.Exam.Admin.PaperManagement.Papers.PaperCreateOrUpdateDtoBase.PaperSectionDto;
@@ -42,7 +40,6 @@ namespace SuperAbp.Exam.Admin.PaperManagement
 
             CreateMap<PaperQuestionRule, GetPaperQuestionRuleForEditorOutput>();
             CreateMap<PaperQuestionRule, PaperQuestionRuleListDto>();
-            CreateMap<PaperQuestionRuleWithDetails, PaperQuestionRuleListDto>();
             CreateMap<PaperQuestionRule, PaperQuestionRuleDetailDto>();
             CreateMap<PaperQuestionRuleCreateOrUpdateDtoBase, PaperQuestionRule>();
 

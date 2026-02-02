@@ -20,6 +20,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { forkJoin } from 'rxjs';
 import { finalize, max, tap } from 'rxjs/operators';
+import { ExaminationStatus } from '@shared';
 
 @Component({
   selector: 'app-exam-management-exam-edit',
@@ -60,6 +61,7 @@ export class ExamManagementExamEditComponent implements OnInit {
 
   loading = false;
   isConfirmLoading = false;
+  canSave = true;
 
   form: FormGroup = null;
   papers: PaperListDto[] = [];
@@ -93,6 +95,9 @@ export class ExamManagementExamEditComponent implements OnInit {
   get disableChoosePaper() {
     return this.paperId != undefined || this.paperId != null || this.examId != undefined || this.examId != null;
   }
+  get isFormDisabled() {
+    return !this.canSave;
+  }
   get examTimes() {
     return this.form.get('examTimes');
   }
@@ -110,7 +115,6 @@ export class ExamManagementExamEditComponent implements OnInit {
     this.loading = true;
 
     if (this.examId) {
-      // 有 examId 时，同时获取选项数据、考试数据和试卷列表
       forkJoin({
         answerModes: this.optionService.getAnswerModes(),
         reviewModes: this.optionService.getReviewModes(),
@@ -129,6 +133,8 @@ export class ExamManagementExamEditComponent implements OnInit {
             }));
             this.exam = exam;
             this.papers = papers.items;
+            // 只有草稿状态才能保存
+            this.canSave = this.exam.status === ExaminationStatus.Draft;
             this.buildForm();
           }),
           finalize(() => {

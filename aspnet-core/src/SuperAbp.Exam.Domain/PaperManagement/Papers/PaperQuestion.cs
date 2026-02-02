@@ -1,11 +1,10 @@
-﻿using SuperAbp.Exam.PaperManagement.PaperSections;
-using System;
+﻿using System;
 using Volo.Abp;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.MultiTenancy;
 
-namespace SuperAbp.Exam.PaperManagement.PaperQuestions;
+namespace SuperAbp.Exam.PaperManagement.Papers;
 
 /// <summary>
 /// 试卷题目

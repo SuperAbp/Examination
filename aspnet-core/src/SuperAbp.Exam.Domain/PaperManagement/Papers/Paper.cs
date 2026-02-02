@@ -1,5 +1,4 @@
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
-using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using System.Collections.Generic;
@@ -123,6 +122,24 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
         return this;
     }
 
+    public Paper RemoveQuestionByQuestionId(Guid questionId)
+    {
+        foreach (var section in PaperSections)
+        {
+            var questionsToRemove = section.PaperQuestions
+                .Where(pq => pq.QuestionId == questionId)
+                .ToList();
+
+            foreach (var question in questionsToRemove)
+            {
+                section.PaperQuestions.Remove(question);
+            }
+        }
+
+        RecalculateTotals();
+        return this;
+    }
+
     public Paper AddRule(Guid sectionId, Guid ruleId, Guid questionBankId, QuestionType questionType, int count, decimal score, Guid? knowledgePointId = null)
     {
         PaperSection section = GetSection(sectionId);
@@ -164,9 +181,23 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
             ?? throw new EntityNotFoundException(typeof(PaperSection), sectionId);
     }
 
+    /// <summary>
+    /// 根据知识点ID移除相关的抽题规则
+    /// 用于知识点删除时的清理工作
+    /// </summary>
+    public Paper RemoveRulesByKnowledgePointId(Guid knowledgePointId)
+    {
+        foreach (var section in PaperSections)
+        {
+            section.RemoveRulesByKnowledgePointId(knowledgePointId);
+        }
+        RecalculateTotals();
+        return this;
+    }
+
     private void RecalculateTotals()
     {
-        Score = PaperSections.Sum(s => s.TotalScore);
-        TotalQuestionCount = PaperSections.Sum(s => s.TotalCount);
+        Score = PaperSections?.Sum(s => s.TotalScore) ?? 0;
+        TotalQuestionCount = PaperSections?.Sum(s => s.TotalCount) ?? 0;
     }
 }

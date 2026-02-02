@@ -1,11 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿using SuperAbp.Exam.QuestionManagement.Questions;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Volo.Abp.Domain.Services;
 
 namespace SuperAbp.Exam.QuestionManagement.QuestionBanks;
 
-public class QuestionBankManager(IQuestionBankRepository questionBankRepository) : DomainService
+public class QuestionBankManager(IQuestionBankRepository questionBankRepository,
+    IQuestionRepository questionRepository,
+    QuestionManager questionManager) : DomainService
 {
     protected IQuestionBankRepository QuestionBankRepository { get; } = questionBankRepository;
+    protected IQuestionRepository QuestionRepository { get; } = questionRepository;
+    protected QuestionManager QuestionManager { get; } = questionManager;
 
     public virtual async Task<QuestionBank> CreateAsync(string title)
     {
@@ -17,19 +23,19 @@ public class QuestionBankManager(IQuestionBankRepository questionBankRepository)
     /// <summary>
     /// 设置标题
     /// </summary>
-    /// <param name="repo"></param>
+    /// <param name="questionBank">题库</param>
     /// <param name="title">标题</param>
     /// <exception cref="QuestionBankTitleAlreadyExistException">标题已存在</exception>
     /// <returns></returns>
-    public virtual async Task SetTitleAsync(QuestionBank repo, string title)
+    public virtual async Task SetTitleAsync(QuestionBank questionBank, string title)
     {
-        if (title == repo.Title)
+        if (title == questionBank.Title)
         {
             return;
         }
         await CheckTitleAsync(title);
 
-        repo.Title = title;
+        questionBank.Title = title;
     }
 
     protected virtual async Task CheckTitleAsync(string title)
@@ -38,5 +44,15 @@ public class QuestionBankManager(IQuestionBankRepository questionBankRepository)
         {
             throw new QuestionBankTitleAlreadyExistException(title);
         }
+    }
+
+    public virtual async Task DeleteAsync(QuestionBank questionBank)
+    {
+        List<Question> questions = await QuestionRepository.GetListAsync(q => q.QuestionBankId == questionBank.Id);
+        foreach (var question in questions)
+        {
+            await QuestionManager.DeleteAsync(question);
+        }
+        await QuestionBankRepository.DeleteAsync(questionBank);
     }
 }

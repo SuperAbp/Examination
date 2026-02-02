@@ -1,4 +1,4 @@
-using SuperAbp.Exam.PaperManagement.PaperSections;
+using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System;
 using Volo.Abp;

@@ -169,7 +169,8 @@ namespace SuperAbp.Exam.Admin.QuestionManagement.Questions
         [Authorize(ExamPermissions.Questions.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
-            await questionRepository.DeleteAsync(id);
+            Question question = await questionRepository.GetAsync(id);
+            await questionManager.DeleteAsync(question);
         }
 
         [Authorize(ExamPermissions.Questions.Delete)]

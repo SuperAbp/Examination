@@ -1,5 +1,4 @@
-﻿using SuperAbp.Exam.QuestionManagement.Questions;
-using Volo.Abp;
+﻿using Volo.Abp;
 
 namespace SuperAbp.Exam.PaperManagement.Papers;
 

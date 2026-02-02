@@ -94,4 +94,12 @@ public interface IQuestionRepository : IRepository<Question, Guid>
     Task<bool> AnyAsync(Guid questionRepositoryId, Guid questionId, CancellationToken cancellationToken = default);
 
     Task<bool> ContentExistsAsync(string content, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 删除
+    /// </summary>
+    /// <param name="questionBankId">题库Id</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task DeleteByQuestionBankIdAsync(Guid questionBankId, CancellationToken cancellationToken = default);
 }
