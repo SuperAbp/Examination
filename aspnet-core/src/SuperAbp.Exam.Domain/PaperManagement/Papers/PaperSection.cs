@@ -174,7 +174,7 @@ public class PaperSection : Entity<Guid>, IHasCreationTime, ISoftDelete, IMultiT
 
     private void RecalculateTotals()
     {
-        TotalScore = PaperQuestions.Sum(q => q.Score) + PaperQuestionRules.Sum(r => r.Score);
-        TotalCount = PaperQuestions.Count + PaperQuestionRules.Sum(r => r.Count);
+        TotalScore = (PaperQuestions?.Sum(q => q.Score) ?? 0) + (PaperQuestionRules?.Sum(r => r.Score) ?? 0);
+        TotalCount = (PaperQuestions?.Count ?? 0) + (PaperQuestionRules?.Sum(r => r.Count) ?? 0);
     }
 }

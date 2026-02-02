@@ -126,9 +126,7 @@ export class SysKnowledgePointComponent implements OnInit {
   }
   delete(record) {
     this.knowledgePointService.delete(record.id).subscribe(response => {
-      this.messageService.success(this.localizationService.instant('Exam::DeletedSuccessfully', record.name));
-      // tslint:disable-next-line: no-non-null-assertion
-      this.knowledgePoints = this.knowledgePoints.filter(item => item.id !== record.id);
+      this.getList();
     });
   }
 }

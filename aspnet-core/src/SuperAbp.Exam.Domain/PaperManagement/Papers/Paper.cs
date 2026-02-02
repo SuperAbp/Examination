@@ -197,7 +197,7 @@ public class Paper : FullAuditedAggregateRoot<Guid>, IMultiTenant
 
     private void RecalculateTotals()
     {
-        Score = PaperSections.Sum(s => s.TotalScore);
-        TotalQuestionCount = PaperSections.Sum(s => s.TotalCount);
+        Score = PaperSections?.Sum(s => s.TotalScore) ?? 0;
+        TotalQuestionCount = PaperSections?.Sum(s => s.TotalCount) ?? 0;
     }
 }

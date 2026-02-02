@@ -244,6 +244,7 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
     this.currentSectionIndex = sectionIndex;
     const section = this.sections.at(sectionIndex);
     const rulesArray = section.get('paperQuestionRules') as FormArray;
+    const scoreEach = section.get('scoreEach')?.value || 0;
 
     // Prepare selected rules from FormArray for the modal
     const selectedRules = rulesArray.controls.map(control => ({
@@ -274,7 +275,7 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
             questionBankId: result.questionBankId,
             questionType: result.questionType,
             count: result.count,
-            score: 0,
+            score: scoreEach,
             questionBankName: '',
             questionTypeName: '',
             knowledgePointId: result.knowledgePointId
