@@ -3,6 +3,9 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'aspnet-core/**'
+      - '.github/workflows/build-and-test.yml'
 jobs:
   build-test:
     runs-on: ubuntu-latest
