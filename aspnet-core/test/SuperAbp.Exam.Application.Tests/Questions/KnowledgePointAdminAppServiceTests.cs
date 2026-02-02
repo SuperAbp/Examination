@@ -95,9 +95,9 @@ public abstract class KnowledgePointAdminAppServiceTests<TStartupModule> : ExamA
     [Fact]
     public async Task Should_Delete()
     {
-        await _knowledgePointAppService.DeleteAsync(_testData.Question11Id);
+        await _knowledgePointAppService.DeleteAsync(_testData.KnowledgePoint1Id);
         await Should.ThrowAsync<EntityNotFoundException>(
             async () =>
-                await _knowledgePointAppService.GetEditorAsync(_testData.Question11Id));
+                await _knowledgePointAppService.GetEditorAsync(_testData.KnowledgePoint1Id));
     }
 }

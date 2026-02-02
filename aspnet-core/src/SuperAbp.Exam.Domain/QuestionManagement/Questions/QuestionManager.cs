@@ -83,7 +83,7 @@ public class QuestionManager(
 
     public virtual async Task DeleteAsync(Question question)
     {
-        question.Options.Clear();
+        question.Options?.Clear();
         await QuestionKnowledgePointRepository.DeleteByQuestionIdAsync(question.Id);
 
         await LocalEventBus.PublishAsync(new QuestionDeletedEvent
@@ -92,7 +92,10 @@ public class QuestionManager(
             TenantId = question.TenantId
         });
 
-        await QuestionRepository.UpdateAsync(question);
+        if (question.Options != null && question.Options.Count > 0)
+        {
+            await QuestionRepository.UpdateAsync(question);
+        }
         await QuestionRepository.DeleteAsync(question);
     }
 }
