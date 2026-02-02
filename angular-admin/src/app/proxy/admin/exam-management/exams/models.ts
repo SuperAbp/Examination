@@ -56,6 +56,7 @@ export interface ExamUserExamDto {
 }
 
 export interface GetExamForEditorOutput extends ExamCreateOrUpdateDtoBase {
+  status?: number;
 }
 
 export interface GetExamsInput extends PagedAndSortedResultRequestDto {

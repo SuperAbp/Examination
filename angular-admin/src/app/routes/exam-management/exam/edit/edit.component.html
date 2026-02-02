@@ -1,189 +1,174 @@
 @if (loading) {
-  <nz-spin class="modal-spin"></nz-spin>
+<nz-spin class="modal-spin"></nz-spin>
 } @else {
-  <div class="modal-header">
-    <div class="modal-title">
-      @if (examId) {
-        {{ 'Exam::Edit' | abpLocalization }}
-      } @else {
-        {{ 'Exam::NewExam' | abpLocalization }}
-      }
-    </div>
+<div class="modal-header">
+  <div class="modal-title">
+    @if (examId) {
+    {{ 'Exam::Edit' | abpLocalization }}
+    } @else {
+    {{ 'Exam::NewExam' | abpLocalization }}
+    }
   </div>
-  <div class="modal-body">
-    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical" [skipValidation]="true">
-      <nz-form-item>
-        <nz-form-label nzRequired>{{ 'Exam::Paper' | abpLocalization }}</nz-form-label>
-        <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization" [nzErrorTip]="paperErrorTpl">
-          <nz-select
-            nzShowSearch
-            nzServerSearch
-            [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::Paper' | abpLocalization)"
-            formControlName="paperId"
-            [nzShowArrow]="false"
-            [nzDisabled]="disableChoosePaper"
-            (nzOnSearch)="searchPaper($event)"
-            (ngModelChange)="choosePaper($event)"
-          >
-            @for (p of papers; track $index) {
-              <nz-option [nzLabel]="p.name" [nzValue]="p.id"></nz-option>
-            }
-          </nz-select>
-          <ng-template #paperErrorTpl let-control>
-            @if (control.hasError('required')) {
-              {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
-            }
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label nzRequired>{{ 'Exam::Name' | abpLocalization }}</nz-form-label>
-        <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization" [nzErrorTip]="nameErrorTpl">
-          <input formControlName="name" nz-input [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Name' | abpLocalization)" />
-          <ng-template #nameErrorTpl let-control>
-            @if (control.hasError('required')) {
-              {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
-            }
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>{{ 'Exam::Description' | abpLocalization }}</nz-form-label>
-        <nz-form-control>
-          <editor formControlName="description" [init]="init" />
-        </nz-form-control>
-      </nz-form-item>
-      <div nz-row>
-        <div nz-col nzSpan="8">
-          <nz-form-item>
-            <nz-form-label>{{ 'Exam::Score' | abpLocalization }}</nz-form-label>
-            <nz-form-control>
-              <nz-input-number nzDisabled formControlName="score"></nz-input-number>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col nzSpan="8">
-          <nz-form-item>
-            <nz-form-label nzRequired>{{ 'Exam::PassingScore' | abpLocalization }}</nz-form-label>
-            <nz-form-control
-              nzHasFeedback
-              [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
-              [nzErrorTip]="passingScoreErrorTpl"
-            >
-              <nz-input-number
-                formControlName="passingScore"
-                [nzMin]="score.value > 0 ? 1 : 0"
-                [nzMax]="score.value > 0 ? score.value - 1 : 0"
-              ></nz-input-number>
-              <ng-template #passingScoreErrorTpl let-control>
-                @if (control.hasError('required')) {
-                  {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
-                }
-                @if (control.hasError('min')) {
-                  {{ 'AbpValidation::ThisFieldMustBeGreaterThanOrEqual{0}' | abpLocalization: '1' }}
-                }
-                @if (control.hasError('max')) {
-                  {{ 'AbpValidation::ThisFieldMustBeLessOrEqual{0}' | abpLocalization: form.get('passingScore')?.getError('max')?.value }}
-                }
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col nzSpan="8">
-          <nz-form-item>
-            <nz-form-label nzRequired>{{ 'Exam::TotalTimeWithMinute' | abpLocalization }}</nz-form-label>
-            <nz-form-control
-              nzHasFeedback
-              [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
-              [nzErrorTip]="totalTimeErrorTpl"
-            >
-              <nz-input-number formControlName="totalTime" [nzMin]="1"></nz-input-number>
-              <ng-template #totalTimeErrorTpl let-control>
-                @if (control.hasError('required')) {
-                  {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
-                }
-                @if (control.hasError('min')) {
-                  {{ 'AbpValidation::ThisFieldMustBeGreaterThanOrEqual{0}' | abpLocalization: '1' }}
-                }
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col nzSpan="8">
-          <nz-form-item>
-            <nz-form-label>{{ 'Exam::AnswerMode' | abpLocalization }}</nz-form-label>
-            <nz-form-control>
-              <nz-radio-group formControlName="answerMode">
-                @for (mode of answerModes; track mode.value) {
-                  <label nz-radio [nzValue]="mode.value">{{ 'Exam::AnswerMode:' + mode.value | abpLocalization }}</label>
-                }
-              </nz-radio-group>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col nzSpan="8">
-          <nz-form-item>
-            <nz-form-label>{{ 'Exam::ReviewMode' | abpLocalization }}</nz-form-label>
-            <nz-form-control>
-              <nz-radio-group formControlName="reviewMode">
-                @for (mode of reviewModes; track mode.value) {
-                  <label nz-radio [nzValue]="mode.value">{{ 'Exam::ReviewMode:' + mode.value | abpLocalization }}</label>
-                }
-              </nz-radio-group>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col nzSpan="8">
-          <nz-form-item>
-            <nz-form-label>{{ 'Exam::RandomOrderOfOption' | abpLocalization }}</nz-form-label>
-            <nz-form-control>
-              <label nz-checkbox formControlName="randomOrderOfOption"></label>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col nzSpan="8">
-          <nz-form-item>
-            <nz-form-label nzRequired nzTooltipTitle="0表示不限制">{{ 'Exam::MaxNumberOfTimes' | abpLocalization }}</nz-form-label>
-            <nz-form-control
-              nzHasFeedback
-              [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
-              [nzErrorTip]="maxNumberOfTimesErrorTpl"
-            >
-              <nz-input-number formControlName="maxNumberOfTimes" nzMin="0" />
-              <ng-template #maxNumberOfTimesErrorTpl let-control>
-                @if (control.hasError('required')) {
-                  {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
-                }
-                @if (control.hasError('min')) {
-                  {{ 'AbpValidation::ThisFieldMustBeGreaterThanOrEqual{0}' | abpLocalization: '0' }}
-                }
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col nzSpan="16">
-          <nz-form-item>
-            <nz-form-label>{{ 'Exam::ExamTime' | abpLocalization }}</nz-form-label>
-            <nz-form-control>
-              <nz-range-picker
-                [nzShowTime]="{ nzFormat: 'HH:mm', nzMinuteStep: 15 }"
-                nzFormat="yyyy-MM-dd HH:mm"
-                [nzDisabledDate]="disabledDate"
-                formControlName="examTimes"
-                (ngModelChange)="examTimeChange($event)"
-              ></nz-range-picker>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
+</div>
+<div class="modal-body">
+  <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical" [skipValidation]="true">
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'Exam::Paper' | abpLocalization }}</nz-form-label>
+      <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
+        [nzErrorTip]="paperErrorTpl">
+        <nz-select nzShowSearch nzServerSearch
+          [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::Paper' | abpLocalization)"
+          formControlName="paperId" [nzShowArrow]="false" [nzDisabled]="disableChoosePaper"
+          (nzOnSearch)="searchPaper($event)" (ngModelChange)="choosePaper($event)">
+          @for (p of papers; track $index) {
+          <nz-option [nzLabel]="p.name" [nzValue]="p.id"></nz-option>
+          }
+        </nz-select>
+        <ng-template #paperErrorTpl let-control>
+          @if (control.hasError('required')) {
+          {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'Exam::Name' | abpLocalization }}</nz-form-label>
+      <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
+        [nzErrorTip]="nameErrorTpl">
+        <input formControlName="name" nz-input
+          [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Name' | abpLocalization)" />
+        <ng-template #nameErrorTpl let-control>
+          @if (control.hasError('required')) {
+          {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>{{ 'Exam::Description' | abpLocalization }}</nz-form-label>
+      <nz-form-control>
+        <editor formControlName="description" [init]="init" />
+      </nz-form-control>
+    </nz-form-item>
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <nz-form-item>
+          <nz-form-label>{{ 'Exam::Score' | abpLocalization }}</nz-form-label>
+          <nz-form-control>
+            <nz-input-number nzDisabled formControlName="score"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
       </div>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save(false)">
-      {{ 'Exam::Submit' | abpLocalization }}
-    </button>
-    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save(true)">
-      {{ 'Exam::Publish' | abpLocalization }}
-    </button>
-  </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item>
+          <nz-form-label nzRequired>{{ 'Exam::PassingScore' | abpLocalization }}</nz-form-label>
+          <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
+            [nzErrorTip]="passingScoreErrorTpl">
+            <nz-input-number formControlName="passingScore" [nzMin]="score.value > 0 ? 1 : 0"
+              [nzMax]="score.value > 0 ? score.value - 1 : 0"></nz-input-number>
+            <ng-template #passingScoreErrorTpl let-control>
+              @if (control.hasError('required')) {
+              {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+              }
+              @if (control.hasError('min')) {
+              {{ 'AbpValidation::ThisFieldMustBeGreaterThanOrEqual{0}' | abpLocalization: '1' }}
+              }
+              @if (control.hasError('max')) {
+              {{ 'AbpValidation::ThisFieldMustBeLessOrEqual{0}' | abpLocalization:
+              form.get('passingScore')?.getError('max')?.value }}
+              }
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item>
+          <nz-form-label nzRequired>{{ 'Exam::TotalTimeWithMinute' | abpLocalization }}</nz-form-label>
+          <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
+            [nzErrorTip]="totalTimeErrorTpl">
+            <nz-input-number formControlName="totalTime" [nzMin]="1"></nz-input-number>
+            <ng-template #totalTimeErrorTpl let-control>
+              @if (control.hasError('required')) {
+              {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+              }
+              @if (control.hasError('min')) {
+              {{ 'AbpValidation::ThisFieldMustBeGreaterThanOrEqual{0}' | abpLocalization: '1' }}
+              }
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item>
+          <nz-form-label>{{ 'Exam::AnswerMode' | abpLocalization }}</nz-form-label>
+          <nz-form-control>
+            <nz-radio-group formControlName="answerMode">
+              @for (mode of answerModes; track mode.value) {
+              <label nz-radio [nzValue]="mode.value">{{ 'Exam::AnswerMode:' + mode.value | abpLocalization }}</label>
+              }
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item>
+          <nz-form-label>{{ 'Exam::ReviewMode' | abpLocalization }}</nz-form-label>
+          <nz-form-control>
+            <nz-radio-group formControlName="reviewMode">
+              @for (mode of reviewModes; track mode.value) {
+              <label nz-radio [nzValue]="mode.value">{{ 'Exam::ReviewMode:' + mode.value | abpLocalization }}</label>
+              }
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item>
+          <nz-form-label>{{ 'Exam::RandomOrderOfOption' | abpLocalization }}</nz-form-label>
+          <nz-form-control>
+            <label nz-checkbox formControlName="randomOrderOfOption"></label>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item>
+          <nz-form-label nzRequired nzTooltipTitle="0表示不限制">{{ 'Exam::MaxNumberOfTimes' | abpLocalization
+            }}</nz-form-label>
+          <nz-form-control nzHasFeedback [nzValidatingTip]="'AbpValidation::Validating' | abpLocalization"
+            [nzErrorTip]="maxNumberOfTimesErrorTpl">
+            <nz-input-number formControlName="maxNumberOfTimes" nzMin="0" />
+            <ng-template #maxNumberOfTimesErrorTpl let-control>
+              @if (control.hasError('required')) {
+              {{ 'AbpValidation::ThisFieldIsRequired.' | abpLocalization }}
+              }
+              @if (control.hasError('min')) {
+              {{ 'AbpValidation::ThisFieldMustBeGreaterThanOrEqual{0}' | abpLocalization: '0' }}
+              }
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="16">
+        <nz-form-item>
+          <nz-form-label>{{ 'Exam::ExamTime' | abpLocalization }}</nz-form-label>
+          <nz-form-control>
+            <nz-range-picker [nzShowTime]="{ nzFormat: 'HH:mm', nzMinuteStep: 15 }" nzFormat="yyyy-MM-dd HH:mm"
+              [nzDisabledDate]="disabledDate" formControlName="examTimes"
+              (ngModelChange)="examTimeChange($event)"></nz-range-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button nz-button nzType="primary" [disabled]="!form.valid || !canSave" [nzLoading]="isConfirmLoading"
+    (click)="save(false)">
+    {{ 'Exam::Submit' | abpLocalization }}
+  </button>
+  <button nz-button nzType="primary" [disabled]="!form.valid || !canSave" [nzLoading]="isConfirmLoading"
+    (click)="save(true)">
+    {{ 'Exam::Publish' | abpLocalization }}
+  </button>
+</div>
 }

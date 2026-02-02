@@ -93,9 +93,6 @@ export class ExamManagementExamComponent implements OnInit {
         {
           icon: 'edit',
           type: 'modal',
-          iif: record => {
-            return this.permissionService.getGrantedPolicy('Exam.Exams.Update') && record.status === ExaminationStatus.Draft;
-          },
           modal: {
             component: ExamManagementExamEditComponent,
             params: (record: any) => ({
