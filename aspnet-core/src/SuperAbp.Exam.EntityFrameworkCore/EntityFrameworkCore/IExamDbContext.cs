@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SuperAbp.Exam.Announcements;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestionReviews;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
@@ -74,4 +75,6 @@ public interface IExamDbContext : IEfCoreDbContext
 
     public DbSet<Favorite> Favorites { get; set; }
     public DbSet<Mistake> Mistakes { get; set; }
+    public DbSet<Announcement> Announcements { get; set; }
+    public DbSet<AnnouncementCategory> AnnouncementCategories { get; set; }
 }

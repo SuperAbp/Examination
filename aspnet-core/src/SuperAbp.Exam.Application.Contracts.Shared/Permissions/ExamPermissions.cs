@@ -60,4 +60,22 @@ public static class ExamPermissions
         public const string Invalidate = Default + ".Invalidate";
         public const string Delete = Default + ".Delete";
     }
+
+    public static class Announcements
+    {
+        public const string Default = GroupName + ".Announcements";
+        public const string Create = Default + ".Create";
+        public const string Update = Default + ".Update";
+        public const string Publish = Default + ".Publish";
+        public const string Unpublish = Default + ".Unpublish";
+        public const string Delete = Default + ".Delete";
+    }
+
+    public static class AnnouncementCategories
+    {
+        public const string Default = GroupName + ".AnnouncementCategories";
+        public const string Create = Default + ".Create";
+        public const string Update = Default + ".Update";
+        public const string Delete = Default + ".Delete";
+    }
 }

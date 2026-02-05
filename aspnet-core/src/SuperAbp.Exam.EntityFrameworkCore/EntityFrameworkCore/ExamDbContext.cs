@@ -27,6 +27,7 @@ using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
+using SuperAbp.Exam.Announcements;
 
 using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
@@ -98,6 +99,8 @@ public class ExamDbContext :
 
     public DbSet<Favorite> Favorites { get; set; }
     public DbSet<Mistake> Mistakes { get; set; }
+    public DbSet<Announcement> Announcements { get; set; }
+    public DbSet<AnnouncementCategory> AnnouncementCategories { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
@@ -278,6 +281,28 @@ public class ExamDbContext :
         {
             b.ToTable(ExamConsts.DbTablePrefix + "Mistakes", ExamConsts.DbSchema);
             b.ConfigureByConvention();
+        });
+
+        builder.Entity<Announcement>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "Announcements", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.ConfigureFullAudited();
+
+            b.Property(p => p.Title).IsRequired().HasMaxLength(AnnouncementConsts.MaxTitleLength);
+            b.Property(p => p.Content).IsRequired().HasMaxLength(AnnouncementConsts.MaxContentLength);
+            b.Property(p => p.Sort).HasDefaultValue(0);
+        });
+
+        builder.Entity<AnnouncementCategory>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "AnnouncementCategories", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.ConfigureFullAudited();
+
+            b.Property(p => p.Name).IsRequired().HasMaxLength(AnnouncementCategoryConsts.MaxNameLength);
+            b.Property(p => p.Remark).HasMaxLength(AnnouncementCategoryConsts.MaxRemarkLength);
+            b.Property(p => p.Sort).HasDefaultValue(0);
         });
     }
 

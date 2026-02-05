@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SmartEnum.EFCore;
+using SuperAbp.Exam.Announcements;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.ExamManagement.UserExamQuestionReviews;
 using SuperAbp.Exam.ExamManagement.UserExamQuestions;
@@ -62,6 +63,8 @@ public class ExamDbContextInUnitTest : AbpDbContext<ExamDbContextInUnitTest>, IE
     public DbSet<Training> Trains { get; set; }
     public DbSet<Favorite> Favorites { get; set; }
     public DbSet<Mistake> Mistakes { get; set; }
+    public DbSet<Announcement> Announcements { get; set; }
+    public DbSet<AnnouncementCategory> AnnouncementCategories { get; set; }
 
     public ExamDbContextInUnitTest(DbContextOptions<ExamDbContextInUnitTest> options) : base(options)
     {
@@ -212,10 +215,33 @@ public class ExamDbContextInUnitTest : AbpDbContext<ExamDbContextInUnitTest>, IE
             b.ToTable(ExamConsts.DbTablePrefix + "Favorites", ExamConsts.DbSchema);
             b.ConfigureByConvention();
         });
+
         builder.Entity<Mistake>(b =>
         {
             b.ToTable(ExamConsts.DbTablePrefix + "MistakesReviews", ExamConsts.DbSchema);
             b.ConfigureByConvention();
+        });
+
+        builder.Entity<Announcement>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "Announcements", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.ConfigureFullAudited();
+
+            b.Property(p => p.Title).IsRequired().HasMaxLength(AnnouncementConsts.MaxTitleLength);
+            b.Property(p => p.Content).IsRequired().HasMaxLength(AnnouncementConsts.MaxContentLength);
+            b.Property(p => p.Sort).HasDefaultValue(0);
+        });
+
+        builder.Entity<AnnouncementCategory>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "AnnouncementCategories", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.ConfigureFullAudited();
+
+            b.Property(p => p.Name).IsRequired().HasMaxLength(AnnouncementCategoryConsts.MaxNameLength);
+            b.Property(p => p.Remark).HasMaxLength(AnnouncementCategoryConsts.MaxRemarkLength);
+            b.Property(p => p.Sort).HasDefaultValue(0);
         });
     }
 
