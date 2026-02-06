@@ -82,7 +82,7 @@ public abstract class AnnouncementAdminAppServiceTests<TStartupModule> : ExamApp
 
         var updatedAnnouncement = await _repository.GetAsync(_testData.Announcement4Id);
         updatedAnnouncement.IsPublished.ShouldBeTrue();
-        updatedAnnouncement.PublishTime.ShouldNotBeNull();
+        updatedAnnouncement.PublishTime.ShouldBeNull();
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public abstract class AnnouncementAdminAppServiceTests<TStartupModule> : ExamApp
 
         var updatedAnnouncement = await _repository.GetAsync(_testData.Announcement1Id);
         updatedAnnouncement.IsPublished.ShouldBeFalse();
-        updatedAnnouncement.PublishTime.ShouldBeNull();
+        updatedAnnouncement.PublishTime.ShouldNotBeNull();
     }
 
     [Fact]

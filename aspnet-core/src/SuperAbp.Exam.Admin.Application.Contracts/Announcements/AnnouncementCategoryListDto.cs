@@ -7,7 +7,7 @@ public class AnnouncementCategoryListDto : FullAuditedEntityDto<Guid>
 {
     public string Name { get; set; }
 
-    public int DisplayOrder { get; set; }
+    public int Sort { get; set; }
 
     public string? Remark { get; set; }
 }

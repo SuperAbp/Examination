@@ -12,7 +12,8 @@ public class ExamApplicationAdminAutoMapperProfile : Profile
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organization. */
         CreateMap<Announcement, AnnouncementListDto>()
-            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : null));
+            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : null))
+            .ForMember(dest => dest.Sort, opt => opt.MapFrom(src => src.Sort));
         CreateMap<Announcement, AnnouncementDetailDto>()
             .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : null));
         CreateMap<AnnouncementCategory, AnnouncementCategoryListDto>();

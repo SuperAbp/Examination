@@ -58,6 +58,13 @@ public class AnnouncementAdminAppService(
             input.CategoryId
         );
 
+        announcement.ExpirationTime = input.ExpirationTime;
+
+        if (input.PublishTime.HasValue)
+        {
+            announcement.SetPublishTime(input.PublishTime.Value);
+        }
+
         await Repository.InsertAsync(announcement);
         return ObjectMapper.Map<Announcement, AnnouncementDetailDto>(announcement);
     }
@@ -67,10 +74,25 @@ public class AnnouncementAdminAppService(
     {
         var announcement = await Repository.GetAsync(id);
 
+        if (announcement.IsPublished)
+        {
+            throw new AnnouncementAlreadyPublishedException();
+        }
+
         announcement.Title = input.Title;
         announcement.Content = input.Content;
         announcement.Sort = input.Sort;
         announcement.CategoryId = input.CategoryId;
+        announcement.ExpirationTime = input.ExpirationTime;
+
+        if (input.PublishTime.HasValue)
+        {
+            announcement.SetPublishTime(input.PublishTime.Value);
+        }
+        else
+        {
+            announcement.PublishTime = null;
+        }
 
         await Repository.UpdateAsync(announcement);
         return ObjectMapper.Map<Announcement, AnnouncementDetailDto>(announcement);
@@ -80,7 +102,7 @@ public class AnnouncementAdminAppService(
     public virtual async Task PublishAsync(Guid id)
     {
         var announcement = await Repository.GetAsync(id);
-        announcement.Publish(Clock.Now);
+        announcement.Publish();
         await Repository.UpdateAsync(announcement);
     }
 

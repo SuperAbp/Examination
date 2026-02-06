@@ -14,12 +14,12 @@ public class Announcement : FullAuditedAggregateRoot<Guid>, IMultiTenant
     { }
 
     [SetsRequiredMembers]
-    public Announcement(Guid id, string title, string content, int displayOrder = 0, Guid? categoryId = null)
+    public Announcement(Guid id, string title, string content, int sort = 0, Guid? categoryId = null)
         : base(id)
     {
         Title = title;
         Content = content;
-        Sort = displayOrder;
+        Sort = sort;
         CategoryId = categoryId;
         IsPublished = false;
     }
@@ -69,7 +69,7 @@ public class Announcement : FullAuditedAggregateRoot<Guid>, IMultiTenant
     /// <summary>
     /// 发布
     /// </summary>
-    public void Publish(DateTime publishTime)
+    public void Publish()
     {
         if (IsPublished)
         {
@@ -77,6 +77,17 @@ public class Announcement : FullAuditedAggregateRoot<Guid>, IMultiTenant
         }
 
         IsPublished = true;
+    }
+
+    /// <summary>
+    /// 设置发布时间
+    /// </summary>
+    public void SetPublishTime(DateTime publishTime)
+    {
+        if (IsPublished)
+        {
+            return;
+        }
         PublishTime = publishTime;
     }
 
@@ -86,7 +97,6 @@ public class Announcement : FullAuditedAggregateRoot<Guid>, IMultiTenant
     public void Unpublish()
     {
         IsPublished = false;
-        PublishTime = null;
     }
 
     /// <summary>

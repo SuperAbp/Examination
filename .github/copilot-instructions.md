@@ -1,5 +1,11 @@
 # AI Copilot Instructions for SuperAbp Exam Project
 
+## External Documentation References
+
+@https://ng.ant.design/llms.txt
+
+**NG-ZORRO (Ant Design for Angular)** - The admin frontend uses NG-ALAIN which is built on top of NG-ZORRO. The LLMs.txt file above contains structured documentation for all NG-ZORRO components, APIs, and usage patterns.
+
 ## Project Architecture
 
 This is an **online exam management system** built with **ABP Framework** and **.NET**, featuring:

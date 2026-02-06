@@ -51,16 +51,16 @@ public class ExamPermissionDefinitionProvider : PermissionDefinitionProvider
         exams.AddChild(ExamPermissions.Exams.Delete, L("Permission:Delete"));
 
         var announcements = myGroup.AddPermission(ExamPermissions.Announcements.Default, L("Permission:Announcements"));
-        exams.AddChild(ExamPermissions.Announcements.Create, L("Permission:Create"));
-        exams.AddChild(ExamPermissions.Announcements.Update, L("Permission:Edit"));
-        exams.AddChild(ExamPermissions.Announcements.Publish, L("Permission:Publish"));
-        exams.AddChild(ExamPermissions.Announcements.Unpublish, L("Permission:Unpublish"));
-        exams.AddChild(ExamPermissions.Announcements.Delete, L("Permission:Delete"));
+        announcements.AddChild(ExamPermissions.Announcements.Create, L("Permission:Create"));
+        announcements.AddChild(ExamPermissions.Announcements.Update, L("Permission:Edit"));
+        announcements.AddChild(ExamPermissions.Announcements.Publish, L("Permission:Publish"));
+        announcements.AddChild(ExamPermissions.Announcements.Unpublish, L("Permission:Unpublish"));
+        announcements.AddChild(ExamPermissions.Announcements.Delete, L("Permission:Delete"));
 
         var announcementCategories = myGroup.AddPermission(ExamPermissions.AnnouncementCategories.Default, L("Permission:AnnouncementCategories"));
-        exams.AddChild(ExamPermissions.AnnouncementCategories.Create, L("Permission:Create"));
-        exams.AddChild(ExamPermissions.AnnouncementCategories.Update, L("Permission:Edit"));
-        exams.AddChild(ExamPermissions.AnnouncementCategories.Delete, L("Permission:Delete"));
+        announcementCategories.AddChild(ExamPermissions.AnnouncementCategories.Create, L("Permission:Create"));
+        announcementCategories.AddChild(ExamPermissions.AnnouncementCategories.Update, L("Permission:Edit"));
+        announcementCategories.AddChild(ExamPermissions.AnnouncementCategories.Delete, L("Permission:Delete"));
     }
 
     private static LocalizableString L(string name)

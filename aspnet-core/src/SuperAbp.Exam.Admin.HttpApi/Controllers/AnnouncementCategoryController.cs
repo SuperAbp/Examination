@@ -2,14 +2,13 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SuperAbp.Exam.Admin.Announcements;
-using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Mvc;
 
 namespace SuperAbp.Exam.Admin.Controllers;
 
 [Route("api/announcement-categories")]
-public class AnnouncementCategoryAdminController(IAnnouncementCategoryAdminAppService categoryAppService) : AbpController, IAnnouncementCategoryAdminAppService
+public class AnnouncementCategoryController(IAnnouncementCategoryAdminAppService categoryAppService) : AbpController, IAnnouncementCategoryAdminAppService
 {
     protected IAnnouncementCategoryAdminAppService CategoryAppService { get; } = categoryAppService;
 

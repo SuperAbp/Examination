@@ -172,7 +172,8 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
             1,
             testData.AnnouncementCategory1Id
         );
-        announcement1.Publish(DateTime.Now.AddDays(-1));
+        announcement1.PublishTime = DateTime.Now.AddDays(-1);
+        announcement1.Publish();
 
         var announcement2 = new Announcement(
             testData.Announcement2Id,
@@ -181,7 +182,8 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
             2,
             testData.AnnouncementCategory2Id
         );
-        announcement2.Publish(DateTime.Now);
+        announcement2.PublishTime = DateTime.Now;
+        announcement2.Publish();
 
         var announcement3 = new Announcement(
             testData.Announcement3Id,
@@ -190,7 +192,8 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
             3,
             testData.AnnouncementCategory1Id
         );
-        announcement3.Publish(DateTime.Now.AddHours(-2));
+        announcement3.PublishTime = DateTime.Now.AddHours(-2);
+        announcement3.Publish();
 
         var announcement4 = new Announcement(
             testData.Announcement4Id,

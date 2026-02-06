@@ -20,7 +20,7 @@ public class AnnouncementCategoryDto
     /// <summary>
     /// 显示顺序
     /// </summary>
-    public int DisplayOrder { get; set; }
+    public int Sort { get; set; }
 
     /// <summary>
     /// 备注

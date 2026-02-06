@@ -36,7 +36,7 @@ public class AnnouncementListDto : FullAuditedEntityDto<Guid>
     /// <summary>
     /// 显示顺序
     /// </summary>
-    public int DisplayOrder { get; set; }
+    public int Sort { get; set; }
 
     /// <summary>
     /// 分类ID

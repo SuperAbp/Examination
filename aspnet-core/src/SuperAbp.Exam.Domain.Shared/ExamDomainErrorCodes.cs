@@ -42,6 +42,11 @@ public static class ExamDomainErrorCodes
         public const string MaxNumberOfTimesExceeded = "Exam:UserExams:0004";
     }
 
+    public static class Announcements
+    {
+        public const string CannotUpdatePublished = "Exam:Announcement:0001";
+    }
+
     public static class Exams
     {
         public const string OutOfExamTime = "Exam:Exams:0001";
