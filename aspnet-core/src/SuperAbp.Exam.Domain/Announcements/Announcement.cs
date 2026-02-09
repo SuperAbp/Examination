@@ -97,6 +97,8 @@ public class Announcement : FullAuditedAggregateRoot<Guid>, IMultiTenant
     public void Unpublish()
     {
         IsPublished = false;
+        PublishTime = null;
+        ExpirationTime = null;
     }
 
     /// <summary>
@@ -104,17 +106,19 @@ public class Announcement : FullAuditedAggregateRoot<Guid>, IMultiTenant
     /// </summary>
     public bool IsEffective(DateTime now)
     {
-        if (!IsPublished || !PublishTime.HasValue)
+        if (!IsPublished)
         {
             return false;
         }
 
+        // 如果设置了发布时间，需要检查是否已到发布时间
+        if (PublishTime.HasValue && PublishTime.Value > now)
+        {
+            return false;
+        }
+
+        // 检查是否已过期
         if (ExpirationTime.HasValue && now > ExpirationTime.Value)
-        {
-            return false;
-        }
-
-        if (PublishTime.Value > now)
         {
             return false;
         }

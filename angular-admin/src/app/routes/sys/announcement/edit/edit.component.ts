@@ -1,8 +1,10 @@
 import { CoreModule, LocalizationService } from '@abp/ng.core';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { I18NService } from '@core';
 import { AnnouncementService, AnnouncementCategoryService } from '@proxy/admin/controllers';
 import { AnnouncementDetailDto, AnnouncementCategoryListDto } from '@proxy/admin/announcements/models';
+import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -18,6 +20,7 @@ import { dateTimePickerUtil } from '@delon/util';
 @Component({
     selector: 'app-sys-announcement-edit',
     templateUrl: './edit.component.html',
+    providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
     imports: [
         CoreModule,
         NzSpinModule,
@@ -27,7 +30,8 @@ import { dateTimePickerUtil } from '@delon/util';
         NzInputNumberModule,
         NzButtonModule,
         NzDatePickerModule,
-        NzSelectModule
+        NzSelectModule,
+        EditorComponent
     ]
 })
 export class SysAnnouncementEditComponent implements OnInit {
@@ -40,15 +44,40 @@ export class SysAnnouncementEditComponent implements OnInit {
     isConfirmLoading = false;
 
     form: FormGroup = null;
+    init: EditorComponent['init'] = {
+        base_url: '/tinymce',
+        suffix: '.min',
+        plugins: 'preview fullscreen link table lists image media code',
+        toolbar:
+            'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | forecolor backcolor removeformat | link image media table | fullscreen preview code',
+        toolbar_mode: 'sliding',
+        height: 300,
+        menubar: false,
+        branding: false
+    };
 
-    constructor(
-        private fb: FormBuilder,
-        private modal: NzModalRef,
-        private messageService: NzMessageService,
-        private localizationService: LocalizationService,
-        private announcementService: AnnouncementService,
-        private categoryService: AnnouncementCategoryService
-    ) {}
+    private fb = inject(FormBuilder);
+    private modal = inject(NzModalRef);
+    private messageService = inject(NzMessageService);
+    private localizationService = inject(LocalizationService);
+    private announcementService = inject(AnnouncementService);
+    private categoryService = inject(AnnouncementCategoryService);
+    private i18n = inject(I18NService);
+
+    constructor() {
+        if (this.i18n.defaultLang === 'zh-CN') {
+            this.init['language'] = 'zh_CN';
+            this.init['language_url'] = '/assets/tinymce/langs/zh_CN.js';
+        }
+    }
+
+    get canPublish() :boolean { 
+        return !this.form?.get('publishTime')?.value;
+    }
+
+    get canSave(): boolean {
+        return !this.announcement?.isPublished;
+    }
 
     ngOnInit(): void {
         this.loading = true;
@@ -101,7 +130,7 @@ export class SysAnnouncementEditComponent implements OnInit {
         });
     }
 
-    save() {
+    save(publish: boolean = false) {
         if (!this.form.valid || this.isConfirmLoading) {
             for (const key of Object.keys(this.form.controls)) {
                 this.form.controls[key].markAsDirty();
@@ -112,6 +141,9 @@ export class SysAnnouncementEditComponent implements OnInit {
 
         const publishTime = this.form.get('publishTime').value;
         const expirationTime = this.form.get('expirationTime').value;
+        if(publishTime) {
+            publish = false;
+        }
 
         if (publishTime && expirationTime) {
             const publishDate = new Date(publishTime);
@@ -127,6 +159,7 @@ export class SysAnnouncementEditComponent implements OnInit {
         const formValue = this.form.value;
         const data = {
             ...formValue,
+            publish: publish,
             expirationTime: formValue.expirationTime ? dateTimePickerUtil.format(formValue.expirationTime, 'yyyy-MM-dd HH:mm') + ':00' : null,
             publishTime: formValue.publishTime ? dateTimePickerUtil.format(formValue.publishTime, 'yyyy-MM-dd HH:mm') + ':00' : null
         };

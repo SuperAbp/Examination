@@ -6,7 +6,7 @@ namespace SuperAbp.Exam.Announcements;
 /// <summary>
 /// 公告（用户端）
 /// </summary>
-public class AnnouncementDto : EntityDto<Guid>
+public class AnnouncementListDto : EntityDto<Guid>
 {
     /// <summary>
     /// 标题
@@ -14,9 +14,9 @@ public class AnnouncementDto : EntityDto<Guid>
     public string Title { get; set; }
 
     /// <summary>
-    /// 内容
+    /// 简短内容摘要
     /// </summary>
-    public string Content { get; set; }
+    public string BriefContent { get; set; }
 
     /// <summary>
     /// 分类ID

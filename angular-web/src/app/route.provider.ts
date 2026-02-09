@@ -37,8 +37,16 @@ function configureRoutes() {
   ]);
   routes.add([
     {
-      name: '::Menu:My',
+      path: '/announcements',
+      name: '::Menu:Announcement',
       order: 4,
+      layout: eLayoutType.application,
+    },
+  ]);
+  routes.add([
+    {
+      name: '::Menu:My',
+      order: 5,
       layout: eLayoutType.application,
     },
     {

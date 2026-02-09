@@ -59,7 +59,6 @@ export class SysAnnouncementComponent implements OnInit {
     columns: STColumn[] = [
         { title: this.localizationService.instant('Exam::CategoryName'), index: 'categoryName' },
         { title: this.localizationService.instant('Exam::Title'), index: 'title' },
-        { title: this.localizationService.instant('Exam::Content'), index: 'content' },
         {
             title: this.localizationService.instant('Exam::IsPublished'),
             index: 'isPublished',
@@ -76,7 +75,7 @@ export class SysAnnouncementComponent implements OnInit {
                     icon: 'edit',
                     type: 'modal',
                     iif: (record: any) => {
-                        return !record.isPublished && this.permissionService.getGrantedPolicy('Exam.Announcements.Update');
+                        return this.permissionService.getGrantedPolicy('Exam.Announcements.Update');
                     },
                     modal: {
                         component: SysAnnouncementEditComponent,

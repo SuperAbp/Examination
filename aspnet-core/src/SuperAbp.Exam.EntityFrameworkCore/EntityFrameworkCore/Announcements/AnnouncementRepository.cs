@@ -25,11 +25,11 @@ public class AnnouncementRepository : EfCoreRepository<ExamDbContext, Announceme
         return await dbSet
             .Include(x => x.Category)
             .Where(x => x.IsPublished)
-            .Where(x => x.PublishTime.HasValue && x.PublishTime.Value <= now)
+            .Where(x => !x.PublishTime.HasValue || x.PublishTime.Value <= now)
             .Where(x => !x.ExpirationTime.HasValue || x.ExpirationTime.Value > now)
             .OrderBy(x => x.Sort)
             .ThenByDescending(x => x.CreationTime)
-            .ToListAsync(GetCancellationToken(cancellationToken));
+            .ToListAsync(cancellationToken);
     }
 
     public virtual async Task<List<Announcement>> GetEffectiveListByCategoryIdAsync(Guid categoryId, DateTime now, CancellationToken cancellationToken = default)
@@ -40,11 +40,11 @@ public class AnnouncementRepository : EfCoreRepository<ExamDbContext, Announceme
             .Include(x => x.Category)
             .Where(x => x.CategoryId == categoryId)
             .Where(x => x.IsPublished)
-            .Where(x => x.PublishTime.HasValue && x.PublishTime.Value <= now)
+            .Where(x => !x.PublishTime.HasValue || x.PublishTime.Value <= now)
             .Where(x => !x.ExpirationTime.HasValue || x.ExpirationTime.Value > now)
             .OrderBy(x => x.Sort)
             .ThenByDescending(x => x.CreationTime)
-            .ToListAsync(GetCancellationToken(cancellationToken));
+            .ToListAsync(cancellationToken);
     }
 
     public virtual async Task<int> GetCountAsync(

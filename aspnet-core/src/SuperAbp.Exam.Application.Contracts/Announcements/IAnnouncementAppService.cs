@@ -14,10 +14,10 @@ public interface IAnnouncementAppService : IApplicationService
     /// <summary>
     /// 详情
     /// </summary>
-    Task<AnnouncementDto> GetAsync(Guid id);
+    Task<AnnouncementDetailDto> GetAsync(Guid id);
 
     /// <summary>
     /// 列表
     /// </summary>
-    Task<ListResultDto<AnnouncementDto>> GetEffectiveListAsync(Guid? categoryId = null);
+    Task<ListResultDto<AnnouncementListDto>> GetEffectiveListAsync(Guid? categoryId = null);
 }

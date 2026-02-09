@@ -1,7 +1,7 @@
 @if (unfinishedExam) {
-  <a class="text-decoration-none" [href]="'/exams/start/' + unfinishedExam.id">
-    <ngb-alert [dismissible]="false"> 存在未完成的考试，立即进入 </ngb-alert>
-  </a>
+<a class="text-decoration-none" [href]="'/exams/start/' + unfinishedExam.id">
+  <ngb-alert [dismissible]="false"> 存在未完成的考试，立即进入 </ngb-alert>
+</a>
 }
 
 <div class="card">
@@ -13,13 +13,9 @@
       <div class="row">
         <div class="col">
           <div class="form-group">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="name"
+            <input type="text" class="form-control" formControlName="name"
               [placeholder]="'::Placeholder' | abpLocalization: ('::Name' | abpLocalization)"
-              (keyup.enter)="search()"
-            />
+              (keyup.enter)="search()" />
           </div>
         </div>
         <div class="col">
@@ -52,17 +48,13 @@
           </span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column
-        [name]="'::Actions' | abpLocalization"
-        [width]="150"
-        [canAutoResize]="false"
-        [sortable]="false"
-      >
+      <ngx-datatable-column [name]="'::Actions' | abpLocalization" [width]="150" [canAutoResize]="false"
+        [sortable]="false">
         <ng-template ngx-datatable-cell-template let-row="row">
           @if (isExamAvailable(row)) {
-            <button type="button" class="btn btn-primary btn-sm" (click)="StartAsync(row.id)">
-              {{ '::EnterExam' | abpLocalization }}
-            </button>
+          <button type="button" class="btn btn-primary btn-sm" (click)="StartAsync(row.id)">
+            {{ '::EnterExam' | abpLocalization }}
+          </button>
           }
         </ng-template>
       </ngx-datatable-column>

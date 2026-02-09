@@ -38,8 +38,7 @@
             <nz-form-label nzRequired>{{ 'Exam::Content' | abpLocalization }}</nz-form-label>
             <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization"
                 [nzErrorTip]="contentErrorTpl">
-                <textarea rows="6" formControlName="content" nz-input
-                    [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Content' | abpLocalization)"></textarea>
+                <editor formControlName="content" [init]="init" [disabled]="!canSave"></editor>
                 <ng-template #contentErrorTpl let-control>
                     @if (control.hasError('required')) {
                     {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
@@ -81,7 +80,13 @@
 </div>
 <div class="modal-footer">
     <button nz-button (click)="close()">{{ 'Exam::Cancel' | abpLocalization }}</button>
-    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save()">
+    @if(canPublish && canSave){
+    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save(true)">
+        {{ 'Exam::Publish' | abpLocalization }}
+    </button>
+    }
+    <button nz-button nzType="primary" [disabled]="!form.valid || !canSave" [nzLoading]="isConfirmLoading"
+        (click)="save()">
         {{ 'Exam::Submit' | abpLocalization }}
     </button>
 </div>

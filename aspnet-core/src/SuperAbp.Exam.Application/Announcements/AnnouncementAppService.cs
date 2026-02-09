@@ -17,7 +17,7 @@ public class AnnouncementAppService : ApplicationService, IAnnouncementAppServic
         _repository = repository;
     }
 
-    public virtual async Task<AnnouncementDto> GetAsync(Guid id)
+    public virtual async Task<AnnouncementDetailDto> GetAsync(Guid id)
     {
         var announcement = await _repository.GetAsync(id);
 
@@ -26,17 +26,17 @@ public class AnnouncementAppService : ApplicationService, IAnnouncementAppServic
             throw new BusinessException("Announcement not found or not effective");
         }
 
-        return ObjectMapper.Map<Announcement, AnnouncementDto>(announcement);
+        return ObjectMapper.Map<Announcement, AnnouncementDetailDto>(announcement);
     }
 
-    public virtual async Task<ListResultDto<AnnouncementDto>> GetEffectiveListAsync(Guid? categoryId = null)
+    public virtual async Task<ListResultDto<AnnouncementListDto>> GetEffectiveListAsync(Guid? categoryId = null)
     {
         var items = categoryId.HasValue
             ? await _repository.GetEffectiveListByCategoryIdAsync(categoryId.Value, Clock.Now)
             : await _repository.GetEffectiveListAsync(Clock.Now);
 
-        var dtos = ObjectMapper.Map<List<Announcement>, List<AnnouncementDto>>(items);
+        var dtos = ObjectMapper.Map<List<Announcement>, List<AnnouncementListDto>>(items);
 
-        return new ListResultDto<AnnouncementDto>(dtos);
+        return new ListResultDto<AnnouncementListDto>(dtos);
     }
 }

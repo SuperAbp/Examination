@@ -64,6 +64,13 @@ public class AnnouncementAdminAppService(
         {
             announcement.SetPublishTime(input.PublishTime.Value);
         }
+        else
+        {
+            if (input.Publish)
+            {
+                announcement.Publish();
+            }
+        }
 
         await Repository.InsertAsync(announcement);
         return ObjectMapper.Map<Announcement, AnnouncementDetailDto>(announcement);
@@ -91,6 +98,10 @@ public class AnnouncementAdminAppService(
         }
         else
         {
+            if (input.Publish)
+            {
+                announcement.Publish();
+            }
             announcement.PublishTime = null;
         }
 

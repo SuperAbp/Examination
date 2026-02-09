@@ -20,6 +20,7 @@ export interface UserExamDetailDto extends EntityDto<string> {
   examId?: string;
   examName: string;
   status: number;
+  isActive: boolean;
   endTime?: string;
   answerMode: number;
   sections: UserExamDetailDto_SectionDto[];
@@ -45,6 +46,8 @@ export interface UserExamDetailDto_SectionDto_QuestionDto {
   score?: number;
   questionScore?: number;
   knowledgePoints: string[];
+  fixedOrder: boolean;
+  blankOptionsCount: number;
   options: UserExamDetailDto_SectionDto_QuestionDto_OptionDto[];
 }
 
@@ -63,4 +66,5 @@ export interface UserExamListDto extends EntityDto<string> {
   creationTime?: string;
   isPassed?: boolean;
   status: number;
+  isActive: boolean;
 }

@@ -7,8 +7,6 @@ using Volo.Abp.AspNetCore.Mvc;
 
 namespace SuperAbp.Exam.Announcements;
 
-[RemoteService(Name = "Exam")]
-[Area("Exam")]
 [Route("api/exam/announcements")]
 public class AnnouncementController : AbpController, IAnnouncementAppService
 {
@@ -20,13 +18,13 @@ public class AnnouncementController : AbpController, IAnnouncementAppService
     }
 
     [HttpGet("{id}")]
-    public Task<AnnouncementDto> GetAsync(Guid id)
+    public Task<AnnouncementDetailDto> GetAsync(Guid id)
     {
         return _announcementAppService.GetAsync(id);
     }
 
     [HttpGet("effective")]
-    public Task<ListResultDto<AnnouncementDto>> GetEffectiveListAsync([FromQuery] Guid? categoryId = null)
+    public Task<ListResultDto<AnnouncementListDto>> GetEffectiveListAsync([FromQuery] Guid? categoryId = null)
     {
         return _announcementAppService.GetEffectiveListAsync(categoryId);
     }
