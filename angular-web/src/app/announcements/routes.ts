@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@abp/ng.core';
 import { AnnouncementsComponent } from './announcements.component';
-import { AnnouncementDetailComponent } from './announcement-detail';
+import { AnnouncementDetailComponent } from './detail/detail.component';
 
 export const routes: Routes = [
   {

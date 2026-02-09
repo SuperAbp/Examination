@@ -19,5 +19,5 @@ public interface IAnnouncementAppService : IApplicationService
     /// <summary>
     /// 列表
     /// </summary>
-    Task<ListResultDto<AnnouncementListDto>> GetEffectiveListAsync(Guid? categoryId = null);
+    Task<ListResultDto<AnnouncementListDto>> GetListAsync(Guid? categoryId = null);
 }

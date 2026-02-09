@@ -4,12 +4,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { AnnouncementService } from '@proxy/announcements';
 import { AnnouncementDetailDto } from '@proxy/announcements';
+import { CoreModule } from '@abp/ng.core';
 
 @Component({
-  selector: 'app-announcement-detail',
-  templateUrl: './announcement-detail.component.html',
-  styleUrls: ['./announcement-detail.component.scss'],
-  imports: [CommonModule, NgbAlertModule],
+  selector: 'app-announcements-detail',
+  templateUrl: './detail.component.html',
+  imports: [CoreModule, CommonModule, NgbAlertModule],
   standalone: true,
 })
 export class AnnouncementDetailComponent implements OnInit {
@@ -26,7 +26,7 @@ export class AnnouncementDetailComponent implements OnInit {
     if (id) {
       this.loadAnnouncement(id);
     } else {
-      this.error = '公告ID不存在';
+      this.goBack();
     }
   }
 
@@ -34,19 +34,10 @@ export class AnnouncementDetailComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.announcementService
-      .get(id)
-      .subscribe({
-        next: (result: AnnouncementDetailDto) => {
-          this.announcement = result;
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('加载公告失败', err);
-          this.error = '公告不存在或已被删除';
-          this.loading = false;
-        }
-      });
+    this.announcementService.get(id).subscribe((result: AnnouncementDetailDto) => {
+      this.announcement = result;
+      this.loading = false;
+    });
   }
 
   goBack() {

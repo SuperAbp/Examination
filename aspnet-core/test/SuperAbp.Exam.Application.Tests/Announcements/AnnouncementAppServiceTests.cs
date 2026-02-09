@@ -24,7 +24,7 @@ public abstract class AnnouncementAppServiceTests<TStartupModule> : ExamApplicat
     [Fact]
     public async Task Should_Get_Effective_List()
     {
-        var result = await _appService.GetEffectiveListAsync(_testData.AnnouncementCategory1Id);
+        var result = await _appService.GetListAsync(_testData.AnnouncementCategory1Id);
         result.Items.ShouldNotBeNull();
         result.Items.Count.ShouldBeGreaterThan(0);
     }

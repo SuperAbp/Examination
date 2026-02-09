@@ -5,12 +5,6 @@
                 <h2 class="mb-0">{{ '::Announcements' | abpLocalization }}</h2>
             </div>
 
-            @if (error) {
-            <ngb-alert type="danger" [dismissible]="true">
-                {{ error }}
-            </ngb-alert>
-            }
-
             @if (loading) {
             <div class="d-flex justify-content-center">
                 <div class="spinner-border" role="status">
@@ -20,7 +14,7 @@
             } @else if (announcements.length === 0) {
             <div class="text-center py-5">
                 <i class="fas fa-bullhorn fa-3x text-muted mb-3"></i>
-                <p class="text-muted">暂无公告</p>
+                <p class="text-muted">{{ '::NoData' | abpLocalization }}</p>
             </div>
             } @else {
             <div class="list-group">

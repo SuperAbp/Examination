@@ -7,7 +7,7 @@ using Volo.Abp.AspNetCore.Mvc;
 
 namespace SuperAbp.Exam.Announcements;
 
-[Route("api/exam/announcements")]
+[Route("api/announcements")]
 public class AnnouncementController : AbpController, IAnnouncementAppService
 {
     private readonly IAnnouncementAppService _announcementAppService;
@@ -23,9 +23,9 @@ public class AnnouncementController : AbpController, IAnnouncementAppService
         return _announcementAppService.GetAsync(id);
     }
 
-    [HttpGet("effective")]
-    public Task<ListResultDto<AnnouncementListDto>> GetEffectiveListAsync([FromQuery] Guid? categoryId = null)
+    [HttpGet]
+    public Task<ListResultDto<AnnouncementListDto>> GetListAsync([FromQuery] Guid? categoryId = null)
     {
-        return _announcementAppService.GetEffectiveListAsync(categoryId);
+        return _announcementAppService.GetListAsync(categoryId);
     }
 }

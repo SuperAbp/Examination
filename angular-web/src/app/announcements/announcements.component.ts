@@ -23,7 +23,6 @@ export class AnnouncementsComponent implements OnInit {
 
   announcements: AnnouncementListDto[] = [];
   loading = false;
-  error: string | null = null;
 
   ngOnInit() {
     this.loadAnnouncements();
@@ -31,20 +30,12 @@ export class AnnouncementsComponent implements OnInit {
 
   loadAnnouncements() {
     this.loading = true;
-    this.error = null;
     
     this.announcementService
-      .getEffectiveList()
-      .subscribe({
-        next: (result: ListResultDto<AnnouncementListDto>) => {
+      .getList()
+      .subscribe((result: ListResultDto<AnnouncementListDto>) => {
           this.announcements = result.items || [];
           this.loading = false;
-        },
-        error: (err) => {
-          console.error('加载公告失败', err);
-          this.error = '加载公告失败，请稍后重试';
-          this.loading = false;
-        }
-      });
+        });
   }
 }

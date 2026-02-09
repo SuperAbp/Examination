@@ -7,9 +7,7 @@ using Volo.Abp.AspNetCore.Mvc;
 
 namespace SuperAbp.Exam.Announcements;
 
-[RemoteService(Name = "Exam")]
-[Area("Exam")]
-[Route("api/exam/announcement-categories")]
+[Route("api/announcement-categories")]
 public class AnnouncementCategoryController : AbpController, IAnnouncementCategoryAppService
 {
     private readonly IAnnouncementCategoryAppService _categoryAppService;

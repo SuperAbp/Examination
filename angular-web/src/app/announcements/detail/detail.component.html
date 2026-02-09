@@ -1,11 +1,6 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
-            <button class="btn btn-link mb-3 ps-0" (click)="goBack()">
-                <i class="fas fa-arrow-left me-2"></i>
-                返回列表
-            </button>
-
             @if (error) {
             <ngb-alert type="danger" [dismissible]="true">
                 {{ error }}
@@ -15,13 +10,19 @@
             @if (loading) {
             <div class="d-flex justify-content-center">
                 <div class="spinner-border" role="status">
-                    <span class="visually-hidden">加载中...</span>
+                    <span class="visually-hidden">{{ '::Loading' | abpLocalization }}</span>
                 </div>
             </div>
             } @else if (announcement) {
             <div class="card">
+                <div class="card-header">
+                    <span style="cursor: pointer" (click)="goBack()">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        {{'::Back' | abpLocalization }}
+                    </span>
+                </div>
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
                         <h1 class="card-title mb-0">{{ announcement.title }}</h1>
                         @if (announcement.categoryName) {
                         <span class="badge bg-primary">{{ announcement.categoryName }}</span>
@@ -29,12 +30,6 @@
                     </div>
                     <hr>
                     <div class="announcement-detail-content" [innerHTML]="announcement.content"></div>
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                    <small class="text-muted">
-                        <i class="far fa-clock me-1"></i>
-                        已发布
-                    </small>
                 </div>
             </div>
             }

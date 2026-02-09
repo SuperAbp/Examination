@@ -29,7 +29,7 @@ public class AnnouncementAppService : ApplicationService, IAnnouncementAppServic
         return ObjectMapper.Map<Announcement, AnnouncementDetailDto>(announcement);
     }
 
-    public virtual async Task<ListResultDto<AnnouncementListDto>> GetEffectiveListAsync(Guid? categoryId = null)
+    public virtual async Task<ListResultDto<AnnouncementListDto>> GetListAsync(Guid? categoryId = null)
     {
         var items = categoryId.HasValue
             ? await _repository.GetEffectiveListByCategoryIdAsync(categoryId.Value, Clock.Now)
