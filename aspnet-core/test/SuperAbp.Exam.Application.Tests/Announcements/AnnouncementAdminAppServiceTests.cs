@@ -1,9 +1,7 @@
 using Shouldly;
 using System;
 using System.Threading.Tasks;
-using SuperAbp.Exam.Admin.Announcements;
 using SuperAbp.Exam.Announcements;
-using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Modularity;
 using Xunit;
@@ -68,11 +66,29 @@ public abstract class AnnouncementAdminAppServiceTests<TStartupModule> : ExamApp
             CategoryId = _testData.AnnouncementCategory1Id
         };
 
-        var result = await _adminAppService.UpdateAsync(_testData.Announcement1Id, input);
+        var result = await _adminAppService.UpdateAsync(_testData.Announcement4Id, input);
         result.ShouldNotBeNull();
         result.Title.ShouldBe(input.Title);
         result.Content.ShouldBe(input.Content);
         result.Sort.ShouldBe(input.Sort);
+    }
+
+    [Fact]
+    public async Task Should_Throw_When_Update_Published_Announcement()
+    {
+        var input = new AnnouncementUpdateDto
+        {
+            Title = "Updated Announcement",
+            Content = "Updated Content",
+            Sort = 10,
+            CategoryId = _testData.AnnouncementCategory1Id
+        };
+
+        var exception = await Should.ThrowAsync<AnnouncementAlreadyPublishedException>(
+            async () => await _adminAppService.UpdateAsync(_testData.Announcement1Id, input)
+        );
+
+        exception.ShouldNotBeNull();
     }
 
     [Fact]
@@ -99,8 +115,8 @@ public abstract class AnnouncementAdminAppServiceTests<TStartupModule> : ExamApp
     [Fact]
     public async Task Should_Delete()
     {
-        await _adminAppService.DeleteAsync(_testData.Announcement1Id);
+        await _adminAppService.DeleteAsync(_testData.Announcement2Id);
 
-        await Should.ThrowAsync<EntityNotFoundException>(async () => await _repository.GetAsync(_testData.Announcement1Id));
+        await Should.ThrowAsync<EntityNotFoundException>(async () => await _repository.GetAsync(_testData.Announcement2Id));
     }
 }
