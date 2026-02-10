@@ -27,4 +27,9 @@ export const APP_ROUTES: Routes = [
     loadChildren: () => import('./my/routes').then(m => m.routes),
     canActivate: [authGuard],
   },
+  {
+    path: 'announcements',
+    loadChildren: () => import('./announcements/routes').then(m => m.routes),
+    canActivate: [authGuard],
+  },
 ];

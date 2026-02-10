@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SuperAbp.Exam.Announcements;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.Questions;
@@ -56,19 +57,23 @@ public class ExamEntityFrameworkCoreModule : AbpModule
         });
         Configure<AbpEntityOptions>(options =>
         {
-            options.Entity<Paper>(questionOption =>
+            options.Entity<Paper>(option =>
             {
-                questionOption.DefaultWithDetailsFunc = query => query
+                option.DefaultWithDetailsFunc = query => query
                 .Include(o => o.PaperSections).ThenInclude(s => s.PaperQuestions)
                 .Include(o => o.PaperSections).ThenInclude(s => s.PaperQuestionRules);
             });
-            options.Entity<Question>(questionOption =>
+            options.Entity<Question>(option =>
             {
-                questionOption.DefaultWithDetailsFunc = query => query.Include(o => o.Options);
+                option.DefaultWithDetailsFunc = query => query.Include(o => o.Options);
             });
-            options.Entity<UserExam>(questionOption =>
+            options.Entity<UserExam>(option =>
             {
-                questionOption.DefaultWithDetailsFunc = query => query.Include(o => o.Sections).ThenInclude(o => o.Questions).ThenInclude(q => q.QuestionReviews);
+                option.DefaultWithDetailsFunc = query => query.Include(o => o.Sections).ThenInclude(o => o.Questions).ThenInclude(q => q.QuestionReviews);
+            });
+            options.Entity<Announcement>(option =>
+            {
+                option.DefaultWithDetailsFunc = query => query.Include(o => o.Category);
             });
         });
     }

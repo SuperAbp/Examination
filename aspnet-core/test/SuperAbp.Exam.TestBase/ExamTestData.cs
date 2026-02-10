@@ -139,4 +139,24 @@ public class ExamTestData : ISingletonDependency
 
     public Guid Training1Id = Guid.NewGuid();
     public Guid Training2Id = Guid.NewGuid();
+
+    // Announcement Categories
+    public Guid AnnouncementCategory1Id = Guid.NewGuid();
+    public string AnnouncementCategory1Name = "系统公告";
+    public Guid AnnouncementCategory2Id = Guid.NewGuid();
+    public string AnnouncementCategory2Name = "活动通知";
+
+    // Announcements
+    public Guid Announcement1Id = Guid.NewGuid();
+    public string Announcement1Title = "系统维护通知";
+    public string Announcement1Content = "系统将于今晚进行维护升级。";
+    public Guid Announcement2Id = Guid.NewGuid();
+    public string Announcement2Title = "新功能上线";
+    public string Announcement2Content = "新增了在线考试功能。";
+    public Guid Announcement3Id = Guid.NewGuid();
+    public string Announcement3Title = "停机公告";
+    public string Announcement3Content = "服务器即将停机。";
+    public Guid Announcement4Id = Guid.NewGuid();
+    public string Announcement4Title = "未发布公告";
+    public string Announcement4Content = "这是一条未发布的公告。";
 }

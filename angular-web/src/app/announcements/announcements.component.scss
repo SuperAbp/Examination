@@ -1,0 +1,15 @@
+.list-group-item {
+    cursor: pointer;
+}
+
+.announcement-preview {
+    font-size: 0.875rem;
+    color: #6c757d;
+    line-height: 1.5;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

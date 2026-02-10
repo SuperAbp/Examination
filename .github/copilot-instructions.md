@@ -1,5 +1,11 @@
 # AI Copilot Instructions for SuperAbp Exam Project
 
+## External Documentation References
+
+@https://ng.ant.design/llms.txt
+
+**NG-ZORRO (Ant Design for Angular)** - The admin frontend uses NG-ALAIN which is built on top of NG-ZORRO. The LLMs.txt file above contains structured documentation for all NG-ZORRO components, APIs, and usage patterns.
+
 ## Project Architecture
 
 This is an **online exam management system** built with **ABP Framework** and **.NET**, featuring:
@@ -348,3 +354,58 @@ Frontend builds to:
 - Supported languages configured in `ExamDomainModule.cs`
 - Frontend i18n files in `angular-admin/src/assets/i18n/`
 - Backend localization in standard ABP `.json` resource files
+
+## AI Assistant Behavior Guidelines
+
+When helping complete features in this codebase:
+
+1. **Minimal Documentation** - Only include:
+   - ✅ Brief comments explaining complex logic
+   - ✅ Class/method summaries for public APIs
+   
+   Do NOT generate:
+   - ❌ README files
+   - ❌ Line-by-line comments
+   - ❌ Installation/setup guides
+   - ❌ Feature description documents
+   - ❌ Inline XML documentation strings
+
+2. **Focus on Code** - Provide:
+   - Working implementation code
+   - Clean, self-explanatory code
+   - Refactoring suggestions if asked
+
+3. **Assume Knowledge** - User is familiar with:
+   - ABP Framework patterns
+   - Project structure and conventions
+   - Domain-driven design concepts
+   - Testing patterns
+
+**Example Response Format:**
+```typescript
+// ✅ Good: Brief comment for complex logic
+export class MyComponent {
+  constructor(private myService: MyService) {
+    this.myService = myService;
+  }
+
+  async loadData() {
+    this.data = await this.myService.getData();
+  }
+}
+
+// ❌ Bad: Line-by-line comments
+export class MyComponent {
+  // Constructor injection
+  constructor(private myService: MyService) {
+    // Assign to property
+    this.myService = myService;
+  }
+
+  // Load data method
+  async loadData() {
+    // Call service and assign
+    this.data = await this.myService.getData();
+  }
+}
+```

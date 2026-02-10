@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SuperAbp.Exam.BackgroundServices.Announcements;
 using SuperAbp.Exam.BackgroundServices.Exams;
 using SuperAbp.Exam.EntityFrameworkCore;
 using Volo.Abp;
@@ -29,5 +30,6 @@ public class ExamBackgroundServicesModule : AbpModule
         context.AddBackgroundWorkerAsync<SubmittedUserExamWorker>();
         context.AddBackgroundWorkerAsync<TerminateExamWorker>();
         context.AddBackgroundWorkerAsync<InitialDataWorker>();
+        context.AddBackgroundWorkerAsync<AnnouncementAutoPublishWorker>();
     }
 }

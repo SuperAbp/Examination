@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using SuperAbp.Exam.KnowledgePoints;
@@ -116,6 +117,7 @@ public class QuestionRepository(IDbContextProvider<IExamDbContext> dbContextProv
                  KnowledgePoints = s.kpGroup.Select(k => k.Name).ToList(),
                  Options = s.q.Options
              })
+             .OrderBy(sorting.IsNullOrWhiteSpace() ? QuestionConsts.DefaultSorting : sorting)
              .PageBy(skipCount, maxResultCount);
 
         return await result.ToListAsync(cancellationToken);

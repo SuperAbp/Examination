@@ -1,0 +1,95 @@
+@if (form) {
+<div class="modal-header">
+    <div class="modal-title">
+        @if (announcementId) {
+        {{ 'Exam::Edit' | abpLocalization }}
+        } @else {
+        {{ 'Exam::NewAnnouncement' | abpLocalization }}
+        }
+    </div>
+</div>
+<div class="modal-body">
+    <form nz-form (ngSubmit)="save()" [formGroup]="form" nzLayout="vertical" [skipValidation]="true">
+        <nz-form-item>
+            <nz-form-label>{{ 'Exam::Category' | abpLocalization }}</nz-form-label>
+            <nz-form-control>
+                <nz-select formControlName="categoryId" nzAllowClear nzShowSearch
+                    [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::Category' | abpLocalization)">
+                    @for (category of categories; track category.id) {
+                    <nz-option [nzValue]="category.id" [nzLabel]="category.name"></nz-option>
+                    }
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired>{{ 'Exam::Title' | abpLocalization }}</nz-form-label>
+            <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization"
+                [nzErrorTip]="titleErrorTpl">
+                <input formControlName="title" nz-input
+                    [placeholder]="'Exam::Placeholder' | abpLocalization: ('Exam::Title' | abpLocalization)" />
+                <ng-template #titleErrorTpl let-control>
+                    @if (control.hasError('required')) {
+                    {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
+                    }
+                </ng-template>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired>{{ 'Exam::Content' | abpLocalization }}</nz-form-label>
+            <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization"
+                [nzErrorTip]="contentErrorTpl">
+                <editor formControlName="content" [init]="init" [disabled]="!canSave"></editor>
+                <ng-template #contentErrorTpl let-control>
+                    @if (control.hasError('required')) {
+                    {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
+                    }
+                </ng-template>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label>{{ 'Exam::ScheduledPublishTime' | abpLocalization }}</nz-form-label>
+            <nz-form-control>
+                <nz-date-picker formControlName="scheduledPublishTime"
+                    [nzShowTime]="{ nzFormat: 'HH:mm', nzMinuteStep: 15 }" nzFormat="yyyy-MM-dd HH:mm"
+                    [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::ScheduledPublishTime' | abpLocalization)"
+                    [nzDisabledDate]="disabledDateBeforeToday"></nz-date-picker>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label>{{ 'Exam::ScheduledExpirationTime' | abpLocalization }}</nz-form-label>
+            <nz-form-control>
+                <nz-date-picker formControlName="scheduledExpirationTime"
+                    [nzShowTime]="{ nzFormat: 'HH:mm', nzMinuteStep: 15 }" nzFormat="yyyy-MM-dd HH:mm"
+                    [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::ScheduledExpirationTime' | abpLocalization)"
+                    [nzDisabledDate]="disabledDateBeforePublishTime"></nz-date-picker>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired>{{ 'Exam::Sort' | abpLocalization }}</nz-form-label>
+            <nz-form-control nzHasFeedback [nzValidatingTip]="'Exam::Validating' | abpLocalization"
+                [nzErrorTip]="sortErrorTpl">
+                <nz-input-number formControlName="sort" [nzMin]="0"></nz-input-number>
+                <ng-template #sortErrorTpl let-control>
+                    @if (control.hasError('required')) {
+                    {{ 'Exam::ThisFieldIsRequired.' | abpLocalization }}
+                    }
+                </ng-template>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</div>
+<div class="modal-footer">
+    <button nz-button (click)="close()">{{ 'Exam::Cancel' | abpLocalization }}</button>
+    @if(canPublish && canSave){
+    <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="isConfirmLoading" (click)="save(true)">
+        {{ 'Exam::Publish' | abpLocalization }}
+    </button>
+    }
+    <button nz-button nzType="primary" [disabled]="!form.valid || !canSave" [nzLoading]="isConfirmLoading"
+        (click)="save()">
+        {{ 'Exam::Submit' | abpLocalization }}
+    </button>
+</div>
+} @else {
+<nz-spin class="modal-spin"></nz-spin>
+}

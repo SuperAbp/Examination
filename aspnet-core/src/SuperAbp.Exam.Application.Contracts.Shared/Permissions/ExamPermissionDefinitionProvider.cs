@@ -49,6 +49,18 @@ public class ExamPermissionDefinitionProvider : PermissionDefinitionProvider
         exams.AddChild(ExamPermissions.Exams.Cancel, L("Permission:Cancel"));
         exams.AddChild(ExamPermissions.Exams.Invalidate, L("Permission:Invalidate"));
         exams.AddChild(ExamPermissions.Exams.Delete, L("Permission:Delete"));
+
+        var announcements = myGroup.AddPermission(ExamPermissions.Announcements.Default, L("Permission:Announcements"));
+        announcements.AddChild(ExamPermissions.Announcements.Create, L("Permission:Create"));
+        announcements.AddChild(ExamPermissions.Announcements.Update, L("Permission:Edit"));
+        announcements.AddChild(ExamPermissions.Announcements.Publish, L("Permission:Publish"));
+        announcements.AddChild(ExamPermissions.Announcements.Unpublish, L("Permission:Unpublish"));
+        announcements.AddChild(ExamPermissions.Announcements.Delete, L("Permission:Delete"));
+
+        var announcementCategories = myGroup.AddPermission(ExamPermissions.AnnouncementCategories.Default, L("Permission:AnnouncementCategories"));
+        announcementCategories.AddChild(ExamPermissions.AnnouncementCategories.Create, L("Permission:Create"));
+        announcementCategories.AddChild(ExamPermissions.AnnouncementCategories.Update, L("Permission:Edit"));
+        announcementCategories.AddChild(ExamPermissions.AnnouncementCategories.Delete, L("Permission:Delete"));
     }
 
     private static LocalizableString L(string name)

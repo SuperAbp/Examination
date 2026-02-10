@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using SuperAbp.Exam.Announcements;
 using SuperAbp.Exam.ExamManagement.Exams;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.PaperManagement.Papers;
@@ -19,6 +20,8 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
     IExamRepository examRepository,
     IPaperRepository paperRepository,
     ITrainingRepository trainingRepository,
+    IAnnouncementRepository announcementRepository,
+    IAnnouncementCategoryRepository announcementCategoryRepository,
     ExamTestData testData) : IDataSeedContributor, ITransientDependency
 {
     public async Task SeedAsync(DataSeedContext context)
@@ -38,6 +41,10 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
             await CreateTrainingAsync();
 
             await CreateKnowledgePointAsync();
+
+            await CreateAnnouncementCategoryAsync();
+
+            await CreateAnnouncementAsync();
         }
     }
 
@@ -146,5 +153,56 @@ public class ExamTestDataSeedContributor(ICurrentTenant currentTenant,
         await questionBankRepository.InsertManyAsync([
             new QuestionBank(testData.QuestionBank1Id, testData.QuestionBank1Title),
             new QuestionBank(testData.QuestionBank2Id, testData.QuestionBank2Title)]);
+    }
+
+    private async Task CreateAnnouncementCategoryAsync()
+    {
+        await announcementCategoryRepository.InsertManyAsync([
+            new AnnouncementCategory(testData.AnnouncementCategory1Id, testData.AnnouncementCategory1Name, 1, "系统相关公告"),
+            new AnnouncementCategory(testData.AnnouncementCategory2Id, testData.AnnouncementCategory2Name, 2, "活动相关通知")
+        ]);
+    }
+
+    private async Task CreateAnnouncementAsync()
+    {
+        var announcement1 = new Announcement(
+            testData.Announcement1Id,
+            testData.Announcement1Title,
+            testData.Announcement1Content,
+            1,
+            testData.AnnouncementCategory1Id
+        );
+        announcement1.ScheduledPublishTime = DateTime.Now.AddDays(-1);
+        announcement1.Publish();
+
+        var announcement2 = new Announcement(
+            testData.Announcement2Id,
+            testData.Announcement2Title,
+            testData.Announcement2Content,
+            2,
+            testData.AnnouncementCategory2Id
+        );
+        announcement2.ScheduledPublishTime = DateTime.Now;
+        announcement2.Publish();
+
+        var announcement3 = new Announcement(
+            testData.Announcement3Id,
+            testData.Announcement3Title,
+            testData.Announcement3Content,
+            3,
+            testData.AnnouncementCategory1Id
+        );
+        announcement3.ScheduledPublishTime = DateTime.Now.AddHours(-2);
+        announcement3.Publish();
+
+        var announcement4 = new Announcement(
+            testData.Announcement4Id,
+            testData.Announcement4Title,
+            testData.Announcement4Content,
+            4,
+            testData.AnnouncementCategory2Id
+        );
+
+        await announcementRepository.InsertManyAsync([announcement1, announcement2, announcement3, announcement4]);
     }
 }

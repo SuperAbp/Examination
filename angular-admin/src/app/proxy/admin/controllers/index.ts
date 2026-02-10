@@ -1,3 +1,5 @@
+export * from './announcement-category.service';
+export * from './announcement.service';
 export * from './app.service';
 export * from './examination.service';
 export * from './knowledge-point.service';
