@@ -1,4 +1,4 @@
-import type { EntityDto } from '@abp/ng.core';
+import type { CreationAuditedEntityDto, EntityDto } from '@abp/ng.core';
 
 export interface AnnouncementCategoryDto {
   id?: string;
@@ -8,7 +8,7 @@ export interface AnnouncementCategoryDto {
   creationTime?: string;
 }
 
-export interface AnnouncementDetailDto extends EntityDto<string> {
+export interface AnnouncementDetailDto extends CreationAuditedEntityDto<string> {
   title?: string;
   content?: string;
   categoryId?: string;

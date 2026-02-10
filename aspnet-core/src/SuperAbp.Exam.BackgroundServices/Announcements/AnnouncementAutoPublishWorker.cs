@@ -88,7 +88,7 @@ public class AnnouncementAutoPublishWorker : AsyncPeriodicBackgroundWorkerBase
         var now = clock.Now;
 
         var toPublish = await queryable
-            .Where(a => !a.IsPublished && a.PublishTime.HasValue && a.PublishTime.Value <= now)
+            .Where(a => !a.IsPublished && a.ScheduledPublishTime.HasValue && a.ScheduledPublishTime.Value <= now)
             .ToListAsync();
 
         if (toPublish.Any())
@@ -116,7 +116,7 @@ public class AnnouncementAutoPublishWorker : AsyncPeriodicBackgroundWorkerBase
         var now = clock.Now;
 
         var toExpire = await queryable
-            .Where(a => a.IsPublished && a.ExpirationTime.HasValue && a.ExpirationTime.Value <= now)
+            .Where(a => a.IsPublished && a.ScheduledExpirationTime.HasValue && a.ScheduledExpirationTime.Value <= now)
             .ToListAsync();
 
         if (toExpire.Any())

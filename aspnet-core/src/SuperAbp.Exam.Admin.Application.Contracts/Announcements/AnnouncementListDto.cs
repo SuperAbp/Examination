@@ -19,14 +19,14 @@ public class AnnouncementListDto : FullAuditedEntityDto<Guid>
     public string Content { get; set; }
 
     /// <summary>
-    /// 发布时间
+    /// 预定发布时间
     /// </summary>
-    public DateTime? PublishTime { get; set; }
+    public DateTime? ScheduledPublishTime { get; set; }
 
     /// <summary>
-    /// 过期时间
+    /// 预定到期时间
     /// </summary>
-    public DateTime? ExpirationTime { get; set; }
+    public DateTime? ScheduledExpirationTime { get; set; }
 
     /// <summary>
     /// 是否发布

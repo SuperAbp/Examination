@@ -1,7 +1,6 @@
 import type { FullAuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
-export interface AnnouncementCategoryCreateDto extends AnnouncementCategoryCreateOrUpdateDtoBase {
-}
+export interface AnnouncementCategoryCreateDto extends AnnouncementCategoryCreateOrUpdateDtoBase {}
 
 export interface AnnouncementCategoryCreateOrUpdateDtoBase {
   name?: string;
@@ -21,17 +20,15 @@ export interface AnnouncementCategoryListDto extends FullAuditedEntityDto<string
   remark?: string;
 }
 
-export interface AnnouncementCategoryUpdateDto extends AnnouncementCategoryCreateOrUpdateDtoBase {
-}
+export interface AnnouncementCategoryUpdateDto extends AnnouncementCategoryCreateOrUpdateDtoBase {}
 
-export interface AnnouncementCreateDto extends AnnouncementCreateOrUpdateDtoBase {
-}
+export interface AnnouncementCreateDto extends AnnouncementCreateOrUpdateDtoBase {}
 
 export interface AnnouncementCreateOrUpdateDtoBase {
   title?: string;
   content?: string;
-  publishTime?: string;
-  expirationTime?: string;
+  scheduledPublishTime?: string;
+  scheduledExpirationTime?: string;
   sort: number;
   categoryId?: string;
 }
@@ -39,8 +36,8 @@ export interface AnnouncementCreateOrUpdateDtoBase {
 export interface AnnouncementDetailDto extends FullAuditedEntityDto<string> {
   title?: string;
   content?: string;
-  publishTime?: string;
-  expirationTime?: string;
+  scheduledPublishTime?: string;
+  scheduledExpirationTime?: string;
   isPublished: boolean;
   sort: number;
   categoryId?: string;
@@ -50,16 +47,15 @@ export interface AnnouncementDetailDto extends FullAuditedEntityDto<string> {
 export interface AnnouncementListDto extends FullAuditedEntityDto<string> {
   title?: string;
   content?: string;
-  publishTime?: string;
-  expirationTime?: string;
+  scheduledPublishTime?: string;
+  scheduledExpirationTime?: string;
   isPublished: boolean;
   sort: number;
   categoryId?: string;
   categoryName?: string;
 }
 
-export interface AnnouncementUpdateDto extends AnnouncementCreateOrUpdateDtoBase {
-}
+export interface AnnouncementUpdateDto extends AnnouncementCreateOrUpdateDtoBase {}
 
 export interface GetAnnouncementsInput extends PagedAndSortedResultRequestDto {
   title?: string;

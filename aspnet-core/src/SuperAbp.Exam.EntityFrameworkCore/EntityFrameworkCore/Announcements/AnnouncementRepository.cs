@@ -25,9 +25,9 @@ public class AnnouncementRepository : EfCoreRepository<ExamDbContext, Announceme
         return await dbSet
             .Include(x => x.Category)
             .Where(x => x.IsPublished)
-            .Where(x => !x.PublishTime.HasValue || x.PublishTime.Value <= now)
-            .Where(x => !x.ExpirationTime.HasValue || x.ExpirationTime.Value > now)
-            .OrderBy(x => x.Sort)
+            .Where(x => !x.ScheduledPublishTime.HasValue || x.ScheduledPublishTime.Value <= now)
+            .Where(x => !x.ScheduledExpirationTime.HasValue || x.ScheduledExpirationTime.Value > now)
+            .OrderByDescending(x => x.Sort)
             .ThenByDescending(x => x.CreationTime)
             .ToListAsync(cancellationToken);
     }
@@ -40,9 +40,9 @@ public class AnnouncementRepository : EfCoreRepository<ExamDbContext, Announceme
             .Include(x => x.Category)
             .Where(x => x.CategoryId == categoryId)
             .Where(x => x.IsPublished)
-            .Where(x => !x.PublishTime.HasValue || x.PublishTime.Value <= now)
-            .Where(x => !x.ExpirationTime.HasValue || x.ExpirationTime.Value > now)
-            .OrderBy(x => x.Sort)
+            .Where(x => !x.ScheduledPublishTime.HasValue || x.ScheduledPublishTime.Value <= now)
+            .Where(x => !x.ScheduledExpirationTime.HasValue || x.ScheduledExpirationTime.Value > now)
+            .OrderByDescending(x => x.Sort)
             .ThenByDescending(x => x.CreationTime)
             .ToListAsync(cancellationToken);
     }

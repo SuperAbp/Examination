@@ -9,9 +9,9 @@ public class AnnouncementCreateOrUpdateDtoBase
 
     public string Content { get; set; }
 
-    public DateTime? PublishTime { get; set; }
+    public DateTime? ScheduledPublishTime { get; set; }
 
-    public DateTime? ExpirationTime { get; set; }
+    public DateTime? ScheduledExpirationTime { get; set; }
 
     public int Sort { get; set; }
 

@@ -24,19 +24,19 @@ public class AnnouncementCreateOrUpdateDtoBaseValidator : AbstractValidator<Anno
             .MaximumLength(AnnouncementConsts.MaxContentLength)
             .WithMessage(local["The {0} field must be less than {1} characters.", "{PropertyName}", AnnouncementConsts.MaxContentLength]);
 
-        RuleFor(x => x.PublishTime)
-            .Must((dto, publishTime) => clock.ConvertToUtc(publishTime.Value) >= clock.Now)
+        RuleFor(x => x.ScheduledPublishTime)
+            .Must((dto, scheduledPublishTime) => clock.ConvertToUtc(scheduledPublishTime.Value) >= clock.Now)
             .WithMessage(local["Publish time must be in the future or now."])
-            .When(x => x.PublishTime.HasValue);
+            .When(x => x.ScheduledPublishTime.HasValue);
 
-        RuleFor(x => x.ExpirationTime)
-            .Must((dto, expirationTime) => clock.ConvertToUtc(expirationTime.Value) > clock.Now)
+        RuleFor(x => x.ScheduledExpirationTime)
+            .Must((dto, scheduledExpirationTime) => clock.ConvertToUtc(scheduledExpirationTime.Value) > clock.Now)
             .WithMessage(local["Expiration time must be in the future."])
-            .When(x => x.ExpirationTime.HasValue);
+            .When(x => x.ScheduledExpirationTime.HasValue);
 
         RuleFor(x => x)
-            .Must(dto => clock.ConvertToUtc(dto.PublishTime.Value) < clock.ConvertToUtc(dto.ExpirationTime.Value))
+            .Must(dto => clock.ConvertToUtc(dto.ScheduledPublishTime.Value) < clock.ConvertToUtc(dto.ScheduledExpirationTime.Value))
             .WithMessage(local["Expiration time must be after publish time."])
-            .When(x => x.PublishTime.HasValue && x.ExpirationTime.HasValue);
+            .When(x => x.ScheduledPublishTime.HasValue && x.ScheduledExpirationTime.HasValue);
     }
 }

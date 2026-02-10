@@ -30,6 +30,12 @@
                     </div>
                     <hr>
                     <div class="announcement-detail-content" [innerHTML]="announcement.content"></div>
+                    <div class="text-muted mb-3 mt-3">
+                        <small>
+                            <i class="fa-regular fa-clock"></i>
+                            {{ '::CreationTime' | abpLocalization }}: {{ announcement.creationTime | date:'medium' }}
+                        </small>
+                    </div>
                 </div>
             </div>
             }

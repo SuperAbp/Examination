@@ -58,11 +58,11 @@ public class AnnouncementAdminAppService(
             input.CategoryId
         );
 
-        announcement.ExpirationTime = input.ExpirationTime;
+        announcement.ScheduledExpirationTime = input.ScheduledExpirationTime;
 
-        if (input.PublishTime.HasValue)
+        if (input.ScheduledPublishTime.HasValue)
         {
-            announcement.SetPublishTime(input.PublishTime.Value);
+            announcement.SetPublishTime(input.ScheduledPublishTime.Value);
         }
         else
         {
@@ -90,11 +90,11 @@ public class AnnouncementAdminAppService(
         announcement.Content = input.Content;
         announcement.Sort = input.Sort;
         announcement.CategoryId = input.CategoryId;
-        announcement.ExpirationTime = input.ExpirationTime;
+        announcement.ScheduledExpirationTime = input.ScheduledExpirationTime;
 
-        if (input.PublishTime.HasValue)
+        if (input.ScheduledPublishTime.HasValue)
         {
-            announcement.SetPublishTime(input.PublishTime.Value);
+            announcement.SetPublishTime(input.ScheduledPublishTime.Value);
         }
         else
         {
@@ -102,7 +102,7 @@ public class AnnouncementAdminAppService(
             {
                 announcement.Publish();
             }
-            announcement.PublishTime = null;
+            announcement.ScheduledPublishTime = null;
         }
 
         await Repository.UpdateAsync(announcement);

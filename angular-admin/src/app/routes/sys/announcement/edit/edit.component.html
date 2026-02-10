@@ -47,20 +47,20 @@
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label>{{ 'Exam::PublishTime' | abpLocalization }}</nz-form-label>
+            <nz-form-label>{{ 'Exam::ScheduledPublishTime' | abpLocalization }}</nz-form-label>
             <nz-form-control>
-                <nz-date-picker formControlName="publishTime" [nzShowTime]="{ nzFormat: 'HH:mm', nzMinuteStep: 15 }"
-                    nzFormat="yyyy-MM-dd HH:mm"
-                    [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::PublishTime' | abpLocalization)"
+                <nz-date-picker formControlName="scheduledPublishTime"
+                    [nzShowTime]="{ nzFormat: 'HH:mm', nzMinuteStep: 15 }" nzFormat="yyyy-MM-dd HH:mm"
+                    [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::ScheduledPublishTime' | abpLocalization)"
                     [nzDisabledDate]="disabledDateBeforeToday"></nz-date-picker>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label>{{ 'Exam::ExpirationTime' | abpLocalization }}</nz-form-label>
+            <nz-form-label>{{ 'Exam::ScheduledExpirationTime' | abpLocalization }}</nz-form-label>
             <nz-form-control>
-                <nz-date-picker formControlName="expirationTime" [nzShowTime]="{ nzFormat: 'HH:mm', nzMinuteStep: 15 }"
-                    nzFormat="yyyy-MM-dd HH:mm"
-                    [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::ExpirationTime' | abpLocalization)"
+                <nz-date-picker formControlName="scheduledExpirationTime"
+                    [nzShowTime]="{ nzFormat: 'HH:mm', nzMinuteStep: 15 }" nzFormat="yyyy-MM-dd HH:mm"
+                    [nzPlaceHolder]="'Exam::ChoosePlaceholder' | abpLocalization: ('Exam::ScheduledExpirationTime' | abpLocalization)"
                     [nzDisabledDate]="disabledDateBeforePublishTime"></nz-date-picker>
             </nz-form-control>
         </nz-form-item>

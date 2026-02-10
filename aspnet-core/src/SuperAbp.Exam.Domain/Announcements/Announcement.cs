@@ -37,14 +37,14 @@ public class Announcement : FullAuditedAggregateRoot<Guid>, IMultiTenant
     public string Content { get; set; }
 
     /// <summary>
-    /// 发布时间
+    /// 预定发布时间
     /// </summary>
-    public DateTime? PublishTime { get; set; }
+    public DateTime? ScheduledPublishTime { get; set; }
 
     /// <summary>
-    /// 过期时间
+    /// 预定到期时间
     /// </summary>
-    public DateTime? ExpirationTime { get; set; }
+    public DateTime? ScheduledExpirationTime { get; set; }
 
     /// <summary>
     /// 是否发布
@@ -88,7 +88,7 @@ public class Announcement : FullAuditedAggregateRoot<Guid>, IMultiTenant
         {
             return;
         }
-        PublishTime = publishTime;
+        ScheduledPublishTime = publishTime;
     }
 
     /// <summary>
@@ -97,8 +97,8 @@ public class Announcement : FullAuditedAggregateRoot<Guid>, IMultiTenant
     public void Unpublish()
     {
         IsPublished = false;
-        PublishTime = null;
-        ExpirationTime = null;
+        ScheduledPublishTime = null;
+        ScheduledExpirationTime = null;
     }
 
     /// <summary>
@@ -112,13 +112,13 @@ public class Announcement : FullAuditedAggregateRoot<Guid>, IMultiTenant
         }
 
         // 如果设置了发布时间，需要检查是否已到发布时间
-        if (PublishTime.HasValue && PublishTime.Value > now)
+        if (ScheduledPublishTime.HasValue && ScheduledPublishTime.Value > now)
         {
             return false;
         }
 
         // 检查是否已过期
-        if (ExpirationTime.HasValue && now > ExpirationTime.Value)
+        if (ScheduledExpirationTime.HasValue && now > ScheduledExpirationTime.Value)
         {
             return false;
         }
