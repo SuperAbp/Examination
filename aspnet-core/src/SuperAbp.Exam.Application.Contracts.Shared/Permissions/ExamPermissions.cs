@@ -78,4 +78,10 @@ public static class ExamPermissions
         public const string Update = Default + ".Update";
         public const string Delete = Default + ".Delete";
     }
+
+    public static class Notifications
+    {
+        public const string Default = GroupName + ".Notifications";
+        public const string Management = Default + ".Management";
+    }
 }
