@@ -15,9 +15,8 @@ using SuperAbp.Exam.Notifications;
 namespace SuperAbp.Exam.Admin.Notifications;
 
 [Authorize]
-public class NotificationAdminAppService(
-    INotificationRepository notificationRepository, INotificationPublisher notificationPublisher)
-    : ApplicationService, INotificationAppService
+public class NotificationAdminAppService(INotificationRepository notificationRepository, INotificationPublisher notificationPublisher)
+    : ExamAppService, INotificationAdminAppService
 {
     protected INotificationRepository NotificationRepository { get; } = notificationRepository;
     protected INotificationPublisher NotificationPublisher { get; } = notificationPublisher;
@@ -34,7 +33,8 @@ public class NotificationAdminAppService(
     {
         var count = await NotificationRepository.GetCountAsync(
             CurrentUser.GetId(),
-            isRead: input.IsRead
+            isRead: input.IsRead,
+            filter: input.Filter
         );
 
         var list = await NotificationRepository.GetListAsync(
@@ -42,7 +42,8 @@ public class NotificationAdminAppService(
             input.SkipCount,
             input.MaxResultCount,
             CurrentUser.GetId(),
-            isRead: input.IsRead
+            isRead: input.IsRead,
+            filter: input.Filter
         );
 
         return new PagedResultDto<NotificationMyListDto>(

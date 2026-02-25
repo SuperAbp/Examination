@@ -23,6 +23,7 @@ public class EFCoreNotificationRepository : EfCoreRepository<ExamDbContext, Noti
         Guid? receiverId = null,
         NotificationType? type = null,
         bool? isRead = null,
+        string? filter = null,
         CancellationToken cancellationToken = default)
     {
         var dbSet = await GetDbSetAsync();
@@ -31,6 +32,7 @@ public class EFCoreNotificationRepository : EfCoreRepository<ExamDbContext, Noti
             .WhereIf(receiverId.HasValue, x => x.ReceiverId == receiverId.Value)
             .WhereIf(type is not null, x => x.Type == type)
             .WhereIf(isRead.HasValue, x => x.IsRead == isRead.Value)
+            .WhereIf(!filter.IsNullOrWhiteSpace(), x => x.Data != null && x.Data.Contains(filter))
             .OrderBy(sorting ?? NotificationConsts.DefaultSorting)
             .PageBy(skipCount, maxResultCount)
             .ToListAsync(cancellationToken);
@@ -40,6 +42,7 @@ public class EFCoreNotificationRepository : EfCoreRepository<ExamDbContext, Noti
         Guid? receiverId,
         NotificationType? type = null,
         bool? isRead = null,
+        string? filter = null,
         CancellationToken cancellationToken = default)
     {
         var dbSet = await GetDbSetAsync();
@@ -48,6 +51,7 @@ public class EFCoreNotificationRepository : EfCoreRepository<ExamDbContext, Noti
             .WhereIf(receiverId.HasValue, x => x.ReceiverId == receiverId.Value)
             .WhereIf(type is not null, x => x.Type == type)
             .WhereIf(isRead.HasValue, x => x.IsRead == isRead.Value)
+            .WhereIf(!filter.IsNullOrWhiteSpace(), x => x.Data != null && x.Data.Contains(filter))
             .LongCountAsync(cancellationToken);
     }
 }

@@ -15,7 +15,7 @@ export class KnowledgePointService {
     this.restService.request<any, string>({
       method: 'POST',
       responseType: 'text',
-      url: '/knowledge-point',
+      url: '/api/knowledge-point',
       body: input,
     },
     { apiName: this.apiName,...config });
@@ -24,7 +24,7 @@ export class KnowledgePointService {
   delete = (id: string, config?: Partial<Rest.Config>) =>
     this.restService.request<any, void>({
       method: 'DELETE',
-      url: `/knowledge-point/${id}`,
+      url: `/api/knowledge-point/${id}`,
     },
     { apiName: this.apiName,...config });
   
@@ -32,7 +32,7 @@ export class KnowledgePointService {
   getAll = (input: GetKnowledgePointsInput, config?: Partial<Rest.Config>) =>
     this.restService.request<any, ListResultDto<KnowledgePointNodeDto>>({
       method: 'GET',
-      url: '/knowledge-point',
+      url: '/api/knowledge-point',
       params: { name: input.name },
     },
     { apiName: this.apiName,...config });
@@ -41,7 +41,7 @@ export class KnowledgePointService {
   getEditor = (id: string, config?: Partial<Rest.Config>) =>
     this.restService.request<any, GetKnowledgePointForEditorOutput>({
       method: 'GET',
-      url: `/knowledge-point/${id}/editor`,
+      url: `/api/knowledge-point/${id}/editor`,
     },
     { apiName: this.apiName,...config });
   
@@ -49,7 +49,7 @@ export class KnowledgePointService {
   update = (id: string, input: KnowledgePointUpdateDto, config?: Partial<Rest.Config>) =>
     this.restService.request<any, void>({
       method: 'PUT',
-      url: `/knowledge-point/${id}`,
+      url: `/api/knowledge-point/${id}`,
       body: input,
     },
     { apiName: this.apiName,...config });

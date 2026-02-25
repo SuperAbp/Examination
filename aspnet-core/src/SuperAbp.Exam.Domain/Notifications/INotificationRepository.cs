@@ -20,6 +20,7 @@ public interface INotificationRepository : IRepository<Notification, Guid>
         Guid? receiverId = null,
         NotificationType? type = null,
         bool? isRead = null,
+        string? filter = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -29,5 +30,6 @@ public interface INotificationRepository : IRepository<Notification, Guid>
         Guid? receiverId,
         NotificationType? type = null,
         bool? isRead = null,
+        string? filter = null,
         CancellationToken cancellationToken = default);
 }

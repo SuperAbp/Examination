@@ -1,6 +1,7 @@
 import type { FullAuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 
-export interface AnnouncementCategoryCreateDto extends AnnouncementCategoryCreateOrUpdateDtoBase {}
+export interface AnnouncementCategoryCreateDto extends AnnouncementCategoryCreateOrUpdateDtoBase {
+}
 
 export interface AnnouncementCategoryCreateOrUpdateDtoBase {
   name?: string;
@@ -20,11 +21,14 @@ export interface AnnouncementCategoryListDto extends FullAuditedEntityDto<string
   remark?: string;
 }
 
-export interface AnnouncementCategoryUpdateDto extends AnnouncementCategoryCreateOrUpdateDtoBase {}
+export interface AnnouncementCategoryUpdateDto extends AnnouncementCategoryCreateOrUpdateDtoBase {
+}
 
-export interface AnnouncementCreateDto extends AnnouncementCreateOrUpdateDtoBase {}
+export interface AnnouncementCreateDto extends AnnouncementCreateOrUpdateDtoBase {
+}
 
 export interface AnnouncementCreateOrUpdateDtoBase {
+  publish: boolean;
   title?: string;
   content?: string;
   scheduledPublishTime?: string;
@@ -55,7 +59,8 @@ export interface AnnouncementListDto extends FullAuditedEntityDto<string> {
   categoryName?: string;
 }
 
-export interface AnnouncementUpdateDto extends AnnouncementCreateOrUpdateDtoBase {}
+export interface AnnouncementUpdateDto extends AnnouncementCreateOrUpdateDtoBase {
+}
 
 export interface GetAnnouncementsInput extends PagedAndSortedResultRequestDto {
   title?: string;

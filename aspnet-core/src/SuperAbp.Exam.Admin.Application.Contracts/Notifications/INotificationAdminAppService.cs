@@ -8,7 +8,7 @@ namespace SuperAbp.Exam.Admin.Notifications;
 /// <summary>
 /// 通知应用服务接口
 /// </summary>
-public interface INotificationAppService : IApplicationService
+public interface INotificationAdminAppService : IApplicationService
 {
     /// <summary>
     /// 获取当前用户通知列表

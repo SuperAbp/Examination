@@ -9,9 +9,9 @@ using Volo.Abp.AspNetCore.Mvc;
 namespace SuperAbp.Exam.Admin.Controllers;
 
 [Route("api/notifications")]
-public class NotificationController(INotificationAppService notificationAppService) : AbpController, INotificationAppService
+public class NotificationController(INotificationAdminAppService notificationAppService) : ExamController, INotificationAdminAppService
 {
-    protected INotificationAppService NotificationAppService { get; } = notificationAppService;
+    protected INotificationAdminAppService NotificationAppService { get; } = notificationAppService;
 
     [HttpGet("unread-count")]
     public async Task<long> GetUnreadCountAsync()
