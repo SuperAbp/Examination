@@ -42,7 +42,7 @@ namespace SuperAbp.Exam;
 [DependsOn(
     typeof(ExamHttpApiModule),
     typeof(AbpAutofacModule),
-        typeof(AbpCachingStackExchangeRedisModule),
+    typeof(AbpCachingStackExchangeRedisModule),
     typeof(AbpDistributedLockingModule),
     typeof(AbpAspNetCoreMvcUiMultiTenancyModule),
     typeof(AbpAspNetCoreAuthenticationJwtBearerModule),
@@ -128,14 +128,6 @@ public class ExamHttpApiHostModule : AbpModule
         }
     }
 
-    private void ConfigureConventionalControllers()
-    {
-        Configure<AbpAspNetCoreMvcOptions>(options =>
-        {
-            options.ConventionalControllers.Create(typeof(ExamApplicationModule).Assembly);
-        });
-    }
-
     private static void ConfigureSwaggerServices(ServiceConfigurationContext context, IConfiguration configuration)
     {
         context.Services.AddAbpSwaggerGenWithOAuth(
@@ -150,7 +142,7 @@ public class ExamHttpApiHostModule : AbpModule
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
 
-                #region ×¢ÊÍ
+                #region ×¢ï¿½ï¿½
 
                 var binXmlFiles =
                     new DirectoryInfo(AppContext.BaseDirectory).GetFiles("*.xml", SearchOption.TopDirectoryOnly);
@@ -159,7 +151,7 @@ public class ExamHttpApiHostModule : AbpModule
                     options.IncludeXmlComments(filePath, true);
                 }
 
-                #endregion ×¢ÊÍ
+                #endregion ×¢ï¿½ï¿½
             });
     }
 
@@ -222,7 +214,8 @@ public class ExamHttpApiHostModule : AbpModule
 
             var path = httpContext.Request.Path;
             if (!string.IsNullOrEmpty(accessToken) &&
-                (path.StartsWithSegments("/signalr-hubs/progress")))
+                (path.StartsWithSegments("/signalr-hubs/progress") ||
+                 path.StartsWithSegments("/signalr-hubs/notification")))
             {
                 httpContext.Request.Headers["Authorization"] = "Bearer " + accessToken;
             }

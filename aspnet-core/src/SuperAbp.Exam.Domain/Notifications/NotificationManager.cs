@@ -2,8 +2,8 @@ using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Volo.Abp.Json;
 using Volo.Abp.Domain.Services;
 
 namespace SuperAbp.Exam.Notifications;
@@ -15,13 +15,16 @@ public class NotificationManager : DomainService
 {
     private readonly INotificationRepository _notificationRepository;
     private readonly INotificationPublisher _publisher;
+    private readonly IJsonSerializer _jsonSerializer;
 
     public NotificationManager(
         INotificationRepository notificationRepository,
-        INotificationPublisher publisher)
+        INotificationPublisher publisher,
+        IJsonSerializer jsonSerializer)
     {
         _notificationRepository = notificationRepository;
         _publisher = publisher;
+        _jsonSerializer = jsonSerializer;
     }
 
     /// <summary>
@@ -34,7 +37,7 @@ public class NotificationManager : DomainService
         [CanBeNull] Guid? relatedEntityId = null,
         [CanBeNull] string? relatedEntityType = null)
     {
-        var jsonData = data is null ? null : JsonSerializer.Serialize(data);
+        var jsonData = data is null ? null : _jsonSerializer.Serialize(data);
         List<Notification> notifications = receiverIds
             .Select(receiverId => CreateNotification(type, relatedEntityId, relatedEntityType, jsonData, receiverId))
             .ToList();
