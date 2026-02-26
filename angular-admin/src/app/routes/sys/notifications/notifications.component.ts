@@ -174,22 +174,18 @@ export class SysNotificationsComponent implements OnInit {
   }
 
   markAllAsRead() {
-    this.notificationService.markAllAsRead().subscribe({
-      next: () => {
-        this.notifications.forEach(n => (n.isRead = true));
-        this.unreadCount = 0;
-        this.message.success('All marked as read');
-        this.getList();
-      },
-      error: err => {
-        console.error('Failed to mark all as read:', err);
-        this.message.error('Operation Failed');
-      }
+    this.notificationService.markAllAsRead().subscribe(() => {
+      this.notifications.forEach(n => (n.isRead = true));
+      this.unreadCount = 0;
     });
   }
 
   getNotificationContent(notification): string {
     const data = JSON.parse(notification.data);
+    if (notification.type === 2) {
+      // TODO：Use Template to display content
+      return `您参加的考试《${data.examName ?? ''}》已出分`;
+    }
     return data.message;
   }
 }
