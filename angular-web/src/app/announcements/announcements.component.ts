@@ -10,12 +10,7 @@ import { AnnouncementListDto } from '@proxy/announcements';
   selector: 'app-announcements',
   templateUrl: './announcements.component.html',
   styleUrls: ['./announcements.component.scss'],
-  imports: [
-    CoreModule,
-    CommonModule,
-    NgbAlertModule,
-    RouterLink
-  ],
+  imports: [CoreModule, CommonModule, NgbAlertModule, RouterLink],
   standalone: true,
 })
 export class AnnouncementsComponent implements OnInit {
@@ -30,12 +25,10 @@ export class AnnouncementsComponent implements OnInit {
 
   loadAnnouncements() {
     this.loading = true;
-    
-    this.announcementService
-      .getList()
-      .subscribe((result: ListResultDto<AnnouncementListDto>) => {
-          this.announcements = result.items || [];
-          this.loading = false;
-        });
+
+    this.announcementService.getList().subscribe((result: ListResultDto<AnnouncementListDto>) => {
+      this.announcements = result.items || [];
+      this.loading = false;
+    });
   }
 }
