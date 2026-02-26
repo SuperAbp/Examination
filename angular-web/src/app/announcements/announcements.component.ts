@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
-import { AnnouncementService } from '@proxy/announcements';
+import { AnnouncementService } from '@proxy/controllers';
 import { CoreModule, ListResultDto } from '@abp/ng.core';
 import { AnnouncementListDto } from '@proxy/announcements';
 

@@ -1,28 +1,29 @@
-import type { AnnouncementCategoryDto } from './models';
 import { RestService, Rest } from '@abp/ng.core';
 import type { ListResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
+import type { AnnouncementDetailDto, AnnouncementListDto } from '../announcements/models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AnnouncementCategoryService {
+export class AnnouncementService {
   private restService = inject(RestService);
   apiName = 'Default';
   
 
   get = (id: string, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, AnnouncementCategoryDto>({
+    this.restService.request<any, AnnouncementDetailDto>({
       method: 'GET',
-      url: `/api/announcement-categories/${id}`,
+      url: `/api/announcements/${id}`,
     },
     { apiName: this.apiName,...config });
   
 
-  getList = (config?: Partial<Rest.Config>) =>
-    this.restService.request<any, ListResultDto<AnnouncementCategoryDto>>({
+  getList = (categoryId?: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ListResultDto<AnnouncementListDto>>({
       method: 'GET',
-      url: '/api/announcement-categories',
+      url: '/api/announcements',
+      params: { categoryId },
     },
     { apiName: this.apiName,...config });
 }
