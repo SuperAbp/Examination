@@ -1,0 +1,78 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-3">{{"::MyNotifications"|abpLocalization}}</h2>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="btn-group" role="group" aria-label="Notification filter">
+                    <input type="radio" class="btn-check" name="notificationFilter" id="filterUnread"
+                        [checked]="!input.isRead" (change)="onFilterChange(false)" autocomplete="off" />
+                    <label class="btn btn-outline-primary" for="filterUnread">
+                        {{"::Unread"|abpLocalization}}
+                    </label>
+
+                    <input type="radio" class="btn-check" name="notificationFilter" id="filterRead"
+                        [checked]="input.isRead" (change)="onFilterChange(true)" autocomplete="off" />
+                    <label class="btn btn-outline-primary" for="filterRead">
+                        {{"::Read"|abpLocalization}}
+                    </label>
+                </div>
+
+                @if (totalCount > 0 && !input.isRead) {
+                <button class="btn btn-outline-primary" (click)="markAllAsRead()">
+                    {{"::MarkAllAsRead"|abpLocalization}}
+                </button>
+                }
+            </div>
+
+            @if (loading) {
+            <div class="d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">{{ '::Loading' | abpLocalization }}</span>
+                </div>
+            </div>
+            } @else if (notifications.length === 0) {
+            <div class="text-center py-5">
+                <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                <p class="text-muted">暂无通知</p>
+            </div>
+            } @else {
+            <div class="list-group">
+                @for (notification of notifications; track notification.id) {
+                <div class="list-group-item list-group-item-action" [class.list-group-item-light]="!notification.isRead"
+                    (click)="onNotificationClick(notification)" style="cursor: pointer">
+                    <div class="d-flex w-100 justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1" [class.fw-bold]="!notification.isRead">
+                                {{ getNotificationTitle(notification.type) }}
+                            </h6>
+
+                            <p class="mb-1 text-muted small">
+                                {{ getNotificationContent(notification) }}
+                            </p>
+
+                            <small class="text-muted">
+                                <i class="far fa-clock me-1"></i>
+                                {{ notification.creationTime | date:'yyyy-MM-dd HH:mm' }}
+                            </small>
+                        </div>
+
+                        @if (!notification.isRead) {
+                        <span class="badge bg-danger ms-2">{{"::Unread"|abpLocalization}}</span>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+
+            @if (totalCount > pageSize) {
+            <div class="d-flex justify-content-center mt-4">
+                <ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="pageSize"
+                    (pageChange)="loadPage($event)" [maxSize]="5" [rotate]="true" [ellipses]="true">
+                </ngb-pagination>
+            </div>
+            }
+            }
+        </div>
+    </div>
+</div>

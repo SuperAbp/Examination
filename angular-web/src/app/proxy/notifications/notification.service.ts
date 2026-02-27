@@ -10,37 +10,45 @@ import type { GetNotificationsInput } from '../admin/notifications/models';
 export class NotificationService {
   private restService = inject(RestService);
   apiName = 'Default';
-  
 
   getList = (input: GetNotificationsInput, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, PagedResultDto<NotificationListDto>>({
-      method: 'GET',
-      url: '/api/notifications',
-      params: { isRead: input.isRead },
-    },
-    { apiName: this.apiName,...config });
-  
+    this.restService.request<any, PagedResultDto<NotificationListDto>>(
+      {
+        method: 'GET',
+        url: '/api/notifications',
+        params: {
+          isRead: input.isRead,
+          skipCount: input.skipCount,
+          maxResultCount: input.maxResultCount,
+        },
+      },
+      { apiName: this.apiName, ...config },
+    );
 
   getUnreadCount = (config?: Partial<Rest.Config>) =>
-    this.restService.request<any, number>({
-      method: 'GET',
-      url: '/api/notifications/unread-count',
-    },
-    { apiName: this.apiName,...config });
-  
+    this.restService.request<any, number>(
+      {
+        method: 'GET',
+        url: '/api/notifications/unread-count',
+      },
+      { apiName: this.apiName, ...config },
+    );
 
   markAllAsRead = (config?: Partial<Rest.Config>) =>
-    this.restService.request<any, void>({
-      method: 'POST',
-      url: '/api/notifications/mark-all-as-read',
-    },
-    { apiName: this.apiName,...config });
-  
+    this.restService.request<any, void>(
+      {
+        method: 'POST',
+        url: '/api/notifications/mark-all-as-read',
+      },
+      { apiName: this.apiName, ...config },
+    );
 
   markAsRead = (id: string, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, void>({
-      method: 'POST',
-      url: `/api/notifications/${id}/mark-as-read`,
-    },
-    { apiName: this.apiName,...config });
+    this.restService.request<any, void>(
+      {
+        method: 'POST',
+        url: `/api/notifications/${id}/mark-as-read`,
+      },
+      { apiName: this.apiName, ...config },
+    );
 }
