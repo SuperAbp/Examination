@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace SuperAbp.Exam;
+namespace SuperAbp.Exam.ExamManagement.UserExams;
 
 public class UserExamSubmittedEto
 {

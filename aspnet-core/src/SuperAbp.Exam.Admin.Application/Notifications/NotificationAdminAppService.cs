@@ -15,11 +15,10 @@ using SuperAbp.Exam.Notifications;
 namespace SuperAbp.Exam.Admin.Notifications;
 
 [Authorize]
-public class NotificationAdminAppService(INotificationRepository notificationRepository, INotificationPublisher notificationPublisher)
+public class NotificationAdminAppService(INotificationRepository notificationRepository)
     : ExamAppService, INotificationAdminAppService
 {
     protected INotificationRepository NotificationRepository { get; } = notificationRepository;
-    protected INotificationPublisher NotificationPublisher { get; } = notificationPublisher;
 
     public virtual async Task<long> GetUnreadCountAsync()
     {

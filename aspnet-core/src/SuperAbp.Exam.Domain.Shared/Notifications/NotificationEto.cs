@@ -1,6 +1,6 @@
 using System;
 
-namespace SuperAbp.Exam.Notifications.Event;
+namespace SuperAbp.Exam.Notifications;
 
 /// <summary>
 /// 通知事件传输对象

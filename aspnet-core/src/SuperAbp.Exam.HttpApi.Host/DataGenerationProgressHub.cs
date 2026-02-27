@@ -2,6 +2,6 @@
 
 namespace SuperAbp.Exam;
 
-public class ProgressHub : Hub
+public class DataGenerationProgressHub : Hub
 {
 }

@@ -2,11 +2,12 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SuperAbp.Exam.Admin.Notifications;
+using SuperAbp.Exam.Notifications;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Mvc;
 
-namespace SuperAbp.Exam.Notifications;
+namespace SuperAbp.Exam.Controllers;
 
 [Route("api/notifications")]
 public class NotificationController : AbpController, INotificationAppService

@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { DynamicLayoutComponent } from '@abp/ng.core';
 import { LoaderBarComponent, NavItemsService } from '@abp/ng.theme.shared';
 import { NotificationIconComponent } from './shared/components/notification-icon';
+import { NotificationHubService } from './shared/services/notification-hub.service';
 
 @Component({
   selector: 'app-root',
@@ -11,10 +12,11 @@ import { NotificationIconComponent } from './shared/components/notification-icon
   `,
   imports: [LoaderBarComponent, DynamicLayoutComponent],
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   private navItems = inject(NavItemsService);
+  private notificationHub = inject(NotificationHubService);
 
-  constructor() {
+  ngOnInit(): void {
     this.navItems.addItems([
       {
         id: 'NotificationIcon',
@@ -22,5 +24,11 @@ export class AppComponent {
         component: NotificationIconComponent,
       },
     ]);
+
+    this.notificationHub.startConnection();
+  }
+
+  ngOnDestroy(): void {
+    this.notificationHub.stopConnection();
   }
 }

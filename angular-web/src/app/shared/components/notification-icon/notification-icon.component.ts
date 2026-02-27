@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NotificationService } from '@proxy/notifications';
 
@@ -22,13 +22,18 @@ import { NotificationService } from '@proxy/notifications';
   standalone: true,
   imports: [RouterLink],
 })
-export class NotificationIconComponent implements OnInit {
+export class NotificationIconComponent implements OnInit, OnDestroy {
   private notificationService = inject(NotificationService);
 
   unreadCount = 0;
 
   ngOnInit(): void {
     this.loadUnreadCount();
+    window.addEventListener('notification-received', this.onNotificationReceived);
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('notification-received', this.onNotificationReceived);
   }
 
   private loadUnreadCount(): void {
@@ -36,4 +41,8 @@ export class NotificationIconComponent implements OnInit {
       this.unreadCount = count;
     });
   }
+
+  private onNotificationReceived = (): void => {
+    this.loadUnreadCount();
+  };
 }

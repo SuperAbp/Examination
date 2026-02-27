@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Rebus.Config;
 using StackExchange.Redis;
 using SuperAbp.Exam.EntityFrameworkCore;
 using SuperAbp.Exam.MultiTenancy;
@@ -24,7 +25,9 @@ using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.Caching;
 using Volo.Abp.Caching.StackExchangeRedis;
+using Volo.Abp.Data;
 using Volo.Abp.DistributedLocking;
+using Volo.Abp.EventBus.Rebus;
 using Volo.Abp.Json;
 using Volo.Abp.Modularity;
 using Volo.Abp.Security.Claims;
@@ -43,10 +46,24 @@ namespace SuperAbp.Exam.Admin;
     typeof(ExamApplicationAdminModule),
     typeof(ExamEntityFrameworkCoreModule),
     typeof(AbpAspNetCoreSerilogModule),
-    typeof(AbpSwashbuckleModule)
+    typeof(AbpSwashbuckleModule),
+    typeof(AbpEventBusRebusModule)
 )]
 public class ExamHttpApiHostModule : AbpModule
 {
+    public override void PreConfigureServices(ServiceConfigurationContext context)
+    {
+        var configuration = context.Services.GetConfiguration();
+        PreConfigure<AbpRebusEventBusOptions>(options =>
+        {
+            string connectionString = configuration.GetConnectionString("Default") ?? "";
+            options.InputQueueName = "exam-eventbus-admin";
+            options.Configurer = configure => configure
+            .Transport(t => t.UseSqlServer(connectionString, "exam-eventbus-admin"))
+            .Subscriptions(t => t.StoreInSqlServer(connectionString, "Subscriptions", isCentralized: true)); ;
+        });
+    }
+
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         var configuration = context.Services.GetConfiguration();

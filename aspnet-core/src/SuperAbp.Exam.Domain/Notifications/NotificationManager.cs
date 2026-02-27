@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Volo.Abp.Json;
 using Volo.Abp.Domain.Services;
+using Volo.Abp.EventBus.Distributed;
+using Volo.Abp.EventBus.Local;
+using Volo.Abp.Json;
 
 namespace SuperAbp.Exam.Notifications;
 
@@ -14,16 +16,13 @@ namespace SuperAbp.Exam.Notifications;
 public class NotificationManager : DomainService
 {
     private readonly INotificationRepository _notificationRepository;
-    private readonly INotificationPublisher _publisher;
     private readonly IJsonSerializer _jsonSerializer;
 
     public NotificationManager(
         INotificationRepository notificationRepository,
-        INotificationPublisher publisher,
         IJsonSerializer jsonSerializer)
     {
         _notificationRepository = notificationRepository;
-        _publisher = publisher;
         _jsonSerializer = jsonSerializer;
     }
 
@@ -43,11 +42,6 @@ public class NotificationManager : DomainService
             .ToList();
 
         await _notificationRepository.InsertManyAsync(notifications);
-
-        foreach (var notification in notifications)
-        {
-            await _publisher.PublishAsync(notification);
-        }
 
         return notifications;
     }

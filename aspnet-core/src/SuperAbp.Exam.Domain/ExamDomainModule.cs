@@ -2,12 +2,15 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SuperAbp.AuditLogging;
 using SuperAbp.Exam.MultiTenancy;
+using SuperAbp.Exam.Notifications;
 using SuperAbp.MenuManagement;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.AuditLogging;
+using Volo.Abp.AutoMapper;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundWorkers;
+using Volo.Abp.Domain.Entities.Events.Distributed;
 using Volo.Abp.Emailing;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
@@ -35,7 +38,8 @@ namespace SuperAbp.Exam;
     typeof(AbpTenantManagementDomainModule),
     typeof(AbpEmailingModule),
     typeof(SuperAbpMenuManagementDomainModule),
-    typeof(SuperAbpAuditLoggingDomainModule)
+    typeof(SuperAbpAuditLoggingDomainModule),
+    typeof(AbpAutoMapperModule)
 )]
 public class ExamDomainModule : AbpModule
 {
@@ -55,5 +59,11 @@ public class ExamDomainModule : AbpModule
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
+        Configure<AbpAutoMapperOptions>(options => { options.AddMaps<ExamDomainModule>(validate: true); });
+        Configure<AbpDistributedEntityEventOptions>(options =>
+        {
+            options.AutoEventSelectors.Add<Notification>();
+            options.EtoMappings.Add<Notification, NotificationEto>();
+        });
     }
 }
