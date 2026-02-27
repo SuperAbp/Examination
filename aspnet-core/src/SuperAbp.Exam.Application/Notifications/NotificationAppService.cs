@@ -31,6 +31,9 @@ public class NotificationAppService(INotificationRepository notificationReposito
         );
 
         var list = await NotificationRepository.GetListAsync(
+            input.Sorting,
+            input.SkipCount,
+            input.MaxResultCount,
             receiverId: CurrentUser.GetId(),
             isRead: input.IsRead
         );

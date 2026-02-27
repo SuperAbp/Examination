@@ -20,7 +20,6 @@ export class NotificationsComponent implements OnInit {
   notifications: NotificationListDto[] = [];
   loading = false;
   page = 1;
-  pageSize = 10;
   totalCount = 0;
   input: GetNotificationsInput = {
     skipCount: 0,

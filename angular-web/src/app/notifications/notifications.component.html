@@ -65,9 +65,9 @@
                 }
             </div>
 
-            @if (totalCount > pageSize) {
+            @if (totalCount > this.input.maxResultCount) {
             <div class="d-flex justify-content-center mt-4">
-                <ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="pageSize"
+                <ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="this.input.maxResultCount"
                     (pageChange)="loadPage($event)" [maxSize]="5" [rotate]="true" [ellipses]="true">
                 </ngb-pagination>
             </div>
