@@ -15,7 +15,6 @@ import { CoreModule } from '@abp/ng.core';
 })
 export class NotificationsComponent implements OnInit {
   private notificationService = inject(NotificationService);
-  private router = inject(Router);
 
   notifications: NotificationListDto[] = [];
   loading = false;
@@ -91,7 +90,7 @@ export class NotificationsComponent implements OnInit {
 
       if (notification.type === 2) {
         // TODO: Use Template to display content;
-        return `您参加的《${data.examName || '考试'}》考试成绩已发布`;
+        return `您参加的《${data.examName || '考试'}》成绩已发布`;
       }
 
       return data.message || '您有一条新通知';
