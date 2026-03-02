@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Rebus.Config;
 using StackExchange.Redis;
 using SuperAbp.Exam.EntityFrameworkCore;
 using SuperAbp.Exam.MultiTenancy;
@@ -30,7 +31,9 @@ using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.Caching;
 using Volo.Abp.Caching.StackExchangeRedis;
+using Volo.Abp.Data;
 using Volo.Abp.DistributedLocking;
+using Volo.Abp.EventBus.Rebus;
 using Volo.Abp.Modularity;
 using Volo.Abp.Security.Claims;
 using Volo.Abp.Swashbuckle;
@@ -42,7 +45,7 @@ namespace SuperAbp.Exam;
 [DependsOn(
     typeof(ExamHttpApiModule),
     typeof(AbpAutofacModule),
-        typeof(AbpCachingStackExchangeRedisModule),
+    typeof(AbpCachingStackExchangeRedisModule),
     typeof(AbpDistributedLockingModule),
     typeof(AbpAspNetCoreMvcUiMultiTenancyModule),
     typeof(AbpAspNetCoreAuthenticationJwtBearerModule),
@@ -50,10 +53,24 @@ namespace SuperAbp.Exam;
     typeof(ExamEntityFrameworkCoreModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule),
-    typeof(AbpAspNetCoreSignalRModule)
+    typeof(AbpAspNetCoreSignalRModule),
+    typeof(AbpEventBusRebusModule)
 )]
 public class ExamHttpApiHostModule : AbpModule
 {
+    public override void PreConfigureServices(ServiceConfigurationContext context)
+    {
+        var configuration = context.Services.GetConfiguration();
+        PreConfigure<AbpRebusEventBusOptions>(options =>
+        {
+            string connectionString = configuration.GetConnectionString("Default") ?? "";
+            options.InputQueueName = "exam-eventbus-web";
+            options.Configurer = configure => configure
+            .Transport(t => t.UseSqlServer(connectionString, "exam-eventbus-web"))
+            .Subscriptions(t => t.StoreInSqlServer(connectionString, "Subscriptions", isCentralized: true));
+        });
+    }
+
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         var configuration = context.Services.GetConfiguration();
@@ -128,14 +145,6 @@ public class ExamHttpApiHostModule : AbpModule
         }
     }
 
-    private void ConfigureConventionalControllers()
-    {
-        Configure<AbpAspNetCoreMvcOptions>(options =>
-        {
-            options.ConventionalControllers.Create(typeof(ExamApplicationModule).Assembly);
-        });
-    }
-
     private static void ConfigureSwaggerServices(ServiceConfigurationContext context, IConfiguration configuration)
     {
         context.Services.AddAbpSwaggerGenWithOAuth(
@@ -150,7 +159,7 @@ public class ExamHttpApiHostModule : AbpModule
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
 
-                #region ×¢ÊÍ
+                #region ×¢ï¿½ï¿½
 
                 var binXmlFiles =
                     new DirectoryInfo(AppContext.BaseDirectory).GetFiles("*.xml", SearchOption.TopDirectoryOnly);
@@ -159,7 +168,7 @@ public class ExamHttpApiHostModule : AbpModule
                     options.IncludeXmlComments(filePath, true);
                 }
 
-                #endregion ×¢ÊÍ
+                #endregion ×¢ï¿½ï¿½
             });
     }
 
@@ -222,7 +231,7 @@ public class ExamHttpApiHostModule : AbpModule
 
             var path = httpContext.Request.Path;
             if (!string.IsNullOrEmpty(accessToken) &&
-                (path.StartsWithSegments("/signalr-hubs/progress")))
+                path.StartsWithSegments("/signalr-hubs/notification"))
             {
                 httpContext.Request.Headers["Authorization"] = "Bearer " + accessToken;
             }

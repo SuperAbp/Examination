@@ -773,13 +773,13 @@
       "rootPath": "app",
       "remoteServiceName": "Default",
       "controllers": {
-        "SuperAbp.Exam.Announcements.AnnouncementCategoryController": {
+        "SuperAbp.Exam.Controllers.AnnouncementCategoryController": {
           "controllerName": "AnnouncementCategory",
           "controllerGroupName": "AnnouncementCategory",
           "isRemoteService": true,
           "isIntegrationService": false,
           "apiVersion": null,
-          "type": "SuperAbp.Exam.Announcements.AnnouncementCategoryController",
+          "type": "SuperAbp.Exam.Controllers.AnnouncementCategoryController",
           "interfaces": [
             {
               "type": "SuperAbp.Exam.Announcements.IAnnouncementCategoryAppService",
@@ -868,13 +868,13 @@
             }
           }
         },
-        "SuperAbp.Exam.Announcements.AnnouncementController": {
+        "SuperAbp.Exam.Controllers.AnnouncementController": {
           "controllerName": "Announcement",
           "controllerGroupName": "Announcement",
           "isRemoteService": true,
           "isIntegrationService": false,
           "apiVersion": null,
-          "type": "SuperAbp.Exam.Announcements.AnnouncementController",
+          "type": "SuperAbp.Exam.Controllers.AnnouncementController",
           "interfaces": [
             {
               "type": "SuperAbp.Exam.Announcements.IAnnouncementAppService",
@@ -2946,6 +2946,178 @@
               },
               "allowAnonymous": null,
               "implementFrom": "SuperAbp.Exam.ExamManagement.UserExams.IUserExamAppService"
+            }
+          }
+        },
+        "SuperAbp.Exam.Notifications.NotificationController": {
+          "controllerName": "Notification",
+          "controllerGroupName": "Notification",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "SuperAbp.Exam.Notifications.NotificationController",
+          "interfaces": [
+            {
+              "type": "SuperAbp.Exam.Notifications.INotificationAppService",
+              "name": "INotificationAppService",
+              "methods": [
+                {
+                  "name": "GetListAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "SuperAbp.Exam.Admin.Notifications.GetNotificationsInput, SuperAbp.Exam.Application.Contracts",
+                      "type": "SuperAbp.Exam.Admin.Notifications.GetNotificationsInput",
+                      "typeSimple": "SuperAbp.Exam.Admin.Notifications.GetNotificationsInput",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Notifications.NotificationListDto>",
+                    "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Notifications.NotificationListDto>"
+                  }
+                },
+                {
+                  "name": "MarkAsReadAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "MarkAllAsReadAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "GetUnreadCountAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Int64",
+                    "typeSimple": "number"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetUnreadCountAsync": {
+              "uniqueName": "GetUnreadCountAsync",
+              "name": "GetUnreadCountAsync",
+              "httpMethod": "GET",
+              "url": "api/notifications/unread-count",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Int64",
+                "typeSimple": "number"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Notifications.INotificationAppService"
+            },
+            "GetListAsyncByInput": {
+              "uniqueName": "GetListAsyncByInput",
+              "name": "GetListAsync",
+              "httpMethod": "GET",
+              "url": "api/notifications",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "SuperAbp.Exam.Admin.Notifications.GetNotificationsInput, SuperAbp.Exam.Application.Contracts",
+                  "type": "SuperAbp.Exam.Admin.Notifications.GetNotificationsInput",
+                  "typeSimple": "SuperAbp.Exam.Admin.Notifications.GetNotificationsInput",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "IsRead",
+                  "jsonName": null,
+                  "type": "System.Boolean?",
+                  "typeSimple": "boolean?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Notifications.NotificationListDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SuperAbp.Exam.Notifications.NotificationListDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Notifications.INotificationAppService"
+            },
+            "MarkAsReadAsyncById": {
+              "uniqueName": "MarkAsReadAsyncById",
+              "name": "MarkAsReadAsync",
+              "httpMethod": "POST",
+              "url": "api/notifications/{id}/mark-as-read",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Notifications.INotificationAppService"
+            },
+            "MarkAllAsReadAsync": {
+              "uniqueName": "MarkAllAsReadAsync",
+              "name": "MarkAllAsReadAsync",
+              "httpMethod": "POST",
+              "url": "api/notifications/mark-all-as-read",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SuperAbp.Exam.Notifications.INotificationAppService"
             }
           }
         }
@@ -5704,6 +5876,27 @@
     }
   },
   "types": {
+    "SuperAbp.Exam.Admin.Notifications.GetNotificationsInput": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "IsRead",
+          "jsonName": null,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "SuperAbp.Exam.Announcements.AnnouncementCategoryDto": {
       "baseType": null,
       "isEnum": false,
@@ -5774,7 +5967,7 @@
       ]
     },
     "SuperAbp.Exam.Announcements.AnnouncementDetailDto": {
-      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
+      "baseType": "Volo.Abp.Application.Dtos.CreationAuditedEntityDto<System.Guid>",
       "isEnum": false,
       "enumNames": null,
       "enumValues": null,
@@ -7019,6 +7212,99 @@
           "type": "System.Int32",
           "typeSimple": "number",
           "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "SuperAbp.Exam.Notifications.NotificationListDto": {
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Type",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Data",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "IsRead",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ReadTime",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RelatedEntityId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RelatedEntityType",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreationTime",
+          "jsonName": null,
+          "type": "System.DateTime",
+          "typeSimple": "string",
+          "isRequired": false,
           "minLength": null,
           "maxLength": null,
           "minimum": null,

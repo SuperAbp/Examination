@@ -32,4 +32,9 @@ export const APP_ROUTES: Routes = [
     loadChildren: () => import('./announcements/routes').then(m => m.routes),
     canActivate: [authGuard],
   },
+  {
+    path: '',
+    loadChildren: () => import('./notifications/routes').then(m => m.routes),
+    canActivate: [authGuard],
+  },
 ];

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Services;
-using Volo.Abp.EventBus.Local;
+using Volo.Abp.EventBus.Distributed;
 
 namespace SuperAbp.Exam.ExamManagement.UserExams;
 
@@ -17,7 +17,7 @@ public class UserExamManager(
     IQuestionRepository questionRepository,
     IPaperRepository paperRepository,
     IUserExamRepository userExamRepository,
-    ILocalEventBus eventBus)
+    IDistributedEventBus eventBus)
     : DomainService
 {
     public async Task<UserExam> CreateAsync(Guid examId, Guid userId)

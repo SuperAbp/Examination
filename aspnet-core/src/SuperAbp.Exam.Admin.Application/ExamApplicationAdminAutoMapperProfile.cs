@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using SuperAbp.Exam.Admin.Announcements;
+using SuperAbp.Exam.Admin.Notifications;
 using SuperAbp.Exam.Announcements;
+using SuperAbp.Exam.Notifications;
 
 namespace SuperAbp.Exam.Admin;
 
@@ -18,5 +20,8 @@ public class ExamApplicationAdminAutoMapperProfile : Profile
             .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : null));
         CreateMap<AnnouncementCategory, AnnouncementCategoryListDto>();
         CreateMap<AnnouncementCategory, AnnouncementCategoryDetailDto>();
+
+        CreateMap<Notification, NotificationListDto>();
+        CreateMap<Notification, NotificationMyListDto>();
     }
 }

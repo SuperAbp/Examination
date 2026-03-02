@@ -9,7 +9,7 @@ namespace SuperAbp.Exam.Admin.Controllers;
 /// <summary>
 /// 知识点
 /// </summary>
-[Route("knowledge-point")]
+[Route("api/knowledge-point")]
 public class KnowledgePointController(IKnowledgePointAdminAppService knowledgePointAppService)
     : ExamController, IKnowledgePointAdminAppService
 {

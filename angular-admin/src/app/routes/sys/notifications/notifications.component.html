@@ -1,0 +1,15 @@
+<div class="page-header">
+    <h2>{{ '::MyNotifications' | abpLocalization }}</h2>
+</div>
+
+<nz-card>
+    <sf #sf mode="search" [schema]="searchSchema" (formSubmit)="search($event)" [button]="null">
+        <button nzType="primary" type="submit" nz-button>{{ '::Search' | abpLocalization }}</button>
+        <button (click)="reset()" type="button" nz-button>{{ '::Reset' | abpLocalization }}</button>
+        @if (unreadCount> 0) {
+        <button nz-button nzType="primary" (click)="markAllAsRead()">{{ '::MarkAllAsRead' | abpLocalization }}</button>
+        }
+    </sf>
+    <st #st [loading]="loading" [data]="notifications" [columns]="columns" [page]="page" [total]="total"
+        (change)="change($event)"> </st>
+</nz-card>

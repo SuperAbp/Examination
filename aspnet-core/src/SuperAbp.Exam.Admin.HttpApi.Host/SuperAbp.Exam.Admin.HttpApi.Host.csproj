@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Rebus.SqlServer" Version="8.4.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
 	  <PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
@@ -24,6 +25,7 @@
 	  <PackageReference Include="Volo.Abp.Caching.StackExchangeRedis" Version="10.0.0" />
 	  <PackageReference Include="Volo.Abp.DistributedLocking" Version="10.0.0" />
     <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="10.0.0" />
+    <PackageReference Include="Volo.Abp.EventBus.Rebus" Version="10.0.0" />
     <PackageReference Include="Volo.Abp.Swashbuckle" Version="10.0.0" />
   </ItemGroup>
 

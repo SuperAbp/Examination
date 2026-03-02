@@ -53,4 +53,10 @@ public static class ExamDomainErrorCodes
         public const string InvalidStatus = "Exam:Exams:0002";
         public const string UnfinishedGrading = "Exam:Exams:0003";
     }
+
+    public static class Notifications
+    {
+        public const string NotFound = "Exam:Notifications:0001";
+        public const string NoRetryableDeliveries = "Exam:Notifications:0002";
+    }
 }

@@ -28,6 +28,7 @@ using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 using SuperAbp.Exam.Announcements;
+using SuperAbp.Exam.Notifications;
 
 using SuperAbp.Exam.PaperManagement.PaperSections;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
@@ -101,6 +102,7 @@ public class ExamDbContext :
     public DbSet<Mistake> Mistakes { get; set; }
     public DbSet<Announcement> Announcements { get; set; }
     public DbSet<AnnouncementCategory> AnnouncementCategories { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
     public ExamDbContext(DbContextOptions<ExamDbContext> options)
         : base(options)
@@ -303,6 +305,18 @@ public class ExamDbContext :
             b.Property(p => p.Name).IsRequired().HasMaxLength(AnnouncementCategoryConsts.MaxNameLength);
             b.Property(p => p.Remark).HasMaxLength(AnnouncementCategoryConsts.MaxRemarkLength);
             b.Property(p => p.Sort).HasDefaultValue(0);
+        });
+
+        builder.Entity<Notification>(b =>
+        {
+            b.ToTable(ExamConsts.DbTablePrefix + "Notifications", ExamConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.ConfigureAuditedAggregateRoot();
+
+            b.Property(p => p.RelatedEntityType).HasMaxLength(128);
+            b.HasIndex(p => p.ReceiverId);
+            b.HasIndex(p => p.Type);
+            b.HasIndex(p => p.IsRead);
         });
     }
 

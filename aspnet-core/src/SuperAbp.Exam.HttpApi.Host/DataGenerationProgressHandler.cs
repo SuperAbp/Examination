@@ -1,14 +1,15 @@
-﻿using System;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Threading.Tasks;
 using Volo.Abp.DependencyInjection;
-using Volo.Abp.EventBus;
+using Volo.Abp.EventBus.Distributed;
 
 namespace SuperAbp.Exam;
 
-public class DataGenerationProgressHandler(IHubContext<ProgressHub> hubContext) : ILocalEventHandler<DataGenerationProgressUpdatedEto>, ITransientDependency
+public class DataGenerationProgressHandler(IHubContext<NotificationHub> hubContext)
+    : IDistributedEventHandler<DataGenerationProgressUpdatedEto>, ITransientDependency
 {
-    protected IHubContext<ProgressHub> HubContext { get; } = hubContext;
+    protected IHubContext<NotificationHub> HubContext { get; } = hubContext;
 
     public virtual async Task HandleEventAsync(DataGenerationProgressUpdatedEto eventData)
     {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using SuperAbp.Exam.Admin.ExamManagement.UserExams;
 using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.ExamManagement.Exams.Events;
 using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.Jobs.SubmittedUserExam;
 using SuperAbp.Exam.PaperManagement.Papers;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.EventBus.Local;
 
 namespace SuperAbp.Exam.Admin.ExamManagement.Exams
 {
@@ -20,12 +22,14 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
     public class ExaminationAdminAppService(IPaperRepository paperRepository,
         IExamRepository examRepository,
         IUserExamRepository userExamRepository,
-        IBackgroundJobManager backgroundJobManager)
+        IBackgroundJobManager backgroundJobManager,
+        ILocalEventBus localEventBus)
         : ExamAppService, IExaminationAdminAppService
     {
         protected IExamRepository ExamRepository { get; } = examRepository;
         public IUserExamRepository UserExamRepository { get; } = userExamRepository;
         public IBackgroundJobManager BackgroundJobManager { get; } = backgroundJobManager;
+        protected ILocalEventBus LocalEventBus { get; } = localEventBus;
 
         public virtual async Task<PagedResultDto<ExamListDto>> GetListAsync(GetExamsInput input)
         {
@@ -150,6 +154,11 @@ namespace SuperAbp.Exam.Admin.ExamManagement.Exams
             }
             exam.Complete();
             await ExamRepository.UpdateAsync(exam);
+
+            await LocalEventBus.PublishAsync(new ExamGradingCompletedEvent(
+                exam.Id,
+                exam.Name
+            ));
         }
 
         [Authorize(ExamPermissions.Exams.Publish)]

@@ -3,6 +3,7 @@ using AutoMapper;
 using SuperAbp.Exam.Announcements;
 using SuperAbp.Exam.Favorites;
 using SuperAbp.Exam.Mistakes;
+using SuperAbp.Exam.Notifications;
 using SuperAbp.Exam.TrainingManagement;
 
 namespace SuperAbp.Exam;
@@ -23,6 +24,7 @@ public class ExamApplicationAutoMapper : Profile
         CreateMap<FavoriteWithDetails, FavoriteListDto>();
 
         CreateMap<MistakeWithDetails, MistakeListDto>();
+        CreateMap<Notification, NotificationListDto>();
     }
 
     private static string GetBriefContent(string htmlContent)

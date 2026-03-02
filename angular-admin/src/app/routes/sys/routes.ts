@@ -5,6 +5,7 @@ import { authJWTCanActivate } from '@delon/auth';
 import { SysKnowledgePointComponent } from './knowledge-point/knowledge-point.component';
 import { SysAnnouncementComponent } from './announcement/announcement.component';
 import { SysAnnouncementCategoryComponent } from './announcement-category/announcement-category.component';
+import { SysNotificationsComponent } from './notifications/notifications.component';
 
 export const routes: Routes = [
   {
@@ -30,5 +31,10 @@ export const routes: Routes = [
     data: {
       requiredPolicy: 'Exam.AnnouncementCategories'
     }
+  },
+  {
+    path: 'notifications',
+    component: SysNotificationsComponent,
+    canActivate: [authJWTCanActivate]
   }
 ];

@@ -8,6 +8,7 @@ using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.Favorites;
 using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.Mistakes;
+using SuperAbp.Exam.Notifications;
 using SuperAbp.Exam.PaperManagement.PaperQuestionRules;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
@@ -65,6 +66,7 @@ public class ExamDbContextInUnitTest : AbpDbContext<ExamDbContextInUnitTest>, IE
     public DbSet<Mistake> Mistakes { get; set; }
     public DbSet<Announcement> Announcements { get; set; }
     public DbSet<AnnouncementCategory> AnnouncementCategories { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
     public ExamDbContextInUnitTest(DbContextOptions<ExamDbContextInUnitTest> options) : base(options)
     {

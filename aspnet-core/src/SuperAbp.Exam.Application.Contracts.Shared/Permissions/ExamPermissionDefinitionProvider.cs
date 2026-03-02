@@ -61,6 +61,9 @@ public class ExamPermissionDefinitionProvider : PermissionDefinitionProvider
         announcementCategories.AddChild(ExamPermissions.AnnouncementCategories.Create, L("Permission:Create"));
         announcementCategories.AddChild(ExamPermissions.AnnouncementCategories.Update, L("Permission:Edit"));
         announcementCategories.AddChild(ExamPermissions.AnnouncementCategories.Delete, L("Permission:Delete"));
+
+        var notifications = myGroup.AddPermission(ExamPermissions.Notifications.Default, L("Permission:Notifications"));
+        notifications.AddChild(ExamPermissions.Notifications.Management, L("Permission:Management"));
     }
 
     private static LocalizableString L(string name)

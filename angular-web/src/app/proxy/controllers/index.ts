@@ -1,3 +1,5 @@
+export * from './announcement-category.service';
+export * from './announcement.service';
 export * from './examination.service';
 export * from './favorite.service';
 export * from './mistake.service';

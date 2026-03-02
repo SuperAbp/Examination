@@ -14,6 +14,7 @@ import { HeaderClearStorageComponent } from './widgets/clear-storage.component';
 import { HeaderFullScreenComponent } from './widgets/fullscreen.component';
 import { HeaderI18nComponent } from './widgets/i18n.component';
 import { HeaderUserComponent } from './widgets/user.component';
+import { HeaderNotificationComponent } from './widgets/notification.component';
 
 @Component({
   selector: 'layout-basic',
@@ -51,6 +52,9 @@ import { HeaderUserComponent } from './widgets/user.component';
             </div>
           </div>
         </nz-dropdown-menu>
+      </layout-default-header-item>
+      <layout-default-header-item direction="right">
+        <header-notification></header-notification>
       </layout-default-header-item>
       <layout-default-header-item direction="right">
         <header-user></header-user>
@@ -93,6 +97,7 @@ import { HeaderUserComponent } from './widgets/user.component';
     ThemeBtnComponent,
     HeaderClearStorageComponent,
     HeaderFullScreenComponent,
+    HeaderNotificationComponent,
     HeaderUserComponent,
     HeaderI18nComponent
   ]

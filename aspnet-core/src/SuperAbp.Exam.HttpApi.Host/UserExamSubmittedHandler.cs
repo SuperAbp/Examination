@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using SuperAbp.Exam.ExamManagement.UserExams;
 using System.Threading.Tasks;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EventBus;
 
 namespace SuperAbp.Exam;
 
-public class UserExamSubmittedHandler(IHubContext<ProgressHub> hubContext) : ILocalEventHandler<UserExamSubmittedEto>, ITransientDependency
+public class UserExamSubmittedHandler(IHubContext<NotificationHub> hubContext) : ILocalEventHandler<UserExamSubmittedEto>, ITransientDependency
 {
-    protected IHubContext<ProgressHub> HubContext { get; } = hubContext;
+    protected IHubContext<NotificationHub> HubContext { get; } = hubContext;
 
     public virtual async Task HandleEventAsync(UserExamSubmittedEto eventData)
     {
