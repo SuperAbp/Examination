@@ -63,7 +63,7 @@ export class ExamsWelcomeComponent implements OnInit, OnDestroy {
   private async setupSignalRConnection(userExamId: string) {
     try {
       const apiUrl = environment.apis.default.url;
-      const signalRUrl = apiUrl.replace(/\/$/, '') + '/signalr-hubs/progress';
+      const signalRUrl = apiUrl.replace(/\/$/, '') + '/signalr-hubs/notification';
 
       const getAccessToken = () => {
         const token = localStorage.getItem('access_token');

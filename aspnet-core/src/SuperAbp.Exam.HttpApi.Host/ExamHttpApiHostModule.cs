@@ -231,8 +231,7 @@ public class ExamHttpApiHostModule : AbpModule
 
             var path = httpContext.Request.Path;
             if (!string.IsNullOrEmpty(accessToken) &&
-                (path.StartsWithSegments("/signalr-hubs/progress") ||
-                 path.StartsWithSegments("/signalr-hubs/notification")))
+                path.StartsWithSegments("/signalr-hubs/notification"))
             {
                 httpContext.Request.Headers["Authorization"] = "Bearer " + accessToken;
             }

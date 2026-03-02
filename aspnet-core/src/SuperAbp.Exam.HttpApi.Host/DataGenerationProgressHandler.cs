@@ -6,10 +6,10 @@ using Volo.Abp.EventBus.Distributed;
 
 namespace SuperAbp.Exam;
 
-public class DataGenerationProgressHandler(IHubContext<DataGenerationProgressHub> hubContext)
+public class DataGenerationProgressHandler(IHubContext<NotificationHub> hubContext)
     : IDistributedEventHandler<DataGenerationProgressUpdatedEto>, ITransientDependency
 {
-    protected IHubContext<DataGenerationProgressHub> HubContext { get; } = hubContext;
+    protected IHubContext<NotificationHub> HubContext { get; } = hubContext;
 
     public virtual async Task HandleEventAsync(DataGenerationProgressUpdatedEto eventData)
     {

@@ -6,9 +6,9 @@ using Volo.Abp.EventBus;
 
 namespace SuperAbp.Exam;
 
-public class UserExamSubmittedHandler(IHubContext<DataGenerationProgressHub> hubContext) : ILocalEventHandler<UserExamSubmittedEto>, ITransientDependency
+public class UserExamSubmittedHandler(IHubContext<NotificationHub> hubContext) : ILocalEventHandler<UserExamSubmittedEto>, ITransientDependency
 {
-    protected IHubContext<DataGenerationProgressHub> HubContext { get; } = hubContext;
+    protected IHubContext<NotificationHub> HubContext { get; } = hubContext;
 
     public virtual async Task HandleEventAsync(UserExamSubmittedEto eventData)
     {
