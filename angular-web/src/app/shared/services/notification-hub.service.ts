@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { environment } from '../../../environments/environment';
 import { ToasterService } from '@abp/ng.theme.shared';
+import { NotificationHelper } from '../utils/notification-helper';
 
 export interface NotificationData {
   id: string;
@@ -65,7 +66,6 @@ export class NotificationHubService {
     if (!this.hubConnection) return;
 
     this.hubConnection.on('ReceiveNotification', (notification: NotificationData) => {
-      debugger;
       this.handleNotification(notification);
     });
 
@@ -84,7 +84,8 @@ export class NotificationHubService {
   }
 
   private handleNotification(notification: NotificationData): void {
-    this.toaster.info(notification.data);
+    const content = NotificationHelper.getNotificationContent(notification);
+    this.toaster.info(content, NotificationHelper.getNotificationTitle(Number(notification.type)));
 
     window.dispatchEvent(
       new CustomEvent('notification-received', {

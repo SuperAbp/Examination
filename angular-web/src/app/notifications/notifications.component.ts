@@ -6,6 +6,7 @@ import { NotificationService } from '@proxy/notifications';
 import { NotificationListDto } from '@proxy/notifications/models';
 import { GetNotificationsInput } from '@proxy/admin/notifications/models';
 import { CoreModule } from '@abp/ng.core';
+import { NotificationHelper } from '@shared/utils/notification-helper';
 
 @Component({
   selector: 'app-notifications',
@@ -71,31 +72,12 @@ export class NotificationsComponent implements OnInit {
       .markAllAsRead()
       .subscribe(() => ((this.notifications = []), (this.totalCount = 0)));
   }
+
   getNotificationTitle(type: number): string {
-    const titles: Record<number, string> = {
-      1: '考试提醒',
-      2: '成绩公布',
-      3: '系统通知',
-    };
-    return titles[type] || '通知';
+    return NotificationHelper.getNotificationTitle(type);
   }
 
   getNotificationContent(notification: NotificationListDto): string {
-    if (!notification.data) {
-      return '您有一条新通知';
-    }
-
-    try {
-      const data = JSON.parse(notification.data);
-
-      if (notification.type === 2) {
-        // TODO: Use Template to display content;
-        return `您参加的《${data.examName || '考试'}》成绩已发布`;
-      }
-
-      return data.message || '您有一条新通知';
-    } catch {
-      return '您有一条新通知';
-    }
+    return NotificationHelper.getNotificationContent(notification);
   }
 }
