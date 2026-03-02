@@ -1,8 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, OnDestroy } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { environment } from '../../../environments/environment';
 import { ToasterService } from '@abp/ng.theme.shared';
 import { NotificationHelper } from '../utils/notification-helper';
+import { BehaviorSubject } from 'rxjs';
 
 export interface NotificationData {
   id: string;
@@ -16,11 +17,12 @@ export interface NotificationData {
 @Injectable({
   providedIn: 'root',
 })
-export class NotificationHubService {
+export class NotificationHubService implements OnDestroy {
   private hubConnection?: HubConnection;
   private toaster = inject(ToasterService);
-  private reconnectAttempts = 0;
-  private readonly maxReconnectAttempts = 5;
+  private progressSubject = new BehaviorSubject<number>(0);
+
+  readonly progress$ = this.progressSubject.asObservable();
 
   startConnection(): void {
     if (this.hubConnection?.state === 'Connected') {
@@ -48,7 +50,6 @@ export class NotificationHubService {
       .start()
       .then(() => {
         console.log('[NotificationHub] Connected');
-        this.reconnectAttempts = 0;
       })
       .catch(error => {
         console.error('[NotificationHub] Connection error:', error);
@@ -69,13 +70,16 @@ export class NotificationHubService {
       this.handleNotification(notification);
     });
 
+    this.hubConnection.on('ReceiveProgress', (progressValue: number) => {
+      this.progressSubject.next(progressValue);
+    });
+
     this.hubConnection.onreconnecting(() => {
       console.log('[NotificationHub] Reconnecting...');
     });
 
     this.hubConnection.onreconnected(() => {
       console.log('[NotificationHub] Reconnected');
-      this.reconnectAttempts = 0;
     });
 
     this.hubConnection.onclose(() => {
@@ -94,7 +98,7 @@ export class NotificationHubService {
     );
   }
 
-  getConnectionState(): string {
-    return this.hubConnection?.state ?? 'Disconnected';
+  ngOnDestroy(): void {
+    this.stopConnection();
   }
 }

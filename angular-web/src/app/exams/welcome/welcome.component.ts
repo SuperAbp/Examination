@@ -6,8 +6,8 @@ import { CoreModule } from '@abp/ng.core';
 import { CommonModule } from '@angular/common';
 import { NgbAlert, NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { ButtonComponent } from '@abp/ng.theme.shared';
-import * as signalR from '@microsoft/signalr';
-import { environment } from '../../../environments/environment';
+import { NotificationHubService } from '../../shared/services/notification-hub.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-exams-welcome',
@@ -20,12 +20,14 @@ export class ExamsWelcomeComponent implements OnInit, OnDestroy {
   progress: number = 0;
   loading: boolean = true;
   btnLoading: boolean = false;
-  private hubConnection?: signalR.HubConnection;
 
   private readonly examinationService = inject(ExaminationService);
   private readonly userExamService = inject(UserExamService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly notificationHub = inject(NotificationHubService);
+  private progressSubscription?: Subscription;
+  private currentUserExamId?: string;
 
   constructor() {
     this.activatedRoute.params.subscribe(params => {
@@ -41,18 +43,16 @@ export class ExamsWelcomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.hubConnection) {
-      this.hubConnection.stop();
-    }
+    this.progressSubscription?.unsubscribe();
   }
 
-  async start() {
+  start() {
     this.btnLoading = true;
 
     this.userExamService.create({ examId: this.id! }).subscribe({
-      next: async userExam => {
-        const userExamId = userExam.id;
-        await this.setupSignalRConnection(userExamId);
+      next: userExam => {
+        this.currentUserExamId = userExam.id;
+        this.setupSignalRConnection();
       },
       error: () => {
         this.btnLoading = false;
@@ -60,35 +60,13 @@ export class ExamsWelcomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  private async setupSignalRConnection(userExamId: string) {
-    try {
-      const apiUrl = environment.apis.default.url;
-      const signalRUrl = apiUrl.replace(/\/$/, '') + '/signalr-hubs/notification';
-
-      const getAccessToken = () => {
-        const token = localStorage.getItem('access_token');
-        return token || '';
-      };
-
-      this.hubConnection = new signalR.HubConnectionBuilder()
-        .withUrl(signalRUrl, {
-          accessTokenFactory: getAccessToken,
-        })
-        .withAutomaticReconnect()
-        .build();
-
-      this.hubConnection.on('ReceiveProgress', (progressValue: number) => {
-        this.progress = progressValue;
-        if (this.progress >= 100) {
-          this.hubConnection?.stop();
-          this.router.navigate(['/exams/start', userExamId]);
-        }
-      });
-
-      await this.hubConnection.start();
-    } catch (error) {
-      console.error('SignalR Connection Error: ', error);
-      this.btnLoading = false;
-    }
+  private setupSignalRConnection(): void {
+    this.notificationHub.startConnection();
+    this.progressSubscription = this.notificationHub.progress$.subscribe(progressValue => {
+      this.progress = progressValue;
+      if (this.progress >= 100) {
+        this.router.navigate(['/exams/start', this.currentUserExamId]);
+      }
+    });
   }
 }
