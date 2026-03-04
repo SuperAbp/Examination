@@ -1,8 +1,5 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="packages/Volo.Abp.AspNetCore.Components.Web.BasicTheme/Volo.Abp.AspNetCore.Components.Web.BasicTheme.csproj" />
-    <Project Path="packages/Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme/Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme.csproj" />
-    <Project Path="packages/Volo.Abp.AspNetCore.Components.WebAssembly.Theming/Volo.Abp.AspNetCore.Components.WebAssembly.Theming.csproj" />
     <Project Path="src/SuperAbp.Exam.AuthServer/SuperAbp.Exam.AuthServer.csproj" />
     <Project Path="src/SuperAbp.Exam.BackgroundServices/SuperAbp.Exam.BackgroundServices.csproj" />
     <Project Path="src/SuperAbp.Exam.DbMigrator/SuperAbp.Exam.DbMigrator.csproj" />
