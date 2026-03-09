@@ -37,7 +37,7 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@abp/ng.schematics": "~10.1.0",
+    "@abp/ng.schematics": "~10.1.1",
     "@angular-eslint/builder": "~20.0.0",
     "@angular-eslint/eslint-plugin": "~20.0.0",
     "@angular-eslint/eslint-plugin-template": "~20.0.0",
@@ -58,6 +58,6 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.0.0",
     "prettier": "~3.7.4",
-    "typescript": "~5.8.0"
+    "typescript": "~5.9.0"
   }
 }
