@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ExaminationService, UserExamService } from '@proxy/controllers';
 import { ExamDetailDto } from '@proxy/exam-management/exams';
 import { CoreModule } from '@abp/ng.core';
-import { CommonModule } from '@angular/common';
+
 import { NgbAlert, NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { ButtonComponent } from '@abp/ng.theme.shared';
 import { NotificationHubService } from '../../shared/services/notification-hub.service';
@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-exams-welcome',
   templateUrl: './welcome.component.html',
-  imports: [CoreModule, CommonModule, ButtonComponent, NgbProgressbar, NgbAlert],
+  imports: [CoreModule, ButtonComponent, NgbProgressbar, NgbAlert],
 })
 export class ExamsWelcomeComponent implements OnInit, OnDestroy {
   id?: string;

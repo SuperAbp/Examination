@@ -1,6 +1,6 @@
 import { CoreModule, LocalizationService } from '@abp/ng.core';
 import { Location } from '@angular/common';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
@@ -25,6 +25,7 @@ export class ExamManagementUserExamUserComponent implements OnInit {
   private examinationService = inject(ExaminationService);
   private userExamUserService = inject(UserExamService);
   private userService = inject(IdentityUserService);
+  private cdr = inject(ChangeDetectorRef);
 
   examId!: string;
   userExamUsers: ExamUserExamDto[];
@@ -74,8 +75,16 @@ export class ExamManagementUserExamUserComponent implements OnInit {
     this.loading = true;
     this.examinationService
       .getExamUserExams(this.examId)
-      .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => (this.userExamUsers = response.items));
+      .pipe(
+        tap(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe(response => {
+        this.userExamUsers = response.items;
+        this.cdr.detectChanges();
+      });
   }
   search(e) {
     //if (e.name) {

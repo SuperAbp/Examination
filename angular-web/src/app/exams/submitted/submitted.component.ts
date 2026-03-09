@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { CoreModule } from '@abp/ng.core';
 
 @Component({
@@ -8,7 +8,7 @@ import { CoreModule } from '@abp/ng.core';
   templateUrl: './submitted.component.html',
   styleUrls: ['./submitted.component.scss'],
   standalone: true,
-  imports: [CommonModule, CoreModule],
+  imports: [CoreModule],
 })
 export class ExamsSubmittedComponent implements OnInit {
   userExamId?: string;

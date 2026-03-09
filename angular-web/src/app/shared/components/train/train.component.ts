@@ -9,7 +9,7 @@ import {
   SimpleChanges,
   TemplateRef,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { FavoriteService, QuestionService, TrainingService } from '@proxy/controllers';
 import { QuestionDetailDto } from '@proxy/question-management/questions';
@@ -35,7 +35,6 @@ export interface TrainConfig {
   styleUrls: ['./train.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     CoreModule,
     QuestionNumberComponent,
     SingleChoiceComponent,

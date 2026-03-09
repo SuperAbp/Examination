@@ -7,7 +7,7 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { CoreModule } from '@abp/ng.core';
 import { FormsModule } from '@angular/forms';
 import { QuestionOptionDto } from '@proxy/question-management/questions';
@@ -17,7 +17,7 @@ import { AnswerSubmission } from '@shared/components/choice-answer';
   selector: 'app-fill-blank',
   templateUrl: './fill-blank.component.html',
   styleUrls: ['./fill-blank.component.scss'],
-  imports: [CommonModule, CoreModule, FormsModule],
+  imports: [CoreModule, FormsModule],
 })
 export class FillBlankComponent implements OnInit, OnChanges {
   @Input() options: QuestionOptionDto[] = [];

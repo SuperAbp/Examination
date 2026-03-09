@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '@proxy/admin/controllers';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
@@ -18,6 +18,7 @@ import { RouterLink } from '@angular/router';
 })
 export class HeaderNotificationComponent implements OnInit {
   private readonly notificationService = inject(NotificationService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   unreadCount = 0;
 
@@ -29,6 +30,7 @@ export class HeaderNotificationComponent implements OnInit {
   loadUnreadCount() {
     this.notificationService.getUnreadCount().subscribe(count => {
       this.unreadCount = count;
+      this.cdr.detectChanges();
     });
   }
 

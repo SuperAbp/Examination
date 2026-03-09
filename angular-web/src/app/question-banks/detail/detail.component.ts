@@ -1,7 +1,7 @@
 import { CoreModule } from '@abp/ng.core';
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { forkJoin } from 'rxjs';
 import { QuestionBankService } from '@proxy/controllers';
 import { QuestionBankDetailDto } from '@proxy/question-management/question-banks';
@@ -10,7 +10,7 @@ import { QuestionBankDetailDto } from '@proxy/question-management/question-banks
   selector: 'app-question-banks-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
-  imports: [CoreModule, CommonModule],
+  imports: [CoreModule],
 })
 export class QuestionBanksDetailComponent implements OnInit {
   id: string;

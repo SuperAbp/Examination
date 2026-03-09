@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { CoreModule } from '@abp/ng.core';
 import { QuestionOptionDto } from '@proxy/question-management/questions';
 import { AnswerSubmission } from '@shared/components/choice-answer';
@@ -9,7 +9,7 @@ import { CharPipe } from '@shared/pipes/char/char.pipe';
   selector: 'app-multiple-choice',
   templateUrl: './multiple-choice.component.html',
   styleUrls: ['./multiple-choice.component.scss'],
-  imports: [CommonModule, CoreModule, CharPipe],
+  imports: [CoreModule, CharPipe],
 })
 export class MultipleChoiceComponent {
   @Input() options: QuestionOptionDto[] = [];
