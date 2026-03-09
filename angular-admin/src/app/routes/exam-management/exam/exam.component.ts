@@ -1,5 +1,5 @@
 import { CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
@@ -28,6 +28,7 @@ export class ExamManagementExamComponent implements OnInit {
   private permissionService = inject(PermissionService);
   private examService = inject(ExaminationService);
   private optionService = inject(OptionService);
+  private cdr = inject(ChangeDetectorRef);
   exams: ExamListDto[];
   total: number;
   loading = false;
@@ -199,10 +200,20 @@ export class ExamManagementExamComponent implements OnInit {
   }
   getList() {
     this.loading = true;
+    this.cdr.markForCheck();
     this.examService
       .getList(this.params)
-      .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => ((this.exams = response.items), (this.total = response.totalCount)));
+      .pipe(
+        tap(() => {
+          this.loading = false;
+          this.cdr.markForCheck();
+        })
+      )
+      .subscribe(response => {
+        this.exams = response.items;
+        this.total = response.totalCount;
+        this.cdr.detectChanges();
+      });
   }
   resetParameters(): GetExamsInput {
     return {

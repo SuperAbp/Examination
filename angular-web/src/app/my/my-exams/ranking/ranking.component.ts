@@ -1,6 +1,6 @@
 import { CoreModule, ConfigStateService } from '@abp/ng.core';
 import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ExaminationService } from '@proxy/controllers';
@@ -10,7 +10,7 @@ import { ExamRankingDto } from '@proxy/exam-management/exams';
   selector: 'app-exam-ranking',
   templateUrl: './ranking.component.html',
   styleUrls: ['./ranking.component.scss'],
-  imports: [CoreModule, CommonModule, NgxDatatableModule],
+  imports: [CoreModule, NgxDatatableModule],
 })
 export class ExamRankingComponent {
   private readonly examinationService = inject(ExaminationService);

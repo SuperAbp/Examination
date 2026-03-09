@@ -1,5 +1,5 @@
 import { CoreModule, LocalizationService } from '@abp/ng.core';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
@@ -97,6 +97,7 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
   private optionService = inject(OptionService);
   private messageService = inject(NzMessageService);
   private localizationService = inject(LocalizationService);
+  private cdr = inject(ChangeDetectorRef);
 
   paperId: string;
   paper: GetPaperForEditorOutput;
@@ -171,6 +172,7 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
               this.paper = response;
               this.buildForm();
               this.loading = false;
+              this.cdr.detectChanges();
             })
           )
           .subscribe();
@@ -178,6 +180,7 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
         this.paper = {} as GetPaperForEditorOutput;
         this.buildForm();
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -188,12 +191,14 @@ export class PaperManagementPaperRandomEditComponent implements OnInit {
       .pipe(
         tap(res => {
           this.questionBanks = res.items;
+          this.cdr.detectChanges();
         })
       )
       .subscribe();
 
     this.knowledgePointService.getAll({}).subscribe(res => {
       this.knowledgePoints = res.items;
+      this.cdr.detectChanges();
     });
   }
 

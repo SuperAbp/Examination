@@ -1,5 +1,5 @@
 import { CoreModule, LocalizationService, NgxValidateCoreModule } from '@abp/ng.core';
-import { Component, OnInit, Input, inject } from '@angular/core';
+import { Component, OnInit, Input, inject, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { I18NService } from '@core';
 import { dateTimePickerUtil, log } from '@delon/util';
@@ -76,6 +76,7 @@ export class ExamManagementExamEditComponent implements OnInit {
   private examService = inject(ExaminationService);
   private paperService = inject(PaperService);
   private optionService = inject(OptionService);
+  private cdr = inject(ChangeDetectorRef);
 
   init: EditorComponent['init'] = {
     base_url: '/tinymce',
@@ -113,6 +114,7 @@ export class ExamManagementExamEditComponent implements OnInit {
   disabledDate = (current: Date): boolean => dateTimePickerUtil.getDiffDays(current, new Date()) < 0;
   ngOnInit(): void {
     this.loading = true;
+    this.cdr.markForCheck();
 
     if (this.examId) {
       forkJoin({
@@ -139,9 +141,10 @@ export class ExamManagementExamEditComponent implements OnInit {
           }),
           finalize(() => {
             this.loading = false;
+            this.cdr.markForCheck();
           })
         )
-        .subscribe();
+        .subscribe(() => this.cdr.detectChanges());
     } else {
       forkJoin({
         answerModes: this.optionService.getAnswerModes(),
@@ -164,9 +167,10 @@ export class ExamManagementExamEditComponent implements OnInit {
           }),
           finalize(() => {
             this.loading = false;
+            this.cdr.markForCheck();
           })
         )
-        .subscribe();
+        .subscribe(() => this.cdr.detectChanges());
       this.exam = { answerMode: 0, reviewMode: 0 } as GetExamForEditorOutput;
     }
   }
@@ -207,6 +211,7 @@ export class ExamManagementExamEditComponent implements OnInit {
       .pipe(
         tap(res => {
           this.papers = res.items;
+          this.cdr.detectChanges();
         })
       )
       .subscribe();
@@ -249,8 +254,7 @@ export class ExamManagementExamEditComponent implements OnInit {
           tap(response => {
             this.messageService.success(this.localizationService.instant('Exam::SaveSuccessfully'));
             this.modal.close(true);
-          }),
-          finalize(() => (this.isConfirmLoading = false))
+          })
         )
         .subscribe();
     } else {
@@ -263,8 +267,7 @@ export class ExamManagementExamEditComponent implements OnInit {
           tap(response => {
             this.messageService.success(this.localizationService.instant('Exam::SaveSuccessfully'));
             this.modal.close(true);
-          }),
-          finalize(() => (this.isConfirmLoading = false))
+          })
         )
         .subscribe();
     }

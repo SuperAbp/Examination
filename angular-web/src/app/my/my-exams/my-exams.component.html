@@ -128,29 +128,21 @@
         [sortable]="false"
       >
         <ng-template ngx-datatable-cell-template let-row="row">
-          <button
-            *ngIf="(row.examStatus === 2 || row.examStatus === 3) && row.status === 3"
-            type="button"
-            class="btn btn-primary btn-sm me-1"
-            (click)="viewDetail(row.id)"
-          >
-            {{ '::Detail' | abpLocalization }}
-          </button>
-          <a
-            *ngIf="row.examStatus === 1 && row.status === 1"
-            class="btn btn-warning btn-sm me-1"
-            [href]="'/exams/start/' + row.id"
-          >
-            {{ '::Continue' | abpLocalization }}
-          </a>
-          <button
-            *ngIf="row.examStatus === 3"
-            type="button"
-            class="btn btn-primary btn-sm"
-            (click)="viewRanking(row.examId)"
-          >
-            {{ '::Ranking' | abpLocalization }}
-          </button>
+          @if ((row.examStatus === 2 || row.examStatus === 3) && row.status === 3) {
+            <button type="button" class="btn btn-primary btn-sm me-1" (click)="viewDetail(row.id)">
+              {{ '::Detail' | abpLocalization }}
+            </button>
+          }
+          @if (row.examStatus === 1 && row.status === 1) {
+            <a class="btn btn-warning btn-sm me-1" [href]="'/exams/start/' + row.id">
+              {{ '::Continue' | abpLocalization }}
+            </a>
+          }
+          @if (row.examStatus === 3) {
+            <button type="button" class="btn btn-primary btn-sm" (click)="viewRanking(row.examId)">
+              {{ '::Ranking' | abpLocalization }}
+            </button>
+          }
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>

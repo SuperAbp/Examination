@@ -1,5 +1,5 @@
 import { CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
@@ -27,6 +27,7 @@ export class QuestionManagementQuestionComponent implements OnInit {
   private questionBankService = inject(QuestionBankService);
   private knowledgePointService = inject(KnowledgePointService);
   private optionService = inject(OptionService);
+  private cdr = inject(ChangeDetectorRef);
 
   questions: QuestionListDto[];
   total: number;
@@ -176,10 +177,20 @@ export class QuestionManagementQuestionComponent implements OnInit {
   }
   getList() {
     this.loading = true;
+    this.cdr.markForCheck();
     this.questionService
       .getList(this.params)
-      .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => ((this.questions = response.items), (this.total = response.totalCount)));
+      .pipe(
+        tap(() => {
+          this.loading = false;
+          this.cdr.markForCheck();
+        })
+      )
+      .subscribe(response => {
+        this.questions = response.items;
+        this.total = response.totalCount;
+        this.cdr.detectChanges();
+      });
   }
   resetParameters(): GetQuestionsInput {
     return {

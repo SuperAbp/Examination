@@ -1,5 +1,5 @@
 import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema } from '@delon/form';
@@ -25,6 +25,7 @@ export class SysAnnouncementComponent implements OnInit {
   private messageService = inject(NzMessageService);
   private permissionService = inject(PermissionService);
   private announcementService = inject(AnnouncementService);
+  private cdr = inject(ChangeDetectorRef);
 
   announcements: any[];
   total: number;
@@ -141,10 +142,20 @@ export class SysAnnouncementComponent implements OnInit {
 
   getList() {
     this.loading = true;
+    this.cdr.markForCheck();
     this.announcementService
       .getList(this.params)
-      .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => ((this.announcements = response.items), (this.total = response.totalCount)));
+      .pipe(
+        tap(() => {
+          this.loading = false;
+          this.cdr.markForCheck();
+        })
+      )
+      .subscribe(response => {
+        this.announcements = response.items;
+        this.total = response.totalCount;
+        this.cdr.detectChanges();
+      });
   }
 
   resetParameters(): GetAnnouncementsInput {

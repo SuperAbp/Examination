@@ -1,5 +1,5 @@
 import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema, SFStringWidgetSchema } from '@delon/form';
@@ -23,19 +23,19 @@ export interface TreeNodeInterface extends KnowledgePointNodeDto {
 }
 
 @Component({
-    selector: 'app-sys-knowledge-point',
-    templateUrl: './knowledge-point.component.html',
-    imports: [
-        CoreModule,
-        PageHeaderModule,
-        DelonFormModule,
-        STModule,
-        NzCardModule,
-        NzButtonModule,
-        NzTableModule,
-        NzIconModule,
-        NzPopconfirmModule
-    ]
+  selector: 'app-sys-knowledge-point',
+  templateUrl: './knowledge-point.component.html',
+  imports: [
+    CoreModule,
+    PageHeaderModule,
+    DelonFormModule,
+    STModule,
+    NzCardModule,
+    NzButtonModule,
+    NzTableModule,
+    NzIconModule,
+    NzPopconfirmModule
+  ]
 })
 export class SysKnowledgePointComponent implements OnInit {
   private modal = inject(ModalHelper);
@@ -43,6 +43,7 @@ export class SysKnowledgePointComponent implements OnInit {
   private messageService = inject(NzMessageService);
   private permissionService = inject(PermissionService);
   private knowledgePointService = inject(KnowledgePointService);
+  private cdr = inject(ChangeDetectorRef);
 
   knowledgePoints: KnowledgePointNodeDto[];
   loading = false;
@@ -59,9 +60,15 @@ export class SysKnowledgePointComponent implements OnInit {
   }
   getList() {
     this.loading = true;
+    this.cdr.markForCheck();
     this.knowledgePointService
       .getAll(this.params)
-      .pipe(tap(() => (this.loading = false)))
+      .pipe(
+        tap(() => {
+          this.loading = false;
+          this.cdr.markForCheck();
+        })
+      )
       .subscribe(response => {
         this.knowledgePoints = response.items;
 
@@ -69,6 +76,7 @@ export class SysKnowledgePointComponent implements OnInit {
         this.knowledgePoints.forEach(item => {
           this.mapOfExpandedData[item.id] = this.convertTreeToList(item);
         });
+        this.cdr.detectChanges();
       });
   }
   convertTreeToList(root: KnowledgePointNodeDto): TreeNodeInterface[] {

@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { AnnouncementService } from '@proxy/controllers';
@@ -10,7 +10,7 @@ import { AnnouncementListDto } from '@proxy/announcements';
   selector: 'app-announcements',
   templateUrl: './announcements.component.html',
   styleUrls: ['./announcements.component.scss'],
-  imports: [CoreModule, CommonModule, NgbAlertModule, RouterLink],
+  imports: [CoreModule, NgbAlertModule, RouterLink],
   standalone: true,
 })
 export class AnnouncementsComponent implements OnInit {

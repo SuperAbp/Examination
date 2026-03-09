@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { UserExamService } from '@proxy/controllers';
 import { UserExamDetailDto } from '@proxy/exam-management/user-exams';
-import { DatePipe, CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { QuestionNumberComponent } from '@shared/components/question-number/question-number.component';
 import { SingleChoiceComponent } from '@shared/components/single-choice/single-choice.component';
 import { MultipleChoiceComponent } from '@shared/components/multiple-choice/multiple-choice.component';
@@ -17,7 +17,6 @@ import { QuestionNumber } from '@shared/components/question-number/question-numb
   styleUrls: ['./detail.component.scss'],
   imports: [
     CoreModule,
-    CommonModule,
     QuestionNumberComponent,
     SingleChoiceComponent,
     MultipleChoiceComponent,

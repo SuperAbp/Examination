@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { CoreModule } from '@abp/ng.core';
 import {
   UserExamDetailDto_SectionDto,
@@ -13,13 +13,7 @@ import { FillBlankComponent } from '@shared/components/fill-blank/fill-blank.com
   selector: 'app-full-paper',
   templateUrl: './full-paper.component.html',
   standalone: true,
-  imports: [
-    CommonModule,
-    CoreModule,
-    SingleChoiceComponent,
-    MultipleChoiceComponent,
-    FillBlankComponent,
-  ],
+  imports: [CoreModule, SingleChoiceComponent, MultipleChoiceComponent, FillBlankComponent],
 })
 export class FullPaperComponent {
   @Input() sections: UserExamDetailDto_SectionDto[] = [];

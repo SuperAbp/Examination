@@ -1,6 +1,6 @@
 import { CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
 import { Location } from '@angular/common';
-import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, Input, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
@@ -33,6 +33,7 @@ export class ExamManagementUserExamComponent implements OnInit {
   private messageService = inject(NzMessageService);
   private permissionService = inject(PermissionService);
   private userExamService = inject(UserExamService);
+  private cdr = inject(ChangeDetectorRef);
 
   userExams: UserExamListDto[];
   total: number;
@@ -83,8 +84,16 @@ export class ExamManagementUserExamComponent implements OnInit {
     this.loading = true;
     this.userExamService
       .getList(this.params)
-      .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => (this.userExams = response.items));
+      .pipe(
+        tap(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe(response => {
+        this.userExams = response.items;
+        this.cdr.detectChanges();
+      });
   }
   resetParameters(): GetUserExamsInput {
     return {

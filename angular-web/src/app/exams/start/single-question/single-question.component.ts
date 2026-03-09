@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { CoreModule } from '@abp/ng.core';
 import { UserExamDetailDto_SectionDto_QuestionDto } from '@proxy/exam-management/user-exams';
 import { SingleChoiceComponent } from '@shared/components/single-choice/single-choice.component';
@@ -11,13 +11,7 @@ import { AnswerSubmission } from '@shared/components/choice-answer';
   selector: 'app-single-question',
   templateUrl: './single-question.component.html',
   standalone: true,
-  imports: [
-    CommonModule,
-    CoreModule,
-    SingleChoiceComponent,
-    MultipleChoiceComponent,
-    FillBlankComponent,
-  ],
+  imports: [CoreModule, SingleChoiceComponent, MultipleChoiceComponent, FillBlankComponent],
 })
 export class SingleQuestionComponent {
   @Input() question!: UserExamDetailDto_SectionDto_QuestionDto;

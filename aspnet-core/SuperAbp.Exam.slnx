@@ -1,0 +1,34 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SuperAbp.Exam.AuthServer/SuperAbp.Exam.AuthServer.csproj" />
+    <Project Path="src/SuperAbp.Exam.BackgroundServices/SuperAbp.Exam.BackgroundServices.csproj" />
+    <Project Path="src/SuperAbp.Exam.DbMigrator/SuperAbp.Exam.DbMigrator.csproj" />
+  </Folder>
+  <Folder Name="/src/admin/">
+    <Project Path="src/SuperAbp.Exam.Admin.Application.Contracts/SuperAbp.Exam.Admin.Application.Contracts.csproj" />
+    <Project Path="src/SuperAbp.Exam.Admin.Application/SuperAbp.Exam.Admin.Application.csproj" />
+    <Project Path="src/SuperAbp.Exam.Admin.HttpApi.Host/SuperAbp.Exam.Admin.HttpApi.Host.csproj" />
+    <Project Path="src/SuperAbp.Exam.Admin.HttpApi/SuperAbp.Exam.Admin.HttpApi.csproj" />
+  </Folder>
+  <Folder Name="/src/domain/">
+    <Project Path="src/SuperAbp.Exam.Domain.Shared/SuperAbp.Exam.Domain.Shared.csproj" />
+    <Project Path="src/SuperAbp.Exam.Domain/SuperAbp.Exam.Domain.csproj" />
+    <Project Path="src/SuperAbp.Exam.EntityFrameworkCore/SuperAbp.Exam.EntityFrameworkCore.csproj" />
+  </Folder>
+  <Folder Name="/src/public/">
+    <Project Path="src/SuperAbp.Exam.Application.Contracts/SuperAbp.Exam.Application.Contracts.csproj" />
+    <Project Path="src/SuperAbp.Exam.Application/SuperAbp.Exam.Application.csproj" />
+    <Project Path="src/SuperAbp.Exam.HttpApi.Host/SuperAbp.Exam.HttpApi.Host.csproj" />
+    <Project Path="src/SuperAbp.Exam.HttpApi/SuperAbp.Exam.HttpApi.csproj" />
+  </Folder>
+  <Folder Name="/src/shared/">
+    <Project Path="src/SuperAbp.Exam.Application.Contracts.Shared/SuperAbp.Exam.Application.Contracts.Shared.csproj" />
+    <Project Path="src/SuperAbp.Exam.Application.Shared/SuperAbp.Exam.Application.Shared.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/SuperAbp.Exam.Application.Tests/SuperAbp.Exam.Application.Tests.csproj" />
+    <Project Path="test/SuperAbp.Exam.Domain.Tests/SuperAbp.Exam.Domain.Tests.csproj" />
+    <Project Path="test/SuperAbp.Exam.EntityFrameworkCore.Tests/SuperAbp.Exam.EntityFrameworkCore.Tests.csproj" />
+    <Project Path="test/SuperAbp.Exam.TestBase/SuperAbp.Exam.TestBase.csproj" />
+  </Folder>
+</Solution>

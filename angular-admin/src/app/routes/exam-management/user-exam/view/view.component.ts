@@ -1,6 +1,6 @@
 import { CoreModule } from '@abp/ng.core';
 import { Location } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
@@ -43,7 +43,7 @@ import { QuestionNumber, QuestionNumberItem } from 'src/app/shared/components/qu
 export class ExamManagementUserExamViewComponent implements OnInit {
   userExamId: string;
   userExam: UserExamDetailDto;
-  loading: boolean;
+  loading: boolean = true;
   chineseNumber = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
   form: FormGroup = null;
   isConfirmLoading = false;
@@ -53,6 +53,7 @@ export class ExamManagementUserExamViewComponent implements OnInit {
   private messageService = inject(NzMessageService);
   private userExamService = inject(UserExamService);
   private fb = inject(FormBuilder);
+  private cdr = inject(ChangeDetectorRef);
 
   get questionForm(): FormArray {
     return this.form.get('questions') as FormArray;
@@ -103,13 +104,13 @@ export class ExamManagementUserExamViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loading = true;
     this.userExamId = this.route.snapshot.paramMap.get('id');
     this.userExamService.get(this.userExamId).subscribe(result => {
       this.userExam = result;
-      this.loading = false;
 
       this.buildForm();
+      this.loading = false;
+      this.cdr.detectChanges();
     });
   }
 
@@ -117,6 +118,7 @@ export class ExamManagementUserExamViewComponent implements OnInit {
     this.form = this.fb.group({
       questions: this.fb.array([])
     });
+
     this.sections
       .flatMap(s => s.questions)
       .filter(q => q.questionType == 3)
@@ -128,7 +130,6 @@ export class ExamManagementUserExamViewComponent implements OnInit {
           reason: [q.reason]
         });
         this.questionForm.push(questionForm);
-        console.log('questionForm', questionForm);
       });
   }
 
@@ -151,6 +152,7 @@ export class ExamManagementUserExamViewComponent implements OnInit {
           this.userExamService.get(this.userExamId).subscribe(result => {
             this.userExam = result;
             this.buildForm();
+            this.cdr.detectChanges();
           });
         }),
         finalize(() => (this.isConfirmLoading = false))

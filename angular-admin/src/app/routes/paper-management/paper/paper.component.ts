@@ -1,5 +1,5 @@
 import { CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STData, STModule, STPage } from '@delon/abc/st';
@@ -15,9 +15,9 @@ import { tap } from 'rxjs';
 import { ExamManagementExamEditComponent } from '../../exam-management/exam/edit/edit.component';
 
 @Component({
-    selector: 'app-exam-management-paper',
-    templateUrl: './paper.component.html',
-    imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
+  selector: 'app-exam-management-paper',
+  templateUrl: './paper.component.html',
+  imports: [CoreModule, PageHeaderModule, DelonFormModule, STModule, NzCardModule, NzButtonModule]
 })
 export class PaperManagementPaperComponent implements OnInit {
   private router = inject(Router);
@@ -26,6 +26,7 @@ export class PaperManagementPaperComponent implements OnInit {
   private messageService = inject(NzMessageService);
   private permissionService = inject(PermissionService);
   private paperService = inject(PaperService);
+  private cdr = inject(ChangeDetectorRef);
   papers: PaperListDto[];
   total: number;
   loading = false;
@@ -110,10 +111,20 @@ export class PaperManagementPaperComponent implements OnInit {
   }
   getList() {
     this.loading = true;
+    this.cdr.markForCheck();
     this.paperService
       .getList(this.params)
-      .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => ((this.papers = response.items), (this.total = response.totalCount)));
+      .pipe(
+        tap(() => {
+          this.loading = false;
+          this.cdr.markForCheck();
+        })
+      )
+      .subscribe(response => {
+        this.papers = response.items;
+        this.total = response.totalCount;
+        this.cdr.detectChanges();
+      });
   }
   resetParameters(): GetPapersInput {
     return {

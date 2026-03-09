@@ -1,5 +1,5 @@
 import { ConfigStateService, CoreModule, LocalizationService, PermissionService } from '@abp/ng.core';
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { STChange, STColumn, STComponent, STModule, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema } from '@delon/form';
@@ -24,6 +24,7 @@ export class QuestionManagementQuestionBankComponent implements OnInit {
   private messageService = inject(NzMessageService);
   private permissionService = inject(PermissionService);
   private repositoryService = inject(QuestionBankService);
+  private cdr = inject(ChangeDetectorRef);
 
   questionBanks: QuestionBankListDto[];
   total: number;
@@ -100,8 +101,17 @@ export class QuestionManagementQuestionBankComponent implements OnInit {
     this.loading = true;
     this.repositoryService
       .getList(this.params)
-      .pipe(tap(() => (this.loading = false)))
-      .subscribe(response => ((this.questionBanks = response.items), (this.total = response.totalCount)));
+      .pipe(
+        tap(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe(response => {
+        this.questionBanks = response.items;
+        this.total = response.totalCount;
+        this.cdr.detectChanges();
+      });
   }
   resetParameters(): GetQuestionBanksInput {
     return {

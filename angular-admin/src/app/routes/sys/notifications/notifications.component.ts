@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { STComponent, STColumn, STData, STModule, STChange, STPage } from '@delon/abc/st';
 import { DelonFormModule, SFSchema } from '@delon/form';
 import { NotificationService } from '@proxy/admin/controllers';
@@ -19,6 +19,7 @@ export class SysNotificationsComponent implements OnInit {
   private notificationService = inject(NotificationService);
   private message = inject(NzMessageService);
   private localizationService = inject(LocalizationService);
+  private cdr = inject(ChangeDetectorRef);
 
   loading = false;
   notifications: NotificationMyListDto[] = [];
@@ -135,12 +136,14 @@ export class SysNotificationsComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.loading = false;
+          this.cdr.detectChanges();
         })
       )
       .subscribe({
         next: res => {
           this.notifications = res.items || [];
           this.total = res.totalCount || 0;
+          this.cdr.detectChanges();
         },
         error: err => {
           console.error('Failed to load notifications:', err);
@@ -153,6 +156,7 @@ export class SysNotificationsComponent implements OnInit {
     this.notificationService.getUnreadCount().subscribe({
       next: count => {
         this.unreadCount = count;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -164,6 +168,7 @@ export class SysNotificationsComponent implements OnInit {
         notification.isRead = true;
         this.unreadCount--;
         this.message.success('Marked as read');
+        this.cdr.detectChanges();
         this.getList();
       },
       error: err => {
@@ -177,6 +182,7 @@ export class SysNotificationsComponent implements OnInit {
     this.notificationService.markAllAsRead().subscribe(() => {
       this.notifications.forEach(n => (n.isRead = true));
       this.unreadCount = 0;
+      this.cdr.detectChanges();
     });
   }
 
