@@ -1,5 +1,5 @@
 import { CoreModule } from '@abp/ng.core';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QuestionDetailDto } from '@proxy/admin/question-management/questions';
 import { SharedModule } from '@shared';
@@ -18,10 +18,10 @@ export class questionTest {
   items: QuestionDetailDto[];
 }
 @Component({
-    selector: 'app-exam-management-paper-edit',
-    templateUrl: './edit.component.html',
-    styles: [
-        `
+  selector: 'app-exam-management-paper-edit',
+  templateUrl: './edit.component.html',
+  styles: [
+    `
       [nz-radio] {
         display: block;
         height: 32px;
@@ -40,17 +40,19 @@ export class questionTest {
         border-radius: 4px;
       }
     `
-    ],
-    imports: [SharedModule, CoreModule, PaperManagementPaperFixEditComponent, PaperManagementPaperRandomEditComponent]
+  ],
+  imports: [SharedModule, CoreModule, PaperManagementPaperFixEditComponent, PaperManagementPaperRandomEditComponent]
 })
 export class PaperManagementPaperEditComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private cdr = inject(ChangeDetectorRef);
 
   model: number;
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.model = +params['model'];
+      this.cdr.detectChanges();
     });
   }
 }

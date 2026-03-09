@@ -1,5 +1,5 @@
 import { CoreModule, LocalizationService } from '@abp/ng.core';
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { QuestionBankService } from '@proxy/admin/controllers';
 import { GetQuestionBankForEditorOutput } from '@proxy/admin/question-management/question-banks';
@@ -12,9 +12,9 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, tap } from 'rxjs/operators';
 
 @Component({
-    selector: 'app-question-management-question-bank-edit',
-    templateUrl: './edit.component.html',
-    imports: [CoreModule, NzSpinModule, NzModalModule, NzFormModule, NzInputModule, NzButtonModule]
+  selector: 'app-question-management-question-bank-edit',
+  templateUrl: './edit.component.html',
+  imports: [CoreModule, NzSpinModule, NzModalModule, NzFormModule, NzInputModule, NzButtonModule]
 })
 export class QuestionManagementQuestionBankEditComponent implements OnInit {
   @Input()
@@ -31,11 +31,13 @@ export class QuestionManagementQuestionBankEditComponent implements OnInit {
     private modal: NzModalRef,
     private messageService: NzMessageService,
     private localizationService: LocalizationService,
-    private questionBankService: QuestionBankService
+    private questionBankService: QuestionBankService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loading = true;
+    this.cdr.markForCheck();
     if (this.repositoryId) {
       this.questionBankService
         .getEditor(this.repositoryId)
@@ -44,13 +46,15 @@ export class QuestionManagementQuestionBankEditComponent implements OnInit {
             this.questionBank = response;
             this.buildForm();
             this.loading = false;
+            this.cdr.markForCheck();
           })
         )
-        .subscribe();
+        .subscribe(() => this.cdr.detectChanges());
     } else {
       this.questionBank = {} as GetQuestionBankForEditorOutput;
       this.buildForm();
       this.loading = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -81,8 +85,7 @@ export class QuestionManagementQuestionBankEditComponent implements OnInit {
           tap(response => {
             this.messageService.success(this.localizationService.instant('Exam::SaveSuccessfully'));
             this.modal.close(true);
-          }),
-          finalize(() => (this.isConfirmLoading = false))
+          })
         )
         .subscribe();
     } else {
@@ -94,8 +97,7 @@ export class QuestionManagementQuestionBankEditComponent implements OnInit {
           tap(response => {
             this.messageService.success(this.localizationService.instant('Exam::SaveSuccessfully'));
             this.modal.close(true);
-          }),
-          finalize(() => (this.isConfirmLoading = false))
+          })
         )
         .subscribe();
     }

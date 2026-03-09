@@ -1,5 +1,5 @@
 import { CoreModule } from '@abp/ng.core';
-import { Component, OnInit, Input, inject } from '@angular/core';
+import { Component, OnInit, Input, inject, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 import { PageHeaderModule } from '@delon/abc/page-header';
@@ -16,20 +16,20 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { finalize, tap } from 'rxjs/operators';
 
 @Component({
-    selector: 'app-sys-knowledge-point-edit',
-    templateUrl: './edit.component.html',
-    imports: [
-        CoreModule,
-        PageHeaderModule,
-        FooterToolbarModule,
-        NzSpinModule,
-        NzCardModule,
-        NzGridModule,
-        NzFormModule,
-        NzSelectModule,
-        NzInputModule,
-        NzButtonModule
-    ]
+  selector: 'app-sys-knowledge-point-edit',
+  templateUrl: './edit.component.html',
+  imports: [
+    CoreModule,
+    PageHeaderModule,
+    FooterToolbarModule,
+    NzSpinModule,
+    NzCardModule,
+    NzGridModule,
+    NzFormModule,
+    NzSelectModule,
+    NzInputModule,
+    NzButtonModule
+  ]
 })
 export class SysKnowledgePointEditComponent implements OnInit {
   @Input()
@@ -46,9 +46,11 @@ export class SysKnowledgePointEditComponent implements OnInit {
   private fb = inject(FormBuilder);
   private modal = inject(NzModalRef);
   private knowledgePointService = inject(KnowledgePointService);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.loading = true;
+    this.cdr.markForCheck();
     if (this.knowledgePointId) {
       this.knowledgePointService
         .getEditor(this.knowledgePointId)
@@ -57,13 +59,15 @@ export class SysKnowledgePointEditComponent implements OnInit {
             this.knowledgePoint = response;
             this.buildForm();
             this.loading = false;
+            this.cdr.markForCheck();
           })
         )
-        .subscribe();
+        .subscribe(() => this.cdr.detectChanges());
     } else {
       this.knowledgePoint = { parentId: this.parentId } as GetKnowledgePointForEditorOutput;
       this.buildForm();
       this.loading = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -93,8 +97,7 @@ export class SysKnowledgePointEditComponent implements OnInit {
         .pipe(
           tap(response => {
             this.modal.close(true);
-          }),
-          finalize(() => (this.isConfirmLoading = false))
+          })
         )
         .subscribe();
     } else {
@@ -105,8 +108,7 @@ export class SysKnowledgePointEditComponent implements OnInit {
         .pipe(
           tap(response => {
             this.modal.close(true);
-          }),
-          finalize(() => (this.isConfirmLoading = false))
+          })
         )
         .subscribe();
     }

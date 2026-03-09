@@ -128,24 +128,20 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
     return this.form.get('fixedOrder').value;
   }
   buildForm() {
-    this.questionBankService
-      .getList({ skipCount: 0, maxResultCount: 100 })
+    forkJoin({
+      questionBanks: this.questionBankService.getList({ skipCount: 0, maxResultCount: 100 }),
+      questionTypes: this.optionService.getQuestionTypes()
+    })
       .pipe(
-        tap(res => {
-          this.optionService
-            .getQuestionTypes()
-            .pipe(
-              map(res => {
-                Object.keys(res).forEach(key => {
-                  this.questionTypes.push({
-                    label: this.localizationService.instant(`Exam::QuestionType:${key}`),
-                    value: +key
-                  });
-                });
-              })
-            )
-            .subscribe();
-          this.questionBanks = res.items;
+        tap(({ questionBanks, questionTypes }) => {
+          Object.keys(questionTypes).forEach(key => {
+            this.questionTypes.push({
+              label: this.localizationService.instant(`Exam::QuestionType:${key}`),
+              value: +key
+            });
+          });
+
+          this.questionBanks = questionBanks.items;
 
           this.form = this.fb.group({
             content: [this.question.content || '', [Validators.required]],
@@ -157,7 +153,6 @@ export class QuestionManagementQuestionEditComponent implements OnInit {
             requiredAnswerCount: [this.question.requiredAnswerCount || 1, [Validators.min(1)]],
             options: this.fb.array([], [Validators.required])
           });
-          // 修复 ExpressionChangedAfterItHasBeenCheckedError
           this.cdr.detectChanges();
         })
       )

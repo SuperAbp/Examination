@@ -1,5 +1,5 @@
 import { CoreModule, LocalizationService } from '@abp/ng.core';
-import { Component, OnInit, Input, inject } from '@angular/core';
+import { Component, OnInit, Input, inject, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { I18NService } from '@core';
 import { AnnouncementService, AnnouncementCategoryService } from '@proxy/admin/controllers';
@@ -63,6 +63,7 @@ export class SysAnnouncementEditComponent implements OnInit {
   private announcementService = inject(AnnouncementService);
   private categoryService = inject(AnnouncementCategoryService);
   private i18n = inject(I18NService);
+  private cdr = inject(ChangeDetectorRef);
 
   constructor() {
     if (this.i18n.defaultLang === 'zh-CN') {
@@ -81,8 +82,10 @@ export class SysAnnouncementEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
+    this.cdr.markForCheck();
     this.categoryService.getList().subscribe(response => {
       this.categories = response.items;
+      this.cdr.detectChanges();
     });
 
     if (this.announcementId) {
@@ -93,9 +96,10 @@ export class SysAnnouncementEditComponent implements OnInit {
             this.announcement = response;
             this.buildForm();
             this.loading = false;
+            this.cdr.markForCheck();
           })
         )
-        .subscribe();
+        .subscribe(() => this.cdr.detectChanges());
     } else {
       this.announcement = {
         title: '',
@@ -109,6 +113,7 @@ export class SysAnnouncementEditComponent implements OnInit {
       } as AnnouncementDetailDto;
       this.buildForm();
       this.loading = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -122,12 +127,28 @@ export class SysAnnouncementEditComponent implements OnInit {
       categoryId: [this.announcement?.categoryId || null]
     });
 
+    this.updateContentDisabledState();
+
     this.form.get('scheduledPublishTime').valueChanges.subscribe(() => {
       const scheduledExpirationTimeControl = this.form.get('scheduledExpirationTime');
       if (scheduledExpirationTimeControl) {
         scheduledExpirationTimeControl.updateValueAndValidity();
       }
     });
+  }
+
+  /**
+   * 根据 canSave 状态更新 content 表单控件的启用/禁用状态
+   */
+  private updateContentDisabledState(): void {
+    const contentControl = this.form.get('content');
+    if (contentControl) {
+      if (this.canSave) {
+        contentControl.enable();
+      } else {
+        contentControl.disable();
+      }
+    }
   }
 
   save(publish: boolean = false) {
@@ -175,8 +196,7 @@ export class SysAnnouncementEditComponent implements OnInit {
           tap(() => {
             this.messageService.success(this.localizationService.instant('Exam::SaveSuccessfully'));
             this.modal.close(true);
-          }),
-          finalize(() => (this.isConfirmLoading = false))
+          })
         )
         .subscribe();
     } else {
@@ -186,8 +206,7 @@ export class SysAnnouncementEditComponent implements OnInit {
           tap(() => {
             this.messageService.success(this.localizationService.instant('Exam::SaveSuccessfully'));
             this.modal.close(true);
-          }),
-          finalize(() => (this.isConfirmLoading = false))
+          })
         )
         .subscribe();
     }

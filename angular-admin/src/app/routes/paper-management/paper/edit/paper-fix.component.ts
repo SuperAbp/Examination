@@ -1,5 +1,5 @@
 import { CoreModule } from '@abp/ng.core';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
@@ -66,6 +66,7 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
   private router = inject(Router);
   private paperService = inject(PaperService);
   private questionService = inject(QuestionService);
+  private cdr = inject(ChangeDetectorRef);
   paperId: string;
   paper: GetPaperForEditorOutput;
 
@@ -106,6 +107,7 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
               this.getQuesions(this.questionIds);
               this.buildForm();
               this.loading = false;
+              this.cdr.detectChanges();
             })
           )
           .subscribe();
@@ -113,6 +115,7 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
         this.paper = {} as GetPaperForEditorOutput;
         this.buildForm();
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -124,7 +127,6 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
       paperType: [0],
       sections: this.fb.array((this.paper.sections || []).map(s => this.createSection(s)))
     });
-    console.log(this.form.value);
   }
   createSection(section?: PaperCreateOrUpdateDtoBase_PaperSectionDto) {
     return this.fb.group({
@@ -158,6 +160,7 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
       .pipe(
         tap(res => {
           res.forEach(q => this.questionDetails.set(q.id, q));
+          this.cdr.detectChanges();
         })
       )
       .subscribe();
@@ -180,6 +183,7 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
             }
             this.questionIds = [...this.questionIds, ...selectedQuestionIds];
             this.recomputeTotal();
+            this.cdr.detectChanges();
           })
         )
         .subscribe();
@@ -209,6 +213,7 @@ export class PaperManagementPaperFixEditComponent implements OnInit {
             }
             this.questionIds = [...this.questionIds, ...res.map(x => x.id)];
             this.recomputeTotal();
+            this.cdr.detectChanges();
           })
         )
         .subscribe();

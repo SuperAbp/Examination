@@ -2666,31 +2666,31 @@
   resolved "https://registry.yarnpkg.com/@standard-schema/spec/-/spec-1.1.0.tgz#a79b55dbaf8604812f52d140b2c9ab41bc150bb8"
   integrity sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==
 
-"@super-abp/ng.identity@~0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@super-abp/ng.identity/-/ng.identity-0.7.1.tgz#ceba60edb78366b8677a03019cfa895ec50acbbd"
-  integrity sha512-KkfJYWhlmx0mQHc6ZVPxGS5v0ygXOcCWuES3lwHgqs8XT9cO/EdEv+b4Is2c2DtPdWJC4DzezH9Rsfi6IZ2voA==
+"@super-abp/ng.identity@~0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@super-abp/ng.identity/-/ng.identity-0.8.0.tgz#9a4e6323dd44dbcaa2014d647cc7d3f5e97508a1"
+  integrity sha512-khbhnoqGuxjvsKcUBdWrjyncRyt+LuLaWKZF4Yg0BejnkW6CjOFQMcSdCAd4RoT1509P49DWQ1ex0+OhTrj3mw==
   dependencies:
     tslib "^2.3.0"
 
-"@super-abp/ng.menu-management@~0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@super-abp/ng.menu-management/-/ng.menu-management-0.7.0.tgz#57b1711a0f89f952a5e416f735bd98f0c20f6c0d"
-  integrity sha512-oFhvRT1VykUGHNW83IURVxgaa3UpJmvMzcrx2a2TNBMs/bgStLyqPDgQxop/hVdpbbsYZfwgCdvMDImiQ4s29A==
+"@super-abp/ng.menu-management@~0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@super-abp/ng.menu-management/-/ng.menu-management-0.8.0.tgz#96b2cc0f5746e4aaada666dad6632f0ef8035f0c"
+  integrity sha512-cPXDVKBsRUe6qVPz0RXz4yfyLvQp/Rrt6oUJSJ23UScW9gHnopfyrs8LTrXEtDek0u25qQPbJlEvb50NkBd7VQ==
   dependencies:
     tslib "^2.3.0"
 
-"@super-abp/ng.permission-management@~0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@super-abp/ng.permission-management/-/ng.permission-management-0.7.0.tgz#484a6c181bfa5f1929cec634d9c0acacb0b7e4d2"
-  integrity sha512-F9WhOoxGzoTQtlSzEyMj2UAS/FYrMiPo6G+uOr17NEk2cnvr6AU26XFNDpp9/HQO47fmTuME6olMslE1ts/JVg==
+"@super-abp/ng.permission-management@~0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@super-abp/ng.permission-management/-/ng.permission-management-0.8.0.tgz#91d202b40c60ae9627a3b5da6294af74a6bc0c0c"
+  integrity sha512-+BGZQjX7s0l9XCp87ZZH7XQ00hztVgbsKXqPBSjPeWVogWvmYnC3nA2vPxijL5KRgwXE2YzfxSmcTNM/O13ktg==
   dependencies:
     tslib "^2.3.0"
 
-"@super-abp/ng.tenant-management@~0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@super-abp/ng.tenant-management/-/ng.tenant-management-0.7.0.tgz#fc71cd19546a1251bf9a35ab13f4dacabe4a9725"
-  integrity sha512-QvPbKTvkcTtkNalYJtwBzwOOed+orPG43puJv+RDaL1INf9tlXjmSEUz/A68HC2b7Gu8SsB6WFwD0HTiKDCDLw==
+"@super-abp/ng.tenant-management@~0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@super-abp/ng.tenant-management/-/ng.tenant-management-0.8.0.tgz#ab9f05644b32542ee3298b55d5ab0a5ace92c016"
+  integrity sha512-BVZ0IvKTLo1CRxOL5tdWCtizP8qn7E9aw6pqnXsiU/zKv0inmkNDHKm7JDwhvXfV7bW1MfedmZxRugUk1aA42A==
   dependencies:
     tslib "^2.3.0"
 
