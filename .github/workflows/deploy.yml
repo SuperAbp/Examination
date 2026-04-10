@@ -77,7 +77,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            rm -rf /var/www/deploy/${{ needs.build.outputs.tag }}
+            rm -rf /var/www/exam/deploy/${{ needs.build.outputs.tag }}
 
       - name: Upload compressed file
         uses: appleboy/scp-action@v0.1.4
@@ -86,7 +86,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "deploy.tar.gz"
-          target: "/var/www/deploy/${{ needs.build.outputs.tag }}"
+          target: "/var/www/exam/deploy/${{ needs.build.outputs.tag }}"
 
       - name: Extract file on server
         uses: appleboy/ssh-action@v0.1.7
@@ -95,7 +95,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /var/www/deploy/${{ needs.build.outputs.tag }}
+            cd /var/www/exam/deploy/${{ needs.build.outputs.tag }}
             tar -xzvf deploy.tar.gz
             rm deploy.tar.gz
 
@@ -108,4 +108,4 @@ jobs:
           envs: CONNECTIONSTRINGS__DEFAULT
           script: |
             export CONNECTIONSTRINGS__DEFAULT="${{ secrets.CONNECTIONSTRINGS__DEFAULT }}"
-            /var/www/deploy.sh ${{ needs.build.outputs.tag }}
+            /var/www/exam/deploy.sh ${{ needs.build.outputs.tag }}
