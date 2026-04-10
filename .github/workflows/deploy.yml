@@ -50,6 +50,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+
       - name: Download backend artifacts
         uses: actions/download-artifact@v4
         with:

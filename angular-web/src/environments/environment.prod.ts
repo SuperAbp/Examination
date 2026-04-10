@@ -1,14 +1,14 @@
 import { Environment } from '@abp/ng.core';
 
-const baseUrl = 'http://localhost:4200';
+const baseUrl = 'https://examimg.superabp.com';
 
 const oAuthConfig = {
-  issuer: 'https://localhost:44398/',
+  issuer: 'https://auth-examimg.superabp.com/',
   redirectUri: baseUrl,
   clientId: 'Exam_App',
   responseType: 'code',
   scope: 'offline_access Exam',
-  requireHttps: true,
+  requireHttps: false,
 };
 
 export const environment = {
@@ -20,7 +20,7 @@ export const environment = {
   oAuthConfig,
   apis: {
     default: {
-      url: 'https://localhost:44398',
+      url: 'https://api-examimg.superabp.com',
       rootNamespace: 'SuperAbp.Exam',
     },
     AbpAccountPublic: {
@@ -30,6 +30,6 @@ export const environment = {
   },
   remoteEnv: {
     url: '/getEnvConfig',
-    mergeStrategy: 'deepmerge'
-  }
+    mergeStrategy: 'deepmerge',
+  },
 } as Environment;
