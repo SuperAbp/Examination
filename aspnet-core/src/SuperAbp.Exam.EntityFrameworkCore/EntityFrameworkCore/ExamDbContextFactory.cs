@@ -13,13 +13,12 @@ public class ExamDbContextFactory : IDesignTimeDbContextFactory<ExamDbContext>
 {
     public ExamDbContext CreateDbContext(string[] args)
     {
-        ExamEfCoreEntityExtensionMappings.Configure();
-
         var configuration = BuildConfiguration();
 
-        string connectionString = configuration.GetConnectionString("Default") ?? String.Empty;
+        ExamEfCoreEntityExtensionMappings.Configure();
+
         var builder = new DbContextOptionsBuilder<ExamDbContext>()
-            .UseSqlServer(connectionString);
+            .UseNpgsql(configuration.GetConnectionString("Default"));
 
         return new ExamDbContext(builder.Options);
     }
@@ -28,7 +27,8 @@ public class ExamDbContextFactory : IDesignTimeDbContextFactory<ExamDbContext>
     {
         var builder = new ConfigurationBuilder()
             .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../SuperAbp.Exam.DbMigrator/"))
-            .AddJsonFile("appsettings.json", optional: false);
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddEnvironmentVariables();
 
         return builder.Build();
     }

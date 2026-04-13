@@ -59,8 +59,8 @@ public class ExamHttpApiHostModule : AbpModule
             string connectionString = configuration.GetConnectionString("Default") ?? "";
             options.InputQueueName = "exam-eventbus-admin";
             options.Configurer = configure => configure
-            .Transport(t => t.UseSqlServer(connectionString, "exam-eventbus-admin"))
-            .Subscriptions(t => t.StoreInSqlServer(connectionString, "Subscriptions", isCentralized: true)); ;
+            .Transport(t => t.UsePostgreSql(connectionString, "Transports", "exam-eventbus-admin"))
+            .Subscriptions(t => t.StoreInPostgres(connectionString, "Subscriptions", isCentralized: true));
         });
     }
 
