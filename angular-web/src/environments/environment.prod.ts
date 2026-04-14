@@ -8,7 +8,7 @@ const oAuthConfig = {
   clientId: 'Exam_App',
   responseType: 'code',
   scope: 'offline_access Exam',
-  requireHttps: false,
+  requireHttps: true,
 };
 
 export const environment = {
