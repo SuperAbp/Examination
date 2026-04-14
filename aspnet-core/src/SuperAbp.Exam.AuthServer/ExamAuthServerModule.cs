@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenIddict.Server.AspNetCore;
@@ -189,6 +190,17 @@ public class ExamAuthServerModule : AbpModule
         {
             app.UseDeveloperExceptionPage();
         }
+
+        // Configure forwarded headers for Cloudflare Tunnel
+        // Cloudflare forwards: X-Forwarded-For, X-Forwarded-Host, X-Forwarded-Proto
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+            // Only accept from Cloudflare (or remove this line to accept all proxies)
+            // KnownProxies = { IPAddress.Parse("173.245.48.0/20"), /* Add Cloudflare IP ranges */ }
+            // Allow all forwarded headers (for development with Cloudflare Tunnel)
+            RequireHeaderSymmetry = false
+        });
 
         app.UseAbpRequestLocalization();
 
