@@ -20,7 +20,7 @@ export const environment = {
     clientId: 'Exam_Admin_App',
     responseType: 'code',
     scope: 'offline_access Exam',
-    requireHttps: false
+    requireHttps: true
   },
   apis: {
     default: {
