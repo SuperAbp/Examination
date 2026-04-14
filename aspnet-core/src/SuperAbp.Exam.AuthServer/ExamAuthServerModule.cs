@@ -4,12 +4,10 @@ using Medallion.Threading.Redis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OpenIddict.Server.AspNetCore;
 using StackExchange.Redis;
 using SuperAbp.Exam.EntityFrameworkCore;
 using SuperAbp.Exam.Localization;
@@ -204,18 +202,17 @@ public class ExamAuthServerModule : AbpModule
 
         if (cloudflareEnabled)
         {
-            // Configure Cloudflare IP ranges from configuration
             var ipv4Ranges = configuration.GetSection("Cloudflare:IPv4Ranges").Get<string[]>() ?? Array.Empty<string>();
             var ipv6Ranges = configuration.GetSection("Cloudflare:IPv6Ranges").Get<string[]>() ?? Array.Empty<string>();
 
             foreach (var range in ipv4Ranges)
             {
-                forwardedHeadersOptions.KnownNetworks.Add(IPNetwork.Parse(range));
+                forwardedHeadersOptions.KnownIPNetworks.Add(System.Net.IPNetwork.Parse(range));
             }
 
             foreach (var range in ipv6Ranges)
             {
-                forwardedHeadersOptions.KnownNetworks.Add(IPNetwork.Parse(range));
+                forwardedHeadersOptions.KnownIPNetworks.Add(System.Net.IPNetwork.Parse(range));
             }
         }
 
