@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenIddict.Server.AspNetCore;
@@ -16,6 +17,7 @@ using SuperAbp.Exam.MultiTenancy;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Localization;
@@ -185,6 +187,7 @@ public class ExamAuthServerModule : AbpModule
     {
         var app = context.GetApplicationBuilder();
         var env = context.GetEnvironment();
+        var configuration = context.GetConfiguration();
 
         if (env.IsDevelopment())
         {
@@ -192,15 +195,31 @@ public class ExamAuthServerModule : AbpModule
         }
 
         // Configure forwarded headers for Cloudflare Tunnel
-        // Cloudflare forwards: X-Forwarded-For, X-Forwarded-Host, X-Forwarded-Proto
-        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        var cloudflareEnabled = configuration.GetValue<bool>("Cloudflare:Enabled", false);
+        var forwardedHeadersOptions = new ForwardedHeadersOptions
         {
             ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-            // Only accept from Cloudflare (or remove this line to accept all proxies)
-            // KnownProxies = { IPAddress.Parse("173.245.48.0/20"), /* Add Cloudflare IP ranges */ }
-            // Allow all forwarded headers (for development with Cloudflare Tunnel)
             RequireHeaderSymmetry = false
-        });
+        };
+
+        if (cloudflareEnabled)
+        {
+            // Configure Cloudflare IP ranges from configuration
+            var ipv4Ranges = configuration.GetSection("Cloudflare:IPv4Ranges").Get<string[]>() ?? Array.Empty<string>();
+            var ipv6Ranges = configuration.GetSection("Cloudflare:IPv6Ranges").Get<string[]>() ?? Array.Empty<string>();
+
+            foreach (var range in ipv4Ranges)
+            {
+                forwardedHeadersOptions.KnownNetworks.Add(IPNetwork.Parse(range));
+            }
+
+            foreach (var range in ipv6Ranges)
+            {
+                forwardedHeadersOptions.KnownNetworks.Add(IPNetwork.Parse(range));
+            }
+        }
+
+        app.UseForwardedHeaders(forwardedHeadersOptions);
 
         app.UseAbpRequestLocalization();
 
