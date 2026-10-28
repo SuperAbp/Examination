@@ -37,19 +37,19 @@ using Volo.Abp.VirtualFileSystem;
 namespace SuperAbp.Exam.Admin;
 
 [DependsOn(
-    typeof(ExamHttpApiModule),
+    typeof(ExamAdminHttpApiModule),
     typeof(AbpAutofacModule),
     typeof(AbpCachingStackExchangeRedisModule),
     typeof(AbpDistributedLockingModule),
     typeof(AbpAspNetCoreMvcUiMultiTenancyModule),
     typeof(AbpAspNetCoreAuthenticationJwtBearerModule),
-    typeof(ExamApplicationAdminModule),
+    typeof(ExamAdminApplicationModule),
     typeof(ExamEntityFrameworkCoreModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule),
     typeof(AbpEventBusRebusModule)
 )]
-public class ExamHttpApiHostModule : AbpModule
+public class ExamAdminHttpApiHostModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
@@ -145,10 +145,10 @@ public class ExamHttpApiHostModule : AbpModule
                 options.FileSets.ReplaceEmbeddedByPhysical<ExamDomainModule>(
                     Path.Combine(hostingEnvironment.ContentRootPath,
                         $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Domain"));
-                options.FileSets.ReplaceEmbeddedByPhysical<ExamApplicationAdminContractsModule>(
+                options.FileSets.ReplaceEmbeddedByPhysical<ExamAdminApplicationContractsModule>(
                     Path.Combine(hostingEnvironment.ContentRootPath,
                         $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Admin.Application.Contracts"));
-                options.FileSets.ReplaceEmbeddedByPhysical<ExamApplicationAdminModule>(
+                options.FileSets.ReplaceEmbeddedByPhysical<ExamAdminApplicationModule>(
                     Path.Combine(hostingEnvironment.ContentRootPath,
                         $"..{Path.DirectorySeparatorChar}SuperAbp.Exam.Admin.Application"));
             });

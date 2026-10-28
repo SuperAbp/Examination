@@ -1,0 +1,176 @@
+﻿@page "/"
+@inherits ExamComponentBase
+@using Volo.Abp.AspNetCore.Components.Web.Theming.MudBlazor.Layout
+@inject PageLayout PageLayout
+@{
+    PageLayout.Title = L["Menu:Home"];
+    PageLayout.ShowToolbar = false;
+}
+
+<MudGrid Class="mb-3">
+    <MudItem xs="12" xl="6">
+        <MudCard Style="height: 100%; overflow: hidden; background-image: url('/images/getting-started/bg-01.png'); background-position: bottom right; background-repeat: no-repeat; background-size: 200px;">
+            <MudCardContent>
+                @if (!CurrentUser.IsAuthenticated)
+                {
+                    <MudText Typo="Typo.h5" Class="mb-2">@L["Welcome"]</MudText>
+                    <MudText Typo="Typo.body1" Class="mud-text-secondary mb-2">@L["LongWelcomeMessage"]</MudText>
+                    <MudButton Href="/Account/Login" Variant="Variant.Filled" Color="Color.Primary" Class="mb-4"
+                               StartIcon="@Icons.Material.Filled.Login">@L["Login"]</MudButton>
+                }
+
+                <MudText Typo="Typo.h6">Getting Started</MudText>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary mb-2">Learn how to create and run a new web application using the application startup template.</MudText>
+                <MudButton Href="https://abp.io/docs/latest/get-started" Target="_blank"
+                           Variant="Variant.Filled" Color="Color.Primary" Class="mb-3">Getting Started</MudButton>
+
+                <MudText Typo="Typo.h6">Web Application Development Tutorial</MudText>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary mb-2">Learn how to build an ABP based web application named Acme.BookStore.</MudText>
+                <MudButton Href="https://abp.io/docs/latest/tutorials/book-store" Target="_blank"
+                           Variant="Variant.Outlined" Color="Color.Primary" Class="mb-3">Explore Tutorial</MudButton>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" md="6" xl="3">
+        <MudGrid Spacing="3">
+            <MudItem xs="12">
+                <MudCard Style="overflow: hidden;">
+                    <MudCardContent Class="pb-0">
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Support" Class="me-1" /> Support
+                        </MudText>
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary mb-2">You can check for similar problems and solutions, or open a new topic to discuss your specific issue.</MudText>
+                        <MudButton Href="https://abp.io/support/questions" Target="_blank"
+                                   Variant="Variant.Outlined" Color="Color.Primary" Class="mb-2">Visit Support</MudButton>
+                    </MudCardContent>
+                    <MudImage Src="/images/getting-started/img-support.png" Alt="Support" Style="width: 100%;" />
+                </MudCard>
+            </MudItem>
+            <MudItem xs="12">
+                <MudCard Style="overflow: hidden;">
+                    <MudCardContent Class="pb-0">
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">
+                            <MudIcon Icon="@Icons.Material.Filled.RssFeed" Class="me-1" /> Blog
+                        </MudText>
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary mb-2">You can find content on .NET development, cross-platform, ASP.NET application templates, ABP-related news, and more.</MudText>
+                        <MudButton Href="https://abp.io/blog" Target="_blank"
+                                   Variant="Variant.Outlined" Color="Color.Primary" Class="mb-2">Visit Blog</MudButton>
+                    </MudCardContent>
+                    <MudImage Src="/images/getting-started/img-blog.png" Alt="Blog" Style="width: 100%;" />
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+    <MudItem xs="12" md="6" xl="3">
+        <MudCard Style="height: 100%; overflow: hidden;">
+            <MudCardContent>
+                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">
+                    <MudIcon Icon="@Icons.Material.Filled.Groups" Class="me-1" /> Community
+                </MudText>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary">A unique community platform for <strong>ABP Lovers!</strong></MudText>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary mb-2">Explore all ABP users' experiences with the ABP Framework, discover articles and videos on how to use ABP, and join raffles for a chance to win surprise gifts!</MudText>
+                <MudButton Href="https://abp.io/community/" Target="_blank"
+                           Variant="Variant.Outlined" Color="Color.Primary" Class="mb-3">Join ABP Community</MudButton>
+            </MudCardContent>
+            <MudImage Src="/images/getting-started/img-community.png" Alt="Community" Style="width: 100%;" />
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+<MudGrid>
+    <MudItem xs="12" lg="4" xl="3">
+        <MudCard Style="height: 100%;">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">More from ABP.IO</MudText>
+            </MudCardHeader>
+            <MudCardContent Class="pt-0">
+                <MudList T="string" Dense="true">
+                    <MudListItem Icon="@Icons.Material.Filled.Check" IconColor="Color.Primary"
+                                 Href="https://github.com/abpframework/abp/releases" Target="_blank">
+                        Latest Release Logs
+                    </MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.Check" IconColor="Color.Primary"
+                                 Href="https://abp.io/video-courses/essentials" Target="_blank">
+                        Video Courses
+                    </MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.Check" IconColor="Color.Primary"
+                                 Href="https://abp.io/docs/latest/samples" Target="_blank">
+                        Samples
+                    </MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.Check" IconColor="Color.Primary"
+                                 Href="https://abp.io/books" Target="_blank">
+                        Books
+                    </MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.Check" IconColor="Color.Primary"
+                                 Href="https://abp.io/faq" Target="_blank">
+                        FAQ
+                    </MudListItem>
+                </MudList>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" lg="8" xl="6">
+        <MudCard Style="height: 100%;">
+            <MudCardContent Style="display: flex; align-items: center; height: 100%;">
+                <MudGrid>
+                    <MudItem xs="12" md="8">
+                        <MudText Typo="Typo.overline" Class="mud-text-secondary">THE OFFICIAL GUIDE</MudText>
+                        <MudText Typo="Typo.h5">Mastering ABP Framework</MudText>
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary mb-3">Written by the creator of the ABP Framework, this book will help you gain a complete understanding of the framework and modern web application development techniques.</MudText>
+                        <MudStack Row="true" Spacing="2">
+                            <MudButton Href="https://www.amazon.com/gp/product/B097Z2DM8Q" Target="_blank"
+                                       Variant="Variant.Outlined" Color="Color.Primary">Buy on Amazon US</MudButton>
+                            <MudButton Href="https://www.packtpub.com/product/mastering-abp-framework/9781801079242" Target="_blank"
+                                       Variant="Variant.Outlined" Color="Color.Primary">Buy on PACKT</MudButton>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudImage Src="/images/getting-started/book.png" Alt="Mastering ABP Framework" Style="max-width: 100%;" />
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" lg="4" xl="3">
+        <MudCard Style="height: 100%;">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">Follow us on Social Media</MudText>
+            </MudCardHeader>
+            <MudCardContent Class="pt-0">
+                <MudList T="string" Dense="true">
+                    <MudListItem Href="https://twitter.com/abpframework" Target="_blank">
+                        <div class="d-flex align-center">
+                            <MudImage Src="/images/getting-started/x-white.svg" Alt="X" Width="20" Height="20" Class="me-2" Style="background-color: black;" />
+                            <MudText>X.com</MudText>
+                        </div>
+                    </MudListItem>
+                    <MudListItem Href="https://abp.io/community/discord" Target="_blank">
+                        <div class="d-flex align-center">
+                            <MudImage Src="/images/getting-started/discord.svg" Alt="Discord" Width="20" Height="20" Class="me-2" />
+                            <MudText>Discord</MudText>
+                        </div>
+                    </MudListItem>
+                    <MudListItem Href="https://stackoverflow.com/questions/tagged/abp" Target="_blank">
+                        <div class="d-flex align-center">
+                            <MudImage Src="/images/getting-started/stack-overflow.svg" Alt="Stack Overflow" Width="20" Height="20" Class="me-2" />
+                            <MudText>Stack Overflow</MudText>
+                        </div>
+                    </MudListItem>
+                    <MudListItem Href="@("https://www.youtube.com/@@Volosoft")" Target="_blank">
+                        <div class="d-flex align-center">
+                            <MudImage Src="/images/getting-started/youtube.svg" Alt="YouTube" Width="20" Height="20" Class="me-2" />
+                            <MudText>YouTube</MudText>
+                        </div>
+                    </MudListItem>
+                    <MudListItem Href="https://www.instagram.com/abpframework/" Target="_blank">
+                        <div class="d-flex align-center">
+                            <MudImage Src="/images/getting-started/instagram.svg" Alt="Instagram" Width="20" Height="20" Class="me-2" />
+                            <MudText>Instagram</MudText>
+                        </div>
+                    </MudListItem>
+                </MudList>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+

@@ -10,7 +10,7 @@ namespace SuperAbp.Exam.Admin;
     typeof(AbpFluentValidationModule),
     typeof(SuperAbpMenuManagementApplicationContractsModule),
     typeof(SuperAbpAuditLoggingApplicationContractsModule))]
-public class ExamApplicationAdminContractsModule : AbpModule
+public class ExamAdminApplicationContractsModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {

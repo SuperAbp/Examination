@@ -1,0 +1,1 @@
+namespace SuperAbp.Exam.Admin.Blazor.Client;

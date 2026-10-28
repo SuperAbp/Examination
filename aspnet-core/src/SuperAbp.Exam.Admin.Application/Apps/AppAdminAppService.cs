@@ -12,12 +12,12 @@ using SuperAbp.MenuManagement.Menus;
 namespace SuperAbp.Exam.Admin.Apps;
 
 [Authorize]
-public class AppService : ExamAppService, IAppService
+public class AppAdminAppService : ExamAppService, IAppService
 {
     private readonly IMenuRepository _menuRepository;
     private readonly ISettingManager _settingManager;
 
-    public AppService(
+    public AppAdminAppService(
         IMenuRepository menuRepository,
         ISettingManager settingManager,
         IdentityUserManager userManager,

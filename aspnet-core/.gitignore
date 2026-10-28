@@ -260,8 +260,7 @@ src/SuperAbp.Exam.AuthServer/Logs/*
 src/SuperAbp.Exam.HttpApi.Host/Logs/*
 src/SuperAbp.Exam.HttpApi.Host/Logs/*
 src/SuperAbp.Exam.DbMigrator/Logs/*
-src/SuperAbp.Exam.Blazor.Server/Logs/*
-src/SuperAbp.Exam.Blazor.Server.Tiered/Logs/*
+src/SuperAbp.Exam.Admin.Blazor/Logs/*
 
 # Use abp install-libs to restore.
 **/wwwroot/libs/*

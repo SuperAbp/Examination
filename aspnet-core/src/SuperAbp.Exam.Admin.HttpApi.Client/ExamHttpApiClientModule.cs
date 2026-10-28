@@ -1,0 +1,39 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using SuperAbp.Exam.Admin;
+using Volo.Abp.Account;
+using Volo.Abp.FeatureManagement;
+using Volo.Abp.Identity;
+using Volo.Abp.Modularity;
+using Volo.Abp.PermissionManagement;
+using Volo.Abp.SettingManagement;
+using Volo.Abp.TenantManagement;
+using Volo.Abp.VirtualFileSystem;
+
+namespace SuperAbp.Exam.Admin;
+
+[DependsOn(
+    typeof(ExamAdminApplicationContractsModule),
+    typeof(AbpPermissionManagementHttpApiClientModule),
+    typeof(AbpFeatureManagementHttpApiClientModule),
+    typeof(AbpAccountHttpApiClientModule),
+    typeof(AbpIdentityHttpApiClientModule),
+    typeof(AbpTenantManagementHttpApiClientModule),
+    typeof(AbpSettingManagementHttpApiClientModule)
+)]
+public class ExamHttpApiClientModule : AbpModule
+{
+    public const string RemoteServiceName = "Default";
+
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
+        context.Services.AddHttpClientProxies(
+            typeof(ExamAdminApplicationContractsModule).Assembly,
+            RemoteServiceName
+        );
+
+        Configure<AbpVirtualFileSystemOptions>(options =>
+        {
+            options.FileSets.AddEmbedded<ExamHttpApiClientModule>();
+        });
+    }
+}

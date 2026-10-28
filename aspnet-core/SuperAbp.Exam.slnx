@@ -7,6 +7,9 @@
   <Folder Name="/src/admin/">
     <Project Path="src/SuperAbp.Exam.Admin.Application.Contracts/SuperAbp.Exam.Admin.Application.Contracts.csproj" />
     <Project Path="src/SuperAbp.Exam.Admin.Application/SuperAbp.Exam.Admin.Application.csproj" />
+    <Project Path="src/SuperAbp.Exam.Admin.Blazor.Client/SuperAbp.Exam.Admin.Blazor.Client.csproj" />
+    <Project Path="src/SuperAbp.Exam.Admin.Blazor/SuperAbp.Exam.Admin.Blazor.csproj" />
+    <Project Path="src/SuperAbp.Exam.Admin.HttpApi.Client/SuperAbp.Exam.Admin.HttpApi.Client.csproj" />
     <Project Path="src/SuperAbp.Exam.Admin.HttpApi.Host/SuperAbp.Exam.Admin.HttpApi.Host.csproj" />
     <Project Path="src/SuperAbp.Exam.Admin.HttpApi/SuperAbp.Exam.Admin.HttpApi.csproj" />
   </Folder>
