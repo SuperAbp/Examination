@@ -17,12 +17,12 @@
   <ItemGroup>
     <PackageReference Include="SuperAbp.AuditLogging.Application" Version="0.7.1" />
     <PackageReference Include="SuperAbp.MenuManagement.Application" Version="0.7.1" />
-    <PackageReference Include="Volo.Abp.Account.Application" Version="10.1.0" />
-    <PackageReference Include="Volo.Abp.Identity.Application" Version="10.1.0" />
-    <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="10.1.0" />
-    <PackageReference Include="Volo.Abp.TenantManagement.Application" Version="10.1.0" />
-    <PackageReference Include="Volo.Abp.FeatureManagement.Application" Version="10.1.0" />
-    <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="10.1.0" />
+    <PackageReference Include="Volo.Abp.Account.Application" Version="10.7.0" />
+    <PackageReference Include="Volo.Abp.Identity.Application" Version="10.7.0" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="10.7.0" />
+    <PackageReference Include="Volo.Abp.TenantManagement.Application" Version="10.7.0" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.Application" Version="10.7.0" />
+    <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="10.7.0" />
   </ItemGroup>
 
   <ItemGroup>
