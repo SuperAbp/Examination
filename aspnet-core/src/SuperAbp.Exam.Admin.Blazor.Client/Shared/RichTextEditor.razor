@@ -1,0 +1,43 @@
+@using TinyMCE.Blazor
+
+<Editor Value="Value"
+        ValueChanged="OnValueChanged"
+        Conf="Configuration"
+        ScriptSrc="/libs/tinymce/tinymce.min.js"
+        LicenseKey="gpl" />
+
+@code {
+    [Parameter]
+    public string? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public int Height { get; set; } = 300;
+
+    private Dictionary<string, object> Configuration { get; set; } = [];
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        Configuration = new Dictionary<string, object>
+        {
+            ["plugins"] = "preview fullscreen link table lists",
+            ["toolbar"] = "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | forecolor backcolor removeformat | link table | fullscreen preview",
+            ["toolbar_mode"] = "sliding",
+            ["height"] = Height,
+            ["language"] = "zh_CN",
+            ["language_url"] = "/libs/tinymce/langs/zh_CN.js",
+            ["menubar"] = false,
+            ["branding"] = false
+        };
+    }
+
+    private async Task OnValueChanged(string value)
+    {
+        await ValueChanged.InvokeAsync(value);
+    }
+}
+

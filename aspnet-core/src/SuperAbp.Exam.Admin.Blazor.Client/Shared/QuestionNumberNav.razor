@@ -1,0 +1,42 @@
+@inherits ExamComponentBase
+@using System.Text.Json
+@using SuperAbp.Exam.Admin.Blazor.Client.Helpers
+@inject IJSRuntime JavaScript
+
+<MudCard Elevation="0">
+    <MudCardContent>
+        @foreach (var section in Sections)
+        {
+            <div class="question-number-section">
+                <div class="section-header">
+                    <MudText Typo="Typo.h6">@section.Title</MudText>
+                    <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                        @L["TotalScore{0}", section.TotalScore?.ToString() ?? "0"]
+                    </MudText>
+                </div>
+                <div class="question-numbers">
+                    @foreach (var (question, index) in section.Questions.Select((item, index) => (item, index)))
+                    {
+                        <button type="button" class="question-number" @onclick="() => ScrollToQuestionAsync(question.Id)">
+                            @(index + 1)
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<QuestionNumberSection> Sections { get; set; } = [];
+
+    private async Task ScrollToQuestionAsync(Guid questionId)
+    {
+        var encodedQuestionId = JsonSerializer.Serialize(questionId.ToString());
+        await JavaScript.InvokeVoidAsync(
+            "eval",
+            $"document.getElementById({encodedQuestionId})?.scrollIntoView({{ behavior: 'smooth' }})");
+    }
+}
+

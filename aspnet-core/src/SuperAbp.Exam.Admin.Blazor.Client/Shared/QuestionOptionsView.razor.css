@@ -1,0 +1,40 @@
+.question-options {
+    display: grid;
+    gap: .625rem;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .5625rem .75rem .5625rem .3125rem;
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: .25rem;
+}
+
+.option.selected {
+    border-color: var(--mud-palette-primary);
+    background-color: var(--mud-palette-action-default-hover);
+}
+
+.option-content {
+    display: flex;
+    align-items: center;
+    gap: .3125rem;
+}
+
+.option-label {
+    min-width: 1.25rem;
+    font-weight: 700;
+    color: var(--mud-palette-primary);
+}
+
+.option-text {
+    color: var(--mud-palette-text-primary);
+}
+
+.option-correct {
+    color: #52c41a;
+}
+

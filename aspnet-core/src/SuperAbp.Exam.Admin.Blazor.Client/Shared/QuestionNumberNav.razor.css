@@ -1,0 +1,27 @@
+.question-number-section {
+    margin-bottom: 1rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: .5rem;
+}
+
+.question-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .375rem;
+}
+
+.question-number {
+    min-width: 2rem;
+    padding: .25rem .5rem;
+    border: 0;
+    border-radius: .25rem;
+    cursor: pointer;
+    color: var(--mud-palette-success-textcolor);
+    background-color: var(--mud-palette-success);
+}
+

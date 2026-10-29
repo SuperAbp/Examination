@@ -1,0 +1,33 @@
+@inherits ExamComponentBase
+@using SuperAbp.Exam.Admin.Blazor.Client.Helpers
+
+<div class="question-options">
+    @foreach (var (option, index) in Options.Select((item, index) => (item, index)))
+    {
+        <div class="option @(IsSelected(option) ? "selected" : "")">
+            <div class="option-content">
+                <span class="option-label">@DisplayHelpers.CharLabel(index)</span>
+                <span class="option-text">@option.Content</span>
+            </div>
+            @if (option.Right == true)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Class="option-correct" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<QuestionOptionViewModel> Options { get; set; } = [];
+
+    [Parameter]
+    public string? Answers { get; set; }
+
+    private bool IsSelected(QuestionOptionViewModel option)
+    {
+        return Answers?.Split("||", StringSplitOptions.RemoveEmptyEntries)
+            .Contains(option.Id.ToString(), StringComparer.Ordinal) == true;
+    }
+}
+
