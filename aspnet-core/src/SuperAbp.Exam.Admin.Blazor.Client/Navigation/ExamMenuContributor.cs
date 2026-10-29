@@ -49,6 +49,78 @@ public class ExamMenuContributor : IMenuContributor
             order: 1
         ));
 
+        var questionManagement = context.Menu.AddItem(new ApplicationMenuItem(
+            ExamMenus.QuestionManagement,
+            l["Menu:QuestionManagement"],
+            "#",
+            icon: "fas fa-question-circle",
+            order: 2
+        ));
+        questionManagement.AddItem(new ApplicationMenuItem(
+            ExamMenus.Questions,
+            l["Menu:Questions"],
+            "/question-management/questions"
+        ).RequirePermissions(ExamPermissions.Questions.Default));
+        questionManagement.AddItem(new ApplicationMenuItem(
+            ExamMenus.QuestionBanks,
+            l["Menu:QuestionBanks"],
+            "/question-management/question-banks"
+        ).RequirePermissions(ExamPermissions.QuestionBanks.Default));
+
+        var paperManagement = context.Menu.AddItem(new ApplicationMenuItem(
+            ExamMenus.PaperManagement,
+            l["Menu:PaperManagement"],
+            "#",
+            icon: "fas fa-file-alt",
+            order: 3
+        ));
+        paperManagement.AddItem(new ApplicationMenuItem(
+            ExamMenus.Papers,
+            l["Menu:Papers"],
+            "/paper-management/papers"
+        ).RequirePermissions(ExamPermissions.Papers.Default));
+
+        var examManagement = context.Menu.AddItem(new ApplicationMenuItem(
+            ExamMenus.ExamManagement,
+            l["Menu:ExamManagement"],
+            "#",
+            icon: "fas fa-calendar-check",
+            order: 4
+        ));
+        examManagement.AddItem(new ApplicationMenuItem(
+            ExamMenus.Exams,
+            l["Menu:Exams"],
+            "/exam-management/exams"
+        ).RequirePermissions(ExamPermissions.Exams.Default));
+
+        var system = context.Menu.AddItem(new ApplicationMenuItem(
+            ExamMenus.System,
+            l["Menu:System"],
+            "#",
+            icon: "fas fa-toolbox",
+            order: 5
+        ));
+        system.AddItem(new ApplicationMenuItem(
+            ExamMenus.SystemAnnouncements,
+            l["Menu:Announcements"],
+            "/sys/announcements"
+        ).RequirePermissions(ExamPermissions.Announcements.Default));
+        system.AddItem(new ApplicationMenuItem(
+            ExamMenus.SystemAnnouncementCategories,
+            l["Menu:AnnouncementCategories"],
+            "/sys/announcement-categories"
+        ).RequirePermissions(ExamPermissions.AnnouncementCategories.Default));
+        system.AddItem(new ApplicationMenuItem(
+            ExamMenus.SystemKnowledgePoints,
+            l["Menu:KnowledgePoints"],
+            "/sys/knowledge-points"
+        ).RequirePermissions(ExamPermissions.KnowledgePoints.Default));
+        system.AddItem(new ApplicationMenuItem(
+            ExamMenus.SystemNotifications,
+            l["Menu:Notifications"],
+            "/sys/notifications"
+        ).RequirePermissions(ExamPermissions.Notifications.Default));
+
         if (MultiTenancyConsts.IsEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);

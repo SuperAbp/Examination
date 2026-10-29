@@ -1,0 +1,5 @@
+@inherits ExamComponentBase
+@attribute [Authorize(Policy = ExamPermissions.KnowledgePoints.Default)]
+@page "/sys/knowledge-points"
+
+<MudText Typo="Typo.h4">@L["Menu:KnowledgePoints"]</MudText>

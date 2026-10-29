@@ -1,0 +1,5 @@
+@inherits ExamComponentBase
+@attribute [Authorize(Policy = ExamPermissions.AnnouncementCategories.Default)]
+@page "/sys/announcement-categories"
+
+<MudText Typo="Typo.h4">@L["Menu:AnnouncementCategories"]</MudText>

@@ -1,0 +1,5 @@
+@inherits ExamComponentBase
+@attribute [Authorize(Policy = ExamPermissions.Notifications.Default)]
+@page "/sys/notifications"
+
+<MudText Typo="Typo.h4">@L["Menu:Notifications"]</MudText>

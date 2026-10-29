@@ -1,0 +1,5 @@
+@inherits ExamComponentBase
+@attribute [Authorize(Policy = ExamPermissions.QuestionBanks.Default)]
+@page "/question-management/question-banks"
+
+<MudText Typo="Typo.h4">@L["Menu:QuestionBanks"]</MudText>

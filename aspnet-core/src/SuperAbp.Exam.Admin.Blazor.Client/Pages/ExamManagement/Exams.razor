@@ -1,0 +1,5 @@
+@inherits ExamComponentBase
+@attribute [Authorize(Policy = ExamPermissions.Exams.Default)]
+@page "/exam-management/exams"
+
+<MudText Typo="Typo.h4">@L["Menu:Exams"]</MudText>
