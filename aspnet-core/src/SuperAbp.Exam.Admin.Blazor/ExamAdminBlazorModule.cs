@@ -1,16 +1,15 @@
 using System;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.OpenApi;
-using OpenIddict.Server.AspNetCore;
-using OpenIddict.Validation.AspNetCore;
 using SuperAbp.Exam.Admin.Blazor.Client;
 using SuperAbp.Exam.Admin.Blazor.Client.Navigation;
 using SuperAbp.Exam.Admin.Blazor.Components;
@@ -18,7 +17,6 @@ using SuperAbp.Exam.EntityFrameworkCore;
 using SuperAbp.Exam.Localization;
 using SuperAbp.Exam.MultiTenancy;
 using Volo.Abp;
-using Volo.Abp.Account.Web;
 using Volo.Abp.AspNetCore.Components.Server.MudBlazorLeptonXLiteTheme;
 using Volo.Abp.AspNetCore.Components.Server.MudBlazorLeptonXLiteTheme.Bundling;
 using Volo.Abp.AspNetCore.Components.Web;
@@ -35,7 +33,6 @@ using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.Identity.Blazor.MudBlazor.Server;
 using Volo.Abp.Modularity;
-using Volo.Abp.OpenIddict;
 using Volo.Abp.Security.Claims;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.TenantManagement.Blazor.MudBlazor.Server;
@@ -53,7 +50,6 @@ namespace SuperAbp.Exam.Admin.Blazor;
     typeof(AbpSwashbuckleModule),
     typeof(AbpIdentityBlazorMudBlazorServerModule),
     typeof(AbpTenantManagementBlazorMudBlazorServerModule),
-    typeof(AbpAccountWebOpenIddictModule),
     typeof(AbpAspNetCoreComponentsServerMudBlazorLeptonXLiteThemeModule),
     typeof(AbpAspNetCoreComponentsWebAssemblyMudBlazorLeptonXLiteThemeBundlingModule),
     typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
@@ -63,9 +59,6 @@ public class ExamAdminBlazorModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
-        var hostingEnvironment = context.Services.GetHostingEnvironment();
-        var configuration = context.Services.GetConfiguration();
-
         context.Services.PreConfigure<AbpMvcDataAnnotationsLocalizationOptions>(options =>
         {
             options.AddAssemblyResource(
@@ -77,30 +70,6 @@ public class ExamAdminBlazorModule : AbpModule
                 typeof(ExamAdminBlazorModule).Assembly
             );
         });
-
-        PreConfigure<OpenIddictBuilder>(builder =>
-        {
-            builder.AddValidation(options =>
-            {
-                options.AddAudiences("Exam");
-                options.UseLocalServer();
-                options.UseAspNetCore();
-            });
-        });
-
-        if (!hostingEnvironment.IsDevelopment())
-        {
-            PreConfigure<AbpOpenIddictAspNetCoreOptions>(options =>
-            {
-                options.AddDevelopmentEncryptionAndSigningCertificate = false;
-            });
-
-            PreConfigure<OpenIddictServerBuilder>(serverBuilder =>
-            {
-                serverBuilder.AddProductionEncryptionAndSigningCertificate("openiddict.pfx", configuration["AuthServer:CertificatePassPhrase"]!);
-                serverBuilder.SetIssuer(new Uri(configuration["AuthServer:Authority"]!));
-            });
-        }
 
         PreConfigure<AbpAspNetCoreComponentsWebOptions>(options =>
         {
@@ -124,17 +93,9 @@ public class ExamAdminBlazorModule : AbpModule
             Microsoft.IdentityModel.Logging.IdentityModelEventSource.LogCompleteSecurityArtifact = true;
         }
 
-        if (!configuration.GetValue<bool>("AuthServer:RequireHttpsMetadata"))
-        {
-            Configure<OpenIddictServerAspNetCoreOptions>(options =>
-            {
-                options.DisableTransportSecurityRequirement = true;
-            });
-        }
-
-        ConfigureAuthentication(context);
+        ConfigureAuthentication(context, configuration);
         ConfigureUrls(configuration);
-        ConfigureBundles(hostingEnvironment);
+        ConfigureBundles();
         ConfigureVirtualFileSystem(hostingEnvironment);
         ConfigureSwaggerServices(context.Services);
         //ConfigureAutoApiControllers();
@@ -143,9 +104,39 @@ public class ExamAdminBlazorModule : AbpModule
         ConfigureMenu(context);
     }
 
-    private void ConfigureAuthentication(ServiceConfigurationContext context)
+    private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
     {
-        context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
+        context.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+            })
+            .AddCookie("Cookies", options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromDays(365);
+                options.CheckTokenExpiration();
+            })
+            .AddOpenIdConnect("oidc", options =>
+            {
+                options.Authority = configuration["AuthServer:Authority"];
+                options.RequireHttpsMetadata = configuration.GetValue<bool>("AuthServer:RequireHttpsMetadata");
+                options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
+
+                options.ClientId = configuration["AuthServer:ClientId"];
+                options.ClientSecret = configuration["AuthServer:ClientSecret"];
+
+                options.SaveTokens = true;
+                options.GetClaimsFromUserInfoEndpoint = true;
+
+                options.Scope.Add("roles");
+                options.Scope.Add("email");
+                options.Scope.Add("phone");
+                options.Scope.Add("Exam");
+
+                // OpenIddict is not seeded with the PAR endpoint permission for this client.
+                options.PushedAuthorizationBehavior = PushedAuthorizationBehavior.Disable;
+            });
+
         context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
         {
             options.IsDynamicClaimsEnabled = true;
@@ -157,11 +148,10 @@ public class ExamAdminBlazorModule : AbpModule
         Configure<AppUrlOptions>(options =>
         {
             options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
-            options.RedirectAllowedUrls.AddRange(configuration["App:RedirectAllowedUrls"]?.Split(',') ?? Array.Empty<string>());
         });
     }
 
-    private void ConfigureBundles(IHostEnvironment hostingEnvironment)
+    private void ConfigureBundles()
     {
         Configure<AbpBundlingOptions>(options =>
         {
@@ -182,11 +172,6 @@ public class ExamAdminBlazorModule : AbpModule
                 bundle =>
                 {
                     bundle.AddFiles("/global-scripts.js");
-
-                    if (hostingEnvironment.IsDevelopment())
-                    {
-                        bundle.AddFiles("/dev-login-helper.js");
-                    }
                 }
             );
 
@@ -272,18 +257,6 @@ public class ExamAdminBlazorModule : AbpModule
         var env = context.GetEnvironment();
         var app = context.GetApplicationBuilder();
 
-        app.Use(async (ctx, next) =>
-        {
-            /* Converting to https to be able to include https URLs in `/.well-known/openid-configuration` endpoint.
-             * This should only be done if the request is coming outside of the cluster.  */
-            if (ctx.Request.Headers.ContainsKey("from-ingress"))
-            {
-                ctx.Request.Scheme = "https";
-            }
-
-            await next();
-        });
-
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -299,27 +272,9 @@ public class ExamAdminBlazorModule : AbpModule
 
         app.UseCorrelationId();
         app.UseRouting();
-        var configuration = context.GetConfiguration();
-        if (Convert.ToBoolean(configuration["AuthServer:IsOnK8s"]))
-        {
-            app.Use(async (context, next) =>
-            {
-                if (context.Request.Path.Value != null &&
-                    context.Request.Path.Value.StartsWith("/appsettings", StringComparison.OrdinalIgnoreCase) &&
-                    context.Request.Path.Value.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                {
-                    // Set endpoint to null so the static files middleware will handle the request.
-                    context.SetEndpoint(null);
-                }
-                await next(context);
-            });
-
-            app.UseStaticFilesForPatterns("appsettings*.json");
-        }
         app.MapAbpStaticAssets();
         app.UseAbpSecurityHeaders();
         app.UseAuthentication();
-        app.UseAbpOpenIddictValidation();
 
         if (MultiTenancyConsts.IsEnabled)
         {
@@ -340,6 +295,7 @@ public class ExamAdminBlazorModule : AbpModule
 
         app.UseConfiguredEndpoints(builder =>
         {
+            builder.MapControllers();
             builder.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode()

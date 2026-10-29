@@ -107,6 +107,14 @@ public class ExamAuthServerModule : AbpModule
                     bundle.AddFiles("/global-styles.css");
                 }
             );
+
+            options.ScriptBundles.Configure(
+                BasicThemeBundles.Scripts.Global,
+                bundle =>
+                {
+                    bundle.AddFiles("/dev-login-helper.js");
+                }
+            );
         });
 
         Configure<AbpAuditingOptions>(options =>
