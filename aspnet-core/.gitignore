@@ -264,3 +264,5 @@ src/SuperAbp.Exam.Admin.Blazor/Logs/*
 
 # Use abp install-libs to restore.
 **/wwwroot/libs/*
+!**/wwwroot/libs/tinymce/
+!**/wwwroot/libs/tinymce/**
