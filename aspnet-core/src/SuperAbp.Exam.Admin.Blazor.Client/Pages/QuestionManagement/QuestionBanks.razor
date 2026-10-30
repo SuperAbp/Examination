@@ -1,5 +1,194 @@
 @inherits ExamComponentBase
 @attribute [Authorize(Policy = ExamPermissions.QuestionBanks.Default)]
 @page "/question-management/question-banks"
+@using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
+@using System.Threading
+@inject IQuestionBankAdminAppService QuestionBankAppService
+@inject IAuthorizationService Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
-<MudText Typo="Typo.h4">@L["Menu:QuestionBanks"]</MudText>
+<MudText Typo="Typo.h4" Class="mb-4">@L["Menu:QuestionBanks"]</MudText>
+
+<MudCard Elevation="0">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                <MudTextField @bind-Value="filterTitle"
+                              Label="@L["Title"]"
+                              T="string"
+                              Immediate="true"
+                              OnKeyUp="FilterOnKeyUp"
+                              Style="min-width: 240px;" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="SearchAsync">
+                    @L["Search"]
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="ResetAsync">
+                    @L["Reset"]
+                </MudButton>
+            </MudStack>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            @if (CanCreate)
+            {
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           OnClick="OpenCreateDialogAsync">
+                    @L["NewQuestionBank"]
+                </MudButton>
+            }
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudDataGrid @ref="_grid"
+                     T="QuestionBankListDto"
+                     ServerData="LoadServerDataAsync"
+                     Hover="true"
+                     Striped="true"
+                     LoadingProgressColor="Color.Primary"
+                     RowsPerPage="10">
+            <Columns>
+                <PropertyColumn Property="x => x.Title" Title="@L["Title"]" />
+                <PropertyColumn Property="x => x.SingleCount" Title="@L["SingleCount"]" />
+                <PropertyColumn Property="x => x.JudgeCount" Title="@L["JudgeCount"]" />
+                <PropertyColumn Property="x => x.MultiCount" Title="@L["MultiCount"]" />
+                <PropertyColumn Property="x => x.BlankCount" Title="@L["BlankCount"]" />
+                <TemplateColumn Title="@L["Actions"]" Sortable="false">
+                    <CellTemplate Context="context">
+                        @if (CanUpdate)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                           Size="Size.Small"
+                                           Color="Color.Info"
+                                           OnClick="() => OpenEditDialogAsync(context.Item)" />
+                        }
+                        @if (CanDelete)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           Size="Size.Small"
+                                           Color="Color.Error"
+                                           OnClick="() => DeleteAsync(context.Item)" />
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="QuestionBankListDto"
+                                  PageSizeOptions="new[] { 10, 20, 30, 40, 50 }" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private MudDataGrid<QuestionBankListDto> _grid = default!;
+    private string? filterTitle;
+    private bool CanCreate { get; set; }
+    private bool CanUpdate { get; set; }
+    private bool CanDelete { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        CanCreate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.QuestionBanks.Create)).Succeeded;
+        CanUpdate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.QuestionBanks.Update)).Succeeded;
+        CanDelete = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.QuestionBanks.Delete)).Succeeded;
+    }
+
+    private async Task<GridData<QuestionBankListDto>> LoadServerDataAsync(GridState<QuestionBankListDto> state, CancellationToken cancellationToken)
+    {
+        var input = new GetQuestionBanksInput
+        {
+            Title = filterTitle,
+            SkipCount = state.Page * state.PageSize,
+            MaxResultCount = state.PageSize,
+            Sorting = "Id Desc"
+        };
+
+        if (state.SortDefinitions.Count > 0)
+        {
+            var sort = state.SortDefinitions.First();
+            input.Sorting = sort.SortBy + " " + (sort.Descending ? "Desc" : "Asc");
+        }
+
+        var result = await QuestionBankAppService.GetListAsync(input);
+        return new GridData<QuestionBankListDto>
+        {
+            Items = result.Items,
+            TotalItems = (int)result.TotalCount
+        };
+    }
+
+    private async Task SearchAsync()
+    {
+        if (_grid != null)
+        {
+            await _grid.ReloadServerData();
+        }
+    }
+
+    private async Task FilterOnKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SearchAsync();
+        }
+    }
+
+    private async Task ResetAsync()
+    {
+        filterTitle = null;
+        await SearchAsync();
+    }
+
+    private async Task OpenCreateDialogAsync()
+    {
+        await ShowEditDialogAsync(null);
+    }
+
+    private async Task OpenEditDialogAsync(QuestionBankListDto questionBank)
+    {
+        await ShowEditDialogAsync(questionBank);
+    }
+
+    private async Task ShowEditDialogAsync(QuestionBankListDto? questionBank)
+    {
+        var editor = questionBank == null ? null : await QuestionBankAppService.GetEditorAsync(questionBank.Id);
+        var parameters = new DialogParameters<QuestionBankEditDialog>();
+        parameters.Add(x => x.BankId, questionBank?.Id);
+        parameters.Add(x => x.Editor, editor);
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        var dialog = await DialogService.ShowAsync<QuestionBankEditDialog>(
+            questionBank == null ? L["NewQuestionBank"] : L["Edit"],
+            parameters,
+            options);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false })
+        {
+            if (_grid != null)
+            {
+                await _grid.ReloadServerData();
+            }
+        }
+    }
+
+    private async Task DeleteAsync(QuestionBankListDto questionBank)
+    {
+        bool? confirmed = await DialogService.ShowMessageBoxAsync(
+            L["Tips"],
+            string.Format(L["AreYouSureToDeleteNamed"], questionBank.Title),
+            yesText: L["Delete"],
+            cancelText: L["Cancel"]);
+
+        if (confirmed == true)
+        {
+            await QuestionBankAppService.DeleteAsync(questionBank.Id);
+            Snackbar.Add(L["DeletedSuccessfully"], Severity.Success);
+            await SearchAsync();
+        }
+    }
+}

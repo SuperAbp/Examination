@@ -1,0 +1,101 @@
+@inherits ExamComponentBase
+@using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
+@inject IQuestionBankAdminAppService QuestionBankAppService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudTextField @bind-Value="Title"
+                          Label="@L["Title"]"
+                          T="string" />
+            <MudTextField @bind-Value="Remark"
+                          Label="@L["Remark"]"
+                          T="string"
+                          Lines="4" />
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["Cancel"]</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="SubmitAsync">
+            @L["Save"]
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public Guid? BankId { get; set; }
+
+    [Parameter]
+    public GetQuestionBankForEditorOutput? Editor { get; set; }
+
+    private string Title { get; set; } = string.Empty;
+    private string? Remark { get; set; }
+    private bool submitting;
+
+    protected override void OnInitialized()
+    {
+        if (Editor != null)
+        {
+            Title = Editor.Title;
+            Remark = Editor.Remark;
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (submitting)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(Title))
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["Title"]), Severity.Error);
+            return;
+        }
+
+        submitting = true;
+        try
+        {
+            if (BankId == null)
+            {
+                await QuestionBankAppService.CreateAsync(new QuestionBankCreateDto
+                {
+                    Title = Title.Trim(),
+                    Remark = Remark
+                });
+            }
+            else
+            {
+                await QuestionBankAppService.UpdateAsync(BankId.Value, new QuestionBankUpdateDto
+                {
+                    Title = Title.Trim(),
+                    Remark = Remark
+                });
+            }
+
+            Snackbar.Add(L["SaveSuccessfully"], Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(L["OperationFailed"] + ": " + ex.GetBaseException().Message, Severity.Error);
+        }
+        finally
+        {
+            submitting = false;
+        }
+    }
+}
