@@ -1,0 +1,164 @@
+@inherits ExamComponentBase
+@using SuperAbp.Exam.Admin.Announcements
+@inject IAnnouncementAdminAppService AnnouncementAppService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudSelect @bind-Value="CategoryId"
+                       T="Guid?"
+                       Label="@L["Category"]"
+                       Clearable="true">
+                @foreach (var category in Categories)
+                {
+                    <MudSelectItem Value="@((Guid?)category.Id)">@category.Name</MudSelectItem>
+                }
+            </MudSelect>
+            <MudTextField @bind-Value="Title"
+                          T="string"
+                          Label="@L["Title"]" />
+            <RichTextEditor @bind-Value="Content" Height="400" />
+            <MudStack Row Spacing="2">
+                <MudTextField @bind-Value="ScheduledPublishTime"
+                              T="DateTime?"
+                              Label="@L["ScheduledPublishTime"]"
+                              InputType="InputType.DateTimeLocal" />
+                <MudTextField @bind-Value="ScheduledExpirationTime"
+                              T="DateTime?"
+                              Label="@L["ScheduledExpirationTime"]"
+                              InputType="InputType.DateTimeLocal" />
+            </MudStack>
+            <MudNumericField @bind-Value="Sort"
+                             T="int"
+                             Label="@L["Sort"]"
+                             Min="0" />
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["Cancel"]</MudButton>
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Primary"
+                   OnClick="@(async () => await SubmitAsync(false))">
+            @L["Submit"]
+        </MudButton>
+        @if (CanPublish)
+        {
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="@(async () => await SubmitAsync(true))">
+                @L["Publish"]
+            </MudButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public AnnouncementDetailDto? Announcement { get; set; }
+
+    [Parameter]
+    public IReadOnlyList<AnnouncementCategoryListDto> Categories { get; set; } = [];
+
+    [Parameter]
+    public bool CanPublish { get; set; }
+
+    private Guid? CategoryId { get; set; }
+    private string Title { get; set; } = string.Empty;
+    private string Content { get; set; } = string.Empty;
+    private DateTime? ScheduledPublishTime { get; set; }
+    private DateTime? ScheduledExpirationTime { get; set; }
+    private int Sort { get; set; }
+    private bool submitting;
+
+    protected override void OnInitialized()
+    {
+        if (Announcement != null)
+        {
+            CategoryId = Announcement.CategoryId;
+            Title = Announcement.Title;
+            Content = Announcement.Content;
+            ScheduledPublishTime = Announcement.ScheduledPublishTime;
+            ScheduledExpirationTime = Announcement.ScheduledExpirationTime;
+            Sort = Announcement.Sort;
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task SubmitAsync(bool publish)
+    {
+        if (submitting)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(Title))
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["Title"]), Severity.Error);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(Content))
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["Content"]), Severity.Error);
+            return;
+        }
+
+        if (ScheduledPublishTime.HasValue &&
+            ScheduledExpirationTime.HasValue &&
+            ScheduledExpirationTime.Value <= ScheduledPublishTime.Value)
+        {
+            Snackbar.Add(L["ScheduledExpirationTimeMustBeAfterScheduledPublishTime"], Severity.Error);
+            return;
+        }
+
+        submitting = true;
+        try
+        {
+            if (Announcement == null)
+            {
+                await AnnouncementAppService.CreateAsync(new AnnouncementCreateDto
+                {
+                    Publish = publish,
+                    CategoryId = CategoryId,
+                    Title = Title.Trim(),
+                    Content = Content,
+                    ScheduledPublishTime = ScheduledPublishTime,
+                    ScheduledExpirationTime = ScheduledExpirationTime,
+                    Sort = Sort
+                });
+            }
+            else
+            {
+                await AnnouncementAppService.UpdateAsync(Announcement.Id, new AnnouncementUpdateDto
+                {
+                    Publish = publish,
+                    CategoryId = CategoryId,
+                    Title = Title.Trim(),
+                    Content = Content,
+                    ScheduledPublishTime = ScheduledPublishTime,
+                    ScheduledExpirationTime = ScheduledExpirationTime,
+                    Sort = Sort
+                });
+            }
+
+            Snackbar.Add(publish ? L["PublishedSuccessfully"] : L["SaveSuccessfully"], Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{L["OperationFailed"]}: {ex.GetBaseException().Message}", Severity.Error);
+        }
+        finally
+        {
+            submitting = false;
+        }
+    }
+}

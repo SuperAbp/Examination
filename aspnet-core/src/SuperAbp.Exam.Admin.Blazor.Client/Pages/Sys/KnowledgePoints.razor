@@ -1,5 +1,266 @@
 @inherits ExamComponentBase
 @attribute [Authorize(Policy = ExamPermissions.KnowledgePoints.Default)]
 @page "/sys/knowledge-points"
+@using SuperAbp.Exam.Admin.KnowledgePoints
+@using Microsoft.AspNetCore.Components.Web
+@inject IKnowledgePointAdminAppService KnowledgePointAppService
+@inject IAuthorizationService Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
-<MudText Typo="Typo.h4">@L["Menu:KnowledgePoints"]</MudText>
+<MudText Typo="Typo.h4" Class="mb-4">@L["Menu:KnowledgePoints"]</MudText>
+
+<MudCard Elevation="0">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                <MudTextField @bind-Value="filterName"
+                              Label="@L["Name"]"
+                              T="string"
+                              Immediate="true"
+                              OnKeyUp="FilterOnKeyUp"
+                              Style="min-width: 240px;" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="SearchAsync">
+                    @L["Search"]
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="ResetAsync">
+                    @L["Reset"]
+                </MudButton>
+            </MudStack>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            @if (CanCreate)
+            {
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           OnClick="() => OpenCreateDialogAsync(null)">
+                    @L["NewKnowledgePoint"]
+                </MudButton>
+            }
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTable Items="@visibleRows"
+                  Hover="true"
+                  Loading="@loading"
+                  LoadingProgressColor="Color.Primary"
+                  T="KnowledgePointRow">
+            <HeaderContent>
+                <MudTh>@L["Name"]</MudTh>
+                <MudTh>@L["Actions"]</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="row">
+                <MudTd DataLabel="@L["Name"]">
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Style="@(string.Format("padding-left: {0}px;", row.Level * 24))">
+                        @if (row.HasChildren)
+                        {
+                            <MudIconButton Size="Size.Small"
+                                           Icon="@(IsExpanded(row.Node) ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.KeyboardArrowRight)"
+                                           OnClick="() => ToggleExpandedAsync(row.Node)" />
+                        }
+                        else
+                        {
+                            <div style="width: 34px;"></div>
+                        }
+                        <span>@row.Node.Name</span>
+                    </MudStack>
+                </MudTd>
+                <MudTd>
+                    @if (CanCreate)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.SubdirectoryArrowRight"
+                                       Size="Size.Small"
+                                       Color="Color.Primary"
+                                       aria-label="@L["NewKnowledgePoint"]"
+                                       OnClick="() => OpenCreateDialogAsync(row.Node.Id)" />
+                    }
+                    @if (CanUpdate)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Size="Size.Small"
+                                       Color="Color.Info"
+                                       OnClick="() => OpenEditDialogAsync(row.Node)" />
+                    }
+                    @if (CanDelete)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Size="Size.Small"
+                                       Color="Color.Error"
+                                       OnClick="() => DeleteAsync(row.Node)" />
+                    }
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private sealed record KnowledgePointRow(KnowledgePointNodeDto Node, int Level, bool HasChildren);
+
+    private IReadOnlyList<KnowledgePointNodeDto> tree = [];
+    private List<KnowledgePointRow> visibleRows = [];
+    private readonly HashSet<Guid> expandedIds = [];
+    private string? filterName;
+    private bool loading;
+    private bool CanCreate { get; set; }
+    private bool CanUpdate { get; set; }
+    private bool CanDelete { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        CanCreate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.KnowledgePoints.Create)).Succeeded;
+        CanUpdate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.KnowledgePoints.Update)).Succeeded;
+        CanDelete = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.KnowledgePoints.Delete)).Succeeded;
+
+        await LoadTreeAsync();
+    }
+
+    private async Task LoadTreeAsync()
+    {
+        loading = true;
+        try
+        {
+            var result = await KnowledgePointAppService.GetAllAsync(new GetKnowledgePointsInput
+            {
+                Name = filterName
+            });
+            tree = result.Items;
+            expandedIds.Clear();
+            foreach (var root in tree)
+            {
+                expandedIds.Add(root.Id);
+            }
+            RefreshVisibleRows();
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private bool IsExpanded(KnowledgePointNodeDto node) => expandedIds.Contains(node.Id);
+
+    private void ToggleExpandedAsync(KnowledgePointNodeDto node)
+    {
+        if (!expandedIds.Remove(node.Id))
+        {
+            expandedIds.Add(node.Id);
+            RefreshVisibleRows();
+            return;
+        }
+
+        CollapseChildren(node);
+        RefreshVisibleRows();
+    }
+
+    private void CollapseChildren(KnowledgePointNodeDto node)
+    {
+        foreach (var child in node.Children ?? [])
+        {
+            expandedIds.Remove(child.Id);
+            CollapseChildren(child);
+        }
+    }
+
+    private void RefreshVisibleRows()
+    {
+        visibleRows = [];
+        foreach (var root in tree)
+        {
+            AppendVisibleRows(visibleRows, root, level: 0, visible: true);
+        }
+    }
+
+    private void AppendVisibleRows(List<KnowledgePointRow> rows, KnowledgePointNodeDto node, int level, bool visible)
+    {
+        var children = node.Children ?? [];
+        if (visible)
+        {
+            rows.Add(new KnowledgePointRow(node, level, children.Count > 0));
+        }
+
+        var childVisible = visible && expandedIds.Contains(node.Id);
+        foreach (var child in children)
+        {
+            AppendVisibleRows(rows, child, level + 1, childVisible);
+        }
+    }
+
+    private async Task SearchAsync()
+    {
+        await LoadTreeAsync();
+    }
+
+    private async Task ResetAsync()
+    {
+        filterName = null;
+        await LoadTreeAsync();
+    }
+
+    private async Task FilterOnKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await LoadTreeAsync();
+        }
+    }
+
+    private async Task OpenCreateDialogAsync(Guid? parentId)
+    {
+        var parameters = new DialogParameters<KnowledgePointEditDialog>();
+        parameters.Add(x => x.ParentId, parentId);
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        var dialog = await DialogService.ShowAsync<KnowledgePointEditDialog>(
+            L["NewKnowledgePoint"],
+            parameters,
+            options);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false })
+        {
+            await LoadTreeAsync();
+        }
+    }
+
+    private async Task OpenEditDialogAsync(KnowledgePointNodeDto node)
+    {
+        var editor = await KnowledgePointAppService.GetEditorAsync(node.Id);
+        var parameters = new DialogParameters<KnowledgePointEditDialog>();
+        parameters.Add(x => x.Id, node.Id);
+        parameters.Add(x => x.ParentId, editor.ParentId);
+        parameters.Add(x => x.Name, editor.Name);
+        parameters.Add(x => x.ExcludeId, node.Id);
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        var dialog = await DialogService.ShowAsync<KnowledgePointEditDialog>(
+            L["EditKnowledgePoint"],
+            parameters,
+            options);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false })
+        {
+            await LoadTreeAsync();
+        }
+    }
+
+    private async Task DeleteAsync(KnowledgePointNodeDto node)
+    {
+        bool? confirmed = await DialogService.ShowMessageBoxAsync(
+            L["Tips"],
+            string.Format(L["AreYouSureToDeleteNamed"], node.Name),
+            yesText: L["Delete"],
+            cancelText: L["Cancel"]);
+
+        if (confirmed == true)
+        {
+            await KnowledgePointAppService.DeleteAsync(node.Id);
+            Snackbar.Add(L["DeletedSuccessfully"], Severity.Success);
+            await LoadTreeAsync();
+        }
+    }
+}

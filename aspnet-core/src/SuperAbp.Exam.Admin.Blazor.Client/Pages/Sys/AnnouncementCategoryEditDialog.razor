@@ -1,0 +1,107 @@
+@inherits ExamComponentBase
+@using SuperAbp.Exam.Admin.Announcements
+@inject IAnnouncementCategoryAdminAppService CategoryAppService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudTextField @bind-Value="Name"
+                          Label="@L["Name"]"
+                          Immediate="false"
+                          T="string" />
+            <MudNumericField @bind-Value="Sort"
+                             Label="@L["Sort"]"
+                             T="int"
+                             Min="0" />
+            <MudTextField @bind-Value="Remark"
+                          Label="@L["Remark"]"
+                          T="string"
+                          Lines="2" />
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["Cancel"]</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="SubmitAsync">
+            @L["Save"]
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public AnnouncementCategoryListDto? Category { get; set; }
+
+    private string Name { get; set; } = string.Empty;
+    private int Sort { get; set; }
+    private string? Remark { get; set; }
+    private bool submitting;
+
+    protected override void OnInitialized()
+    {
+        if (Category != null)
+        {
+            Name = Category.Name;
+            Sort = Category.Sort;
+            Remark = Category.Remark;
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (submitting)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["Name"]), Severity.Error);
+            return;
+        }
+
+        submitting = true;
+        try
+        {
+            if (Category == null)
+            {
+                await CategoryAppService.CreateAsync(new AnnouncementCategoryCreateDto
+                {
+                    Name = Name.Trim(),
+                    Sort = Sort,
+                    Remark = Remark
+                });
+            }
+            else
+            {
+                await CategoryAppService.UpdateAsync(Category.Id, new AnnouncementCategoryUpdateDto
+                {
+                    Name = Name.Trim(),
+                    Sort = Sort,
+                    Remark = Remark
+                });
+            }
+
+            Snackbar.Add(L["SaveSuccessfully"], Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{L["OperationFailed"]}: {ex.GetBaseException().Message}", Severity.Error);
+        }
+        finally
+        {
+            submitting = false;
+        }
+    }
+}

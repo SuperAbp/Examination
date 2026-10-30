@@ -1,0 +1,59 @@
+@inherits ExamComponentBase
+@using SuperAbp.Exam.Admin.Notifications
+@inject INotificationAdminAppService NotificationAppService
+@inject NavigationManager NavigationManager
+
+<AuthorizeView>
+    <Authorized>
+        <MudBadge Content="@BadgeText"
+                  Color="Color.Error"
+                  Overlap="true">
+            <MudIconButton Icon="@Icons.Material.Filled.Notifications"
+                           Color="Color.Inherit"
+                           OnClick="GoToNotifications"
+                           aria-label="@L["Menu:Notifications"]" />
+        </MudBadge>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    @implements IDisposable
+
+    private long UnreadCount { get; set; }
+    [Inject]
+    private NotificationStateService NotificationState { get; set; } = default!;
+
+    private string? BadgeText => UnreadCount > 0
+        ? UnreadCount > 99 ? "99+" : UnreadCount.ToString()
+        : null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && CurrentUser.Id.HasValue)
+        {
+            NotificationState.Subscribe(RefreshUnreadCountAsync);
+            await RefreshUnreadCountAsync();
+        }
+    }
+
+    private async Task RefreshUnreadCountAsync()
+    {
+        if (!CurrentUser.Id.HasValue)
+        {
+            return;
+        }
+
+        UnreadCount = await NotificationAppService.GetUnreadCountAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void GoToNotifications()
+    {
+        NavigationManager.NavigateTo("/sys/notifications");
+    }
+
+    public void Dispose()
+    {
+        NotificationState.Unsubscribe(RefreshUnreadCountAsync);
+    }
+}

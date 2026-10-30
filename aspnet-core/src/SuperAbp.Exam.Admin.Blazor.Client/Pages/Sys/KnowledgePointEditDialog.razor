@@ -1,0 +1,128 @@
+@inherits ExamComponentBase
+@using SuperAbp.Exam.Admin.KnowledgePoints
+@inject IKnowledgePointAdminAppService KnowledgePointAppService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudSelect @bind-Value="ParentId"
+                       T="Guid?"
+                       Label="@L["ParentKnowledgePoint"]"
+                       Clearable="true">
+                <MudSelectItem Value="@((Guid?)null)">@L["NoParent"]</MudSelectItem>
+                @foreach (var option in parentOptions)
+                {
+                    <MudSelectItem Value="@((Guid?)option.Node.Id)">
+                        @(new string('—', option.Level * 2) + " " + option.Node.Name)
+                    </MudSelectItem>
+                }
+            </MudSelect>
+            <MudTextField @bind-Value="Name"
+                          T="string"
+                          Label="@L["Name"]" />
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["Cancel"]</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="SubmitAsync">
+            @L["Save"]
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private sealed record ParentOption(KnowledgePointNodeDto Node, int Level);
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [Parameter]
+    public Guid? ParentId { get; set; }
+
+    [Parameter]
+    public string Name { get; set; } = string.Empty;
+
+    [Parameter]
+    public Guid? ExcludeId { get; set; }
+
+    private List<ParentOption> parentOptions = [];
+    private bool submitting;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await KnowledgePointAppService.GetAllAsync(new GetKnowledgePointsInput());
+        parentOptions = [];
+        AppendOptions(result.Items, level: 0);
+    }
+
+    private void AppendOptions(IEnumerable<KnowledgePointNodeDto> nodes, int level)
+    {
+        foreach (var node in nodes)
+        {
+            if (node.Id == ExcludeId)
+            {
+                continue;
+            }
+
+            parentOptions.Add(new ParentOption(node, level));
+            AppendOptions(node.Children ?? [], level + 1);
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (submitting)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["Name"]), Severity.Error);
+            return;
+        }
+
+        submitting = true;
+        try
+        {
+            if (Id == Guid.Empty)
+            {
+                await KnowledgePointAppService.CreateAsync(new KnowledgePointCreateDto
+                {
+                    ParentId = ParentId,
+                    Name = Name.Trim()
+                });
+            }
+            else
+            {
+                await KnowledgePointAppService.UpdateAsync(Id, new KnowledgePointUpdateDto
+                {
+                    ParentId = ParentId,
+                    Name = Name.Trim()
+                });
+            }
+
+            Snackbar.Add(L["SaveSuccessfully"], Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{L["OperationFailed"]}: {ex.GetBaseException().Message}", Severity.Error);
+        }
+        finally
+        {
+            submitting = false;
+        }
+    }
+}

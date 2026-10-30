@@ -3,7 +3,9 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using SuperAbp.Exam.Admin.Blazor.Client.Navigation;
+using SuperAbp.Exam.Admin.Blazor.Client.Toolbars;
 using Volo.Abp.AspNetCore.Components.Web;
+using Volo.Abp.AspNetCore.Components.Web.Theming.Toolbars;
 using Volo.Abp.AspNetCore.Components.Web.Theming.MudBlazor.Routing;
 using Volo.Abp.AspNetCore.Components.WebAssembly.MudBlazorLeptonXLiteTheme;
 using Volo.Abp.Autofac.WebAssembly;
@@ -45,6 +47,8 @@ public class ExamAdminBlazorClientModule : AbpModule
         ConfigureBlazorise(context);
         ConfigureRouter(context);
         ConfigureMenu(context);
+        ConfigureToolbar(context);
+        context.Services.AddSingleton<NotificationStateService>();
     }
 
     private void ConfigureRouter(ServiceConfigurationContext context)
@@ -61,6 +65,14 @@ public class ExamAdminBlazorClientModule : AbpModule
         Configure<AbpNavigationOptions>(options =>
         {
             options.MenuContributors.Add(new ExamMenuContributor(context.Services.GetConfiguration()));
+        });
+    }
+
+    private void ConfigureToolbar(ServiceConfigurationContext context)
+    {
+        Configure<AbpToolbarOptions>(options =>
+        {
+            options.Contributors.Add(new ExamToolbarContributor());
         });
     }
 

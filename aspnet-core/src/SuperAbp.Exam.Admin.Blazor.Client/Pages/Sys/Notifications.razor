@@ -1,5 +1,195 @@
 @inherits ExamComponentBase
 @attribute [Authorize(Policy = ExamPermissions.Notifications.Default)]
 @page "/sys/notifications"
+@using SuperAbp.Exam.Admin.Notifications
+@using System.Text.Json
+@using System.Threading
+@inject INotificationAdminAppService NotificationAppService
+@inject ISnackbar Snackbar
+@inject NotificationStateService NotificationState
 
-<MudText Typo="Typo.h4">@L["Menu:Notifications"]</MudText>
+<MudText Typo="Typo.h4" Class="mb-4">@L["Menu:Notifications"]</MudText>
+
+<MudCard Elevation="0">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                <MudTextField @bind-Value="filterKeyword"
+                              Label="@L["Search"]"
+                              T="string"
+                              Immediate="true"
+                              OnKeyUp="FilterOnKeyUp"
+                              Style="min-width: 200px;" />
+                <MudSelect @bind-Value="readState"
+                           T="string"
+                           Label="@L["ReadState"]"
+                           Style="min-width: 120px;">
+                    <MudSelectItem Value="@("unread")">@L["Unread"]</MudSelectItem>
+                    <MudSelectItem Value="@("read")">@L["Read"]</MudSelectItem>
+                    <MudSelectItem Value="@("all")">@L["All"]</MudSelectItem>
+                </MudSelect>
+                <MudButton Variant="Variant.Outlined" OnClick="SearchAsync">
+                    @L["Search"]
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="ResetAsync">
+                    @L["Reset"]
+                </MudButton>
+            </MudStack>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            @if (unreadCount > 0)
+            {
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.DoneAll"
+                           OnClick="MarkAllAsReadAsync">
+                    @L["MarkAllAsRead"]
+                </MudButton>
+            }
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudDataGrid @ref="_grid"
+                     T="NotificationMyListDto"
+                     ServerData="LoadServerDataAsync"
+                     Hover="true"
+                     Striped="true"
+                     LoadingProgressColor="Color.Primary"
+                     RowsPerPage="10">
+            <Columns>
+                <TemplateColumn Title="@L["Content"]" Sortable="false">
+                    <CellTemplate Context="context">
+                        <span class="@(context.Item.IsRead ? "" : "font-weight-bold")">@RenderContent(context.Item)</span>
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property="x => x.CreationTime" Title="@L["CreationTime"]" />
+                <TemplateColumn Title="@L["ReadState"]" Sortable="false">
+                    <CellTemplate Context="context">
+                        <MudChip T="string" Size="Size.Small" Color="@(context.Item.IsRead ? Color.Default : Color.Primary)">
+                            @(context.Item.IsRead ? L["Read"] : L["Unread"])
+                        </MudChip>
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="@L["Actions"]" Sortable="false">
+                    <CellTemplate Context="context">
+                        @if (!context.Item.IsRead)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.MarkEmailRead"
+                                           Size="Size.Small"
+                                           Color="Color.Primary"
+                                           aria-label="@L["MarkAsRead"]"
+                                           OnClick="() => MarkAsReadAsync(context.Item)" />
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="NotificationMyListDto"
+                                  PageSizeOptions="new[] { 10, 20, 30, 40, 50 }" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private MudDataGrid<NotificationMyListDto> _grid = default!;
+    private string? filterKeyword;
+    private string readState = "unread";
+    private long unreadCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        unreadCount = await NotificationAppService.GetUnreadCountAsync();
+    }
+
+    private async Task<GridData<NotificationMyListDto>> LoadServerDataAsync(GridState<NotificationMyListDto> state, CancellationToken cancellationToken)
+    {
+        var result = await NotificationAppService.GetMyListAsync(new GetMyNotificationsInput
+        {
+            Filter = filterKeyword,
+            IsRead = readState switch
+            {
+                "read" => true,
+                "all" => null,
+                _ => false
+            },
+            SkipCount = state.Page * state.PageSize,
+            MaxResultCount = state.PageSize
+        });
+
+        return new GridData<NotificationMyListDto>
+        {
+            Items = result.Items,
+            TotalItems = (int)result.TotalCount
+        };
+    }
+
+    private async Task SearchAsync()
+    {
+        if (_grid != null)
+        {
+            await _grid.ReloadServerData();
+        }
+    }
+
+    private async Task ResetAsync()
+    {
+        filterKeyword = null;
+        readState = "unread";
+        await SearchAsync();
+    }
+
+    private async Task FilterOnKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SearchAsync();
+        }
+    }
+
+    private async Task MarkAsReadAsync(NotificationMyListDto notification)
+    {
+        await NotificationAppService.MarkAsReadAsync(notification.Id);
+        unreadCount = await NotificationAppService.GetUnreadCountAsync();
+        await NotificationState.NotifyChangedAsync();
+        await SearchAsync();
+    }
+
+    private async Task MarkAllAsReadAsync()
+    {
+        await NotificationAppService.MarkAllAsReadAsync();
+        unreadCount = await NotificationAppService.GetUnreadCountAsync();
+        await NotificationState.NotifyChangedAsync();
+        await SearchAsync();
+    }
+
+    private string RenderContent(NotificationMyListDto notification)
+    {
+        if (string.IsNullOrEmpty(notification.Data))
+        {
+            return string.Empty;
+        }
+
+        try
+        {
+            using var document = JsonDocument.Parse(notification.Data);
+            var root = document.RootElement;
+
+            if (notification.Type == 2 && root.TryGetProperty("examName", out var examName))
+            {
+                return string.Format(L["ExamScorePublished"], examName.GetString());
+            }
+
+            if (root.TryGetProperty("message", out var message) && message.ValueKind == JsonValueKind.String)
+            {
+                return message.GetString() ?? string.Empty;
+            }
+
+            return notification.Data;
+        }
+        catch (JsonException)
+        {
+            return notification.Data;
+        }
+    }
+}

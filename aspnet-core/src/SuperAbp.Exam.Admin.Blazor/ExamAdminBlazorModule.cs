@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.OpenApi;
 using SuperAbp.Exam.Admin.Blazor.Client;
 using SuperAbp.Exam.Admin.Blazor.Client.Navigation;
+using SuperAbp.Exam.Admin.Blazor.Client.Toolbars;
 using SuperAbp.Exam.Admin.Blazor.Components;
 using SuperAbp.Exam.EntityFrameworkCore;
 using SuperAbp.Exam.Localization;
@@ -20,6 +21,7 @@ using Volo.Abp;
 using Volo.Abp.AspNetCore.Components.Server.MudBlazorLeptonXLiteTheme;
 using Volo.Abp.AspNetCore.Components.Server.MudBlazorLeptonXLiteTheme.Bundling;
 using Volo.Abp.AspNetCore.Components.Web;
+using Volo.Abp.AspNetCore.Components.Web.Theming.Toolbars;
 using Volo.Abp.AspNetCore.Components.Web.Theming.MudBlazor.Routing;
 using Volo.Abp.AspNetCore.Components.WebAssembly.MudBlazorLeptonXLiteTheme.Bundling;
 using Volo.Abp.AspNetCore.Components.WebAssembly.Theming.MudBlazor.Bundling;
@@ -102,6 +104,7 @@ public class ExamAdminBlazorModule : AbpModule
         ConfigureBlazorise(context);
         ConfigureRouter(context);
         ConfigureMenu(context);
+        ConfigureToolbar(context);
     }
 
     private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
@@ -232,6 +235,15 @@ public class ExamAdminBlazorModule : AbpModule
         Configure<AbpNavigationOptions>(options =>
         {
             options.MenuContributors.Add(new ExamMenuContributor(context.Services.GetConfiguration()));
+        });
+    }
+
+    private void ConfigureToolbar(ServiceConfigurationContext context)
+    {
+        context.Services.AddSingleton<Client.NotificationStateService>();
+        Configure<AbpToolbarOptions>(options =>
+        {
+            options.Contributors.Add(new ExamToolbarContributor());
         });
     }
 

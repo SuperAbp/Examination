@@ -1,5 +1,237 @@
 @inherits ExamComponentBase
 @attribute [Authorize(Policy = ExamPermissions.Announcements.Default)]
 @page "/sys/announcements"
+@using SuperAbp.Exam.Admin.Announcements
+@using System.Threading
+@inject IAnnouncementAdminAppService AnnouncementAppService
+@inject IAnnouncementCategoryAdminAppService CategoryAppService
+@inject IAuthorizationService Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
-<MudText Typo="Typo.h4">@L["Menu:Announcements"]</MudText>
+<MudText Typo="Typo.h4" Class="mb-4">@L["Menu:Announcements"]</MudText>
+
+<MudCard Elevation="0">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                <MudTextField @bind-Value="filterTitle"
+                              Label="@L["Title"]"
+                              T="string"
+                              Immediate="true"
+                              OnKeyUp="FilterOnKeyUp"
+                              Style="min-width: 240px;" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="SearchAsync">
+                    @L["Search"]
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="ResetAsync">
+                    @L["Reset"]
+                </MudButton>
+            </MudStack>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            @if (CanCreate)
+            {
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           OnClick="OpenCreateDialogAsync">
+                    @L["NewAnnouncement"]
+                </MudButton>
+            }
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudDataGrid @ref="_grid"
+                     T="AnnouncementListDto"
+                     ServerData="LoadServerDataAsync"
+                     Hover="true"
+                     Striped="true"
+                     LoadingProgressColor="Color.Primary"
+                     RowsPerPage="10">
+            <Columns>
+                <PropertyColumn Property="x => x.CategoryName" Title="@L["CategoryName"]" />
+                <PropertyColumn Property="x => x.Title" Title="@L["Title"]" />
+                <TemplateColumn Title="@L["IsPublished"]">
+                    <CellTemplate Context="context">
+                        <MudChip T="string" Size="Size.Small" Color="@(context.Item.IsPublished ? Color.Success : Color.Default)">
+                            @(context.Item.IsPublished ? L["Yes"] : L["No"])
+                        </MudChip>
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property="x => x.ScheduledPublishTime" Title="@L["ScheduledPublishTime"]" />
+                <PropertyColumn Property="x => x.ScheduledExpirationTime" Title="@L["ScheduledExpirationTime"]" />
+                <PropertyColumn Property="x => x.Sort" Title="@L["Sort"]" />
+                <TemplateColumn Title="@L["Actions"]" Sortable="false">
+                    <CellTemplate Context="context">
+                        @if (CanUpdate)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                           Size="Size.Small"
+                                           Color="Color.Info"
+                                           OnClick="() => OpenEditDialogAsync(context.Item)" />
+                        }
+                        @if (!context.Item.IsPublished && CanPublish)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Publish"
+                                           Size="Size.Small"
+                                           Color="Color.Success"
+                                           OnClick="() => PublishAsync(context.Item)" />
+                        }
+                        @if (context.Item.IsPublished && CanUnpublish)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Unpublished"
+                                           Size="Size.Small"
+                                           Color="Color.Warning"
+                                           OnClick="() => UnpublishAsync(context.Item)" />
+                        }
+                        @if (CanDelete)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           Size="Size.Small"
+                                           Color="Color.Error"
+                                           OnClick="() => DeleteAsync(context.Item)" />
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="AnnouncementListDto"
+                                  PageSizeOptions="new[] { 10, 20, 30, 40, 50 }" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private MudDataGrid<AnnouncementListDto> _grid = default!;
+    private IReadOnlyList<AnnouncementCategoryListDto> categories = [];
+    private string? filterTitle;
+    private bool CanCreate { get; set; }
+    private bool CanUpdate { get; set; }
+    private bool CanPublish { get; set; }
+    private bool CanUnpublish { get; set; }
+    private bool CanDelete { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        CanCreate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Announcements.Create)).Succeeded;
+        CanUpdate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Announcements.Update)).Succeeded;
+        CanPublish = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Announcements.Publish)).Succeeded;
+        CanUnpublish = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Announcements.Unpublish)).Succeeded;
+        CanDelete = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Announcements.Delete)).Succeeded;
+
+        categories = (await CategoryAppService.GetListAsync()).Items;
+    }
+
+    private async Task<GridData<AnnouncementListDto>> LoadServerDataAsync(GridState<AnnouncementListDto> state, CancellationToken cancellationToken)
+    {
+        var input = new GetAnnouncementsInput
+        {
+            Title = filterTitle,
+            SkipCount = state.Page * state.PageSize,
+            MaxResultCount = state.PageSize
+        };
+
+        if (state.SortDefinitions.Count > 0)
+        {
+            var sort = state.SortDefinitions.First();
+            input.Sorting = $"{sort.SortBy} {(sort.Descending ? "Desc" : "Asc")}";
+        }
+
+        var result = await AnnouncementAppService.GetListAsync(input);
+        return new GridData<AnnouncementListDto>
+        {
+            Items = result.Items,
+            TotalItems = (int)result.TotalCount
+        };
+    }
+
+    private async Task SearchAsync()
+    {
+        if (_grid != null)
+        {
+            await _grid.ReloadServerData();
+        }
+    }
+
+    private async Task FilterOnKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SearchAsync();
+        }
+    }
+
+    private async Task ResetAsync()
+    {
+        filterTitle = null;
+        await SearchAsync();
+    }
+
+    private async Task OpenCreateDialogAsync()
+    {
+        await ShowEditDialogAsync(null);
+    }
+
+    private async Task OpenEditDialogAsync(AnnouncementListDto announcement)
+    {
+        await ShowEditDialogAsync(announcement);
+    }
+
+    private async Task ShowEditDialogAsync(AnnouncementListDto? announcement)
+    {
+        var detail = announcement == null ? null : await AnnouncementAppService.GetAsync(announcement.Id);
+        var parameters = new DialogParameters<AnnouncementEditDialog>();
+        parameters.Add(x => x.Announcement, detail);
+        parameters.Add(x => x.Categories, categories);
+        parameters.Add(x => x.CanPublish, CanPublish);
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
+
+        var dialog = await DialogService.ShowAsync<AnnouncementEditDialog>(
+            announcement == null ? L["NewAnnouncement"] : L["EditAnnouncement"],
+            parameters,
+            options);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false })
+        {
+            if (_grid != null)
+            {
+                await _grid.ReloadServerData();
+            }
+        }
+    }
+
+    private async Task PublishAsync(AnnouncementListDto announcement)
+    {
+        await AnnouncementAppService.PublishAsync(announcement.Id);
+        Snackbar.Add(L["PublishedSuccessfully"], Severity.Success);
+        await SearchAsync();
+    }
+
+    private async Task UnpublishAsync(AnnouncementListDto announcement)
+    {
+        await AnnouncementAppService.UnpublishAsync(announcement.Id);
+        Snackbar.Add(L["UnpublishedSuccessfully"], Severity.Success);
+        await SearchAsync();
+    }
+
+    private async Task DeleteAsync(AnnouncementListDto announcement)
+    {
+        bool? confirmed = await DialogService.ShowMessageBoxAsync(
+            L["Tips"],
+            string.Format(L["AreYouSureToDeleteNamed"], announcement.Title),
+            yesText: L["Delete"],
+            cancelText: L["Cancel"]);
+
+        if (confirmed == true)
+        {
+            await AnnouncementAppService.DeleteAsync(announcement.Id);
+            Snackbar.Add(L["DeletedSuccessfully"], Severity.Success);
+            await SearchAsync();
+        }
+    }
+}

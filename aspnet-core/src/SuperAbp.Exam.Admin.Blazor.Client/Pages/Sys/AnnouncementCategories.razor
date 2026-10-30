@@ -1,5 +1,140 @@
 @inherits ExamComponentBase
 @attribute [Authorize(Policy = ExamPermissions.AnnouncementCategories.Default)]
 @page "/sys/announcement-categories"
+@using SuperAbp.Exam.Admin.Announcements
+@inject IAnnouncementCategoryAdminAppService CategoryAppService
+@inject IAuthorizationService Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
-<MudText Typo="Typo.h4">@L["Menu:AnnouncementCategories"]</MudText>
+<MudText Typo="Typo.h4" Class="mb-4">@L["Menu:AnnouncementCategories"]</MudText>
+
+<MudCard Elevation="0">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">@L["AnnouncementCategories"]</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            @if (CanCreate)
+            {
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           OnClick="OpenCreateDialogAsync">
+                    @L["NewAnnouncementCategory"]
+                </MudButton>
+            }
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTable Items="@categories"
+                  Hover="true"
+                  Loading="@loading"
+                  LoadingProgressColor="Color.Primary">
+            <HeaderContent>
+                <MudTh>@L["Name"]</MudTh>
+                <MudTh>@L["Sort"]</MudTh>
+                <MudTh>@L["Remark"]</MudTh>
+                <MudTh>@L["Actions"]</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@L["Name"]">@context.Name</MudTd>
+                <MudTd DataLabel="@L["Sort"]">@context.Sort</MudTd>
+                <MudTd DataLabel="@L["Remark"]">@context.Remark</MudTd>
+                <MudTd>
+                    @if (CanUpdate)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Size="Size.Small"
+                                       Color="Color.Info"
+                                       OnClick="() => OpenEditDialogAsync(context)" />
+                    }
+                    @if (CanDelete)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Size="Size.Small"
+                                       Color="Color.Error"
+                                       OnClick="() => DeleteAsync(context)" />
+                    }
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private IReadOnlyList<AnnouncementCategoryListDto> categories = [];
+    private bool loading;
+    private bool CanCreate { get; set; }
+    private bool CanUpdate { get; set; }
+    private bool CanDelete { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        CanCreate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.AnnouncementCategories.Create)).Succeeded;
+        CanUpdate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.AnnouncementCategories.Update)).Succeeded;
+        CanDelete = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.AnnouncementCategories.Delete)).Succeeded;
+
+        await LoadCategoriesAsync();
+    }
+
+    private async Task LoadCategoriesAsync()
+    {
+        loading = true;
+        try
+        {
+            var result = await CategoryAppService.GetListAsync();
+            categories = result.Items;
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task OpenCreateDialogAsync()
+    {
+        await ShowEditDialogAsync(null);
+    }
+
+    private async Task OpenEditDialogAsync(AnnouncementCategoryListDto category)
+    {
+        await ShowEditDialogAsync(category);
+    }
+
+    private async Task ShowEditDialogAsync(AnnouncementCategoryListDto? category)
+    {
+        var parameters = new DialogParameters<AnnouncementCategoryEditDialog>();
+        parameters.Add(x => x.Category, category);
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        var dialog = await DialogService.ShowAsync<AnnouncementCategoryEditDialog>(
+            category == null ? L["NewAnnouncementCategory"] : L["EditAnnouncementCategory"],
+            parameters,
+            options);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false })
+        {
+            await LoadCategoriesAsync();
+        }
+    }
+
+    private async Task DeleteAsync(AnnouncementCategoryListDto category)
+    {
+        bool? confirmed = await DialogService.ShowMessageBoxAsync(
+            L["Tips"],
+            string.Format(L["AreYouSureToDeleteNamed"], category.Name),
+            yesText: L["Delete"],
+            cancelText: L["Cancel"]);
+
+        if (confirmed == true)
+        {
+            await CategoryAppService.DeleteAsync(category.Id);
+            Snackbar.Add(L["DeletedSuccessfully"], Severity.Success);
+            await LoadCategoriesAsync();
+        }
+    }
+}
