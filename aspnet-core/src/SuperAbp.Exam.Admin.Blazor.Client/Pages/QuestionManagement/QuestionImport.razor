@@ -1,0 +1,135 @@
+@inherits ExamComponentBase
+@attribute [Authorize(Policy = ExamPermissions.Questions.Default)]
+@page "/question-management/questions/import"
+@using SuperAbp.Exam.Admin.QuestionManagement.Questions
+@using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
+@using SuperAbp.Exam.Options
+@inject IQuestionAdminAppService QuestionAppService
+@inject IQuestionBankAdminAppService QuestionBankAppService
+@inject IOptionAppService OptionAppService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mb-4">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   Color="Color.Primary"
+                   aria-label="@L["Back"]"
+                   OnClick="GoBackAsync" />
+    <MudText Typo="Typo.h4">@L["Import"]</MudText>
+</MudStack>
+
+<MudCard Elevation="0">
+    <MudCardContent>
+        <MudStack Spacing="3" Style="max-width: 800px;">
+            <MudSelect @bind-Value="questionBankId"
+                       T="Guid?"
+                       Label="@L["QuestionBank"]"
+                       SearchBox="true"
+                       CloseOnSelect="true">
+                @foreach (var questionBank in questionBanks)
+                {
+                    <MudSelectItem Value="@((Guid?)questionBank.Id)">@questionBank.Title</MudSelectItem>
+                }
+            </MudSelect>
+            <MudSelect @bind-Value="questionType"
+                       T="int?"
+                       Label="@L["QuestionType"]"
+                       Clearable="true"
+                       CloseOnSelect="true">
+                @foreach (var type in questionTypes)
+                {
+                    <MudSelectItem Value="@((int?)type.Key)">@L[$"QuestionType:{type.Key}"]</MudSelectItem>
+                }
+            </MudSelect>
+            <MudTextField @bind-Value="content"
+                          T="string"
+                          Label="@L["QuestionContent"]"
+                          Lines="12" />
+        </MudStack>
+    </MudCardContent>
+    <MudCardActions>
+        <MudSpacer />
+        <MudButton Variant="Variant.Outlined" OnClick="GoBackAsync">@L["Back"]</MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Disabled="@submitting"
+                   OnClick="SubmitAsync">
+            @L["Submit"]
+        </MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    private bool submitting;
+    private Guid? questionBankId;
+    private int? questionType;
+    private string? content;
+
+    private Dictionary<int, string> questionTypes = [];
+    private List<QuestionBankListDto> questionBanks = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        questionTypes = OptionAppService.GetQuestionTypes();
+        var banks = await QuestionBankAppService.GetListAsync(new GetQuestionBanksInput
+        {
+            SkipCount = 0,
+            MaxResultCount = 100
+        });
+        questionBanks = banks.Items.ToList();
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (submitting)
+        {
+            return;
+        }
+
+        if (questionBankId == null)
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["QuestionBank"]), Severity.Error);
+            return;
+        }
+
+        if (questionType == null)
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["QuestionType"]), Severity.Error);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["QuestionContent"]), Severity.Error);
+            return;
+        }
+
+        submitting = true;
+        try
+        {
+            await QuestionAppService.ImportAsync(new QuestionImportDto
+            {
+                QuestionBankId = questionBankId.Value,
+                QuestionType = questionType.Value,
+                Content = content
+            });
+
+            Snackbar.Add(L["SaveSuccessfully"], Severity.Success);
+            Navigation.NavigateTo("/question-management/questions");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(L["OperationFailed"] + ": " + ex.GetBaseException().Message, Severity.Error);
+        }
+        finally
+        {
+            submitting = false;
+        }
+    }
+
+    private Task GoBackAsync()
+    {
+        Navigation.NavigateTo("/question-management/questions");
+        return Task.CompletedTask;
+    }
+}

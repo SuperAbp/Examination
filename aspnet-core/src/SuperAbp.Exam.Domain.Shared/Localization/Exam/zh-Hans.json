@@ -4,6 +4,7 @@
     "AppName": "考试系统",
     "Menu:Home": "首页",
     "Menu:QuestionManagement": "题目管理",
+    "Back": "返回",
     "Menu:Questions": "题目",
     "Menu:QuestionBanks": "题库",
     "Edit": "编辑",

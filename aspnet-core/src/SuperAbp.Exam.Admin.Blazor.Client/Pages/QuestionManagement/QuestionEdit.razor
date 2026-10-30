@@ -1,0 +1,504 @@
+@inherits ExamComponentBase
+@attribute [Authorize(Policy = ExamPermissions.Questions.Default)]
+@page "/question-management/questions/edit/{Id:guid?}"
+@using SuperAbp.Exam.Admin.QuestionManagement.Questions
+@using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
+@using SuperAbp.Exam.Admin.KnowledgePoints
+@using SuperAbp.Exam.Options
+@using SuperAbp.Exam.QuestionManagement.Questions
+@inject IQuestionAdminAppService QuestionAppService
+@inject IQuestionBankAdminAppService QuestionBankAppService
+@inject IKnowledgePointAdminAppService KnowledgePointAppService
+@inject IOptionAppService OptionAppService
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mb-4">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   Color="Color.Primary"
+                   aria-label="@L["Back"]"
+                   OnClick="GoBackAsync" />
+    <MudText Typo="Typo.h4">@(IsEditMode ? L["Edit"] : L["NewQuestion"])</MudText>
+</MudStack>
+
+@if (loading)
+{
+    <MudProgressLinear Indeterminate Color="Color.Primary" />
+}
+else
+{
+    <MudCard Elevation="0">
+        <MudCardContent>
+            <MudStack Spacing="3" Style="max-width: 960px;">
+                <MudStack Row Spacing="3">
+                    <MudSelect T="int?"
+                               Value="questionType"
+                               ValueChanged="OnQuestionTypeChanged"
+                               Label="@L["QuestionType"]"
+                               Disabled="IsEditMode"
+                               Clearable="!IsEditMode"
+                               CloseOnSelect="true"
+                               Style="min-width: 220px;">
+                        @foreach (var type in questionTypes)
+                        {
+                            <MudSelectItem Value="@((int?)type.Key)">@L[$"QuestionType:{type.Key}"]</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudSelect @bind-Value="questionBankId"
+                               T="Guid?"
+                               Label="@L["QuestionBank"]"
+                               SearchBox="true"
+                               CloseOnSelect="true"
+                               Style="min-width: 220px;">
+                        @foreach (var questionBank in questionBanks)
+                        {
+                            <MudSelectItem Value="@((Guid?)questionBank.Id)">@questionBank.Title</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudStack>
+                <MudTextField @bind-Value="content"
+                              T="string"
+                              Label="@L["QuestionContent"]"
+                              Lines="4" />
+                <MudSelect T="Guid"
+                           MultiSelection="true"
+                           @bind-SelectedValues="selectedKnowledgePointIds"
+                           Label="@L["KnowledgePoint"]">
+                    @foreach (var knowledgePoint in knowledgePointOptions)
+                    {
+                        <MudSelectItem Value="@knowledgePoint.Id">@knowledgePoint.Label</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudTextField @bind-Value="analysis"
+                              T="string"
+                              Label="@L["Analysis"]"
+                              Lines="4" />
+
+                @if (questionType.HasValue)
+                {
+                    <MudStack Spacing="1">
+                        @if (questionType != QuestionType.Judge.Value)
+                        {
+                            <div>
+                                <MudButton Variant="Variant.Outlined"
+                                           Color="Color.Primary"
+                                           StartIcon="@Icons.Material.Filled.Add"
+                                           OnClick="AddOption">
+                                    @L["NewQuestionAnswer"]
+                                </MudButton>
+                            </div>
+                        }
+                        @if (options.Count > 0)
+                        {
+                            <MudSimpleTable Striped="true" Bordered="true">
+                                <thead>
+                                    <tr>
+                                        @if (questionType != QuestionType.FillInTheBlanks.Value)
+                                        {
+                                            <th style="width: 110px;">@L["IsAnswer"]</th>
+                                        }
+                                        <th>@L["Content"]</th>
+                                        <th>@L["Analysis"]</th>
+                                        <th style="width: 140px;">@L["Sort"]</th>
+                                        @if (questionType != QuestionType.Judge.Value)
+                                        {
+                                            <th style="width: 70px;">@L["Actions"]</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var (option, index) in options.Select((value, index) => (value, index)))
+                                    {
+                                        <tr @key="option">
+                                            @if (questionType != QuestionType.FillInTheBlanks.Value)
+                                            {
+                                                <td>
+                                                    @if (questionType == QuestionType.MultiSelect.Value)
+                                                    {
+                                                        <MudCheckBox T="bool" @bind-Value="option.Right" Label="@L["Answer"]" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <MudCheckBox T="bool"
+                                                                     Value="option.Right"
+                                                                     ValueChanged="value => SetExclusiveRight(index, value)"
+                                                                     Label="@L["Answer"]" />
+                                                    }
+                                                </td>
+                                            }
+                                            <td>
+                                                @if (questionType == QuestionType.Judge.Value)
+                                                {
+                                                    <MudText>@option.Content</MudText>
+                                                }
+                                                else
+                                                {
+                                                    <MudTextField @bind-Value="option.Content" T="string" Lines="2" />
+                                                }
+                                            </td>
+                                            <td>
+                                                <MudTextField @bind-Value="option.Analysis" T="string" Lines="2" />
+                                            </td>
+                                            <td>
+                                                <MudNumericField @bind-Value="option.Sort" T="int" Min="0" Step="1" />
+                                            </td>
+                                            @if (questionType != QuestionType.Judge.Value)
+                                            {
+                                                <td>
+                                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                                   Size="Size.Small"
+                                                                   Color="Color.Error"
+                                                                   OnClick="() => RemoveOptionAsync(index)" />
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </MudSimpleTable>
+                        }
+
+                        @if (questionType == QuestionType.FillInTheBlanks.Value)
+                        {
+                            <div>
+                                <MudSwitch @bind-Value="fixedOrder" Label="@L["FixedOrder"]" />
+                            </div>
+                            @if (!fixedOrder)
+                            {
+                                <MudNumericField @bind-Value="requiredAnswerCount"
+                                                 T="int"
+                                                 Min="1"
+                                                 Max="@Math.Max(1, options.Count)"
+                                                 Label="@L["RequiredAnswerCount"]"
+                                                 Style="max-width: 220px;" />
+                            }
+                        }
+                    </MudStack>
+                }
+            </MudStack>
+        </MudCardContent>
+        <MudCardActions>
+            <MudSpacer />
+            <MudButton Variant="Variant.Outlined" OnClick="GoBackAsync">@L["Back"]</MudButton>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Disabled="@saving"
+                       OnClick="SaveAsync">
+                @L["Submit"]
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+}
+
+@code {
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    private bool IsEditMode => Id.HasValue;
+
+    private bool loading = true;
+    private bool saving;
+    private string content = string.Empty;
+    private string? analysis;
+    private int? questionType;
+    private Guid? questionBankId;
+    private bool fixedOrder = true;
+    private int requiredAnswerCount = 1;
+    private IReadOnlyCollection<Guid> selectedKnowledgePointIds = Array.Empty<Guid>();
+
+    private Dictionary<int, string> questionTypes = [];
+    private List<QuestionBankListDto> questionBanks = [];
+    private List<KnowledgePointOption> knowledgePointOptions = [];
+    private List<QuestionOptionEditModel> options = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+        questionTypes = OptionAppService.GetQuestionTypes();
+            var banks = await QuestionBankAppService.GetListAsync(new GetQuestionBanksInput
+            {
+                SkipCount = 0,
+                MaxResultCount = 100
+            });
+            questionBanks = banks.Items.ToList();
+
+            var knowledgePoints = await KnowledgePointAppService.GetAllAsync(new GetKnowledgePointsInput());
+            knowledgePointOptions = FlattenKnowledgePoints(knowledgePoints.Items, 0);
+
+            if (IsEditMode)
+            {
+                var editor = await QuestionAppService.GetEditorAsync(Id!.Value);
+                ApplyEditor(editor);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(L["OperationFailed"] + ": " + ex.GetBaseException().Message, Severity.Error);
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private void ApplyEditor(GetQuestionForEditorOutput editor)
+    {
+        content = editor.Content;
+        analysis = editor.Analysis;
+        questionType = editor.QuestionType;
+        questionBankId = editor.QuestionBankId;
+        fixedOrder = editor.FixedOrder;
+        requiredAnswerCount = editor.RequiredAnswerCount > 0 ? editor.RequiredAnswerCount : 1;
+        selectedKnowledgePointIds = editor.KnowledgePointIds?.ToList() ?? new List<Guid>();
+        options = editor.Answers
+            .Select(answer => new QuestionOptionEditModel
+            {
+                Id = answer.Id,
+                Right = answer.Right,
+                Content = answer.Content,
+                Analysis = answer.Analysis,
+                Sort = answer.Sort
+            })
+            .ToList();
+
+        if (options.Count == 0)
+        {
+            ResetOptionsForType(editor.QuestionType);
+        }
+    }
+
+    private void OnQuestionTypeChanged(int? value)
+    {
+        if (IsEditMode || questionType == value)
+        {
+            return;
+        }
+
+        questionType = value;
+        if (value.HasValue)
+        {
+            ResetOptionsForType(value.Value);
+        }
+        else
+        {
+            options.Clear();
+        }
+
+        StateHasChanged();
+    }
+
+    private void ResetOptionsForType(int type)
+    {
+        if (type == QuestionType.Judge.Value)
+        {
+            options =
+            [
+                new QuestionOptionEditModel { Content = "对", Right = true, Sort = 0 },
+                new QuestionOptionEditModel { Content = "错", Right = false, Sort = 1 }
+            ];
+            return;
+        }
+
+        options = Enumerable.Range(0, 2)
+            .Select(_ => new QuestionOptionEditModel { Right = type == QuestionType.FillInTheBlanks.Value, Sort = 0 })
+            .ToList();
+    }
+
+    private void AddOption()
+    {
+        options.Add(new QuestionOptionEditModel { Right = questionType == QuestionType.FillInTheBlanks.Value, Sort = 0 });
+    }
+
+    private void SetExclusiveRight(int index, bool value)
+    {
+        if (!value && options[index].Right)
+        {
+            options[index].Right = true;
+        }
+        else
+        {
+            for (var i = 0; i < options.Count; i++)
+            {
+                options[i].Right = i == index;
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task RemoveOptionAsync(int index)
+    {
+        var option = options[index];
+        bool? confirmed = await DialogService.ShowMessageBoxAsync(
+            L["Tips"],
+            string.Format(L["AreYouSureToDeleteNamed"], GetOptionLabel(index, option)),
+            yesText: L["Delete"],
+            cancelText: L["Cancel"]);
+
+        if (confirmed != true)
+        {
+            return;
+        }
+
+        if (IsEditMode && option.Id.HasValue)
+        {
+            await QuestionAppService.DeleteAnswerAsync(Id!.Value, option.Id.Value);
+        }
+
+        options.RemoveAt(index);
+    }
+
+    private async Task SaveAsync()
+    {
+        if (saving || !Validate())
+        {
+            return;
+        }
+
+        saving = true;
+        try
+        {
+            if (IsEditMode)
+            {
+                var update = new QuestionUpdateDto
+                {
+                    Content = content.Trim(),
+                    Analysis = analysis,
+                    QuestionBankId = questionBankId!.Value,
+                    FixedOrder = fixedOrder,
+                    RequiredAnswerCount = requiredAnswerCount,
+                    KnowledgePointIds = selectedKnowledgePointIds.ToList(),
+                    Options = options.Select(ToAnswerDto).ToArray()
+                };
+                await QuestionAppService.UpdateAsync(Id!.Value, update);
+            }
+            else
+            {
+                var create = new QuestionCreateDto
+                {
+                    Content = content.Trim(),
+                    Analysis = analysis,
+                    QuestionBankId = questionBankId!.Value,
+                    FixedOrder = fixedOrder,
+                    RequiredAnswerCount = requiredAnswerCount,
+                    KnowledgePointIds = selectedKnowledgePointIds.ToList(),
+                    QuestionType = questionType!.Value,
+                    Options = options.Select(ToAnswerDto).ToArray()
+                };
+                await QuestionAppService.CreateAsync(create);
+            }
+
+            Snackbar.Add(L["SaveSuccessfully"], Severity.Success);
+            Navigation.NavigateTo("/question-management/questions");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(L["OperationFailed"] + ": " + ex.GetBaseException().Message, Severity.Error);
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+
+    private QuestionCreateOrUpdateAnswerDto ToAnswerDto(QuestionOptionEditModel option)
+    {
+        return new QuestionCreateOrUpdateAnswerDto
+        {
+            Id = IsEditMode ? option.Id : null,
+            Right = questionType == QuestionType.FillInTheBlanks.Value || option.Right,
+            Content = option.Content!.Trim(),
+            Analysis = option.Analysis,
+            Sort = option.Sort
+        };
+    }
+
+    private bool Validate()
+    {
+        if (!IsEditMode && questionType == null)
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["QuestionType"]), Severity.Error);
+            return false;
+        }
+
+        if (questionBankId == null)
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["QuestionBank"]), Severity.Error);
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["QuestionContent"]), Severity.Error);
+            return false;
+        }
+
+        if (options.Count == 0)
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["NewQuestionAnswer"]), Severity.Error);
+            return false;
+        }
+
+        if (options.Any(option => string.IsNullOrWhiteSpace(option.Content)))
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["Content"]), Severity.Error);
+            return false;
+        }
+
+        if (questionType == QuestionType.FillInTheBlanks.Value && !fixedOrder
+            && (requiredAnswerCount < 1 || requiredAnswerCount > options.Count))
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["RequiredAnswerCount"]), Severity.Error);
+            return false;
+        }
+
+        return true;
+    }
+
+    private Task GoBackAsync()
+    {
+        Navigation.NavigateTo("/question-management/questions");
+        return Task.CompletedTask;
+    }
+
+    private string GetOptionLabel(int index, QuestionOptionEditModel option)
+    {
+        var content = option.Content ?? string.Empty;
+        if (content.Length > 20)
+        {
+            content = content[..20] + "…";
+        }
+
+        return questionType == QuestionType.FillInTheBlanks.Value
+            ? content
+            : DisplayHelpers.CharLabel(index) + ". " + content;
+    }
+
+    private List<KnowledgePointOption> FlattenKnowledgePoints(IEnumerable<KnowledgePointNodeDto> nodes, int level)
+    {
+        var result = new List<KnowledgePointOption>();
+        foreach (var node in nodes)
+        {
+            var label = string.Concat(Enumerable.Repeat("　", level)) + node.Name;
+            result.Add(new KnowledgePointOption(node.Id, label));
+            if (node.Children is { Count: > 0 })
+            {
+                result.AddRange(FlattenKnowledgePoints(node.Children, level + 1));
+            }
+        }
+
+        return result;
+    }
+
+    private sealed record KnowledgePointOption(Guid Id, string Label);
+
+    private sealed class QuestionOptionEditModel
+    {
+        public Guid? Id { get; set; }
+        public bool Right { get; set; }
+        public string? Content { get; set; }
+        public string? Analysis { get; set; }
+        public int Sort { get; set; }
+    }
+}
