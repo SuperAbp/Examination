@@ -49,13 +49,13 @@ public class ExamMenuContributor : IMenuContributor
             order: 1
         ));
 
-        var questionManagement = context.Menu.AddItem(new ApplicationMenuItem(
+        var questionManagement = new ApplicationMenuItem(
             ExamMenus.QuestionManagement,
             l["Menu:QuestionManagement"],
             "#",
             icon: "fas fa-question-circle",
             order: 2
-        ));
+        );
         questionManagement.AddItem(new ApplicationMenuItem(
             ExamMenus.Questions,
             l["Menu:Questions"],
@@ -66,40 +66,43 @@ public class ExamMenuContributor : IMenuContributor
             l["Menu:QuestionBanks"],
             "/question-management/question-banks"
         ).RequirePermissions(ExamPermissions.QuestionBanks.Default));
+        context.Menu.AddItem(questionManagement);
 
-        var paperManagement = context.Menu.AddItem(new ApplicationMenuItem(
+        var paperManagement = new ApplicationMenuItem(
             ExamMenus.PaperManagement,
             l["Menu:PaperManagement"],
             "#",
             icon: "fas fa-file-alt",
             order: 3
-        ));
+        );
         paperManagement.AddItem(new ApplicationMenuItem(
             ExamMenus.Papers,
             l["Menu:Papers"],
             "/paper-management/papers"
         ).RequirePermissions(ExamPermissions.Papers.Default));
+        context.Menu.AddItem(paperManagement);
 
-        var examManagement = context.Menu.AddItem(new ApplicationMenuItem(
+        var examManagement = new ApplicationMenuItem(
             ExamMenus.ExamManagement,
             l["Menu:ExamManagement"],
             "#",
             icon: "fas fa-calendar-check",
             order: 4
-        ));
+        );
         examManagement.AddItem(new ApplicationMenuItem(
             ExamMenus.Exams,
             l["Menu:Exams"],
             "/exam-management/exams"
         ).RequirePermissions(ExamPermissions.Exams.Default));
+        context.Menu.AddItem(examManagement);
 
-        var system = context.Menu.AddItem(new ApplicationMenuItem(
+        var system = new ApplicationMenuItem(
             ExamMenus.System,
             l["Menu:System"],
             "#",
             icon: "fas fa-toolbox",
             order: 5
-        ));
+        );
         system.AddItem(new ApplicationMenuItem(
             ExamMenus.SystemAnnouncements,
             l["Menu:Announcements"],
@@ -120,6 +123,7 @@ public class ExamMenuContributor : IMenuContributor
             l["Menu:Notifications"],
             "/sys/notifications"
         ).RequirePermissions(ExamPermissions.Notifications.Default));
+        context.Menu.AddItem(system);
 
         if (MultiTenancyConsts.IsEnabled)
         {
