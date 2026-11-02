@@ -260,6 +260,14 @@
     "ScoreEach": "每题分数",
     "AvailableQuestions": "{0} 可用",
     "SelectedCount": "已选（{0}题）",
-    "The {0} field must be greater than 0.": "{0} 必须大于 0。"
+    "The {0} field must be greater than 0.": "{0} 必须大于 0。",
+    "DeletedSuccessfullyNamed": "已删除“{0}”。",
+    "EndTimeMustBeAfterStartTime": "结束时间必须晚于开始时间",
+    "Login": "登录",
+    "LongWelcomeMessage": "欢迎使用本应用程序。这是一个基于 ABP 框架的启动项目。更多信息请访问 abp.io。",
+    "Reason": "评语",
+    "The {0} field must be greater than or equal to 0.": "{0} 必须大于或等于 0。",
+    "The {0} field must be less than or equal to {1}.": "{0} 必须小于或等于 {1}。",
+    "Welcome": "欢迎"
   }
 }
