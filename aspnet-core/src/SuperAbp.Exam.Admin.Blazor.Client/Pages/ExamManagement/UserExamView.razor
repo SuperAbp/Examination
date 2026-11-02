@@ -1,0 +1,274 @@
+@inherits ExamComponentBase
+@attribute [Authorize(Policy = ExamPermissions.Exams.Default)]
+@page "/exam-management/user-exams/{UserExamId:guid}"
+@using SuperAbp.Exam.Admin.ExamManagement.UserExams
+@using SuperAbp.Exam.ExamManagement.Exams
+@using SuperAbp.Exam.ExamManagement.UserExams
+@inject IUserExamAdminAppService UserExamAppService
+@inject NavigationManager Navigation
+@inject IJSRuntime JavaScript
+@inject ISnackbar Snackbar
+
+<MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mb-4">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   Color="Color.Primary"
+                   aria-label="@L["Back"]"
+                   OnClick="GoBackAsync" />
+    <MudText Typo="Typo.h4">@(userExam is null ? "" : $"{userExam.ExamName} - {userExam.UserName}")</MudText>
+</MudStack>
+
+@if (loading)
+{
+    <MudProgressLinear Indeterminate Color="Color.Primary" />
+}
+else if (userExam is null)
+{
+    <MudAlert Severity="Severity.Error">@L["OperationFailed"]</MudAlert>
+}
+else
+{
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="3">
+            <div class="question-nav-wrapper">
+                <QuestionNumberNav Sections="@GetQuestionNumberSections()" />
+            </div>
+        </MudItem>
+        <MudItem xs="12" md="9">
+            <MudCard Elevation="0">
+                <MudCardContent>
+                    @for (var sectionIndex = 0; sectionIndex < userExam.Sections.Count; sectionIndex++)
+                    {
+                        var section = userExam.Sections[sectionIndex];
+                        <MudText Typo="Typo.h5" Class="section-title">
+                            @(DisplayHelpers.SimplifiedOrdinal(sectionIndex + 1)). @section.Title (@L["TotalCount"]: @section.TotalCount)
+                        </MudText>
+
+                        @for (var questionIndex = 0; questionIndex < section.Questions.Count; questionIndex++)
+                        {
+                            var question = section.Questions[questionIndex];
+                            <div id="@question.Id" class="question">
+                                <MudText Typo="Typo.subtitle1" Class="question-title">
+                                    @(questionIndex + 1). @question.Content
+                                </MudText>
+
+                                @if (question.QuestionType is 0 or 1 or 2)
+                                {
+                                    <QuestionOptionsView Options="@CreateOptionViewModels(question)" Answers="@question.Answers" />
+                                }
+                                else if (question.QuestionType == 3)
+                                {
+                                    <MudGrid Spacing="3">
+                                        <MudItem xs="12" md="@(IsReview ? 6 : 12)">
+                                            <MudText Typo="Typo.subtitle2">@L["UserAnswer"]</MudText>
+                                            <MudText>@question.Answers</MudText>
+                                            <MudText Typo="Typo.subtitle2" Class="mt-3">@L["Answer"]</MudText>
+                                            <MudText>@GetCorrectAnswers(question)</MudText>
+                                            @if (!string.IsNullOrWhiteSpace(question.Analysis))
+                                            {
+                                                <MudText Typo="Typo.subtitle2" Class="mt-3">@L["Analysis"]</MudText>
+                                                <MudText>@question.Analysis</MudText>
+                                            }
+                                        </MudItem>
+                                        @if (IsReview)
+                                        {
+                                            <MudItem xs="12" md="6">
+                                                <MudSwitch T="bool"
+                                                           Value="@reviewQuestions[question.Id].Right"
+                                                           ValueChanged="@(value => SetAnswerRight(question.Id, value))"
+                                                           Label="@L["IsAnswer"]"
+                                                           Color="Color.Primary" />
+                                                <MudNumericField T="decimal"
+                                                                 Value="@reviewQuestions[question.Id].Score"
+                                                                 ValueChanged="@(value => SetReviewScore(question.Id, value))"
+                                                                 Label="@L["Score"]"
+                                                                 Min="0"
+                                                                 Max="question.QuestionScore ?? 0"
+                                                                 Class="mt-3" />
+                                                <MudTextField T="string"
+                                                              Value="@GetReason(question.Id)"
+                                                              ValueChanged="@(value => SetReason(question.Id, value))"
+                                                              Label="@L["Reason"]"
+                                                              Lines="4"
+                                                              Class="mt-3" />
+                                            </MudItem>
+                                        }
+                                    </MudGrid>
+                                }
+                            </div>
+                        }
+                    }
+                </MudCardContent>
+            </MudCard>
+
+            @if (CanReview)
+            {
+                <MudStack Row Justify="Justify.FlexEnd" Class="mt-3">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Loading="submitting"
+                               OnClick="SubmitReviewAsync">
+                        @L["Submit"]
+                    </MudButton>
+                </MudStack>
+            }
+        </MudItem>
+    </MudGrid>
+}
+
+@code {
+    [Parameter]
+    public Guid UserExamId { get; set; }
+
+    private UserExamDetailDto? userExam;
+    private Dictionary<Guid, ReviewQuestionEditModel> reviewQuestions = [];
+    private bool loading = true;
+    private bool submitting;
+
+    private bool IsReview => userExam != null &&
+        (userExam.Status == UserExamStatus.Submitted.Value ||
+         userExam.Status == UserExamStatus.Scored.Value);
+
+    private bool CanReview => userExam != null &&
+        userExam.Status == UserExamStatus.Submitted.Value &&
+        (userExam.ReviewMode == ReviewMode.Unified.Value
+            ? userExam.ExamStatus == ExaminationStatus.Grading.Value
+            : userExam.ReviewMode == ReviewMode.RealTime.Value &&
+              (userExam.ExamStatus == ExaminationStatus.Published.Value ||
+               userExam.ExamStatus == ExaminationStatus.Grading.Value));
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserExamAsync();
+    }
+
+    private async Task LoadUserExamAsync()
+    {
+        loading = true;
+        try
+        {
+            userExam = await UserExamAppService.GetAsync(UserExamId);
+            reviewQuestions = userExam.Sections
+                .SelectMany(section => section.Questions)
+                .Where(question => question.QuestionType == 3)
+                .ToDictionary(
+                    question => question.Id,
+                    question => new ReviewQuestionEditModel
+                    {
+                        QuestionId = question.Id,
+                        Right = question.Right ?? false,
+                        Score = question.Score ?? 0,
+                        Reason = question.Reason
+                    });
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private IReadOnlyList<QuestionNumberSection> GetQuestionNumberSections()
+    {
+        if (userExam is null)
+        {
+            return [];
+        }
+
+        return userExam.Sections
+            .Select(section => new QuestionNumberSection(
+                section.Title,
+                section.TotalScore,
+                section.Questions.Select(question => new QuestionNumberItem(question.Id, question.QuestionScore)).ToList()))
+            .ToList();
+    }
+
+    private IReadOnlyList<QuestionOptionViewModel> CreateOptionViewModels(UserExamDetailDto.SectionDto.QuestionDto question)
+    {
+        return question.Options
+            .Select(option => new QuestionOptionViewModel(option.Id, option.Content, option.Right))
+            .ToList();
+    }
+
+    private string GetCorrectAnswers(UserExamDetailDto.SectionDto.QuestionDto question)
+    {
+        return string.Join("||", question.Options.Select(option => option.Content));
+    }
+
+    private string GetReason(Guid questionId)
+    {
+        return reviewQuestions[questionId].Reason ?? string.Empty;
+    }
+
+    private void SetAnswerRight(Guid questionId, bool value)
+    {
+        reviewQuestions[questionId].Right = value;
+    }
+
+    private void SetReviewScore(Guid questionId, decimal value)
+    {
+        reviewQuestions[questionId].Score = value;
+    }
+
+    private void SetReason(Guid questionId, string value)
+    {
+        reviewQuestions[questionId].Reason = value;
+    }
+
+    private async Task SubmitReviewAsync()
+    {
+        if (submitting || userExam is null)
+        {
+            return;
+        }
+
+        var invalidQuestion = userExam.Sections
+            .SelectMany(section => section.Questions)
+            .FirstOrDefault(question =>
+                question.QuestionType == 3 &&
+                (reviewQuestions[question.Id].Score < 0 ||
+                 reviewQuestions[question.Id].Score > (question.QuestionScore ?? 0)));
+
+        if (invalidQuestion != null)
+        {
+            Snackbar.Add(string.Format(L["The {0} field must be less than or equal to {1}."], L["Score"], invalidQuestion.QuestionScore ?? 0), Severity.Error);
+            return;
+        }
+
+        submitting = true;
+        try
+        {
+            var input = reviewQuestions.Values
+                .Select(item => new ReviewedQuestionDto
+                {
+                    QuestionId = item.QuestionId,
+                    Right = item.Right,
+                    Score = item.Score,
+                    Reason = item.Reason
+                })
+                .ToList();
+            await UserExamAppService.ReviewQuestionsAsync(UserExamId, input);
+            Snackbar.Add(L["SubmittedSuccessfully"], Severity.Success);
+            await LoadUserExamAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{L["OperationFailed"]}: {ex.GetBaseException().Message}", Severity.Error);
+        }
+        finally
+        {
+            submitting = false;
+        }
+    }
+
+    private async Task GoBackAsync()
+    {
+        await JavaScript.InvokeVoidAsync("eval", "history.back()");
+    }
+
+    private sealed class ReviewQuestionEditModel
+    {
+        public Guid QuestionId { get; init; }
+        public bool Right { get; set; }
+        public decimal Score { get; set; }
+        public string? Reason { get; set; }
+    }
+}

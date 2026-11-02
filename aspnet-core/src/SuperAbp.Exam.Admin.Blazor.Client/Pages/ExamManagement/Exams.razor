@@ -1,5 +1,373 @@
 @inherits ExamComponentBase
 @attribute [Authorize(Policy = ExamPermissions.Exams.Default)]
 @page "/exam-management/exams"
+@page "/exam-management/exams/create"
+@using System.Threading
+@using Microsoft.AspNetCore.WebUtilities
+@using SuperAbp.Exam.Admin.ExamManagement.Exams
+@using SuperAbp.Exam.Admin.PaperManagement.Papers
+@using SuperAbp.Exam.Options
+@using SuperAbp.Exam.ExamManagement.Exams
+@inject IExaminationAdminAppService ExamAppService
+@inject IPaperAdminAppService PaperAppService
+@inject IOptionAppService OptionAppService
+@inject IAuthorizationService Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
-<MudText Typo="Typo.h4">@L["Menu:Exams"]</MudText>
+<MudText Typo="Typo.h4" Class="mb-4">@L["Menu:Exams"]</MudText>
+
+<MudCard Elevation="0">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Wrap="Wrap.Wrap">
+                <MudTextField @bind-Value="filterName"
+                              Label="@L["Name"]"
+                              T="string"
+                              Immediate="true"
+                              OnKeyUp="FilterOnKeyUp"
+                              Style="min-width: 220px;" />
+                <MudSelect @bind-Value="filterStatus"
+                           T="int?"
+                           Label="@L["Status"]"
+                           Clearable="true"
+                           CloseOnSelect="true"
+                           Style="min-width: 160px;">
+                    @foreach (var status in examinationStatuses)
+                    {
+                        <MudSelectItem Value="@((int?)status.Key)">@L[$"ExaminationStatus:{status.Key}"]</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="SearchAsync">
+                    @L["Search"]
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="ResetAsync">
+                    @L["Reset"]
+                </MudButton>
+            </MudStack>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            @if (CanCreate)
+            {
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           OnClick="@(async () => await ShowEditDialogAsync(null, null))">
+                    @L["NewExam"]
+                </MudButton>
+            }
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudDataGrid @ref="_grid"
+                     T="ExamListDto"
+                     ServerData="LoadServerDataAsync"
+                     Hover="true"
+                     Striped="true"
+                     LoadingProgressColor="Color.Primary"
+                     RowsPerPage="10">
+            <Columns>
+                <PropertyColumn Property="x => x.Name" Title="@L["Name"]" />
+                <TemplateColumn Title="@L["Score"]">
+                    <CellTemplate Context="context">
+                        @(context.Item.Score)（@L["PassingScore"]：@(context.Item.PassingScore)）
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="@L["TotalTime"]">
+                    <CellTemplate Context="context">
+                        @(context.Item.TotalTime) @L["Minute"]
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="@L["Status"]">
+                    <CellTemplate Context="context">
+                        @L[$"ExaminationStatus:{context.Item.Status}"]
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="@L["AnswerMode"]">
+                    <CellTemplate Context="context">
+                        @L[$"AnswerMode:{context.Item.AnswerMode}"]
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="@L["ReviewMode"]">
+                    <CellTemplate Context="context">
+                        @L[$"ReviewMode:{context.Item.ReviewMode}"]
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="@L["RandomOrderOfOption"]">
+                    <CellTemplate Context="context">
+                        @(context.Item.RandomOrderOfOption ? L["Yes"] : L["No"])
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="@L["ExamTime"]">
+                    <CellTemplate Context="context">
+                        @(context.Item.StartTime?.ToString("yyyy-MM-dd HH:mm")) ~ @(context.Item.EndTime?.ToString("yyyy-MM-dd HH:mm"))
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="@L["Actions"]" Sortable="false">
+                    <CellTemplate Context="context">
+                        <MudStack Row Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Spacing="0">
+                            @if (CanUpdate)
+                            {
+                                <MudTooltip Text="@L["Edit"]">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                                   Size="Size.Small"
+                                                   Color="Color.Info"
+                                                   OnClick="() => ShowEditDialogAsync(context.Item.Id, null)" />
+                                </MudTooltip>
+                            }
+                            @if (CanDelete && context.Item.Status == ExaminationStatus.Draft.Value)
+                            {
+                                <MudTooltip Text="@L["Delete"]">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Size="Size.Small"
+                                                   Color="Color.Error"
+                                                   OnClick="() => DeleteAsync(context.Item)" />
+                                </MudTooltip>
+                            }
+                            @if (context.Item.Status != ExaminationStatus.Draft.Value &&
+                                 context.Item.Status != ExaminationStatus.Cancelled.Value)
+                            {
+                                <MudTooltip Text="@L["ExamRecord"]">
+                                    <MudIconButton Icon="@Icons.Material.Filled.ListAlt"
+                                                   Size="Size.Small"
+                                                   Color="Color.Default"
+                                                   OnClick="() => GoToExamUsersAsync(context.Item)" />
+                                </MudTooltip>
+                            }
+                            @if (CanPublish && context.Item.Status == ExaminationStatus.Draft.Value)
+                            {
+                                <MudButton Size="Size.Small"
+                                           Variant="Variant.Text"
+                                           Color="Color.Success"
+                                           OnClick="() => ChangeStatusAsync(context.Item, ChangeStatusType.Publish)">
+                                    @L["Publish"]
+                                </MudButton>
+                            }
+                            @if (CanTerminate && context.Item.Status == ExaminationStatus.Published.Value)
+                            {
+                                <MudButton Size="Size.Small"
+                                           Variant="Variant.Text"
+                                           Color="Color.Warning"
+                                           OnClick="() => ChangeStatusAsync(context.Item, ChangeStatusType.Terminate)">
+                                    @L["Terminate"]
+                                </MudButton>
+                            }
+                            @if (CanComplete && context.Item.Status == ExaminationStatus.Grading.Value)
+                            {
+                                <MudButton Size="Size.Small"
+                                           Variant="Variant.Text"
+                                           Color="Color.Primary"
+                                           OnClick="() => ChangeStatusAsync(context.Item, ChangeStatusType.Complete)">
+                                    @L["Complete"]
+                                </MudButton>
+                            }
+                            @if (CanCancel && context.Item.Status == ExaminationStatus.Published.Value)
+                            {
+                                <MudButton Size="Size.Small"
+                                           Variant="Variant.Text"
+                                           Color="Color.Secondary"
+                                           OnClick="() => ChangeStatusAsync(context.Item, ChangeStatusType.Cancel)">
+                                    @L["Cancel"]
+                                </MudButton>
+                            }
+                            @if (CanInvalidate && context.Item.Status == ExaminationStatus.Completed.Value)
+                            {
+                                <MudButton Size="Size.Small"
+                                           Variant="Variant.Text"
+                                           Color="Color.Error"
+                                           OnClick="() => ChangeStatusAsync(context.Item, ChangeStatusType.Invalidate)">
+                                    @L["Invalidate"]
+                                </MudButton>
+                            }
+                        </MudStack>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="ExamListDto"
+                                  PageSizeOptions="new[] { 10, 20, 30, 40, 50 }" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private MudDataGrid<ExamListDto> _grid = default!;
+    private string? filterName;
+    private int? filterStatus;
+    private bool CanCreate { get; set; }
+    private bool CanUpdate { get; set; }
+    private bool CanDelete { get; set; }
+    private bool CanPublish { get; set; }
+    private bool CanTerminate { get; set; }
+    private bool CanComplete { get; set; }
+    private bool CanCancel { get; set; }
+    private bool CanInvalidate { get; set; }
+
+    private Dictionary<int, string> examinationStatuses = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        CanCreate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Exams.Create)).Succeeded;
+        CanUpdate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Exams.Update)).Succeeded;
+        CanDelete = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Exams.Delete)).Succeeded;
+        CanPublish = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Exams.Publish)).Succeeded;
+        CanTerminate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Exams.Terminate)).Succeeded;
+        CanComplete = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Exams.Complete)).Succeeded;
+        CanCancel = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Exams.Cancel)).Succeeded;
+        CanInvalidate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Exams.Invalidate)).Succeeded;
+
+        examinationStatuses = OptionAppService.GetExaminationStatus();
+
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        if (uri.AbsolutePath.EndsWith("/create", StringComparison.OrdinalIgnoreCase) &&
+            QueryHelpers.ParseQuery(uri.Query).TryGetValue("paperId", out var paperIdValues) &&
+            Guid.TryParse(paperIdValues.ToString(), out var paperId))
+        {
+            await ShowEditDialogAsync(null, paperId);
+        }
+    }
+
+    private async Task<GridData<ExamListDto>> LoadServerDataAsync(GridState<ExamListDto> state, CancellationToken cancellationToken)
+    {
+        var input = new GetExamsInput
+        {
+            Name = filterName,
+            Status = filterStatus,
+            SkipCount = state.Page * state.PageSize,
+            MaxResultCount = state.PageSize,
+            Sorting = "Id Desc"
+        };
+
+        if (state.SortDefinitions.Count > 0)
+        {
+            var sort = state.SortDefinitions.First();
+            input.Sorting = sort.SortBy + " " + (sort.Descending ? "Desc" : "Asc");
+        }
+
+        var result = await ExamAppService.GetListAsync(input);
+        return new GridData<ExamListDto>
+        {
+            Items = result.Items,
+            TotalItems = (int)result.TotalCount
+        };
+    }
+
+    private async Task SearchAsync()
+    {
+        if (_grid != null)
+        {
+            await _grid.ReloadServerData();
+        }
+    }
+
+    private async Task FilterOnKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SearchAsync();
+        }
+    }
+
+    private async Task ResetAsync()
+    {
+        filterName = null;
+        filterStatus = null;
+        await SearchAsync();
+    }
+
+    private async Task ShowEditDialogAsync(Guid? examId, Guid? paperId)
+    {
+        var parameters = new DialogParameters<ExamEditDialog>();
+        parameters.Add(x => x.ExamId, examId);
+        parameters.Add(x => x.PaperId, paperId);
+        parameters.Add(x => x.CanPublish, CanPublish);
+        var options = new DialogOptions { MaxWidth = MaxWidth.Large, FullWidth = true, CloseButton = true };
+
+        var dialog = await DialogService.ShowAsync<ExamEditDialog>(
+            examId.HasValue ? L["Edit"] : L["NewExam"],
+            parameters,
+            options);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false } && _grid != null)
+        {
+            await _grid.ReloadServerData();
+        }
+    }
+
+    private async Task DeleteAsync(ExamListDto exam)
+    {
+        bool? confirmed = await DialogService.ShowMessageBoxAsync(
+            L["Tips"],
+            string.Format(L["AreYouSureToDeleteNamed"], exam.Name),
+            yesText: L["Delete"],
+            cancelText: L["Cancel"]);
+
+        if (confirmed != true)
+        {
+            return;
+        }
+
+        try
+        {
+            await ExamAppService.DeleteAsync(exam.Id);
+            Snackbar.Add(string.Format(L["DeletedSuccessfullyNamed"], exam.Name), Severity.Success);
+            await SearchAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{L["OperationFailed"]}: {ex.GetBaseException().Message}", Severity.Error);
+        }
+    }
+
+    private async Task ChangeStatusAsync(ExamListDto exam, ChangeStatusType statusType)
+    {
+        try
+        {
+            switch (statusType)
+            {
+                case ChangeStatusType.Publish:
+                    await ExamAppService.PublishAsync(exam.Id);
+                    break;
+                case ChangeStatusType.Terminate:
+                    await ExamAppService.TerminateAsync(exam.Id);
+                    break;
+                case ChangeStatusType.Complete:
+                    await ExamAppService.CompleteAsync(exam.Id);
+                    break;
+                case ChangeStatusType.Cancel:
+                    await ExamAppService.CancelAsync(exam.Id);
+                    break;
+                case ChangeStatusType.Invalidate:
+                    await ExamAppService.InvalidateAsync(exam.Id);
+                    break;
+            }
+
+            Snackbar.Add(L["SubmittedSuccessfully"], Severity.Success);
+            await SearchAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{L["OperationFailed"]}: {ex.GetBaseException().Message}", Severity.Error);
+        }
+    }
+
+    private Task GoToExamUsersAsync(ExamListDto exam)
+    {
+        Navigation.NavigateTo($"/exam-management/user-exam-users?examId={exam.Id}");
+        return Task.CompletedTask;
+    }
+
+    private enum ChangeStatusType
+    {
+        Publish,
+        Terminate,
+        Complete,
+        Cancel,
+        Invalidate
+    }
+}

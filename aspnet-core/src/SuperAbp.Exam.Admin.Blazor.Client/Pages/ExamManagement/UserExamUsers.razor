@@ -1,0 +1,88 @@
+@inherits ExamComponentBase
+@attribute [Authorize(Policy = ExamPermissions.Exams.Default)]
+@page "/exam-management/user-exam-users"
+@using Microsoft.AspNetCore.WebUtilities
+@using SuperAbp.Exam.Admin.ExamManagement.Exams
+@inject IExaminationAdminAppService ExamAppService
+@inject NavigationManager Navigation
+@inject IJSRuntime JavaScript
+
+<MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mb-4">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   Color="Color.Primary"
+                   aria-label="@L["Back"]"
+                   OnClick="GoBackAsync" />
+    <MudText Typo="Typo.h4">@L["ExamRecord"]</MudText>
+</MudStack>
+
+@if (ExamId is null)
+{
+    <MudAlert Severity="Severity.Error">@L["OperationFailed"]</MudAlert>
+}
+else
+{
+    <MudCard Elevation="0">
+        <MudCardContent>
+            <MudDataGrid T="ExamUserExamDto"
+                         Items="userExamUsers"
+                         Hover="true"
+                         Striped="true"
+                         LoadingProgressColor="Color.Primary">
+                <Columns>
+                    <PropertyColumn Property="x => x.Rank" Title="@L["Rank"]" />
+                    <PropertyColumn Property="x => x.User" Title="@L["User"]" />
+                    <PropertyColumn Property="x => x.TotalCount" Title="@L["TotalCount"]" />
+                    <PropertyColumn Property="x => x.MaxScore" Title="@L["MaxScore"]" />
+                    <TemplateColumn Title="@L["IsPassed"]">
+                        <CellTemplate Context="context">
+                            @(context.Item.IsPassed switch
+                            {
+                                null => "-",
+                                true => L["Yes"].ToString(),
+                                false => L["No"].ToString()
+                            })
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="@L["Actions"]" Sortable="false">
+                        <CellTemplate Context="context">
+                            <MudButton Size="Size.Small"
+                                       Variant="Variant.Text"
+                                       Color="Color.Info"
+                                       OnClick="() => GoToUserExamsAsync(context.Item)">
+                                @L["ExamRecord"]
+                            </MudButton>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
+        </MudCardContent>
+    </MudCard>
+}
+
+@code {
+    private Guid? ExamId { get; set; }
+    private IReadOnlyList<ExamUserExamDto> userExamUsers = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+        if (query.TryGetValue("examId", out var examIdValues) && Guid.TryParse(examIdValues.ToString(), out var examId))
+        {
+            ExamId = examId;
+            var result = await ExamAppService.GetExamUserExamsAsync(examId);
+            userExamUsers = result.Items;
+        }
+    }
+
+    private Task GoToUserExamsAsync(ExamUserExamDto userExamUser)
+    {
+        Navigation.NavigateTo($"/exam-management/user-exams?examId={ExamId}&userId={userExamUser.UserId}");
+        return Task.CompletedTask;
+    }
+
+    private async Task GoBackAsync()
+    {
+        await JavaScript.InvokeVoidAsync("eval", "history.back()");
+    }
+}

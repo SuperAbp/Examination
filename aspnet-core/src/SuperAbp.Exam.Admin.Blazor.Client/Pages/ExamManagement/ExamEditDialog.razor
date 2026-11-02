@@ -1,0 +1,343 @@
+@inherits ExamComponentBase
+@using SuperAbp.Exam.Admin.ExamManagement.Exams
+@using SuperAbp.Exam.Admin.PaperManagement.Papers
+@using SuperAbp.Exam.Options
+@using SuperAbp.Exam.ExamManagement.Exams
+@inject IExaminationAdminAppService ExamAppService
+@inject IPaperAdminAppService PaperAppService
+@inject IOptionAppService OptionAppService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        @if (loading)
+        {
+            <MudProgressLinear Indeterminate Color="Color.Primary" />
+        }
+        else
+        {
+            <MudStack Spacing="3">
+                <MudSelect Value="selectedPaperId"
+                           ValueChanged="@(async (Guid? value) => await ChoosePaperAsync(value))"
+                           T="Guid?"
+                           Label="@L["Paper"]"
+                           Disabled="lockPaper || !CanSave"
+                           SearchBox="true"
+                           CloseOnSelect="true">
+                    @foreach (var paper in papers)
+                    {
+                        <MudSelectItem Value="@((Guid?)paper.Id)">@paper.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudTextField @bind-Value="Name"
+                              T="string"
+                              Label="@L["Name"]"
+                              Disabled="!CanSave"
+                              Immediate="true" />
+                <RichTextEditor @bind-Value="Description" Height="280" Disabled="!CanSave" />
+                <MudStack Row Spacing="3">
+                    <MudNumericField @bind-Value="Score"
+                                     T="decimal"
+                                     Label="@L["Score"]"
+                                     Disabled="true" />
+                    <MudNumericField @bind-Value="PassingScore"
+                                     T="decimal"
+                                     Label="@L["PassingScore"]"
+                                     Min="0"
+                                     Max="Score"
+                                     Disabled="!CanSave" />
+                    <MudNumericField @bind-Value="TotalTime"
+                                     T="int"
+                                     Label="@L["TotalTimeWithMinute"]"
+                                     Min="1"
+                                     Disabled="!CanSave" />
+                </MudStack>
+                <MudStack Row Spacing="3" Wrap="Wrap.Wrap">
+                    <MudRadioGroup @bind-Value="AnswerMode" T="int" Disabled="!CanSave">
+                        <MudText Typo="Typo.subtitle2" Class="mb-1">@L["AnswerMode"]</MudText>
+                        <MudStack Row Spacing="3">
+                            @foreach (var mode in answerModes)
+                            {
+                                <MudRadio Value="@mode.Key" T="int">@L[$"AnswerMode:{mode.Key}"]</MudRadio>
+                            }
+                        </MudStack>
+                    </MudRadioGroup>
+                </MudStack>
+                <MudStack Row Spacing="3" Wrap="Wrap.Wrap">
+                    <MudRadioGroup @bind-Value="ReviewMode" T="int" Disabled="!CanSave">
+                        <MudText Typo="Typo.subtitle2" Class="mb-1">@L["ReviewMode"]</MudText>
+                        <MudStack Row Spacing="3">
+                            @foreach (var mode in reviewModes)
+                            {
+                                <MudRadio Value="@mode.Key" T="int">@L[$"ReviewMode:{mode.Key}"]</MudRadio>
+                            }
+                        </MudStack>
+                    </MudRadioGroup>
+                </MudStack>
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="3">
+                    <MudSwitch @bind-Value="RandomOrderOfOption"
+                               T="bool"
+                               Label="@L["RandomOrderOfOption"]"
+                               Disabled="!CanSave" />
+                    <MudNumericField @bind-Value="MaxNumberOfTimes"
+                                     T="int"
+                                     Label="@L["MaxNumberOfTimes"]"
+                                     Min="0"
+                                     Disabled="!CanSave" />
+                </MudStack>
+                <MudStack Row Spacing="3">
+                    <MudDatePicker @bind-Value="StartTime"
+                                   T="DateTime?"
+                                   Label="@L["StartTime"]"
+                                   EnableTimePicker="true"
+                                   DateFormat="yyyy-MM-dd HH:mm"
+                                   MinDate="minimumStartTime"
+                                   Disabled="!CanSave" />
+                    <MudDatePicker @bind-Value="EndTime"
+                                   T="DateTime?"
+                                   Label="@L["EndTime"]"
+                                   EnableTimePicker="true"
+                                   DateFormat="yyyy-MM-dd HH:mm"
+                                   MinDate="minimumStartTime"
+                                   Disabled="!CanSave" />
+                </MudStack>
+            </MudStack>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Disabled="submitting">@L["Cancel"]</MudButton>
+        @if (CanSave)
+        {
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Primary"
+                       Loading="submitting"
+                       OnClick="@(async () => await SubmitAsync(false))">
+                @L["Submit"]
+            </MudButton>
+            @if (CanPublish)
+            {
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Loading="submitting"
+                           OnClick="@(async () => await SubmitAsync(true))">
+                    @L["Publish"]
+                </MudButton>
+            }
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public Guid? ExamId { get; set; }
+
+    [Parameter]
+    public Guid? PaperId { get; set; }
+
+    private string Name { get; set; } = string.Empty;
+    private string? Description { get; set; }
+    private decimal Score { get; set; }
+    private decimal PassingScore { get; set; }
+    private int TotalTime { get; set; } = 1;
+    private Guid? selectedPaperId { get; set; }
+    private DateTime? StartTime { get; set; }
+    private DateTime? EndTime { get; set; }
+    private int AnswerMode { get; set; }
+    private int ReviewMode { get; set; }
+    private bool RandomOrderOfOption { get; set; }
+    private int MaxNumberOfTimes { get; set; }
+
+    private bool loading = true;
+    private bool submitting;
+    private bool CanSave = true;
+    private bool lockPaper;
+    [Parameter]
+    public bool CanPublish { get; set; }
+    private DateTime minimumStartTime = DateTime.Today;
+
+    private Dictionary<int, string> answerModes = [];
+    private Dictionary<int, string> reviewModes = [];
+    private List<PaperListDto> papers = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        answerModes = OptionAppService.GetAnswerModes();
+        reviewModes = OptionAppService.GetReviewModes();
+
+        var paperResult = await PaperAppService.GetListAsync(new GetPapersInput
+        {
+            SkipCount = 0,
+            MaxResultCount = 100
+        });
+        papers = paperResult.Items.ToList();
+
+        if (ExamId.HasValue)
+        {
+            var exam = await ExamAppService.GetEditorAsync(ExamId.Value);
+            Name = exam.Name;
+            Description = exam.Description;
+            Score = exam.Score;
+            PassingScore = exam.PassingScore;
+            TotalTime = exam.TotalTime;
+            selectedPaperId = exam.PaperId;
+            StartTime = exam.StartTime;
+            EndTime = exam.EndTime;
+            AnswerMode = exam.AnswerMode;
+            ReviewMode = exam.ReviewMode;
+            RandomOrderOfOption = exam.RandomOrderOfOption;
+            MaxNumberOfTimes = exam.MaxNumberOfTimes;
+            CanSave = exam.Status == ExaminationStatus.Draft.Value;
+        }
+        else
+        {
+            AnswerMode = answerModes.Keys.OrderBy(key => key).FirstOrDefault();
+            ReviewMode = reviewModes.Keys.OrderBy(key => key).FirstOrDefault();
+        }
+
+        lockPaper = ExamId.HasValue || PaperId.HasValue;
+        if (PaperId.HasValue && selectedPaperId != PaperId)
+        {
+            await ChoosePaperAsync(PaperId);
+        }
+
+        loading = false;
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private Task ChoosePaperAsync(Guid? paperId)
+    {
+        selectedPaperId = paperId;
+        var paper = papers.FirstOrDefault(item => item.Id == paperId);
+        if (paper != null)
+        {
+            Score = paper.Score;
+            if (PassingScore > Score)
+            {
+                PassingScore = Score;
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private async Task SubmitAsync(bool publish)
+    {
+        if (submitting || !CanSave)
+        {
+            return;
+        }
+
+        if (!Validate())
+        {
+            return;
+        }
+
+        submitting = true;
+        try
+        {
+            if (ExamId.HasValue)
+            {
+                await ExamAppService.UpdateAsync(ExamId.Value, new ExamUpdateDto
+                {
+                    Published = publish,
+                    Name = Name.Trim(),
+                    Description = Description,
+                    Score = Score,
+                    PassingScore = PassingScore,
+                    TotalTime = TotalTime,
+                    PaperId = selectedPaperId!.Value,
+                    StartTime = StartTime,
+                    EndTime = EndTime,
+                    AnswerMode = AnswerMode,
+                    ReviewMode = ReviewMode,
+                    RandomOrderOfOption = RandomOrderOfOption,
+                    MaxNumberOfTimes = MaxNumberOfTimes
+                });
+            }
+            else
+            {
+                await ExamAppService.CreateAsync(new ExamCreateDto
+                {
+                    Published = publish,
+                    Name = Name.Trim(),
+                    Description = Description,
+                    Score = Score,
+                    PassingScore = PassingScore,
+                    TotalTime = TotalTime,
+                    PaperId = selectedPaperId!.Value,
+                    StartTime = StartTime,
+                    EndTime = EndTime,
+                    AnswerMode = AnswerMode,
+                    ReviewMode = ReviewMode,
+                    RandomOrderOfOption = RandomOrderOfOption,
+                    MaxNumberOfTimes = MaxNumberOfTimes
+                });
+            }
+
+            Snackbar.Add(publish ? L["PublishedSuccessfully"] : L["SaveSuccessfully"], Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{L["OperationFailed"]}: {ex.GetBaseException().Message}", Severity.Error);
+        }
+        finally
+        {
+            submitting = false;
+        }
+    }
+
+    private bool Validate()
+    {
+        if (selectedPaperId is null || selectedPaperId == Guid.Empty)
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["Paper"]), Severity.Error);
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["Name"]), Severity.Error);
+            return false;
+        }
+
+        if (Score <= 0)
+        {
+            Snackbar.Add(string.Format(L["The {0} field must be greater than 0."], L["Score"]), Severity.Error);
+            return false;
+        }
+
+        if (PassingScore <= 0 || PassingScore > Score)
+        {
+            Snackbar.Add(string.Format(L["The {0} field must be greater than 0."], L["PassingScore"]), Severity.Error);
+            return false;
+        }
+
+        if (TotalTime <= 0)
+        {
+            Snackbar.Add(string.Format(L["The {0} field must be greater than 0."], L["TotalTime"]), Severity.Error);
+            return false;
+        }
+
+        if (MaxNumberOfTimes < 0)
+        {
+            Snackbar.Add(string.Format(L["The {0} field must be greater than or equal to 0."], L["MaxNumberOfTimes"]), Severity.Error);
+            return false;
+        }
+
+        if (StartTime.HasValue && EndTime.HasValue && StartTime.Value >= EndTime.Value)
+        {
+            Snackbar.Add(L["EndTimeMustBeAfterStartTime"], Severity.Error);
+            return false;
+        }
+
+        return true;
+    }
+}

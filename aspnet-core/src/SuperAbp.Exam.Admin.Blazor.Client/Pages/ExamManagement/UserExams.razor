@@ -1,0 +1,112 @@
+@inherits ExamComponentBase
+@attribute [Authorize(Policy = ExamPermissions.Exams.Default)]
+@page "/exam-management/user-exams"
+@using Microsoft.AspNetCore.WebUtilities
+@using SuperAbp.Exam.Admin.ExamManagement.UserExams
+@using SuperAbp.Exam.ExamManagement.UserExams
+@inject IUserExamAdminAppService UserExamAppService
+@inject NavigationManager Navigation
+@inject IJSRuntime JavaScript
+
+<MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mb-4">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   Color="Color.Primary"
+                   aria-label="@L["Back"]"
+                   OnClick="GoBackAsync" />
+    <MudText Typo="Typo.h4">@L["ExamRecord"]</MudText>
+</MudStack>
+
+@if (ExamId is null || UserId is null)
+{
+    <MudAlert Severity="Severity.Error">@L["OperationFailed"]</MudAlert>
+}
+else
+{
+    <MudCard Elevation="0">
+        <MudCardContent>
+            <MudDataGrid T="UserExamListDto"
+                         Items="userExams"
+                         Hover="true"
+                         Striped="true"
+                         LoadingProgressColor="Color.Primary">
+                <Columns>
+                    <PropertyColumn Property="x => x.TotalScore" Title="@L["TotalScore"]" />
+                    <TemplateColumn Title="@L["ExamTime"]">
+                        <CellTemplate Context="context">
+                            @(context.Item.CreationTime.ToString("yyyy-MM-dd HH:mm"))@(context.Item.FinishedTime.HasValue ? $" ~ {context.Item.FinishedTime.Value:yyyy-MM-dd HH:mm}" : "")
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="@L["Status"]">
+                        <CellTemplate Context="context">
+                            @L[$"UserExamStatus:{context.Item.Status}"]
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="@L["Active"]">
+                        <CellTemplate Context="context">
+                            @(context.Item.IsActive ? L["Yes"] : L["No"])
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="@L["IsPassed"]">
+                        <CellTemplate Context="context">
+                            @(context.Item.IsPassed switch
+                            {
+                                null => "-",
+                                true => L["Yes"].ToString(),
+                                false => L["No"].ToString()
+                            })
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="@L["Actions"]" Sortable="false">
+                        <CellTemplate Context="context">
+                            @if (context.Item.Status == UserExamStatus.Submitted.Value ||
+                                 context.Item.Status == UserExamStatus.Scored.Value)
+                            {
+                                <MudTooltip Text="@L["Detail"]">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                                                   Size="Size.Small"
+                                                   Color="Color.Info"
+                                                   OnClick="() => GoToViewAsync(context.Item)" />
+                                </MudTooltip>
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
+        </MudCardContent>
+    </MudCard>
+}
+
+@code {
+    private Guid? ExamId { get; set; }
+    private Guid? UserId { get; set; }
+    private IReadOnlyList<UserExamListDto> userExams = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+        if (query.TryGetValue("examId", out var examIdValues) && Guid.TryParse(examIdValues.ToString(), out var examId) &&
+            query.TryGetValue("userId", out var userIdValues) && Guid.TryParse(userIdValues.ToString(), out var userId))
+        {
+            ExamId = examId;
+            UserId = userId;
+            var result = await UserExamAppService.GetListAsync(new GetUserExamsInput
+            {
+                ExamId = examId,
+                UserId = userId
+            });
+            userExams = result.Items;
+        }
+    }
+
+    private Task GoToViewAsync(UserExamListDto userExam)
+    {
+        Navigation.NavigateTo($"/exam-management/user-exams/{userExam.Id}");
+        return Task.CompletedTask;
+    }
+
+    private async Task GoBackAsync()
+    {
+        await JavaScript.InvokeVoidAsync("eval", "history.back()");
+    }
+}

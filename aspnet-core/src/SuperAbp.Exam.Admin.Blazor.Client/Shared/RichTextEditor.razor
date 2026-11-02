@@ -3,6 +3,7 @@
 <Editor Value="Value"
         ValueChanged="OnValueChanged"
         Conf="Configuration"
+        Disabled="Disabled"
         ScriptSrc="/libs/tinymce/tinymce.min.js"
         LicenseKey="gpl" />
 
@@ -15,6 +16,9 @@
 
     [Parameter]
     public int Height { get; set; } = 300;
+
+    [Parameter]
+    public bool Disabled { get; set; }
 
     private Dictionary<string, object> Configuration { get; set; } = [];
 
