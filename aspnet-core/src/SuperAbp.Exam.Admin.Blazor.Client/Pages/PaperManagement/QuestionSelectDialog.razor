@@ -1,0 +1,232 @@
+@inherits ExamComponentBase
+@using System.Threading
+@using SuperAbp.Exam.Admin.QuestionManagement.Questions
+@using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
+@using SuperAbp.Exam.Admin.KnowledgePoints
+@using SuperAbp.Exam.Options
+@inject IQuestionAdminAppService QuestionAppService
+@inject IQuestionBankAdminAppService QuestionBankAppService
+@inject IKnowledgePointAdminAppService KnowledgePointAppService
+@inject IOptionAppService OptionAppService
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="2">
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Wrap="Wrap.Wrap">
+                <MudTextField @bind-Value="filterContent"
+                              Label="@L["QuestionContent"]"
+                              T="string"
+                              Immediate="true"
+                              OnKeyUp="FilterOnKeyUp"
+                              Style="min-width: 180px;" />
+                <MudSelect @bind-Value="filterQuestionType"
+                           T="int?"
+                           Label="@L["QuestionType"]"
+                           Clearable="true"
+                           CloseOnSelect="true"
+                           Style="min-width: 140px;">
+                    @foreach (var questionType in questionTypes)
+                    {
+                        <MudSelectItem Value="@((int?)questionType.Key)">@L[$"QuestionType:{questionType.Key}"]</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudSelect @bind-Value="filterQuestionBankId"
+                           T="Guid?"
+                           Label="@L["QuestionBank"]"
+                           Clearable="true"
+                           SearchBox="true"
+                           CloseOnSelect="true"
+                           Style="min-width: 180px;">
+                    @foreach (var questionBank in questionBanks)
+                    {
+                        <MudSelectItem Value="@((Guid?)questionBank.Id)">@questionBank.Title</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudSelect @bind-Value="filterKnowledgePointId"
+                           T="Guid?"
+                           Label="@L["KnowledgePoint"]"
+                           Clearable="true"
+                           SearchBox="true"
+                           CloseOnSelect="true"
+                           Style="min-width: 180px;">
+                    @foreach (var knowledgePoint in knowledgePointOptions)
+                    {
+                        <MudSelectItem Value="@((Guid?)knowledgePoint.Id)">@knowledgePoint.Label</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="SearchAsync">
+                    @L["Search"]
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="ResetAsync">
+                    @L["Reset"]
+                </MudButton>
+            </MudStack>
+            <MudDataGrid @ref="_grid"
+                         T="QuestionListDto"
+                         ServerData="LoadServerDataAsync"
+                         Hover="true"
+                         Striped="true"
+                         LoadingProgressColor="Color.Primary"
+                         RowsPerPage="10">
+                <Columns>
+                    <TemplateColumn Sortable="false">
+                        <CellTemplate Context="context">
+                            <MudCheckBox T="bool"
+                                         Checked="selectedIds.Contains(context.Item.Id)"
+                                         CheckedChanged="value => ToggleQuestion(context.Item.Id, value)" />
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <PropertyColumn Property="x => x.QuestionBank" Title="@L["QuestionBank"]" />
+                    <TemplateColumn Title="@L["QuestionType"]" Sortable="false">
+                        <CellTemplate Context="context">
+                            @L[$"QuestionType:{context.Item.QuestionType}"]
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <PropertyColumn Property="x => x.Content" Title="@L["QuestionContent"]" />
+                    <TemplateColumn Title="@L["KnowledgePoint"]" Sortable="false">
+                        <CellTemplate Context="context">
+                            @(context.Item.KnowledgePoints is { Count: > 0 } ? string.Join("、", context.Item.KnowledgePoints) : string.Empty)
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="QuestionListDto"
+                                      PageSizeOptions="new[] { 10, 20, 30, 40, 50 }" />
+                </PagerContent>
+            </MudDataGrid>
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["Cancel"]</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="Submit">
+            @L["Submit"] @string.Format(L["SelectedCount"], selectedIds.Count)
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public IReadOnlyList<Guid> ExcludedIds { get; set; } = [];
+
+    private MudDataGrid<QuestionListDto> _grid = default!;
+    private readonly HashSet<Guid> selectedIds = [];
+    private string? filterContent;
+    private int? filterQuestionType;
+    private Guid? filterQuestionBankId;
+    private Guid? filterKnowledgePointId;
+    private Dictionary<int, string> questionTypes = [];
+    private List<QuestionBankListDto> questionBanks = [];
+    private List<KnowledgePointOption> knowledgePointOptions = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        questionTypes = OptionAppService.GetQuestionTypes();
+        var banks = await QuestionBankAppService.GetListAsync(new GetQuestionBanksInput
+        {
+            SkipCount = 0,
+            MaxResultCount = 100
+        });
+        questionBanks = banks.Items.ToList();
+
+        var knowledgePoints = await KnowledgePointAppService.GetAllAsync(new GetKnowledgePointsInput());
+        knowledgePointOptions = FlattenKnowledgePoints(knowledgePoints.Items, 0);
+    }
+
+    private async Task<GridData<QuestionListDto>> LoadServerDataAsync(GridState<QuestionListDto> state, CancellationToken cancellationToken)
+    {
+        var input = new GetQuestionsInput
+        {
+            Content = filterContent,
+            QuestionType = filterQuestionType,
+            QuestionBankIds = filterQuestionBankId.HasValue ? [filterQuestionBankId.Value] : [],
+            KnowledgePointId = filterKnowledgePointId,
+            ExcludeIds = ExcludedIds.ToList(),
+            SkipCount = state.Page * state.PageSize,
+            MaxResultCount = state.PageSize,
+            Sorting = "Id Desc"
+        };
+
+        if (state.SortDefinitions.Count > 0)
+        {
+            var sort = state.SortDefinitions.First();
+            input.Sorting = sort.SortBy + " " + (sort.Descending ? "Desc" : "Asc");
+        }
+
+        var result = await QuestionAppService.GetListAsync(input);
+        return new GridData<QuestionListDto>
+        {
+            Items = result.Items,
+            TotalItems = (int)result.TotalCount
+        };
+    }
+
+    private void ToggleQuestion(Guid questionId, bool isChecked)
+    {
+        if (isChecked)
+        {
+            selectedIds.Add(questionId);
+        }
+        else
+        {
+            selectedIds.Remove(questionId);
+        }
+    }
+
+    private async Task SearchAsync()
+    {
+        if (_grid != null)
+        {
+            await _grid.ReloadServerData();
+        }
+    }
+
+    private async Task FilterOnKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SearchAsync();
+        }
+    }
+
+    private async Task ResetAsync()
+    {
+        filterContent = null;
+        filterQuestionType = null;
+        filterQuestionBankId = null;
+        filterKnowledgePointId = null;
+        await SearchAsync();
+    }
+
+    private void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(selectedIds.ToList()));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private List<KnowledgePointOption> FlattenKnowledgePoints(IEnumerable<KnowledgePointNodeDto> nodes, int level)
+    {
+        var result = new List<KnowledgePointOption>();
+        foreach (var node in nodes)
+        {
+            var label = string.Concat(Enumerable.Repeat("　", level)) + node.Name;
+            result.Add(new KnowledgePointOption(node.Id, label));
+            if (node.Children is { Count: > 0 })
+            {
+                result.AddRange(FlattenKnowledgePoints(node.Children, level + 1));
+            }
+        }
+
+        return result;
+    }
+
+    private sealed record KnowledgePointOption(Guid Id, string Label);
+}

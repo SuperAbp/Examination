@@ -251,6 +251,15 @@
     "Exam:Exams:0001": "不在考试时间内",
     "Exam:Exams:0002": "考试状态无效",
     "Exam:Exams:0003": "存在未完成评分的考试",
-    "Exam:Announcement:0001": "已发布的公告不能修改"
+    "Exam:Announcement:0001": "已发布的公告不能修改",
+    "AreYouSure": "您确定吗？",
+    "PaperType:0": "固定题目",
+    "PaperType:1": "随机抽题",
+    "AddSection": "添加题型",
+    "SectionOrdinalTitle": "第{0}大题",
+    "ScoreEach": "每题分数",
+    "AvailableQuestions": "{0} 可用",
+    "SelectedCount": "已选（{0}题）",
+    "The {0} field must be greater than 0.": "{0} 必须大于 0。"
   }
 }

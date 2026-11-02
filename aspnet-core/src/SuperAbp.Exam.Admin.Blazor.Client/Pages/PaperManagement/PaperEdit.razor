@@ -1,0 +1,683 @@
+@inherits ExamComponentBase
+@attribute [Authorize(Policy = ExamPermissions.Papers.Default)]
+@page "/paper-management/papers/create/{PaperType:int}"
+@page "/paper-management/papers/edit/{PaperId:guid}/{PaperType:int}"
+@using SuperAbp.Exam.Admin.PaperManagement.Papers
+@using SuperAbp.Exam.Admin.QuestionManagement.Questions
+@using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
+@using SuperAbp.Exam.Admin.KnowledgePoints
+@using SuperAbp.Exam.Options
+@inject IPaperAdminAppService PaperAppService
+@inject IQuestionAdminAppService QuestionAppService
+@inject IQuestionBankAdminAppService QuestionBankAppService
+@inject IKnowledgePointAdminAppService KnowledgePointAppService
+@inject IOptionAppService OptionAppService
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mb-4">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   Color="Color.Primary"
+                   aria-label="@L["Back"]"
+                   OnClick="GoBackAsync" />
+    <MudText Typo="Typo.h4">@(IsEditMode ? L["Edit"] : L["NewPaper"])</MudText>
+</MudStack>
+
+@if (loading)
+{
+    <MudProgressLinear Indeterminate Color="Color.Primary" />
+}
+else
+{
+    <MudCard Elevation="0" Class="mb-3">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">@L["ExamConfig"]</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudStack Spacing="3" Style="max-width: 960px;">
+                <MudTextField @bind-Value="name"
+                              Label="@L["Name"]"
+                              T="string"
+                              Immediate="true" />
+                <MudTextField @bind-Value="description"
+                              Label="@L["Description"]"
+                              T="string"
+                              Lines="4" />
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                    <MudText>@L["TotalScore"]</MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Primary">@TotalScore</MudText>
+                </MudStack>
+            </MudStack>
+        </MudCardContent>
+    </MudCard>
+
+    <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-2">
+        <MudText Typo="Typo.h6">@L["Questions"]</MudText>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   OnClick="AddSection">
+            @L["AddSection"]
+        </MudButton>
+    </MudStack>
+
+    @for (var sectionIndex = 0; sectionIndex < sections.Count; sectionIndex++)
+    {
+        var sectionIdx = sectionIndex;
+        var section = sections[sectionIndex];
+        <MudPaper Class="pa-3 mb-3" Outlined="true">
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Spacing="2">
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Wrap="Wrap.Wrap">
+                    <MudTextField T="string"
+                                  Value="section.Title"
+                                  ValueChanged="value => OnSectionTitleChanged(section, value)"
+                                  Label="@L["Title"]"
+                                  Style="min-width: 220px;" />
+                    <MudText Typo="Typo.body2">@string.Format(L["TotalQuestionCount{0}"], GetSectionQuestionCount(section))</MudText>
+                    <MudNumericField T="decimal"
+                                     Value="section.ScoreEach"
+                                     ValueChanged="value => OnScoreEachChanged(sectionIdx, value)"
+                                     Label="@L["ScoreEach"]"
+                                     Min="0"
+                                     Step="0.5m"
+                                     Style="max-width: 150px;" />
+                    @if (IsFixed)
+                    {
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="() => SelectQuestionsAsync(sectionIdx)">
+                            @L["SelectQuestions"]
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="() => RandomPickAsync(sectionIdx)">
+                            @L["RandomlySelectQuestions"]
+                        </MudButton>
+                    }
+                    else
+                    {
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="() => AddRuleAsync(sectionIdx)">
+                            @L["AddRule"]
+                        </MudButton>
+                    }
+                </MudStack>
+                @if (sectionIdx > 0)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   OnClick="() => RemoveSection(sectionIdx)" />
+                }
+            </MudStack>
+
+            @if (IsFixed)
+            {
+                @for (var questionIndex = 0; questionIndex < section.Questions.Count; questionIndex++)
+                {
+                    var questionIdx = questionIndex;
+                    var question = section.Questions[questionIndex];
+                    <MudPaper Class="pa-3 mt-3" Outlined="true">
+                        <MudStack Row AlignItems="AlignItems.Start" Spacing="2" Wrap="Wrap.Wrap">
+                            <MudStack Spacing="1" Class="flex-grow-1" Style="min-width: 300px;">
+                                <MudText Typo="Typo.subtitle1" Style="font-weight: 500;">@(questionIdx + 1)、@(question.Detail?.Content)</MudText>
+                                @if (question.Detail is { Options.Count: > 0 })
+                                {
+                                    <QuestionOptionsView Options="@ToOptionViewModels(question.Detail)" />
+                                }
+                                @if (!string.IsNullOrWhiteSpace(question.Detail?.Analysis))
+                                {
+                                    <MudText Typo="Typo.body2">
+                                        <b>@L["Analysis"]:</b> @question.Detail.Analysis
+                                    </MudText>
+                                }
+                            </MudStack>
+                            <MudStack Spacing="1" AlignItems="AlignItems.Center">
+                                <MudNumericField T="decimal"
+                                                 Value="question.Score"
+                                                 ValueChanged="value => OnQuestionScoreChanged(question, value)"
+                                                 Label="@L["Score"]"
+                                                 Min="0"
+                                                 Step="0.5m"
+                                                 Style="width: 130px;" />
+                                <MudStack Row Spacing="0">
+                                    <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward"
+                                                   Size="Size.Small"
+                                                   Disabled="questionIdx == 0"
+                                                   OnClick="() => MoveQuestion(sectionIdx, questionIdx, -1)" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward"
+                                                   Size="Size.Small"
+                                                   Disabled="questionIdx == section.Questions.Count - 1"
+                                                   OnClick="() => MoveQuestion(sectionIdx, questionIdx, 1)" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Size="Size.Small"
+                                                   Color="Color.Error"
+                                                   OnClick="() => RemoveQuestion(sectionIdx, questionIdx)" />
+                                </MudStack>
+                            </MudStack>
+                        </MudStack>
+                    </MudPaper>
+                }
+            }
+            else if (section.Rules.Count > 0)
+            {
+                <MudSimpleTable Bordered="true" Hover="false" Dense="true" Class="mt-3">
+                    <thead>
+                        <tr>
+                            <th>@L["QuestionBank"]</th>
+                            <th>@L["QuestionType"]</th>
+                            <th>@L["KnowledgePoint"]</th>
+                            <th>@L["Count"]</th>
+                            <th>@L["Actions"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var ruleIndex = 0; ruleIndex < section.Rules.Count; ruleIndex++)
+                        {
+                            var ruleIdx = ruleIndex;
+                            var rule = section.Rules[ruleIndex];
+                            <tr>
+                                <td>@GetQuestionBankName(rule.QuestionBankId)</td>
+                                <td>@L[$"QuestionType:{rule.QuestionType}"]</td>
+                                <td>@(rule.KnowledgePointId.HasValue ? GetKnowledgePointName(rule.KnowledgePointId.Value) : "-")</td>
+                                <td>@rule.Count</td>
+                                <td>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Size="Size.Small"
+                                                   Color="Color.Error"
+                                                   OnClick="() => RemoveRuleAsync(sectionIdx, ruleIdx)" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+            }
+        </MudPaper>
+    }
+
+    <MudStack Row Justify="Justify.FlexEnd" Spacing="2" Class="mt-3">
+        <MudButton Variant="Variant.Outlined" OnClick="GoBackAsync">
+            @L["Back"]
+        </MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Loading="saving"
+                   Disabled="saving"
+                   OnClick="SaveAsync">
+            @L["Submit"]
+        </MudButton>
+    </MudStack>
+}
+
+@code {
+    [Parameter]
+    public Guid? PaperId { get; set; }
+
+    [Parameter]
+    public int PaperType { get; set; }
+
+    private bool loading = true;
+    private bool saving;
+    private int activePaperType;
+    private string name = string.Empty;
+    private string? description;
+    private readonly List<PaperSectionEditModel> sections = [];
+
+    private Dictionary<int, string> questionTypes = [];
+    private List<QuestionBankListDto> questionBanks = [];
+    private List<KnowledgePointOption> knowledgePointOptions = [];
+
+    private bool IsEditMode => PaperId.HasValue;
+
+    private bool IsFixed => activePaperType == 0;
+
+    private decimal TotalScore => IsFixed
+        ? sections.Sum(s => s.Questions.Sum(q => q.Score))
+        : sections.Sum(s => s.Rules.Sum(r => r.Count) * s.ScoreEach);
+
+    protected override async Task OnInitializedAsync()
+    {
+        activePaperType = PaperType == 1 ? 1 : 0;
+        questionTypes = OptionAppService.GetQuestionTypes();
+        var banks = await QuestionBankAppService.GetListAsync(new GetQuestionBanksInput
+        {
+            SkipCount = 0,
+            MaxResultCount = 100
+        });
+        questionBanks = banks.Items.ToList();
+
+        var knowledgePoints = await KnowledgePointAppService.GetAllAsync(new GetKnowledgePointsInput());
+        knowledgePointOptions = FlattenKnowledgePoints(knowledgePoints.Items, 0);
+
+        if (IsEditMode)
+        {
+            var editor = await PaperAppService.GetEditorAsync(PaperId!.Value);
+            activePaperType = editor.PaperType;
+            name = editor.Name;
+            description = editor.Description;
+            sections.AddRange(editor.Sections.Select(ToSectionModel));
+
+            if (IsFixed)
+            {
+                var questionIds = sections
+                    .SelectMany(s => s.Questions.Select(q => q.QuestionId))
+                    .ToList();
+                var details = await QuestionAppService.GetListWithDetailAsync(new GetQuestionWithDetailInput
+                {
+                    IncludeIds = questionIds
+                });
+                var detailMap = details.ToDictionary(d => d.Id);
+                foreach (var question in sections.SelectMany(s => s.Questions))
+                {
+                    question.Detail = detailMap.GetValueOrDefault(question.QuestionId);
+                }
+            }
+        }
+
+        loading = false;
+    }
+
+    private PaperSectionEditModel ToSectionModel(PaperCreateOrUpdateDtoBase.PaperSectionDto section)
+    {
+        return new PaperSectionEditModel
+        {
+            Id = section.Id,
+            Title = section.Title,
+            ScoreEach = section.ScoreEach,
+            Remark = section.Remark,
+            Questions = section.PaperQuestions
+                .Select(q => new PaperQuestionEditModel
+                {
+                    QuestionId = q.QuestionId,
+                    Score = q.Score
+                })
+                .ToList(),
+            Rules = section.PaperQuestionRules
+                .Select(r => new PaperRuleEditModel
+                {
+                    Id = r.Id,
+                    QuestionBankId = r.QuestionBankId,
+                    QuestionType = r.QuestionType,
+                    Count = r.Count,
+                    Score = r.Score,
+                    KnowledgePointId = r.KnowledgePointId
+                })
+                .ToList()
+        };
+    }
+
+    private void AddSection()
+    {
+        sections.Add(new PaperSectionEditModel
+        {
+            Title = string.Format(L["SectionOrdinalTitle"], DisplayHelpers.SimplifiedOrdinal(sections.Count + 1)),
+            ScoreEach = 1
+        });
+    }
+
+    private void RemoveSection(int sectionIndex)
+    {
+        sections.RemoveAt(sectionIndex);
+    }
+
+    private void OnSectionTitleChanged(PaperSectionEditModel section, string value)
+    {
+        section.Title = value;
+    }
+
+    private void OnScoreEachChanged(int sectionIndex, decimal value)
+    {
+        var section = sections[sectionIndex];
+        section.ScoreEach = value;
+        if (IsFixed)
+        {
+            foreach (var question in section.Questions)
+            {
+                question.Score = value;
+            }
+        }
+    }
+
+    private void OnQuestionScoreChanged(PaperQuestionEditModel question, decimal value)
+    {
+        question.Score = value;
+    }
+
+    private int GetSectionQuestionCount(PaperSectionEditModel section)
+    {
+        return IsFixed ? section.Questions.Count : section.Rules.Sum(r => r.Count);
+    }
+
+    private async Task SelectQuestionsAsync(int sectionIndex)
+    {
+        var parameters = new DialogParameters<QuestionSelectDialog>();
+        parameters.Add(x => x.ExcludedIds, GetAllQuestionIds());
+        var options = new DialogOptions { MaxWidth = MaxWidth.ExtraLarge, FullWidth = true };
+
+        var dialog = await DialogService.ShowAsync<QuestionSelectDialog>(L["SelectQuestions"], parameters, options);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false, Data: IReadOnlyList<Guid> selectedIds } && selectedIds.Count > 0)
+        {
+            var details = await QuestionAppService.GetListWithDetailAsync(new GetQuestionWithDetailInput
+            {
+                IncludeIds = selectedIds.ToList()
+            });
+            var section = sections[sectionIndex];
+            foreach (var detail in details)
+            {
+                section.Questions.Add(new PaperQuestionEditModel
+                {
+                    QuestionId = detail.Id,
+                    Score = section.ScoreEach,
+                    Detail = detail
+                });
+            }
+        }
+    }
+
+    private async Task RandomPickAsync(int sectionIndex)
+    {
+        var parameters = new DialogParameters<QuestionRandomDialog>();
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        var dialog = await DialogService.ShowAsync<QuestionRandomDialog>(L["RandomlySelectQuestions"], parameters, options);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false, Data: QuestionRandomDialog.RandomPickRequest request })
+        {
+            var details = await QuestionAppService.GetListWithDetailAsync(new GetQuestionWithDetailInput
+            {
+                QuestionBankId = request.QuestionBankId,
+                QuestionType = request.QuestionType,
+                Count = request.Count,
+                ExcludeIds = GetAllQuestionIds()
+            });
+            var section = sections[sectionIndex];
+            foreach (var detail in details)
+            {
+                section.Questions.Add(new PaperQuestionEditModel
+                {
+                    QuestionId = detail.Id,
+                    Score = section.ScoreEach,
+                    Detail = detail
+                });
+            }
+        }
+    }
+
+    private async Task AddRuleAsync(int sectionIndex)
+    {
+        var parameters = new DialogParameters<RuleRandomDialog>();
+        parameters.Add(x => x.ExistingRules, sections[sectionIndex].Rules
+            .Select(r => new RuleRandomDialog.RuleSeed(r.QuestionBankId, r.QuestionType, r.KnowledgePointId, r.Count))
+            .ToList());
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        var dialog = await DialogService.ShowAsync<RuleRandomDialog>(L["AddRule"], parameters, options);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false, Data: RuleRandomDialog.RuleRequest request })
+        {
+            var section = sections[sectionIndex];
+            var existing = section.Rules.FirstOrDefault(r =>
+                r.QuestionBankId == request.QuestionBankId
+                && r.QuestionType == request.QuestionType
+                && r.KnowledgePointId == request.KnowledgePointId);
+
+            if (existing != null)
+            {
+                existing.Count += request.Count;
+            }
+            else
+            {
+                section.Rules.Add(new PaperRuleEditModel
+                {
+                    QuestionBankId = request.QuestionBankId,
+                    QuestionType = request.QuestionType,
+                    Count = request.Count,
+                    Score = section.ScoreEach,
+                    KnowledgePointId = request.KnowledgePointId
+                });
+            }
+        }
+    }
+
+    private async Task RemoveRuleAsync(int sectionIndex, int ruleIndex)
+    {
+        bool? confirmed = await DialogService.ShowMessageBoxAsync(
+            L["Tips"],
+            L["AreYouSure"],
+            yesText: L["Delete"],
+            cancelText: L["Cancel"]);
+
+        if (confirmed == true)
+        {
+            sections[sectionIndex].Rules.RemoveAt(ruleIndex);
+        }
+    }
+
+    private void RemoveQuestion(int sectionIndex, int questionIndex)
+    {
+        sections[sectionIndex].Questions.RemoveAt(questionIndex);
+    }
+
+    private void MoveQuestion(int sectionIndex, int questionIndex, int offset)
+    {
+        var questions = sections[sectionIndex].Questions;
+        var targetIndex = questionIndex + offset;
+        if (targetIndex < 0 || targetIndex >= questions.Count)
+        {
+            return;
+        }
+
+        (questions[questionIndex], questions[targetIndex]) = (questions[targetIndex], questions[questionIndex]);
+    }
+
+    private List<Guid> GetAllQuestionIds()
+    {
+        return sections
+            .SelectMany(s => s.Questions.Select(q => q.QuestionId))
+            .ToList();
+    }
+
+    private static IReadOnlyList<QuestionOptionViewModel> ToOptionViewModels(QuestionDetailDto detail)
+    {
+        return detail.Options
+            .OrderBy(o => o.Sort)
+            .Select(o => new QuestionOptionViewModel(o.Id, o.Content, o.Right))
+            .ToList();
+    }
+
+    private string GetQuestionBankName(Guid questionBankId)
+    {
+        return questionBanks.FirstOrDefault(b => b.Id == questionBankId)?.Title ?? string.Empty;
+    }
+
+    private string GetKnowledgePointName(Guid knowledgePointId)
+    {
+        return knowledgePointOptions.FirstOrDefault(k => k.Id == knowledgePointId)?.Label.Trim() ?? string.Empty;
+    }
+
+    private async Task SaveAsync()
+    {
+        if (saving || !Validate())
+        {
+            return;
+        }
+
+        saving = true;
+        try
+        {
+            var sectionDtos = sections.Select((section, index) => new PaperCreateOrUpdateDtoBase.PaperSectionDto
+            {
+                Id = section.Id,
+                Title = section.Title.Trim(),
+                ScoreEach = section.ScoreEach,
+                Order = index,
+                Remark = section.Remark,
+                PaperQuestions = IsFixed
+                    ? section.Questions
+                        .Select((question, questionIndex) => new PaperCreateOrUpdateDtoBase.PaperSectionDto.PaperQuestionDto
+                        {
+                            QuestionId = question.QuestionId,
+                            Score = question.Score,
+                            Order = questionIndex
+                        })
+                        .ToArray()
+                    : Array.Empty<PaperCreateOrUpdateDtoBase.PaperSectionDto.PaperQuestionDto>(),
+                PaperQuestionRules = IsFixed
+                    ? Array.Empty<PaperCreateOrUpdateDtoBase.PaperSectionDto.PaperQuestionRuleDto>()
+                    : section.Rules
+                        .Select((rule, ruleIndex) => new PaperCreateOrUpdateDtoBase.PaperSectionDto.PaperQuestionRuleDto
+                        {
+                            Id = rule.Id,
+                            QuestionBankId = rule.QuestionBankId,
+                            QuestionType = rule.QuestionType,
+                            Count = rule.Count,
+                            Score = section.ScoreEach,
+                            KnowledgePointId = rule.KnowledgePointId
+                        })
+                        .ToArray()
+            }).ToArray();
+
+            if (IsEditMode)
+            {
+                await PaperAppService.UpdateAsync(PaperId!.Value, new PaperUpdateDto
+                {
+                    Name = name.Trim(),
+                    Description = description,
+                    PaperType = activePaperType,
+                    Sections = sectionDtos
+                });
+            }
+            else
+            {
+                await PaperAppService.CreateAsync(new PaperCreateDto
+                {
+                    Name = name.Trim(),
+                    Description = description,
+                    PaperType = activePaperType,
+                    Sections = sectionDtos
+                });
+            }
+
+            Snackbar.Add(L["SaveSuccessfully"], Severity.Success);
+            Navigation.NavigateTo("/paper-management/papers");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(L["OperationFailed"] + ": " + ex.GetBaseException().Message, Severity.Error);
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+
+    private bool Validate()
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["Name"]), Severity.Error);
+            return false;
+        }
+
+        if (sections.Count == 0)
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["Questions"]), Severity.Error);
+            return false;
+        }
+
+        if (sections.Any(s => string.IsNullOrWhiteSpace(s.Title)))
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["Title"]), Severity.Error);
+            return false;
+        }
+
+        if (sections.Any(s => s.ScoreEach <= 0))
+        {
+            Snackbar.Add(string.Format(L["The {0} field must be greater than 0."], L["ScoreEach"]), Severity.Error);
+            return false;
+        }
+
+        if (IsFixed)
+        {
+            if (sections.Any(s => s.Questions.Count == 0))
+            {
+                Snackbar.Add(string.Format(L["The {0} field is required."], L["Questions"]), Severity.Error);
+                return false;
+            }
+
+            if (sections.Any(s => s.Questions.Any(q => q.Score <= 0)))
+            {
+                Snackbar.Add(string.Format(L["The {0} field must be greater than 0."], L["Score"]), Severity.Error);
+                return false;
+            }
+        }
+        else
+        {
+            if (sections.Any(s => s.Rules.Count == 0))
+            {
+                Snackbar.Add(string.Format(L["The {0} field is required."], L["AddRule"]), Severity.Error);
+                return false;
+            }
+
+            if (sections.Any(s => s.Rules.Any(r => r.Count <= 0)))
+            {
+                Snackbar.Add(string.Format(L["The {0} field must be greater than 0."], L["Count"]), Severity.Error);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private Task GoBackAsync()
+    {
+        Navigation.NavigateTo("/paper-management/papers");
+        return Task.CompletedTask;
+    }
+
+    private List<KnowledgePointOption> FlattenKnowledgePoints(IEnumerable<KnowledgePointNodeDto> nodes, int level)
+    {
+        var result = new List<KnowledgePointOption>();
+        foreach (var node in nodes)
+        {
+            var label = string.Concat(Enumerable.Repeat("　", level)) + node.Name;
+            result.Add(new KnowledgePointOption(node.Id, label));
+            if (node.Children is { Count: > 0 })
+            {
+                result.AddRange(FlattenKnowledgePoints(node.Children, level + 1));
+            }
+        }
+
+        return result;
+    }
+
+    private sealed record KnowledgePointOption(Guid Id, string Label);
+
+    private sealed class PaperSectionEditModel
+    {
+        public Guid? Id { get; init; }
+        public string Title { get; set; } = string.Empty;
+        public decimal ScoreEach { get; set; }
+        public string? Remark { get; set; }
+        public List<PaperQuestionEditModel> Questions { get; init; } = [];
+        public List<PaperRuleEditModel> Rules { get; init; } = [];
+    }
+
+    private sealed class PaperQuestionEditModel
+    {
+        public Guid QuestionId { get; init; }
+        public decimal Score { get; set; }
+        public QuestionDetailDto? Detail { get; set; }
+    }
+
+    private sealed class PaperRuleEditModel
+    {
+        public Guid? Id { get; init; }
+        public Guid QuestionBankId { get; init; }
+        public int QuestionType { get; init; }
+        public int Count { get; set; }
+        public decimal Score { get; set; }
+        public Guid? KnowledgePointId { get; init; }
+    }
+}

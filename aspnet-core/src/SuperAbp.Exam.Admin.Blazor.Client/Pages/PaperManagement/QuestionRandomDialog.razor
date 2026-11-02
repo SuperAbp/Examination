@@ -1,0 +1,137 @@
+@inherits ExamComponentBase
+@using SuperAbp.Exam.Admin.QuestionManagement.Questions
+@using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
+@using SuperAbp.Exam.Options
+@inject IQuestionAdminAppService QuestionAppService
+@inject IQuestionBankAdminAppService QuestionBankAppService
+@inject IOptionAppService OptionAppService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudSelect T="Guid?"
+                       Value="questionBankId"
+                       ValueChanged="OnBankChangedAsync"
+                       Label="@L["QuestionBank"]"
+                       SearchBox="true"
+                       CloseOnSelect="true"
+                       Style="min-width: 260px;">
+                @foreach (var questionBank in questionBanks)
+                {
+                    <MudSelectItem Value="@((Guid?)questionBank.Id)">@questionBank.Title</MudSelectItem>
+                }
+            </MudSelect>
+            <MudSelect T="int?"
+                       Value="questionType"
+                       ValueChanged="OnTypeChangedAsync"
+                       Label="@L["QuestionType"]"
+                       CloseOnSelect="true"
+                       Style="min-width: 260px;">
+                @foreach (var questionType in questionTypes)
+                {
+                    <MudSelectItem Value="@((int?)questionType.Key)">@L[$"QuestionType:{questionType.Key}"]</MudSelectItem>
+                }
+            </MudSelect>
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                <MudNumericField @bind-Value="count"
+                                 T="int"
+                                 Label="@L["Count"]"
+                                 Min="1"
+                                 Max="@availableCount"
+                                 Step="1"
+                                 Style="width: 160px;" />
+                <MudText Typo="Typo.body2">@string.Format(L["AvailableQuestions"], availableCount)</MudText>
+            </MudStack>
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["Cancel"]</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="SubmitAsync">
+            @L["Submit"]
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private Guid? questionBankId;
+    private int? questionType;
+    private int count = 1;
+    private int availableCount;
+    private Dictionary<int, string> questionTypes = [];
+    private List<QuestionBankListDto> questionBanks = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        questionTypes = OptionAppService.GetQuestionTypes();
+        var banks = await QuestionBankAppService.GetListAsync(new GetQuestionBanksInput
+        {
+            SkipCount = 0,
+            MaxResultCount = 100
+        });
+        questionBanks = banks.Items.ToList();
+    }
+
+    private Task OnBankChangedAsync(Guid? value)
+    {
+        questionBankId = value;
+        return RefreshAvailableCountAsync();
+    }
+
+    private Task OnTypeChangedAsync(int? value)
+    {
+        questionType = value;
+        return RefreshAvailableCountAsync();
+    }
+
+    private async Task RefreshAvailableCountAsync()
+    {
+        if (questionBankId == null || questionType == null)
+        {
+            availableCount = 0;
+            return;
+        }
+
+        availableCount = await QuestionAppService.GetCountAsync(new GetQuestionCountInput
+        {
+            QuestionBankId = questionBankId,
+            QuestionType = questionType
+        });
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (questionBankId == null)
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["QuestionBank"]), Severity.Error);
+            return;
+        }
+
+        if (questionType == null)
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["QuestionType"]), Severity.Error);
+            return;
+        }
+
+        if (availableCount < 1)
+        {
+            Snackbar.Add(string.Format(L["AvailableQuestions"], 0), Severity.Error);
+            return;
+        }
+
+        count = Math.Clamp(count, 1, availableCount);
+        MudDialog.Close(DialogResult.Ok(new RandomPickRequest(questionBankId.Value, questionType.Value, count)));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    public sealed record RandomPickRequest(Guid QuestionBankId, int QuestionType, int Count);
+}

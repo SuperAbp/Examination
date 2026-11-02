@@ -1,0 +1,30 @@
+@inherits ExamComponentBase
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Row Spacing="2">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       FullWidth="true"
+                       OnClick="() => Close(0)">
+                @L["PaperType:0"]
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       FullWidth="true"
+                       OnClick="() => Close(1)">
+                @L["PaperType:1"]
+            </MudButton>
+        </MudStack>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private void Close(int paperType)
+    {
+        MudDialog.Close(DialogResult.Ok(paperType));
+    }
+}

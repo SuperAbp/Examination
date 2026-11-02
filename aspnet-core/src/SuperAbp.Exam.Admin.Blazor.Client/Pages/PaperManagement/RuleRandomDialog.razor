@@ -1,0 +1,193 @@
+@inherits ExamComponentBase
+@using SuperAbp.Exam.Admin.QuestionManagement.Questions
+@using SuperAbp.Exam.Admin.QuestionManagement.QuestionBanks
+@using SuperAbp.Exam.Admin.KnowledgePoints
+@using SuperAbp.Exam.Options
+@inject IQuestionAdminAppService QuestionAppService
+@inject IQuestionBankAdminAppService QuestionBankAppService
+@inject IKnowledgePointAdminAppService KnowledgePointAppService
+@inject IOptionAppService OptionAppService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudSelect T="Guid?"
+                       Value="questionBankId"
+                       ValueChanged="OnBankChangedAsync"
+                       Label="@L["QuestionBank"]"
+                       SearchBox="true"
+                       CloseOnSelect="true"
+                       Style="min-width: 260px;">
+                @foreach (var questionBank in questionBanks)
+                {
+                    <MudSelectItem Value="@((Guid?)questionBank.Id)">@questionBank.Title</MudSelectItem>
+                }
+            </MudSelect>
+            <MudSelect T="int?"
+                       Value="questionType"
+                       ValueChanged="OnTypeChangedAsync"
+                       Label="@L["QuestionType"]"
+                       CloseOnSelect="true"
+                       Style="min-width: 260px;">
+                @foreach (var questionType in questionTypes)
+                {
+                    <MudSelectItem Value="@((int?)questionType.Key)">@L[$"QuestionType:{questionType.Key}"]</MudSelectItem>
+                }
+            </MudSelect>
+            <MudSelect T="Guid?"
+                       Value="knowledgePointId"
+                       ValueChanged="OnKnowledgePointChangedAsync"
+                       Label="@L["KnowledgePoint"]"
+                       Clearable="true"
+                       SearchBox="true"
+                       CloseOnSelect="true"
+                       Style="min-width: 260px;">
+                @foreach (var knowledgePoint in knowledgePointOptions)
+                {
+                    <MudSelectItem Value="@((Guid?)knowledgePoint.Id)">@knowledgePoint.Label</MudSelectItem>
+                }
+            </MudSelect>
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                <MudNumericField @bind-Value="count"
+                                 T="int"
+                                 Label="@L["Count"]"
+                                 Min="1"
+                                 Max="@availableCount"
+                                 Step="1"
+                                 Style="width: 160px;" />
+                <MudText Typo="Typo.body2">@string.Format(L["AvailableQuestions"], availableCount)</MudText>
+            </MudStack>
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["Cancel"]</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="SubmitAsync">
+            @L["Submit"]
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public IReadOnlyList<RuleSeed> ExistingRules { get; set; } = [];
+
+    private Guid? questionBankId;
+    private int? questionType;
+    private Guid? knowledgePointId;
+    private int count = 1;
+    private int availableCount;
+    private Dictionary<int, string> questionTypes = [];
+    private List<QuestionBankListDto> questionBanks = [];
+    private List<KnowledgePointOption> knowledgePointOptions = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        questionTypes = OptionAppService.GetQuestionTypes();
+        var banks = await QuestionBankAppService.GetListAsync(new GetQuestionBanksInput
+        {
+            SkipCount = 0,
+            MaxResultCount = 100
+        });
+        questionBanks = banks.Items.ToList();
+
+        var knowledgePoints = await KnowledgePointAppService.GetAllAsync(new GetKnowledgePointsInput());
+        knowledgePointOptions = FlattenKnowledgePoints(knowledgePoints.Items, 0);
+    }
+
+    private Task OnBankChangedAsync(Guid? value)
+    {
+        questionBankId = value;
+        return RefreshAvailableCountAsync();
+    }
+
+    private Task OnTypeChangedAsync(int? value)
+    {
+        questionType = value;
+        return RefreshAvailableCountAsync();
+    }
+
+    private Task OnKnowledgePointChangedAsync(Guid? value)
+    {
+        knowledgePointId = value;
+        return RefreshAvailableCountAsync();
+    }
+
+    private async Task RefreshAvailableCountAsync()
+    {
+        if (questionBankId == null || questionType == null)
+        {
+            availableCount = 0;
+            return;
+        }
+
+        var total = await QuestionAppService.GetCountAsync(new GetQuestionCountInput
+        {
+            QuestionBankId = questionBankId,
+            QuestionType = questionType,
+            KnowledgePointId = knowledgePointId
+        });
+        var used = ExistingRules
+            .Where(r => r.QuestionBankId == questionBankId
+                        && r.QuestionType == questionType
+                        && r.KnowledgePointId == knowledgePointId)
+            .Sum(r => r.Count);
+        availableCount = Math.Max(0, total - used);
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (questionBankId == null)
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["QuestionBank"]), Severity.Error);
+            return;
+        }
+
+        if (questionType == null)
+        {
+            Snackbar.Add(string.Format(L["The {0} field is required."], L["QuestionType"]), Severity.Error);
+            return;
+        }
+
+        if (availableCount < 1)
+        {
+            Snackbar.Add(string.Format(L["AvailableQuestions"], 0), Severity.Error);
+            return;
+        }
+
+        count = Math.Clamp(count, 1, availableCount);
+        MudDialog.Close(DialogResult.Ok(new RuleRequest(questionBankId.Value, questionType.Value, knowledgePointId, count)));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private List<KnowledgePointOption> FlattenKnowledgePoints(IEnumerable<KnowledgePointNodeDto> nodes, int level)
+    {
+        var result = new List<KnowledgePointOption>();
+        foreach (var node in nodes)
+        {
+            var label = string.Concat(Enumerable.Repeat("　", level)) + node.Name;
+            result.Add(new KnowledgePointOption(node.Id, label));
+            if (node.Children is { Count: > 0 })
+            {
+                result.AddRange(FlattenKnowledgePoints(node.Children, level + 1));
+            }
+        }
+
+        return result;
+    }
+
+    private sealed record KnowledgePointOption(Guid Id, string Label);
+
+    public sealed record RuleSeed(Guid QuestionBankId, int QuestionType, Guid? KnowledgePointId, int Count);
+
+    public sealed record RuleRequest(Guid QuestionBankId, int QuestionType, Guid? KnowledgePointId, int Count);
+}
