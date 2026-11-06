@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SuperAbp.Exam.Admin;
+using SuperAbp.Exam.Options;
 using Volo.Abp.Account;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
@@ -28,6 +29,13 @@ public class ExamHttpApiClientModule : AbpModule
     {
         context.Services.AddHttpClientProxies(
             typeof(ExamAdminApplicationContractsModule).Assembly,
+            RemoteServiceName
+        );
+
+        // Application.Contracts.Shared 里的选项接口（IOptionAppService）也需要注册动态代理，
+        // 否则 WASM 端注入直接失败（页面渲染崩溃）。
+        context.Services.AddHttpClientProxies(
+            typeof(IOptionAppService).Assembly,
             RemoteServiceName
         );
 

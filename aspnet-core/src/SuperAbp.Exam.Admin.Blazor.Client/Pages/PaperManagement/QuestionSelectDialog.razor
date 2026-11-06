@@ -125,7 +125,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        questionTypes = OptionAppService.GetQuestionTypes();
+questionTypes = await OptionAppService.GetQuestionTypes();
         var banks = await QuestionBankAppService.GetListAsync(new GetQuestionBanksInput
         {
             SkipCount = 0,

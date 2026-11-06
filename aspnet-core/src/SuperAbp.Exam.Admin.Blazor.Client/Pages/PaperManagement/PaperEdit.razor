@@ -235,7 +235,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         activePaperType = PaperType == 1 ? 1 : 0;
-        questionTypes = OptionAppService.GetQuestionTypes();
+questionTypes = await OptionAppService.GetQuestionTypes();
         var banks = await QuestionBankAppService.GetListAsync(new GetQuestionBanksInput
         {
             SkipCount = 0,

@@ -20,35 +20,33 @@
 <MudText Typo="Typo.h4" Class="mb-4">@L["Menu:Exams"]</MudText>
 
 <MudCard Elevation="0">
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Wrap="Wrap.Wrap">
-                <MudTextField @bind-Value="filterName"
-                              Label="@L["Name"]"
-                              T="string"
-                              Immediate="true"
-                              OnKeyUp="FilterOnKeyUp"
-                              Style="min-width: 220px;" />
-                <MudSelect @bind-Value="filterStatus"
-                           T="int?"
-                           Label="@L["Status"]"
-                           Clearable="true"
-                           CloseOnSelect="true"
-                           Style="min-width: 160px;">
-                    @foreach (var status in examinationStatuses)
-                    {
-                        <MudSelectItem Value="@((int?)status.Key)">@L[$"ExaminationStatus:{status.Key}"]</MudSelectItem>
-                    }
-                </MudSelect>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="SearchAsync">
-                    @L["Search"]
-                </MudButton>
-                <MudButton Variant="Variant.Outlined" OnClick="ResetAsync">
-                    @L["Reset"]
-                </MudButton>
-            </MudStack>
-        </CardHeaderContent>
-        <CardHeaderActions>
+    <MudCardContent Class="pb-3">
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Wrap="Wrap.Wrap">
+            <MudTextField @bind-Value="filterName"
+                          Label="@L["Name"]"
+                          T="string"
+                          Immediate="true"
+                          OnKeyUp="FilterOnKeyUp"
+                          Style="min-width: 220px;" />
+            <MudSelect @bind-Value="filterStatus"
+                       T="int?"
+                       Label="@L["Status"]"
+                       Clearable="true"
+                       CloseOnSelect="true"
+                       Style="min-width: 160px;">
+                @foreach (var status in examinationStatuses)
+                {
+                    <MudSelectItem Value="@((int?)status.Key)">@L[$"ExaminationStatus:{status.Key}"]</MudSelectItem>
+                }
+            </MudSelect>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="SearchAsync">
+                @L["Search"]
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" OnClick="ResetAsync">
+                @L["Reset"]
+            </MudButton>
+        </MudStack>
+        <MudStack Row Spacing="1" Class="mt-3">
             @if (CanCreate)
             {
                 <MudButton Variant="Variant.Filled"
@@ -58,8 +56,8 @@
                     @L["NewExam"]
                 </MudButton>
             }
-        </CardHeaderActions>
-    </MudCardHeader>
+        </MudStack>
+    </MudCardContent>
     <MudCardContent>
         <MudDataGrid @ref="_grid"
                      T="ExamListDto"
@@ -220,7 +218,7 @@
         CanCancel = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Exams.Cancel)).Succeeded;
         CanInvalidate = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Exams.Invalidate)).Succeeded;
 
-        examinationStatuses = OptionAppService.GetExaminationStatus();
+examinationStatuses = await OptionAppService.GetExaminationStatus();
 
         var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
         if (uri.AbsolutePath.EndsWith("/create", StringComparison.OrdinalIgnoreCase) &&

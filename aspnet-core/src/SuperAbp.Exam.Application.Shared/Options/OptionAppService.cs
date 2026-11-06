@@ -3,43 +3,44 @@ using SuperAbp.Exam.ExamManagement.UserExams;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SuperAbp.Exam.Options;
 
 public class OptionAppService : ExamAppServiceBase, IOptionAppService
 {
-    public Dictionary<int, string> GetQuestionTypes()
+    public Task<Dictionary<int, string>> GetQuestionTypes()
     {
-        return QuestionType.List
+        return Task.FromResult(QuestionType.List
             .Select(q => new { Key = q.Value, Value = q.Name })
-            .ToDictionary(key => key.Key, value => value.Value);
+            .ToDictionary(key => key.Key, value => value.Value));
     }
 
-    public Dictionary<int, string> GetAnswerModes()
+    public Task<Dictionary<int, string>> GetAnswerModes()
     {
-        return AnswerMode.List
+        return Task.FromResult(AnswerMode.List
             .Select(a => new { Key = a.Value, Value = a.Name })
-            .ToDictionary(key => key.Key, value => value.Value);
+            .ToDictionary(key => key.Key, value => value.Value));
     }
 
-    public Dictionary<int, string> GetReviewModes()
+    public Task<Dictionary<int, string>> GetReviewModes()
     {
-        return ReviewMode.List
+        return Task.FromResult(ReviewMode.List
             .Select(r => new { Key = r.Value, Value = r.Name })
-            .ToDictionary(key => key.Key, value => value.Value);
+            .ToDictionary(key => key.Key, value => value.Value));
     }
 
-    public Dictionary<int, string> GetExaminationStatus()
+    public Task<Dictionary<int, string>> GetExaminationStatus()
     {
-        return ExaminationStatus.List
+        return Task.FromResult(ExaminationStatus.List
             .Select(r => new { Key = r.Value, Value = r.Name })
-            .ToDictionary(key => key.Key, value => value.Value);
+            .ToDictionary(key => key.Key, value => value.Value));
     }
 
-    public Dictionary<int, string> GetUserExamStatus()
+    public Task<Dictionary<int, string>> GetUserExamStatus()
     {
-        return UserExamStatus.List
+        return Task.FromResult(UserExamStatus.List
             .Select(r => new { Key = r.Value, Value = r.Name })
-            .ToDictionary(key => key.Key, value => value.Value);
+            .ToDictionary(key => key.Key, value => value.Value));
     }
 }

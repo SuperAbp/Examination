@@ -11,32 +11,30 @@
 <MudText Typo="Typo.h4" Class="mb-4">@L["Menu:Notifications"]</MudText>
 
 <MudCard Elevation="0">
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                <MudTextField @bind-Value="filterKeyword"
-                              Label="@L["Search"]"
-                              T="string"
-                              Immediate="true"
-                              OnKeyUp="FilterOnKeyUp"
-                              Style="min-width: 200px;" />
-                <MudSelect @bind-Value="readState"
-                           T="string"
-                           Label="@L["ReadState"]"
-                           Style="min-width: 120px;">
-                    <MudSelectItem Value="@("unread")">@L["Unread"]</MudSelectItem>
-                    <MudSelectItem Value="@("read")">@L["Read"]</MudSelectItem>
-                    <MudSelectItem Value="@("all")">@L["All"]</MudSelectItem>
-                </MudSelect>
-                <MudButton Variant="Variant.Outlined" OnClick="SearchAsync">
-                    @L["Search"]
-                </MudButton>
-                <MudButton Variant="Variant.Outlined" OnClick="ResetAsync">
-                    @L["Reset"]
-                </MudButton>
-            </MudStack>
-        </CardHeaderContent>
-        <CardHeaderActions>
+    <MudCardContent Class="pb-3">
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Wrap="Wrap.Wrap">
+            <MudTextField @bind-Value="filterKeyword"
+                          Label="@L["Search"]"
+                          T="string"
+                          Immediate="true"
+                          OnKeyUp="FilterOnKeyUp"
+                          Style="min-width: 200px;" />
+            <MudSelect @bind-Value="readState"
+                       T="string"
+                       Label="@L["ReadState"]"
+                       Style="min-width: 120px;">
+                <MudSelectItem Value="@("unread")">@L["Unread"]</MudSelectItem>
+                <MudSelectItem Value="@("read")">@L["Read"]</MudSelectItem>
+                <MudSelectItem Value="@("all")">@L["All"]</MudSelectItem>
+            </MudSelect>
+            <MudButton Variant="Variant.Outlined" OnClick="SearchAsync">
+                @L["Search"]
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" OnClick="ResetAsync">
+                @L["Reset"]
+            </MudButton>
+        </MudStack>
+        <MudStack Row Spacing="1" Class="mt-3">
             @if (unreadCount > 0)
             {
                 <MudButton Variant="Variant.Filled"
@@ -46,8 +44,8 @@
                     @L["MarkAllAsRead"]
                 </MudButton>
             }
-        </CardHeaderActions>
-    </MudCardHeader>
+        </MudStack>
+    </MudCardContent>
     <MudCardContent>
         <MudDataGrid @ref="_grid"
                      T="NotificationMyListDto"

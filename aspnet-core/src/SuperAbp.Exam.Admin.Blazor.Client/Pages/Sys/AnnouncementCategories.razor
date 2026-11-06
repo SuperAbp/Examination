@@ -11,11 +11,9 @@
 <MudText Typo="Typo.h4" Class="mb-4">@L["Menu:AnnouncementCategories"]</MudText>
 
 <MudCard Elevation="0">
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudText Typo="Typo.h6">@L["AnnouncementCategories"]</MudText>
-        </CardHeaderContent>
-        <CardHeaderActions>
+    <MudCardContent Class="pb-3">
+        <MudText Typo="Typo.h6">@L["AnnouncementCategories"]</MudText>
+        <MudStack Row Spacing="1" Class="mt-2">
             @if (CanCreate)
             {
                 <MudButton Variant="Variant.Filled"
@@ -25,8 +23,8 @@
                     @L["NewAnnouncementCategory"]
                 </MudButton>
             }
-        </CardHeaderActions>
-    </MudCardHeader>
+        </MudStack>
+    </MudCardContent>
     <MudCardContent>
         <MudTable Items="@categories"
                   Hover="true"

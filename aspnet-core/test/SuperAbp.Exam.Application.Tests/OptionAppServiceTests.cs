@@ -3,6 +3,7 @@ using Shouldly;
 using Volo.Abp.Modularity;
 using Xunit;
 using SuperAbp.Exam.Options;
+using System.Threading.Tasks;
 
 namespace SuperAbp.Exam;
 
@@ -17,9 +18,9 @@ public abstract class OptionAppServiceTests<TStartupModule> : ExamApplicationTes
     }
 
     [Fact]
-    public void Should_Get_List()
+    public async Task Should_Get_List()
     {
-        Dictionary<int, string> result = _optionAppService.GetQuestionTypes();
+        Dictionary<int, string> result = await _optionAppService.GetQuestionTypes();
         result.Count.ShouldBeGreaterThan(0);
     }
 }

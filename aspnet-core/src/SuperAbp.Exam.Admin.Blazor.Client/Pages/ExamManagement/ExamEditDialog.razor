@@ -164,8 +164,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        answerModes = OptionAppService.GetAnswerModes();
-        reviewModes = OptionAppService.GetReviewModes();
+answerModes = await OptionAppService.GetAnswerModes();
+reviewModes = await OptionAppService.GetReviewModes();
 
         var paperResult = await PaperAppService.GetListAsync(new GetPapersInput
         {

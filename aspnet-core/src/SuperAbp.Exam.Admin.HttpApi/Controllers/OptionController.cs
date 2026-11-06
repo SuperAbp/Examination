@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SuperAbp.Exam.Options;
 
@@ -11,32 +12,33 @@ namespace SuperAbp.Exam.Admin.Controllers;
 public class OptionController(IOptionAppService optionAppService) : ExamController, IOptionAppService
 {
     [HttpGet("question-types")]
-    public Dictionary<int, string> GetQuestionTypes()
+    public async Task<Dictionary<int, string>> GetQuestionTypes()
     {
-        return optionAppService.GetQuestionTypes();
+        return await optionAppService.GetQuestionTypes();
     }
 
     [HttpGet("answer-modes")]
-    public Dictionary<int, string> GetAnswerModes()
+    public async Task<Dictionary<int, string>> GetAnswerModes()
     {
-        return optionAppService.GetAnswerModes();
+        return await optionAppService.GetAnswerModes();
     }
 
     [HttpGet("review-modes")]
-    public Dictionary<int, string> GetReviewModes()
+    public async Task<Dictionary<int, string>> GetReviewModes()
     {
-        return optionAppService.GetReviewModes();
+        return await optionAppService.GetReviewModes();
     }
 
     [HttpGet("examination-status")]
-    public Dictionary<int, string> GetExaminationStatus()
+    public async Task<Dictionary<int, string>> GetExaminationStatus()
     {
-        return optionAppService.GetExaminationStatus();
+        return await optionAppService.GetExaminationStatus();
     }
 
     [HttpGet("user-exam-status")]
-    public Dictionary<int, string> GetUserExamStatus()
+    public async Task<Dictionary<int, string>> GetUserExamStatus()
     {
-        return optionAppService.GetUserExamStatus();
+        return await optionAppService.GetUserExamStatus();
     }
 }
+

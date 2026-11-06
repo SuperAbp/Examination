@@ -19,81 +19,77 @@
 <MudText Typo="Typo.h4" Class="mb-4">@L["Menu:Questions"]</MudText>
 
 <MudCard Elevation="0">
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Wrap="Wrap.Wrap">
-                <MudTextField @bind-Value="filterContent"
-                              Label="@L["QuestionContent"]"
-                              T="string"
-                              Immediate="true"
-                              OnKeyUp="FilterOnKeyUp"
-                              Style="min-width: 220px;" />
-                <MudSelect @bind-Value="filterQuestionType"
-                           T="int?"
-                           Label="@L["QuestionType"]"
-                           Clearable="true"
-                           CloseOnSelect="true"
-                           Style="min-width: 160px;">
-                    @foreach (var questionType in questionTypes)
-                    {
-                        <MudSelectItem Value="@((int?)questionType.Key)">@L[$"QuestionType:{questionType.Key}"]</MudSelectItem>
-                    }
-                </MudSelect>
-                <MudSelect @bind-Value="filterQuestionBankId"
-                           T="Guid?"
-                           Label="@L["QuestionBank"]"
-                           Clearable="true"
-                           SearchBox="true"
-                           CloseOnSelect="true"
-                           Style="min-width: 200px;">
-                    @foreach (var questionBank in questionBanks)
-                    {
-                        <MudSelectItem Value="@((Guid?)questionBank.Id)">@questionBank.Title</MudSelectItem>
-                    }
-                </MudSelect>
-                <MudSelect @bind-Value="filterKnowledgePointId"
-                           T="Guid?"
-                           Label="@L["KnowledgePoint"]"
-                           Clearable="true"
-                           SearchBox="true"
-                           CloseOnSelect="true"
-                           Style="min-width: 200px;">
-                    @foreach (var knowledgePoint in knowledgePointOptions)
-                    {
-                        <MudSelectItem Value="@((Guid?)knowledgePoint.Id)">@knowledgePoint.Label</MudSelectItem>
-                    }
-                </MudSelect>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="SearchAsync">
-                    @L["Search"]
-                </MudButton>
-                <MudButton Variant="Variant.Outlined" OnClick="ResetAsync">
-                    @L["Reset"]
-                </MudButton>
-            </MudStack>
-        </CardHeaderContent>
-        <CardHeaderActions>
-            <MudStack Row Spacing="1">
-                @if (CanImport)
+    <MudCardContent Class="pb-3">
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Wrap="Wrap.Wrap">
+            <MudTextField @bind-Value="filterContent"
+                          Label="@L["QuestionContent"]"
+                          T="string"
+                          Immediate="true"
+                          OnKeyUp="FilterOnKeyUp"
+                          Style="min-width: 220px;" />
+            <MudSelect @bind-Value="filterQuestionType"
+                       T="int?"
+                       Label="@L["QuestionType"]"
+                       Clearable="true"
+                       CloseOnSelect="true"
+                       Style="min-width: 160px;">
+                @foreach (var questionType in questionTypes)
                 {
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.Upload"
-                               OnClick="GoToImportAsync">
-                        @L["Import"]
-                    </MudButton>
+                    <MudSelectItem Value="@((int?)questionType.Key)">@L[$"QuestionType:{questionType.Key}"]</MudSelectItem>
                 }
-                @if (CanCreate)
+            </MudSelect>
+            <MudSelect @bind-Value="filterQuestionBankId"
+                       T="Guid?"
+                       Label="@L["QuestionBank"]"
+                       Clearable="true"
+                       SearchBox="true"
+                       CloseOnSelect="true"
+                       Style="min-width: 200px;">
+                @foreach (var questionBank in questionBanks)
                 {
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.Add"
-                               OnClick="GoToCreateAsync">
-                        @L["NewQuestion"]
-                    </MudButton>
+                    <MudSelectItem Value="@((Guid?)questionBank.Id)">@questionBank.Title</MudSelectItem>
                 }
-            </MudStack>
-        </CardHeaderActions>
-    </MudCardHeader>
+            </MudSelect>
+            <MudSelect @bind-Value="filterKnowledgePointId"
+                       T="Guid?"
+                       Label="@L["KnowledgePoint"]"
+                       Clearable="true"
+                       SearchBox="true"
+                       CloseOnSelect="true"
+                       Style="min-width: 200px;">
+                @foreach (var knowledgePoint in knowledgePointOptions)
+                {
+                    <MudSelectItem Value="@((Guid?)knowledgePoint.Id)">@knowledgePoint.Label</MudSelectItem>
+                }
+            </MudSelect>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="SearchAsync">
+                @L["Search"]
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" OnClick="ResetAsync">
+                @L["Reset"]
+            </MudButton>
+        </MudStack>
+        <MudStack Row Spacing="1" Class="mt-3">
+            @if (CanImport)
+            {
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Upload"
+                           OnClick="GoToImportAsync">
+                    @L["Import"]
+                </MudButton>
+            }
+            @if (CanCreate)
+            {
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           OnClick="GoToCreateAsync">
+                    @L["NewQuestion"]
+                </MudButton>
+            }
+        </MudStack>
+    </MudCardContent>
     <MudCardContent>
         <MudDataGrid @key="gridKey"
                      @ref="_grid"
@@ -168,7 +164,7 @@
         CanDelete = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Questions.Delete)).Succeeded;
         CanImport = (await Authorization.AuthorizeAsync(authState.User, ExamPermissions.Questions.Import)).Succeeded;
 
-        questionTypes = OptionAppService.GetQuestionTypes();
+questionTypes = await OptionAppService.GetQuestionTypes();
         var banks = await QuestionBankAppService.GetListAsync(new GetQuestionBanksInput
         {
             SkipCount = 0,
