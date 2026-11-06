@@ -20,6 +20,7 @@ public class SqlProviderFactory
         {
             "mysql" => new MySqlProvider(),
             "sqlserver" => new SqlServerProvider(),
+            "postgresql" or "postgres" => new PostgresProvider(),
             _ => throw new InvalidOperationException($"不支持的数据库类型: {databaseType}")
         };
     }
