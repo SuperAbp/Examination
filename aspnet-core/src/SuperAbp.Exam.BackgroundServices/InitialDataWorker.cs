@@ -5,14 +5,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
+using Npgsql;
+using SuperAbp.Exam.Announcements;
 using SuperAbp.Exam.BackgroundServices.Sql;
 using SuperAbp.Exam.EntityFrameworkCore;
 using SuperAbp.Exam.ExamManagement.Exams;
+using SuperAbp.Exam.KnowledgePoints;
 using SuperAbp.Exam.PaperManagement.Papers;
 using SuperAbp.Exam.QuestionManagement.QuestionBanks;
 using SuperAbp.Exam.QuestionManagement.QuestionKnowledgePoints;
 using SuperAbp.Exam.QuestionManagement.Questions;
 using SuperAbp.Exam.QuestionManagement.Questions.QuestionOptions;
+using SuperAbp.Exam.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -32,18 +36,18 @@ namespace SuperAbp.Exam.BackgroundServices;
 
 public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
 {
-    public InitialDataWorker(AbpAsyncTimer timer, IServiceScopeFactory serviceScopeFactory) : base(timer, serviceScopeFactory)
+    public InitialDataWorker(AbpAsyncTimer timer, IServiceScopeFactory serviceScopeFactory, IConfiguration configuration) : base(timer, serviceScopeFactory)
     {
         Timer.Period = 600_000;
 #if DEBUG
-        //timer.RunOnStart = true;
+        timer.RunOnStart = configuration.GetValue("InitialData:RunOnStart", false);
 #else
         timer.RunOnStart = true;
 #endif
     }
 
     private PeriodicBackgroundWorkerContext _workerContext;
-    private Guid _tenantId;
+    private Guid? _tenantId;
     private const int CountForSection = 10;
     private static readonly Random _rand = new Random();
 
@@ -64,8 +68,12 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         IConfiguration configuration = workerContext.ServiceProvider.GetRequiredService<IConfiguration>();
         ILogger<InitialDataWorker> logger = workerContext.ServiceProvider.GetRequiredService<ILogger<InitialDataWorker>>();
         ITenantRepository tenantRepository = workerContext.ServiceProvider.GetRequiredService<ITenantRepository>();
-        Tenant tenant = await tenantRepository.FindByNameAsync("Demo");
-        _tenantId = tenant.Id;
+        string tenantName = configuration["InitialData:TenantName"];
+        if (!string.IsNullOrWhiteSpace(tenantName))
+        {
+            Tenant tenant = await tenantRepository.FindByNameAsync(tenantName);
+            _tenantId = tenant.Id;
+        }
 
         (ISqlProvider sqlProvider, IDbConnection connection) = GetSqlProvider(configuration);
         if (!await CheckTimeAsync(configuration, logger, sqlProvider, connection))
@@ -100,8 +108,19 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
             await CreatePaperAsync();
             logger.LogDebug("Create Exam……");
             await CreateExamAsync();
+            logger.LogDebug("Create Announcement……");
+            await CreateAnnouncementsAsync();
+            logger.LogDebug("Create Notification……");
+            await CreateNotificationsAsync(logger);
             logger.LogDebug("Create Record……");
-            await connection.ExecuteAsync(sqlProvider.InsertInitialDataExecutionLog(), new { LastExecutedTime = DateTime.Now });
+            try
+            {
+                await connection.ExecuteAsync(sqlProvider.InsertInitialDataExecutionLog(), new { LastExecutedTime = DateTime.Now });
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Failed to write InitialDataExecutionLog, ignore.");
+            }
             logger.LogDebug("Created successfully.");
         }
     }
@@ -110,10 +129,16 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
     {
         ISqlProvider sqlProvider;
         IDbConnection connection;
-        if (configuration["DatabaseType"] == "mysql")
+        string? databaseType = configuration["DatabaseType"]?.ToLower();
+        if (databaseType == "mysql")
         {
             sqlProvider = new MySqlProvider();
             connection = new MySqlConnection(configuration.GetConnectionString("Default"));
+        }
+        else if (databaseType == "postgresql" || databaseType == "postgres")
+        {
+            sqlProvider = new PostgresProvider();
+            connection = new NpgsqlConnection(configuration.GetConnectionString("Default"));
         }
         else
         {
@@ -126,7 +151,16 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
     private static async Task<bool> CheckTimeAsync(IConfiguration configuration, ILogger<InitialDataWorker> logger, ISqlProvider sqlProvider, IDbConnection connection)
     {
         // TODO:Remove InitialDataExecutionLog Table
-        DateTime lastExecutedTime = await connection.ExecuteScalarAsync<DateTime>(sqlProvider.GetLastExecutedTime());
+        DateTime lastExecutedTime;
+        try
+        {
+            lastExecutedTime = await connection.ExecuteScalarAsync<DateTime>(sqlProvider.GetLastExecutedTime());
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to read InitialDataExecutionLog, will run initial data directly.");
+            return true;
+        }
         if (!int.TryParse(configuration["InitialData:IntervalDays"], out int intervalDays))
         {
             intervalDays = 1;
@@ -228,6 +262,67 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         await examRepository.InsertManyAsync(examinations);
     }
 
+    private async Task CreateAnnouncementsAsync()
+    {
+        var categoryRepository = _workerContext.ServiceProvider.GetRequiredService<IAnnouncementCategoryRepository>();
+        var announcementRepository = _workerContext.ServiceProvider.GetRequiredService<IAnnouncementRepository>();
+        var guidGenerator = _workerContext.ServiceProvider.GetRequiredService<IGuidGenerator>();
+
+        AnnouncementCategory examCategory = new(guidGenerator.Create(), "考试通知", 0, "考试安排相关公告");
+        AnnouncementCategory systemCategory = new(guidGenerator.Create(), "系统公告", 10, "平台功能与维护公告");
+
+        DateTime now = DateTime.Now;
+        List<Announcement> announcements =
+        [
+            new(guidGenerator.Create(), "下半年考试安排通知", "2026年下半年统一考试将于下月开启报名，请各位学员及时关注报名截止时间，并提前完成考前复习。", 0, examCategory.Id) { IsPublished = true },
+            new(guidGenerator.Create(), "系统维护公告", "平台将于本周六凌晨 2:00-4:00 进行系统升级维护，期间暂停访问，请合理安排学习时间。", 0, systemCategory.Id) { IsPublished = true },
+            new(guidGenerator.Create(), "模拟考试功能上线", "模拟考试功能已上线，支持随机组卷与固定试卷两种模式，欢迎体验。", 1, systemCategory.Id) { IsPublished = true, ScheduledExpirationTime = now.AddDays(30) },
+            new(guidGenerator.Create(), "新题库发布预告", "信息安全基础题库将于近期发布，敬请期待。", 2, examCategory.Id),
+            new(guidGenerator.Create(), "节假日放假安排", "根据国家法定节假日安排，平台客服将在假期暂停服务，考试与学习功能不受影响。", 3, systemCategory.Id),
+        ];
+
+        Announcement scheduled = new(guidGenerator.Create(), "限时优惠活动公告", "为庆祝平台注册学员突破 10000 人，本月报名考试享受 8 折优惠。", 4, examCategory.Id);
+        scheduled.SetPublishTime(now.AddMinutes(1));
+        announcements.Add(scheduled);
+
+        Announcement expired = new(guidGenerator.Create(), "旧版客户端停用提醒", "旧版客户端已停止服务，请下载最新版客户端。", 5, systemCategory.Id) { IsPublished = true, ScheduledExpirationTime = now.AddDays(-1) };
+        announcements.Add(expired);
+
+        await categoryRepository.InsertManyAsync([examCategory, systemCategory]);
+        await announcementRepository.InsertManyAsync(announcements);
+    }
+
+    private async Task CreateNotificationsAsync(ILogger logger)
+    {
+        ExamDbContext dbContext = _workerContext.ServiceProvider.GetRequiredService<ExamDbContext>();
+        Guid? adminUserId = await dbContext.Users
+            .Where(user => user.NormalizedUserName == "ADMIN")
+            .Select(user => (Guid?)user.Id)
+            .FirstOrDefaultAsync();
+        if (adminUserId is null)
+        {
+            logger.LogWarning("Admin user not found, skip creating notifications.");
+            return;
+        }
+
+        var notificationRepository = _workerContext.ServiceProvider.GetRequiredService<INotificationRepository>();
+        var guidGenerator = _workerContext.ServiceProvider.GetRequiredService<IGuidGenerator>();
+
+        List<Notification> notifications =
+        [
+            new(guidGenerator.Create(), adminUserId.Value, NotificationType.ExamStartReminder, JsonSerializer.Serialize(new { message = "您预约的《驾考科目一 固定试卷 测试》将于 1 小时后开始，请提前做好准备。" })),
+            new(guidGenerator.Create(), adminUserId.Value, NotificationType.ExamEndReminder, JsonSerializer.Serialize(new { message = "《二级建造师 随机组卷 测试》将于 30 分钟后结束，请尽快提交答卷。" })),
+            new(guidGenerator.Create(), adminUserId.Value, NotificationType.ExamScorePublished, JsonSerializer.Serialize(new { examName = "驾考科目一 固定试卷 测试" })),
+            new(guidGenerator.Create(), adminUserId.Value, NotificationType.CommentReply, JsonSerializer.Serialize(new { message = "您的提问有新的回复：填空题支持多个可选答案，多个答案使用 || 分隔。" })),
+            new(guidGenerator.Create(), adminUserId.Value, NotificationType.QuestionApproved, JsonSerializer.Serialize(new { message = "您提交的题目已通过审核。" })),
+            new(guidGenerator.Create(), adminUserId.Value, NotificationType.TrainingUpdated, JsonSerializer.Serialize(new { message = "《安全生产培训》课程内容已更新，可前往查看。" })),
+        ];
+        notifications[0].MarkAsRead(DateTime.Now);
+        notifications[2].MarkAsRead(DateTime.Now);
+
+        await notificationRepository.InsertManyAsync(notifications);
+    }
+
     private async Task<bool> CreateQuestionAsync()
     {
         var jsonPath = Path.Combine(AppContext.BaseDirectory, "questions.json");
@@ -248,47 +343,46 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         var questionManager = _workerContext.ServiceProvider.GetRequiredService<QuestionManager>();
         var questionRepository = _workerContext.ServiceProvider.GetRequiredService<IQuestionRepository>();
         var questionKnowledgePointRepository = _workerContext.ServiceProvider.GetRequiredService<IQuestionKnowledgePointRepository>();
+        var knowledgePointRepository = _workerContext.ServiceProvider.GetRequiredService<IKnowledgePointRepository>();
         List<QuestionBank> questionBanks = [];
         List<Question> questions = [];
         List<QuestionOption> options = [];
         List<QuestionKnowledgePoint> knowledgePoints = [];
-
-        Question tempQuestion;
-        QuestionBank tempBank;
-        var bankParams = new List<object>();
-        var questionParams = new List<object>();
-        var answerParams = new List<object>();
-        var knowledgepointParams = new List<object>(); // question-knowledgepoint relations
-
-        var seenKnowledgePoints = new HashSet<string>();
+        List<KnowledgePoint> knowledgePointList = [];
+        Dictionary<string, KnowledgePoint> knowledgePointMap = new(StringComparer.Ordinal);
 
         foreach (var bank in doc.QuesiontBanks)
         {
-            tempBank = await questionBankManager.CreateAsync(bank.Name ?? String.Empty);
+            QuestionBank tempBank = await questionBankManager.CreateAsync(bank.Name ?? String.Empty);
             questionBanks.Add(tempBank);
 
             if (bank.Questions == null) continue;
 
             foreach (var q in bank.Questions)
             {
-                tempQuestion = await questionManager.CreateAsync(tempBank.Id, QuestionType.FromValue(q.Type), q.Title ?? string.Empty);
+                Question tempQuestion = await questionManager.CreateAsync(tempBank.Id, QuestionType.FromValue(q.Type), q.Title ?? string.Empty);
+                tempQuestion.Analysis = q.Analysis;
+                tempQuestion.FixedOrder = q.FixedOrder;
+                tempQuestion.RequiredAnswerCount = q.RequiredAnswerCount;
                 questions.Add(tempQuestion);
 
                 if (q.KnowledgePoints != null)
                 {
-                    var newKps = q.KnowledgePoints.Except(seenKnowledgePoints).ToList();
-                    foreach (var kpId in newKps)
+                    foreach (string knowledgePointPath in q.KnowledgePoints)
                     {
-                        seenKnowledgePoints.Add(kpId);
-                    }
-
-                    foreach (var kpId in q.KnowledgePoints)
-                    {
-                        if (kpId is null)
+                        if (string.IsNullOrWhiteSpace(knowledgePointPath))
                         {
                             continue;
                         }
-                        knowledgePoints.Add(new QuestionKnowledgePoint(tempQuestion.Id, new Guid(kpId)));
+                        KnowledgePoint? knowledgePoint = GetOrCreateKnowledgePoint(knowledgePointPath.Trim(), knowledgePointMap, knowledgePointList, guidGenerator);
+                        if (knowledgePoint is null)
+                        {
+                            continue;
+                        }
+                        if (!knowledgePoints.Any(x => x.QuestionId == tempQuestion.Id && x.KnowledgePointId == knowledgePoint.Id))
+                        {
+                            knowledgePoints.Add(new QuestionKnowledgePoint(tempQuestion.Id, knowledgePoint.Id));
+                        }
                     }
                 }
 
@@ -304,6 +398,10 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         {
             await questionBankRepository.InsertManyAsync(questionBanks, true);
         }
+        if (knowledgePointList.Count > 0)
+        {
+            await knowledgePointRepository.InsertManyAsync(knowledgePointList, true);
+        }
         if (questions.Count > 0)
         {
             await questionRepository.InsertManyAsync(questions, true);
@@ -314,6 +412,34 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         }
 
         return true;
+    }
+
+    private static KnowledgePoint? GetOrCreateKnowledgePoint(
+        string knowledgePointPath,
+        Dictionary<string, KnowledgePoint> knowledgePointMap,
+        List<KnowledgePoint> knowledgePointList,
+        IGuidGenerator guidGenerator)
+    {
+        Guid? parentId = null;
+        string key = string.Empty;
+        KnowledgePoint? knowledgePoint = null;
+        foreach (string name in knowledgePointPath.Split(" > "))
+        {
+            string trimmedName = name.Trim();
+            if (trimmedName.Length == 0)
+            {
+                continue;
+            }
+            key = key.Length == 0 ? trimmedName : key + " > " + trimmedName;
+            if (!knowledgePointMap.TryGetValue(key, out knowledgePoint))
+            {
+                knowledgePoint = new KnowledgePoint(guidGenerator.Create(), trimmedName, parentId);
+                knowledgePointMap[key] = knowledgePoint;
+                knowledgePointList.Add(knowledgePoint);
+            }
+            parentId = knowledgePoint.Id;
+        }
+        return knowledgePoint;
     }
 
     private async Task ClearDataAsync()
@@ -333,6 +459,9 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         await dbContext.QuestionKnowledgePoints.ExecuteDeleteAsync();
         await dbContext.QuestionBanks.ExecuteDeleteAsync();
         await dbContext.KnowledgePoints.ExecuteDeleteAsync();
+        await dbContext.Notifications.ExecuteDeleteAsync();
+        await dbContext.Announcements.ExecuteDeleteAsync();
+        await dbContext.AnnouncementCategories.ExecuteDeleteAsync();
     }
 
     // DTOs for parsing questions.json
@@ -353,6 +482,8 @@ public class InitialDataWorker : AsyncPeriodicBackgroundWorkerBase
         public string? Title { get; set; }
         public int Type { get; set; }
         public string? Analysis { get; set; }
+        public bool FixedOrder { get; set; }
+        public int RequiredAnswerCount { get; set; }
         public string[] KnowledgePoints { get; set; } = [];
         public List<OptionDto>? Options { get; set; }
     }

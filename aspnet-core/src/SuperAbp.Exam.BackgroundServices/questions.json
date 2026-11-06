@@ -7,6 +7,9 @@
         {
           "Title": "驾驶机动车应当随身携带哪种证件？",
           "Type": 0,
+          "KnowledgePoints": [
+            "道路交通安全法规 > 证件管理"
+          ],
           "Options": [
             {
               "Content": "工作证",
@@ -29,6 +32,9 @@
         {
           "Title": "在实习期内驾驶机动车的，应当在车身后部粘贴或者悬挂哪种标志？",
           "Type": 0,
+          "KnowledgePoints": [
+            "道路交通安全法规 > 实习期管理"
+          ],
           "Options": [
             {
               "Content": "注意新手标志",
@@ -51,6 +57,9 @@
         {
           "Title": "下列哪种标志是驾驶机动车上路行驶应当在车上放置的标志？",
           "Type": 0,
+          "KnowledgePoints": [
+            "交通标志 > 指示标志"
+          ],
           "Options": [
             {
               "Content": "产品合格标志",
@@ -2019,6 +2028,9 @@
         {
           "Title": "甲公司生产销售乙、丙、丁三种产品，固定成本50000元。除乙产品外，其余两种产品均盈利。乙产品销量2000件，单价105元，单位成本110元（其中，单位直接材料费用20元，单位直接人工费用35元，单位变动制造费用45元，单位固定制造费用10元）。假定生产能力无法转移，在短期经营决策时，决定继续生产乙产品的理由是（　　）。",
           "Type": 0,
+          "KnowledgePoints": [
+            "财务管理 > 本量利分析"
+          ],
           "Analysis": "在短期内，如果公司的亏损产品能够提供正的边际贡献，就应该继续生产乙产品。乙产品的单位变动成本=单位直接材料费用+单位直接人工费用+单位变动制造费用=20+35+45=100（元），且生产能力无法转移，因此乙产品单价大于100元，就应该继续生产乙产品。",
           "Options": [
             {
@@ -2042,6 +2054,9 @@
         {
           "Title": "福门公司是一家汽车玻璃制造商，是多家汽车企业的玻璃供应商。根据波特的产业五种竞争力分析理论，下列各项中，有利于提高福门公司对其客户讨价还价能力的有（　　）。",
           "Type": 1,
+          "KnowledgePoints": [
+            "战略分析 > 五力模型"
+          ],
           "Analysis": "本题考查产业五种竞争力中的供应者、购买者讨价还价的能力。选项C：福门公司所在行业吸引了越来越多的企业进入会造成卖方的集中度下降，讨价还价能力变弱。",
           "Options": [
             {
@@ -3278,6 +3293,9 @@
         {
           "Title": "施工组织设计中，施工总体部署的主要内容有（　）。",
           "Type": 1,
+          "KnowledgePoints": [
+            "建设工程施工管理 > 施工组织设计"
+          ],
           "Analysis": "本题考查的是施工组织设计的编制。施工总体部署的主要内容有：建立施工管理机构、施工任务划分、施工顺序。",
           "Options": [
             {
@@ -3299,6 +3317,557 @@
             {
               "Content": "制定资源需求计划",
               "Right": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "信息安全基础",
+      "Description": "信息安全基础知识综合题库",
+      "Questions": [
+        {
+          "Title": "下列哪一项不属于信息安全的经典三要素（CIA）？",
+          "Type": 0,
+          "KnowledgePoints": [
+            "信息安全基础 > 三要素"
+          ],
+          "Options": [
+            {
+              "Content": "保密性",
+              "Right": false
+            },
+            {
+              "Content": "完整性",
+              "Right": false
+            },
+            {
+              "Content": "可用性",
+              "Right": false
+            },
+            {
+              "Content": "美观性",
+              "Right": true
+            }
+          ]
+        },
+        {
+          "Title": "下列哪种网络设备主要用于隔离内部网络与外部网络？",
+          "Type": 0,
+          "KnowledgePoints": [
+            "网络安全 > 防火墙"
+          ],
+          "Options": [
+            {
+              "Content": "交换机",
+              "Right": false
+            },
+            {
+              "Content": "集线器",
+              "Right": false
+            },
+            {
+              "Content": "防火墙",
+              "Right": true
+            },
+            {
+              "Content": "调制解调器",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "HTTPS 在 HTTP 的基础上通过哪种协议保证传输安全？",
+          "Type": 0,
+          "KnowledgePoints": [
+            "安全协议 > HTTPS"
+          ],
+          "Options": [
+            {
+              "Content": "SSL/TLS",
+              "Right": true
+            },
+            {
+              "Content": "FTP",
+              "Right": false
+            },
+            {
+              "Content": "SNMP",
+              "Right": false
+            },
+            {
+              "Content": "ARP",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "下列哪种算法属于非对称加密算法？",
+          "Type": 0,
+          "KnowledgePoints": [
+            "密码学 > 非对称加密"
+          ],
+          "Options": [
+            {
+              "Content": "AES",
+              "Right": false
+            },
+            {
+              "Content": "DES",
+              "Right": false
+            },
+            {
+              "Content": "RSA",
+              "Right": true
+            },
+            {
+              "Content": "SM4",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "MD5 算法输出的摘要长度是多少位？",
+          "Type": 0,
+          "KnowledgePoints": [
+            "密码学 > 哈希算法"
+          ],
+          "Options": [
+            {
+              "Content": "64",
+              "Right": false
+            },
+            {
+              "Content": "128",
+              "Right": true
+            },
+            {
+              "Content": "256",
+              "Right": false
+            },
+            {
+              "Content": "512",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "为了防止计算机感染病毒，以下做法正确的是？",
+          "Type": 0,
+          "KnowledgePoints": [
+            "终端安全 > 病毒防护"
+          ],
+          "Options": [
+            {
+              "Content": "随意点击陌生链接和邮件附件",
+              "Right": false
+            },
+            {
+              "Content": "安装正版杀毒软件并及时更新病毒库",
+              "Right": true
+            },
+            {
+              "Content": "关闭系统自动更新以提升性能",
+              "Right": false
+            },
+            {
+              "Content": "使用弱口令方便记忆",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "SQL 注入攻击主要利用的是应用程序哪方面的缺陷？",
+          "Type": 0,
+          "KnowledgePoints": [
+            "Web安全 > SQL注入"
+          ],
+          "Options": [
+            {
+              "Content": "用户输入未经严格过滤就被拼接到 SQL 语句中",
+              "Right": true
+            },
+            {
+              "Content": "服务器带宽不足",
+              "Right": false
+            },
+            {
+              "Content": "浏览器版本过低",
+              "Right": false
+            },
+            {
+              "Content": "数据库文件过大",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "下列哪项属于动态身份认证技术？",
+          "Type": 0,
+          "KnowledgePoints": [
+            "身份认证 > 认证方式"
+          ],
+          "Options": [
+            {
+              "Content": "静态口令",
+              "Right": false
+            },
+            {
+              "Content": "短信验证码",
+              "Right": true
+            },
+            {
+              "Content": "员工工号",
+              "Right": false
+            },
+            {
+              "Content": "邮箱地址",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "信息安全的三要素包括哪些？",
+          "Type": 1,
+          "KnowledgePoints": [
+            "信息安全基础 > 三要素"
+          ],
+          "Options": [
+            {
+              "Content": "保密性",
+              "Right": true
+            },
+            {
+              "Content": "完整性",
+              "Right": true
+            },
+            {
+              "Content": "可用性",
+              "Right": true
+            },
+            {
+              "Content": "经济性",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "下列属于对称加密算法的有哪些？",
+          "Type": 1,
+          "KnowledgePoints": [
+            "密码学 > 对称加密"
+          ],
+          "Options": [
+            {
+              "Content": "AES",
+              "Right": true
+            },
+            {
+              "Content": "RSA",
+              "Right": false
+            },
+            {
+              "Content": "DES",
+              "Right": true
+            },
+            {
+              "Content": "SM4",
+              "Right": true
+            }
+          ]
+        },
+        {
+          "Title": "常见的身份认证方式包括哪些？",
+          "Type": 1,
+          "KnowledgePoints": [
+            "身份认证 > 认证方式"
+          ],
+          "Options": [
+            {
+              "Content": "密码认证",
+              "Right": true
+            },
+            {
+              "Content": "生物特征认证",
+              "Right": true
+            },
+            {
+              "Content": "短信验证码认证",
+              "Right": true
+            },
+            {
+              "Content": "IP 地址认证",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "下列哪些措施有助于防范 SQL 注入攻击？",
+          "Type": 1,
+          "Analysis": "防范 SQL 注入的常用手段包括参数化查询、输入过滤与转义、最小权限原则；直接拼接用户输入正是导致注入的原因。",
+          "KnowledgePoints": [
+            "Web安全 > SQL注入"
+          ],
+          "Options": [
+            {
+              "Content": "使用参数化查询",
+              "Right": true
+            },
+            {
+              "Content": "对用户输入进行过滤和转义",
+              "Right": true
+            },
+            {
+              "Content": "直接拼接用户输入到 SQL 语句",
+              "Right": false
+            },
+            {
+              "Content": "数据库账号遵循最小权限原则",
+              "Right": true
+            }
+          ]
+        },
+        {
+          "Title": "下列属于常见网络攻击手段的有？",
+          "Type": 1,
+          "KnowledgePoints": [
+            "网络安全 > 攻击手段"
+          ],
+          "Options": [
+            {
+              "Content": "DDoS 攻击",
+              "Right": true
+            },
+            {
+              "Content": "钓鱼邮件",
+              "Right": true
+            },
+            {
+              "Content": "中间人攻击",
+              "Right": true
+            },
+            {
+              "Content": "例行数据备份",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "数据备份的常见策略包括哪些？",
+          "Type": 1,
+          "KnowledgePoints": [
+            "数据安全 > 备份策略"
+          ],
+          "Options": [
+            {
+              "Content": "完全备份",
+              "Right": true
+            },
+            {
+              "Content": "增量备份",
+              "Right": true
+            },
+            {
+              "Content": "差异备份",
+              "Right": true
+            },
+            {
+              "Content": "随机备份",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "防火墙能够完全防止内部人员主动泄露敏感数据。",
+          "Type": 2,
+          "KnowledgePoints": [
+            "网络安全 > 防火墙"
+          ],
+          "Options": [
+            {
+              "Content": "正确",
+              "Right": false
+            },
+            {
+              "Content": "错误",
+              "Right": true
+            }
+          ]
+        },
+        {
+          "Title": "HTTPS 通过 SSL/TLS 协议对传输数据进行加密，并可验证服务器身份。",
+          "Type": 2,
+          "KnowledgePoints": [
+            "安全协议 > HTTPS"
+          ],
+          "Options": [
+            {
+              "Content": "正确",
+              "Right": true
+            },
+            {
+              "Content": "错误",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "MD5 是一种可逆加密算法，可以由摘要还原原文。",
+          "Type": 2,
+          "KnowledgePoints": [
+            "密码学 > 哈希算法"
+          ],
+          "Options": [
+            {
+              "Content": "正确",
+              "Right": false
+            },
+            {
+              "Content": "错误",
+              "Right": true
+            }
+          ]
+        },
+        {
+          "Title": "生物特征识别属于身份认证技术的一种。",
+          "Type": 2,
+          "KnowledgePoints": [
+            "身份认证 > 认证方式"
+          ],
+          "Options": [
+            {
+              "Content": "正确",
+              "Right": true
+            },
+            {
+              "Content": "错误",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "增量备份只备份自上一次备份以来发生变化的数据。",
+          "Type": 2,
+          "KnowledgePoints": [
+            "数据安全 > 备份策略"
+          ],
+          "Options": [
+            {
+              "Content": "正确",
+              "Right": true
+            },
+            {
+              "Content": "错误",
+              "Right": false
+            }
+          ]
+        },
+        {
+          "Title": "只要安装了防火墙，系统就不会受到任何网络攻击。",
+          "Type": 2,
+          "KnowledgePoints": [
+            "网络安全 > 防火墙"
+          ],
+          "Options": [
+            {
+              "Content": "正确",
+              "Right": false
+            },
+            {
+              "Content": "错误",
+              "Right": true
+            }
+          ]
+        },
+        {
+          "Title": "防火墙是一种典型的（___）技术，用于控制进出网络的数据流。",
+          "Type": 3,
+          "KnowledgePoints": [
+            "网络安全 > 防火墙"
+          ],
+          "Options": [
+            {
+              "Content": "访问控制",
+              "Right": true
+            }
+          ]
+        },
+        {
+          "Title": "HTTPS 协议默认使用的端口号是（___）。",
+          "Type": 3,
+          "KnowledgePoints": [
+            "安全协议 > HTTPS"
+          ],
+          "Options": [
+            {
+              "Content": "443",
+              "Right": true
+            }
+          ]
+        },
+        {
+          "Title": "信息安全的三大基本要素是保密性、（___）和（___）。",
+          "Type": 3,
+          "FixedOrder": false,
+          "RequiredAnswerCount": 2,
+          "Analysis": "信息安全三要素（CIA）指保密性、完整性、可用性。",
+          "KnowledgePoints": [
+            "信息安全基础 > 三要素"
+          ],
+          "Options": [
+            {
+              "Content": "完整性",
+              "Right": true
+            },
+            {
+              "Content": "可用性",
+              "Right": true
+            }
+          ]
+        },
+        {
+          "Title": "MD5 算法的摘要长度为（___）位。",
+          "Type": 3,
+          "KnowledgePoints": [
+            "密码学 > 哈希算法"
+          ],
+          "Options": [
+            {
+              "Content": "128",
+              "Right": true
+            }
+          ]
+        },
+        {
+          "Title": "数据备份的三种常见策略是完全备份、增量备份和（___）。",
+          "Type": 3,
+          "KnowledgePoints": [
+            "数据安全 > 备份策略"
+          ],
+          "Options": [
+            {
+              "Content": "差异备份",
+              "Right": true
+            }
+          ]
+        },
+        {
+          "Title": "RSA 是典型的非对称加密算法，AES 是典型的（___）加密算法，AES 的分组长度为（___）位。",
+          "Type": 3,
+          "FixedOrder": true,
+          "RequiredAnswerCount": 2,
+          "Analysis": "AES 是对称加密算法，分组长度固定为 128 位；RSA 基于大数分解难题。",
+          "KnowledgePoints": [
+            "密码学 > 对称加密"
+          ],
+          "Options": [
+            {
+              "Content": "对称",
+              "Right": true
+            },
+            {
+              "Content": "128",
+              "Right": true
             }
           ]
         }
